@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 256 256" style="enable-background:new 0 0 256 256;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#8C2828;}
+	.st1{opacity:0.3;}
+	.st2{fill:#FFFFFF;}
+</style>
+<rect class="st0" width="256" height="256"/>
+<title>EXT:container</title>
+<g class="st1">
+	<rect x="101.7" y="35" class="st2" width="52.6" height="186"/>
+	<rect x="35" y="35" class="st2" width="52.6" height="186"/>
+	<rect x="168.5" y="35" class="st2" width="52.6" height="186"/>
+</g>
+<path class="st2" d="M215,41v40.6H41V41H215 M221,35H35v52.6h186V35L221,35z"/>
+<path class="st2" d="M148.3,107.7V215H41V107.7H148.3 M154.3,101.7H35V221h119.3V101.7L154.3,101.7z"/>
+<path class="st2" d="M215,107.7V215h-40.6V107.7H215 M221,101.7h-52.6V221H221V101.7L221,101.7z"/>
+</svg>

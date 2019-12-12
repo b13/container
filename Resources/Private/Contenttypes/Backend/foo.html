@@ -1,0 +1,40 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true"
+    xmlns:container="http://typo3.org/ns/B13/Container/ViewHelpers" data-namespace-typo3-fluid="true"
+>
+
+
+<container:templateVariables uid="{uid}">
+    <f:if condition="{containerConfiguration.grid}">
+        <table style="width: 100%">
+            <f:for each="{containerConfiguration.grid}" as="row">
+                <tr>
+                    <f:for each="{row}" as="column">
+                        <td{f:if(condition:"{column.colspan}", then: ' colspan="{column.colspan}"')}>
+
+                        <container:drawChilds uid="{containerRecord.uid}" colPos="{column.colPos}"  />
+
+                        <f:comment>
+
+                        {column.name}
+                        <container:newElementLink containerRecord="{containerRecord}" colPos="{column.colPos}"/>
+                        <f:comment>
+                            <container:containerChilds uid="{containerRecord.uid}" colPos="{column.colPos}">
+                                <f:for each="{containerChilds}" as="record">
+                                    <container:drawRecord record="{record}" />
+                                </f:for>
+                            </container:containerChilds>
+                        </f:comment>
+
+
+                        </f:comment>
+                        </td>
+                    </f:for>
+                </tr>
+            </f:for>
+        </table>
+
+    </f:if>
+</container:templateVariables>
+
+</html>
