@@ -1,33 +1,22 @@
 <?php
 
 $additionalColumns = [
-
     'tx_container_parent' => [
-
         'label' => 'Container',
         'config' => [
             'default' => 0,
             'type' => 'select',
             'itemsProcFunc' => \B13\Container\TcaContainerItems::class . '->listItemProcFunc',
             'renderType' => 'selectSingle'
-
-
         ]
     ]
 ];
 
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $additionalColumns);
-
-#\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
-#    'tt_content',
-#    'tx_container_parent'
-#);
-#\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToAllPalettesOfField(
-#'tt_content',
-#'colPos',
-#'tx_container_parent'
-#);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+    'tt_content',
+     $additionalColumns
+);
 
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
