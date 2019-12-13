@@ -39,6 +39,8 @@ class TcaRegistry
     ' . $cType . ' = ' . $backendTemplate . '
 }
 ';
+
+        /*
         foreach ($grid as $row) {
             foreach($row as $column) {
                 $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
@@ -46,6 +48,8 @@ class TcaRegistry
                 ];
             }
         }
+        */
+
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['pageTS'] = $pageTS;
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] = $grid;
