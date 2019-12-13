@@ -25,6 +25,8 @@ $additionalColumns = [
         'config' => [
             'type' => 'input',
             'size' => 10,
+            'eval' => 'int',
+            'default' => 0
         ]
     ]
 ];

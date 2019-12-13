@@ -52,6 +52,7 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter($colPos, \PDO::PARAM_INT)
                 )
             )
+            ->orderBy('sorting', 'ASC')
             ->execute()
             ->fetchAll();
         return $records;
