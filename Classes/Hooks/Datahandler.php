@@ -14,13 +14,13 @@ class Datahandler
      */
     public function processCmdmap_beforeStart(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
-        $this->extractContainerIdFromColPos($dataHandler->cmdmap);
+        $dataHandler->cmdmap = $this->extractContainerIdFromColPos($dataHandler->cmdmap);
     }
 
     /**
      * @param array $cmdmap
      */
-    protected function extractContainerIdFromColPos(array &$cmdmap): void
+    protected function extractContainerIdFromColPos(array $cmdmap): array
     {
         if (!empty($cmdmap['tt_content'])) {
             foreach ($cmdmap['tt_content'] as $id => &$cmds) {
@@ -36,6 +36,7 @@ class Datahandler
                 }
             }
         }
+        return $cmdmap;
     }
 
 }
