@@ -30,4 +30,7 @@ if (TYPO3_MODE === 'BE') {
     // resolve <containerUid>-<colPos>
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container'] =
         \B13\Container\Hooks\Datahandler::class;
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container'] =
+        \B13\Container\Hooks\Datahandler::class;
 }

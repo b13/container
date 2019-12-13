@@ -3,6 +3,7 @@
 namespace B13\Container;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -40,6 +41,7 @@ class Database implements SingletonInterface
     public function fetchRecordsByParentAndColPos(int $parent, int $colPos): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $records = (array)$queryBuilder->select('*')
             ->from('tt_content')
             ->where(

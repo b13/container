@@ -10,7 +10,7 @@ class DatahanderTest extends UnitTestCase
     /**
      * @test
      */
-    public function extractContainerIdFromColPosModifiesCmdMap(): void
+    public function extractContainerIdFromColPosOnUpdateModifiesCmdMap(): void
     {
         $dataHandlerHook = $this->getAccessibleMock(Datahandler::class, ['foo']);
         $cmdmap = [
@@ -28,7 +28,7 @@ class DatahanderTest extends UnitTestCase
                 ]
             ]
         ];
-        $cmdmap = $dataHandlerHook->_call('extractContainerIdFromColPos', $cmdmap);
+        $cmdmap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $cmdmap);
         $this->assertSame(34, $cmdmap['tt_content'][39]['copy']['update']['colPos']);
         $this->assertSame(2, $cmdmap['tt_content'][39]['copy']['update']['tx_container_parent']);
     }
@@ -36,7 +36,7 @@ class DatahanderTest extends UnitTestCase
     /**
      * @test
      */
-    public function extractContainerIdFromColPosWithColPosIntegerReturnsOriginalCmdmap(): void
+    public function extractContainerIdFromColPosOnUpdateWithColPosIntegerReturnsOriginalCmdmap(): void
     {
         $dataHandlerHook = $this->getAccessibleMock(Datahandler::class, ['foo']);
         $cmdmap = [
@@ -54,7 +54,26 @@ class DatahanderTest extends UnitTestCase
                 ]
             ]
         ];
-        $newCmdmap = $dataHandlerHook->_call('extractContainerIdFromColPos', $cmdmap);
+        $newCmdmap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $cmdmap);
         $this->assertSame($cmdmap, $newCmdmap);
+    }
+
+    /**
+     * @test
+     */
+    public function extractContainerIdFromColPosInDatamapModifiesDatamap(): void
+    {
+        $dataHandlerHook = $this->getAccessibleMock(Datahandler::class, ['foo']);
+        $datamap = [
+            'tt_content' => [
+                39 => [
+                    'colPos' => '2-34',
+                    'sys_language_uid' => 0
+                ]
+            ]
+        ];
+        $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
+        $this->assertSame(34, $datamap['tt_content'][39]['colPos']);
+        $this->assertSame(2, $datamap['tt_content'][39]['tx_container_parent']);
     }
 }

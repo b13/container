@@ -16,17 +16,18 @@
     'EXT:container/Resources/Private/Contenttypes/Backend/foo.html'
 );
 
-$GLOBALS['TCA']['tt_content']['types']['foo']['showitem'] = 'CType,header';
 
 $additionalColumns = [
 
     'tx_container_parent' => [
-        'label' => 'Color of the image overlay gradient',
+
+        'label' => 'Parent Container ID',
         'config' => [
             'type' => 'input',
             'size' => 10,
             'eval' => 'int',
-            'default' => 0
+            'default' => 0,
+            #'readOnly' => true
         ]
     ]
 ];
@@ -34,9 +35,11 @@ $additionalColumns = [
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $additionalColumns);
 
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
     'tx_container_parent'
 );
 
+$GLOBALS['TCA']['tt_content']['types']['foo']['showitem'] = 'sys_language_uid,CType,header,tx_container_parent,colPos';
 
