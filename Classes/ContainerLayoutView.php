@@ -23,12 +23,59 @@ class ContainerLayoutView extends PageLayoutView
         $database = GeneralUtility::makeInstance(Database::class);
         $records = $database->fetchRecordsByParentAndColPos($uid, $colPos);
         $containerRecord = $database->fetchOneRecord($uid);
+
         $this->generateTtContentDataArray($records);
         $content = $this->prepareFoo($records, $colPos, $containerRecord);
         return $content;
     }
 
-    protected function prepareFoo($recods, $colPos, array $containerRecord): string
+    /**
+     * @param int $colPos
+     * @param array $containerRecord
+     * @param int $lang
+     * @return string
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
+     */
+    protected function buildNewContentElementWizardLinkTop(int $colPos, array $containerRecord, int $lang = 0): string
+    {
+        $urlParameters = [
+            'id' => $containerRecord['pid'],
+            'sys_language_uid' => $lang,
+            'tx_container_parent' => $containerRecord['uid'],
+            'colPos' => $colPos,
+            'uid_pid' => $containerRecord['pid'],
+            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
+        ];
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        return $url;
+    }
+
+    /**
+     * @param array $currentRecord
+     * @param array $containerRecord
+     * @return string
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
+     */
+    protected function buildNewContentElementWizardLinkAfterCurrent(array $currentRecord, array $containerRecord): string
+    {
+        $colPos = $currentRecord['colPos'];
+        $target = -$currentRecord['uid'];
+        $lang = $currentRecord['sys_language_uid'];
+        $urlParameters = [
+            'id' => $containerRecord['pid'],
+            'sys_language_uid' => $lang,
+            'colPos' => $colPos,
+            'tx_container_parent' => $containerRecord['uid'],
+            'uid_pid' => $target,
+            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
+        ];
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        return $url;
+    }
+
+    protected function prepareFoo(array $recods, int $colPos, array $containerRecord): string
     {
         $content = [];
         $columnId = $colPos;
@@ -57,20 +104,7 @@ class ContainerLayoutView extends PageLayoutView
             if ($this->isContentEditable()
                 && (!$this->checkIfTranslationsExistInLanguage($contentRecordsPerColumn, $lP))
             ) {
-                    $urlParameters = [
-                        'id' => $id,
-                        'sys_language_uid' => $lP,
-                        'tx_container_parent' => $containerRecord['uid'],
-                        'colPos' => $columnId,
-                        'uid_pid' => $id,
-
-                        'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
-                    ];
-                    $routeName = BackendUtility::getPagesTSconfig($id)['mod.']['newContentElementWizard.']['override']
-                        ?? 'new_content_element_wizard';
-                    $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-                    $url = (string)$uriBuilder->buildUriFromRoute($routeName, $urlParameters);
-
+                $url = $this->buildNewContentElementWizardLinkTop($colPos, $containerRecord, $lP);
                 $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
                 $link = '<a href="' . htmlspecialchars($url) . '" '
                     . 'title="' . $title . '"'
@@ -137,20 +171,7 @@ class ContainerLayoutView extends PageLayoutView
                             && (!$this->checkIfTranslationsExistInLanguage($contentRecordsPerColumn, $lP))
                             && $columnId !== 'unused'
                         ) {
-
-                                $urlParameters = [
-                                    'id' => $row['pid'],
-                                    'sys_language_uid' => $row['sys_language_uid'],
-                                    'colPos' => $row['colPos'],
-                                    'tx_container_parent' => $containerRecord['uid'],
-                                    'uid_pid' => -$row['uid'],
-                                    'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
-                                ];
-                                $routeName = BackendUtility::getPagesTSconfig($row['pid'])['mod.']['newContentElementWizard.']['override']
-                                    ?? 'new_content_element_wizard';
-                                $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-                                $url = (string)$uriBuilder->buildUriFromRoute($routeName, $urlParameters);
-
+                            $url = $this->buildNewContentElementWizardLinkAfterCurrent($row, $containerRecord);
                             $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
                             $singleElementHTML .= '<a href="' . htmlspecialchars($url) . '" '
                                 . 'title="' . $title . '"'
