@@ -19,13 +19,16 @@ $additionalColumns = [
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $additionalColumns);
 
-$GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['itemsProcFunc'] = \B13\Container\BackendLayoutView::class . '->colPosListItemProcFunc';
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
     'tx_container_parent'
 );
 
+
+$GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['itemsProcFunc'] = \B13\Container\BackendLayoutView::class . '->colPosListItemProcFunc';
+// copyAfterDuplFields colPos,sys_language_uid
+// useColumnsForDefaultValues colPos,sys_language_uid,CType
+$GLOBALS['TCA']['tt_content']['ctrl']['useColumnsForDefaultValues'] .= ',tx_container_parent';
 
 
 \B13\Container\TcaRegistry::registerContainer(

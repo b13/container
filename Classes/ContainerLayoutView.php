@@ -40,6 +40,7 @@ class ContainerLayoutView extends PageLayoutView
         $records = $this->database->fetchRecordsByParentAndColPosIncludeHidden($uid, $colPos);
         $containerRecord = $this->database->fetchOneRecord($uid);
 
+        $this->nextThree = 1;
         $this->initWebLayoutModuleData();
         $this->generateTtContentDataArray($records);
         $content = $this->renderRecords($records, $colPos, $containerRecord);
