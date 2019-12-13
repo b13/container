@@ -10,18 +10,35 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Versioning\VersionState;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 
 class ContainerLayoutView extends PageLayoutView
 {
+    /**
+     * @var Database
+     */
+    protected $database = null;
 
-
-    public function renderContainerChilds(int $uid, $colPos): string
+    /**
+     * ContainerLayoutView constructor.
+     * @param Database $database
+     */
+    public function __construct(Database $database = null)
     {
-        $database = GeneralUtility::makeInstance(Database::class);
-        $records = $database->fetchRecordsByParentAndColPos($uid, $colPos);
-        $containerRecord = $database->fetchOneRecord($uid);
+        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        parent::__construct();
+    }
+
+
+    /**
+     * @param int $uid
+     * @param int $colPos
+     * @return string
+     */
+    public function renderContainerChilds(int $uid, int $colPos): string
+    {
+        $records = $this->database->fetchRecordsByParentAndColPosIncludeHidden($uid, $colPos);
+        $containerRecord = $this->database->fetchOneRecord($uid);
 
         $this->initWebLayoutModuleData();
         $this->generateTtContentDataArray($records);
@@ -89,6 +106,19 @@ class ContainerLayoutView extends PageLayoutView
 
     protected function renderRecords(array $recods, int $colPos, array $containerRecord): string
     {
+        /**
+         * // Setting language list:
+        $langList = $this->tt_contentConfig['sys_language_uid'];
+        if ($this->tt_contentConfig['languageMode']) {
+        if ($this->tt_contentConfig['languageColsPointer']) {
+        $langList = '0,' . $this->tt_contentConfig['languageColsPointer'];
+        } else {
+        $langList = implode(',', array_keys($this->tt_contentConfig['languageCols']));
+        }
+        $languageColumn = [];
+        }
+        $langListArr = GeneralUtility::intExplode(',', $langList);
+         */
         $content = '';
         $head = '';
         $lP = 0;

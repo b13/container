@@ -12,8 +12,7 @@
             ['name' => 'foo2', 'colPos' => 101],
             ['name' => 'foo3', 'colPos' => 102]
         ]
-    ],
-    'EXT:container/Resources/Private/Contenttypes/Backend/foo.html'
+    ]
 );
 
 

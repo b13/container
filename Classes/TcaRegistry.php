@@ -3,7 +3,7 @@
 namespace B13\Container;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 
 class TcaRegistry
 {
@@ -13,7 +13,7 @@ class TcaRegistry
         string $label,
         string $icon,
     array $grid = [],
-    string $backendTemplate = ''
+    string $backendTemplate = 'EXT:container/Resources/Private/Contenttypes/Backend/container.html'
     ): void
     {
 
