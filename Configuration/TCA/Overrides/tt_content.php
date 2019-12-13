@@ -4,7 +4,7 @@ $additionalColumns = [
 
     'tx_container_parent' => [
 
-        'label' => 'Parent Container ID',
+        'label' => 'Container',
         'config' => [
             'default' => 0,
             'type' => 'select',
@@ -19,11 +19,22 @@ $additionalColumns = [
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $additionalColumns);
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+#\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+#    'tt_content',
+#    'tx_container_parent'
+#);
+#\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToAllPalettesOfField(
+#'tt_content',
+#'colPos',
+#'tx_container_parent'
+#);
+
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
     'tt_content',
+    'general',
     'tx_container_parent'
 );
-
 
 $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['itemsProcFunc'] = \B13\Container\BackendLayoutView::class . '->colPosListItemProcFunc';
 // copyAfterDuplFields colPos,sys_language_uid
