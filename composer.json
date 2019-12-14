@@ -19,7 +19,8 @@
         "bin-dir": ".Build/bin"
     },
     "require-dev": {
-        "typo3/testing-framework": "~6.1.0"
+        "typo3/testing-framework": "~6.1.0",
+        "codeception/codeception": "^3"
     },
     "replace": {
         "typo3-ter/container": "self.version"

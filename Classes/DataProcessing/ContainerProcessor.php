@@ -7,6 +7,7 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use B13\Container\Database;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\RecordsContentObject;
 
 
 class ContainerProcessor implements DataProcessorInterface
@@ -57,6 +58,14 @@ class ContainerProcessor implements DataProcessorInterface
         }
 
         $childs = $this->database->fetchRecordsByParentAndColPos($contentId, $colPos);
+        $contentRecordRenderer = new RecordsContentObject($cObj);
+        $conf = [
+            'tables' => 'tt_content'
+        ];
+        foreach ($childs as &$child) {
+            $conf['source'] = $child['uid'];
+            $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
+        }
 
         if ($processorConfiguration['as']) {
             $processedData[$processorConfiguration['as']] = $childs;

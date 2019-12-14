@@ -31,10 +31,12 @@ $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['itemsProcFunc'] = 
 $GLOBALS['TCA']['tt_content']['ctrl']['useColumnsForDefaultValues'] .= ',tx_container_parent';
 
 
+
 \B13\Container\TcaRegistry::registerContainer(
     'foo',
     'bar',
-    'EXT:container/Resources/Public/Icons/Extension.svg',
+    'bar-description',
+    'container',
     [
         [
             ['name' => 'foo', 'colPos' => 100, 'colspan' => 2]

@@ -3,6 +3,7 @@
 namespace B13\Container;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 class TcaRegistry
@@ -11,12 +12,25 @@ class TcaRegistry
     public static function registerContainer (
         string $cType,
         string $label,
-        string $icon,
+        string $description,
+    string $extKey,
     array $grid = [],
     string $backendTemplate = 'EXT:container/Resources/Private/Contenttypes/Backend/container.html'
     ): void
     {
 
+        $icon = 'EXT:' . $extKey . '/Resources/Public/Icons/' . $cType . '.svg';
+        if (!file_exists(GeneralUtility::getFileAbsFileName($icon))) {
+            $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
+        }
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+        $iconRegistry->registerIcon(
+            $cType,
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            [
+                'source' => $icon
+            ]
+        );
         #return;
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
@@ -28,8 +42,8 @@ class TcaRegistry
         $pageTS .= 'mod.wizards.newContentElement.wizardItems.container.elements {
     ' . $cType . ' {
         title = ' . $label . '
-        description = ' . $label . '
-        iconIdentifier = content-header
+        description = ' . $description . '
+        iconIdentifier = ' . $cType . '
         tt_content_defValues.CType = ' . $cType . '
     }
 }
@@ -40,7 +54,7 @@ class TcaRegistry
 }
 ';
 
-        /*
+
         foreach ($grid as $row) {
             foreach($row as $column) {
                 $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
@@ -48,7 +62,7 @@ class TcaRegistry
                 ];
             }
         }
-        */
+
 
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['pageTS'] = $pageTS;
