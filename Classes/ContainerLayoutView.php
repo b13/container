@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Versioning\VersionState;
 
 
+
 class ContainerLayoutView extends PageLayoutView
 {
     /**
@@ -37,11 +38,23 @@ class ContainerLayoutView extends PageLayoutView
      */
     public function renderContainerChilds(int $uid, int $colPos): string
     {
-        $records = $this->database->fetchRecordsByParentAndColPosIncludeHidden($uid, $colPos);
+
+        $this->initWebLayoutModuleData();
         $containerRecord = $this->database->fetchOneRecord($uid);
 
+        $language = 0;
+        if ($containerRecord['sys_language_uid'] > 0) {
+            $language = (int)$containerRecord['sys_language_uid'];
+            $containerRecord = $this->database->fetchOneDefaultRecord($containerRecord);
+        }
+        // always default records
+        $records = $this->database->fetchRecordsByParentAndColPos($containerRecord['uid'], $colPos);
+        if ($language > 0) {
+            $records = $this->database->fetchOverlayRecords($records, $language);
+        }
+
+
         $this->nextThree = 1;
-        $this->initWebLayoutModuleData();
         $this->generateTtContentDataArray($records);
         $content = $this->renderRecords($records, $colPos, $containerRecord);
         return $content;
@@ -107,31 +120,10 @@ class ContainerLayoutView extends PageLayoutView
 
     protected function renderRecords(array $recods, int $colPos, array $containerRecord): string
     {
-        /**
-         * // Setting language list:
-        $langList = $this->tt_contentConfig['sys_language_uid'];
-        if ($this->tt_contentConfig['languageMode']) {
-        if ($this->tt_contentConfig['languageColsPointer']) {
-        $langList = '0,' . $this->tt_contentConfig['languageColsPointer'];
-        } else {
-        $langList = implode(',', array_keys($this->tt_contentConfig['languageCols']));
-        }
-        $languageColumn = [];
-        }
-        $langListArr = GeneralUtility::intExplode(',', $langList);
-         */
         $content = '';
         $head = '';
         $lP = 0;
         $id = $containerRecord['pid'];
-
-        if (!isset($this->contentElementCache[$lP])) {
-            $this->contentElementCache[$lP] = [];
-        }
-
-        if (!$lP) {
-            $defaultLanguageElementsByColumn[$colPos] = [];
-        }
 
         // Start wrapping div
         $content .= '<div data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '" data-language-uid="' . $lP . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $lP . ' t3-page-ce-wrapper">';

@@ -25,13 +25,13 @@
         <uid>102</uid>
         <pid>10</pid>
         <header>2cols-header-1</header>
-        <l10n_parent>100</l10n_parent>
+        <l18n_parent>100</l18n_parent>
         <CType>b13-2cols-with-header-container</CType>
     </tt_content>
     <tt_content>
         <uid>103</uid>
         <pid>10</pid>
-        <l10n_parent>101</l10n_parent>
+        <l18n_parent>101</l18n_parent>
         <colPos>200</colPos>
         <header>header-header-1</header>
         <tx_container_parent>100</tx_container_parent>

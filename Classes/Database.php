@@ -2,11 +2,13 @@
 
 namespace B13\Container;
 
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 
 class Database implements SingletonInterface
@@ -17,7 +19,11 @@ class Database implements SingletonInterface
      */
     protected function getQueryBuilder(): QueryBuilder
     {
-        return $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        if (TYPO3_MODE === 'BE') {
+            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        }
+        return $queryBuilder;
     }
 
     /**
@@ -33,6 +39,29 @@ class Database implements SingletonInterface
                 $queryBuilder->expr()->eq(
                     'uid',
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        if ($record === false) {
+            return null;
+        }
+        return $record;
+    }
+
+    /**
+     * @param array $record
+     * @return array|null
+     */
+    public function fetchOneDefaultRecord(array $record): ?array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $record = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($record['l18n_parent'], \PDO::PARAM_INT)
                 )
             )
             ->execute()
@@ -61,6 +90,10 @@ class Database implements SingletonInterface
                 $queryBuilder->expr()->eq(
                     'colPos',
                     $queryBuilder->createNamedParameter($colPos, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
             ->orderBy('sorting', 'ASC')
@@ -69,30 +102,34 @@ class Database implements SingletonInterface
         return $records;
     }
 
+
     /**
-     * @param int $parent
-     * @param int $colPos
+     * @param array $records
+     * @param int $language
      * @return array
      */
-    public function fetchRecordsByParentAndColPosIncludeHidden(int $parent, int $colPos): array
+    public function fetchOverlayRecords(array $records, int $language): array
     {
+        $uids = [];
+        foreach ($records as $record) {
+            $uids[] = $record['uid'];
+        }
         $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $records = (array)$queryBuilder->select('*')
             ->from('tt_content')
             ->where(
-                $queryBuilder->expr()->eq(
-                    'tx_container_parent',
-                    $queryBuilder->createNamedParameter($parent, \PDO::PARAM_INT)
+                $queryBuilder->expr()->in(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter($uids, Connection::PARAM_INT_ARRAY)
                 ),
                 $queryBuilder->expr()->eq(
-                    'colPos',
-                    $queryBuilder->createNamedParameter($colPos, \PDO::PARAM_INT)
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
                 )
             )
-            ->orderBy('sorting', 'ASC')
             ->execute()
             ->fetchAll();
+
         return $records;
     }
 }

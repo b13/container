@@ -55,7 +55,8 @@ class DatahandlerTest extends UnitTestCase
             ]
         ];
         $newCmdmap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $cmdmap);
-        $this->assertSame($cmdmap, $newCmdmap);
+        $this->assertSame(34, $newCmdmap['tt_content'][39]['copy']['update']['colPos']);
+        $this->assertSame(0, $newCmdmap['tt_content'][39]['copy']['update']['tx_container_parent']);
     }
 
     /**

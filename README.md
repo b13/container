@@ -50,3 +50,5 @@ Registry as singeleton ohne static
 rm demo from EXT:container
 rm ContainerRenderedChildsProcessor
 
+
+

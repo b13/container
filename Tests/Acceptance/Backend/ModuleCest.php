@@ -44,7 +44,11 @@ class ModuleCest
         $pageTree->openPath(['page-10']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->see('2cols-header-0');
+        $I->see('header-header-0');
     }
+
+
 
     /**
      * @param BackendTester $I
