@@ -73,6 +73,23 @@ class TcaRegistry
     }
 
     /**
+     * @return array
+     */
+    public function getAllAvailableColumns(): array
+    {
+        $columns = [];
+        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cTypeConfiguration) {
+            $grid = $cTypeConfiguration['grid'];
+            foreach ($grid as $row) {
+                foreach ($row as $column) {
+                    $columns[] = $column;
+                }
+            }
+        }
+        return $columns;
+    }
+
+    /**
      * Adds TSconfig
      *
      * @param array $TSdataArray

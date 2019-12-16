@@ -34,8 +34,11 @@ class ModuleCest
         $I->useExistingSession('admin');
     }
 
+
     /**
      * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
      */
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree)
     {
@@ -60,13 +63,31 @@ class ModuleCest
 
     /**
      * @param BackendTester $I
+     * @param PageTree $pageTree
+     */
+    public function newElementInHeaderColumnHasExpectedColPosAndParentSeletected(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->click('Page');
+        $pageTree->openPath(['page-2']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        // header
+        $I->click('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
+        $I->switchToIFrame();
+        $I->waitForElement('#NewContentElementController');
+        $I->click('Header Only');
+        $I->switchToContentFrame();
+        $I->see('header [200]');
+        $I->see('b13-2cols-with-header-container [1]');
+    }
+    /**
+     * @param BackendTester $I
      */
     public function canCreateContentElementInContainer(BackendTester $I, PageTree $pageTree)
     {
         //@depends canCreateContainer
-        /*
         $I->click('Page');
-        $pageTree->openPath(['page-1']);
+        $pageTree->openPath(['page-2']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
@@ -79,66 +100,13 @@ class ModuleCest
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        */
+        // todo element is visible
 
-
-        $I->click('Page');
-        $pageTree->openPath(['page-1']);
-        $I->wait(0.2);
-        $I->switchToContentFrame();
-        // header
-        $I->click('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
-        $I->switchToIFrame();
-        $I->waitForElement('#NewContentElementController');
-        $I->click('Header Only');
-        $I->switchToContentFrame();
-
-        $fieldLabel = 'Column';
-
-        $formSection = $this->getFormSectionByFieldLabel($I, $fieldLabel);
-        $inputField = $this->getInputField($formSection);
-
-        #$initializedInputFieldXpath = '(//label[contains(text(),"' . $fieldLabel . '")])'
-        #    . '[1]/parent::*//*/input[@data-formengine-input-name][@data-formengine-input-initialized]';
-
-        $I->seeOptionIsSelected($inputField, 'header [200]');
-
+        // todo more tests
+        /*
+         * localization shows container colPos
+         * new in edit element has default values
+         */
     }
-
-
-    /**
-     * Return the visible input field of element in question.
-     *
-     * @param $formSection
-     * @return RemoteWebElement
-     */
-    protected function getInputField(RemoteWebElement $formSection)
-    {
-        return $formSection->findElement(\WebDriverBy::xpath('.//*/input[@data-formengine-input-name]'));
-    }
-
-
-    /**
-     * Find this element in form.
-     *
-     * @param BackendTester $I
-     * @param string $fieldLabel
-     * @return RemoteWebElement
-     */
-    protected function getFormSectionByFieldLabel(BackendTester $I, string $fieldLabel)
-    {
-        $I->comment('Get context for field "' . $fieldLabel . '"');
-        return $I->executeInSelenium(
-            function (RemoteWebDriver $webDriver) use ($fieldLabel) {
-                return $webDriver->findElement(
-                    \WebDriverBy::xpath(
-                        '(//label[contains(text(),"' . $fieldLabel . '")])[1]/ancestor::fieldset[@class="form-section"][1]'
-                    )
-                );
-            }
-        );
-    }
-
-
 
 }

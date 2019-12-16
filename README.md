@@ -19,16 +19,6 @@
                 colPos = 101
                 as = childsRight
             }
-            200 = B13\Container\DataProcessing\ContainerRenderedChildsProcessor
-            200 {
-                colPos = 100
-                as = contentLeft
-            }
-            201 = B13\Container\DataProcessing\ContainerRenderedChildsProcessor
-            201 {
-                colPos = 101
-                as = contentRight
-            }
         }
     } 
     
@@ -36,27 +26,27 @@
 ## Template
 
 
-    <h1>plain child records</h1>
-    
-    <h2>left (100)</h2>
+
     <f:for each="{childsLeft}" as="record">
         {record.header} <br />
+        <f:format.raw>
+            {record.renderedContent}
+        </f:format.raw>
+        
     </f:for>
     
-    <h2>right (101)</h2>
+
     <f:for each="{childsRight}" as="record">
         {record.header} <br />
+        <f:format.raw>
+            {record.renderedContent}
+        </f:format.raw>
     </f:for>
-    
-    <h1>childs as rendered content</h1>
-    
-    <h2>left (100)</h2>
-    <f:format.raw>
-        {contentLeft}
-    </f:format.raw>
-    
-    
-    <h2>right (101)</h2>
-    <f:format.raw>
-        {contentRight}
-    </f:format.raw>
+
+
+
+TCA namespace
+Registry as singeleton ohne static
+rm demo from EXT:container
+rm ContainerRenderedChildsProcessor
+
