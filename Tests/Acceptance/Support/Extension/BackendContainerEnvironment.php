@@ -34,7 +34,8 @@ class BackendContainerEnvironment extends BackendEnvironment
             'recordlist',
         ],
         'testExtensionsToLoad' => [
-            'typo3conf/ext/container'
+            'typo3conf/ext/container',
+            'typo3conf/ext/container_example'
         ],
         'xmlDatabaseFixtures' => [
             'PACKAGE:typo3/testing-framework/Resources/Core/Acceptance/Fixtures/be_users.xml',

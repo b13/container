@@ -16,19 +16,15 @@ namespace B13\Container\Tests\Acceptance\Backend;
  */
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
-use TYPO3\TestingFramework\Core\Acceptance\Helper\Topbar;
+use B13\Container\Tests\Acceptance\Support\PageTree;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\RemoteWebElement;
 
 /**
  * Tests the styleguide backend module can be loaded
  */
 class ModuleCest
 {
-    /**
-     * Selector for the module container in the topbar
-     *
-     * @var string
-     */
-    public static $topBarModuleSelector = '#typo3-cms-backend-backend-toolbaritems-helptoolbaritem';
 
     /**
      * @param BackendTester $I
@@ -41,20 +37,108 @@ class ModuleCest
     /**
      * @param BackendTester $I
      */
-    public function styleguideInTopbarHelpCanBeCalled(BackendTester $I)
+    public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree)
     {
-        $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee('About TYPO3 CMS', self::$topBarModuleSelector);
+        $I->click('Page');
+        $pageTree->openPath(['page-1']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->click('Content');
+        $I->switchToIFrame();
+        $I->waitForElement('#NewContentElementController');
+        $I->click('Container');
+        $I->click('2 Column Container With Header');
+        $I->switchToContentFrame();
+        $I->click('Save');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->click('Close');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->canSee('header', '.t3-grid-container');
+        $I->canSee('left side', '.t3-grid-container');
+        $I->canSee('right side', '.t3-grid-container');
     }
 
     /**
-     * @depends styleguideInTopbarHelpCanBeCalled
      * @param BackendTester $I
      */
-    public function creatingDemoDataWorks(BackendTester $I)
+    public function canCreateContentElementInContainer(BackendTester $I, PageTree $pageTree)
     {
-        $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee('About TYPO3 CMS', self::$topBarModuleSelector);
+        //@depends canCreateContainer
+        /*
+        $I->click('Page');
+        $pageTree->openPath(['page-1']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        // header
+        $I->click('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
+        $I->switchToIFrame();
+        $I->waitForElement('#NewContentElementController');
+        $I->click('Header Only');
+        $I->switchToContentFrame();
+        $I->click('Save');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->click('Close');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        */
+
+
+        $I->click('Page');
+        $pageTree->openPath(['page-1']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        // header
+        $I->click('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
+        $I->switchToIFrame();
+        $I->waitForElement('#NewContentElementController');
+        $I->click('Header Only');
+        $I->switchToContentFrame();
+
+        $fieldLabel = 'Column';
+
+        $formSection = $this->getFormSectionByFieldLabel($I, $fieldLabel);
+        $inputField = $this->getInputField($formSection);
+
+        #$initializedInputFieldXpath = '(//label[contains(text(),"' . $fieldLabel . '")])'
+        #    . '[1]/parent::*//*/input[@data-formengine-input-name][@data-formengine-input-initialized]';
+
+        $I->seeOptionIsSelected($inputField, 'header [200]');
+
     }
+
+
+    /**
+     * Return the visible input field of element in question.
+     *
+     * @param $formSection
+     * @return RemoteWebElement
+     */
+    protected function getInputField(RemoteWebElement $formSection)
+    {
+        return $formSection->findElement(\WebDriverBy::xpath('.//*/input[@data-formengine-input-name]'));
+    }
+
+
+    /**
+     * Find this element in form.
+     *
+     * @param BackendTester $I
+     * @param string $fieldLabel
+     * @return RemoteWebElement
+     */
+    protected function getFormSectionByFieldLabel(BackendTester $I, string $fieldLabel)
+    {
+        $I->comment('Get context for field "' . $fieldLabel . '"');
+        return $I->executeInSelenium(
+            function (RemoteWebDriver $webDriver) use ($fieldLabel) {
+                return $webDriver->findElement(
+                    \WebDriverBy::xpath(
+                        '(//label[contains(text(),"' . $fieldLabel . '")])[1]/ancestor::fieldset[@class="form-section"][1]'
+                    )
+                );
+            }
+        );
+    }
+
+
 
 }
