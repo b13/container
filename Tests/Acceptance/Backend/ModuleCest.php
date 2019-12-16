@@ -34,6 +34,17 @@ class ModuleCest
         $I->useExistingSession('admin');
     }
 
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     */
+    public function overlayModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree)
+    {
+        $I->click('Page');
+        $pageTree->openPath(['page-10']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+    }
 
     /**
      * @param BackendTester $I
@@ -80,8 +91,11 @@ class ModuleCest
         $I->see('header [200]');
         $I->see('b13-2cols-with-header-container [1]');
     }
+
     /**
      * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
      */
     public function canCreateContentElementInContainer(BackendTester $I, PageTree $pageTree)
     {
