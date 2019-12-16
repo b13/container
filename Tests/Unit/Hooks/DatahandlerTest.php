@@ -5,7 +5,7 @@ namespace B13\Container\Tests\Unit\Hooks;
 use B13\Container\Hooks\Datahandler;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class DatahanderTest extends UnitTestCase
+class DatahandlerTest extends UnitTestCase
 {
     /**
      * @test
