@@ -3,15 +3,16 @@
     xmlns:container="http://typo3.org/ns/B13/Container/ViewHelpers" data-namespace-typo3-fluid="true"
 >
 
+<h1>{uid}</h1>
 <container:templateVariables uid="{uid}">
-    <f:if condition="{containerConfiguration.grid}">
+    <f:if condition="{grid}">
         <table style="width: 100%">
-            <f:for each="{containerConfiguration.grid}" as="row">
+            <f:for each="{grid}" as="row">
                 <tr>
                     <f:for each="{row}" as="column">
                         <td{f:if(condition:"{column.colspan}", then: ' colspan="{column.colspan}"')}>
 
-                        <container:drawChilds uid="{containerRecord.uid}" colPos="{column.colPos}"  />
+                        <container:drawChilds uid="{uid}" colPos="{column.colPos}"  />
 
                         </td>
                     </f:for>

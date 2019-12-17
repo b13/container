@@ -2,11 +2,13 @@
 namespace B13\Container\ViewHelpers;
 
 
+use B13\Container\Domain\Factory\Exception;
+use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use B13\Container\Database;
+use B13\Container\Domain\Factory\ContainerFactory;
 
 class TemplateVariablesViewHelper extends AbstractViewHelper
 {
@@ -35,15 +37,19 @@ class TemplateVariablesViewHelper extends AbstractViewHelper
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $templateVariableContainer = $renderingContext->getVariableProvider();
-        $database = GeneralUtility::makeInstance(Database::class);;
-        $record = $database->fetchOneRecord((int)$arguments['uid']);
-        $templateVariableContainer->add('containerRecord', $record);
-        if (!empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$record['CType']])) {
-            $templateVariableContainer->add('containerConfiguration', $GLOBALS['TCA']['tt_content']['containerConfiguration'][$record['CType']]);
+
+        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        try {
+            $container = $containerFactory->buildContainer((int)$arguments['uid']);
+            $cType = $container->getCType();
+            $grid = $tcaRegistry->getGrid($cType);
+            $templateVariableContainer->add('grid', $grid);
+        } catch (Exception $e) {
+
         }
 
         $output = $renderChildrenClosure();
-        $templateVariableContainer->remove('containerRecord');
         $templateVariableContainer->remove('containerConfiguration');
         return $output;
     }

@@ -16,7 +16,7 @@ class Registry implements SingletonInterface
         string $description,
     string $extKey,
     array $grid = [],
-    string $backendTemplate = 'EXT:container/Resources/Private/Contenttypes/Backend/container.html'
+    string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html'
     ): void
     {
 

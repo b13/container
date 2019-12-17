@@ -2,28 +2,26 @@
 
 namespace B13\Container\DataProcessing;
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
+use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use B13\Container\Database;
+use B13\Container\Domain\Factory\ContainerFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\RecordsContentObject;
 
 
 class ContainerProcessor implements DataProcessorInterface
 {
-    /**
-     * @var Database
-     */
-    protected $database = null;
 
     /**
-     * ContainerLayoutView constructor.
-     * @param Database $database
+     * @var ContainerFactory
      */
-    public function __construct(Database $database = null)
+    protected $containerFactory = null;
+
+    public function __construct(ContainerFactory $containerFactory = null)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
     }
 
     /**
@@ -57,20 +55,26 @@ class ContainerProcessor implements DataProcessorInterface
             $colPos = (int)$processorConfiguration['colPos'];
         }
 
-        $childs = $this->database->fetchRecordsByParentAndColPos($contentId, $colPos);
-        $contentRecordRenderer = new RecordsContentObject($cObj);
-        $conf = [
-            'tables' => 'tt_content'
-        ];
-        foreach ($childs as &$child) {
-            $conf['source'] = $child['uid'];
-            $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
-        }
+        try {
+            $container = $this->containerFactory->buildContainer($contentId);
+            $childs = $container->getChildsByColPos($colPos);
 
-        if ($processorConfiguration['as']) {
-            $processedData[$processorConfiguration['as']] = $childs;
-        } else {
-            $processedData['childs'] = $childs;
+            $contentRecordRenderer = new RecordsContentObject($cObj);
+            $conf = [
+                'tables' => 'tt_content'
+            ];
+            foreach ($childs as &$child) {
+                $conf['source'] = $child['uid'];
+                $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
+            }
+
+            if ($processorConfiguration['as']) {
+                $processedData[$processorConfiguration['as']] = $childs;
+            } else {
+                $processedData['childs'] = $childs;
+            }
+        } catch (Exception $e) {
+            // nothing is done
         }
 
         return $processedData;

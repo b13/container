@@ -1,11 +1,12 @@
 <?php
 
-namespace  B13\Container\Hooks;
+namespace B13\Container\Hooks;
 
 
+use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use B13\Container\Database;
 use B13\Container\Tca\Registry;
 
 class UsedRecords
@@ -17,19 +18,19 @@ class UsedRecords
     protected $tcaRegistry = null;
 
     /**
-     * @var Database
+     * @var ContainerFactory
      */
-    protected $database = null;
+    protected $containerFactory = null;
 
     /**
-     * ContainerLayoutView constructor.
-     * @param Database $database
+     * UsedRecords constructor.
+     * @param ContainerFactory|null $containerFactory
+     * @param Registry|null $tcaRegistry
      */
-    public function __construct(Database $database = null, Registry $tcaRegistry = null)
+    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-
     }
 
     /**
@@ -41,17 +42,19 @@ class UsedRecords
     {
         $record = $params['record'];
         if ($record['tx_container_parent'] > 0) {
+            try {
+                $container = $this->containerFactory->buildContainer($record['tx_container_parent']);
+                $columns = $this->tcaRegistry->getAvaiableColumns($container->getCType());
+                foreach ($columns as $column) {
+                    if ($column['colPos'] === $record['colPos']) {
+                        return true;
+                    }
+                }
+                return false;
+            } catch (Exception $e) {
 
-            #$container = $this->database->fetchOneRecord($record['tx_container_parent']);
-            #$columns = $this->tcaRegistry->getAvaiableColumns($container['cType']);
-            #foreach ($columns as $column) {
-            #    if ($column['colPos'] === $record['colPos']) {
-                    return true;
-            #    }
-            #}
-        } else {
-            return $params['used'];
+            }
         }
-
+        return $params['used'];
     }
 }

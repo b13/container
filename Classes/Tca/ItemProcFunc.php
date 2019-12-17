@@ -3,17 +3,19 @@
 namespace B13\Container\Tca;
 
 
+use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use B13\Container\Database;
+use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Tca\Registry;
 
 class ItemProcFunc
 {
 
     /**
-     * @var Database
+     * @var ContainerFactory
      */
-    protected $database = null;
+    protected $containerFactory = null;
 
     /**
      * @var BackendLayoutView
@@ -21,12 +23,21 @@ class ItemProcFunc
     protected $backendLayoutView = null;
 
     /**
-     * ContainerLayoutView constructor.
-     * @param Database $database
+     * @var Registry
      */
-    public function __construct(Database $database = null, BackendLayoutView $backendLayoutView = null)
+    protected $tcaRegistry = null;
+
+
+    /**
+     * ItemProcFunc constructor.
+     * @param ContainerFactory|null $containerFactory
+     * @param \B13\Container\Tca\Registry|null $tcaRegistry
+     * @param BackendLayoutView|null $backendLayoutView
+     */
+    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, BackendLayoutView $backendLayoutView = null)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
         $this->backendLayoutView = $backendLayoutView ?? GeneralUtility::makeInstance(BackendLayoutView::class);
     }
 
@@ -41,20 +52,25 @@ class ItemProcFunc
     {
         $row = $parameters['row'];
         if ($row['tx_container_parent'] > 0) {
-            $containerRecord = $this->database->fetchOneRecord($row['tx_container_parent']);
-            $grid = $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerRecord['CType']]['grid'];
-            if (is_array($grid)) {
-                $items = [];
-                foreach ($grid as $rows) {
-                    foreach ($rows as $column) {
-                        $items[] = [
-                            $column['name'],
-                            $column['colPos']
-                        ];
+            try {
+                $container = $this->containerFactory->buildContainer($row['tx_container_parent']);
+                $cType = $container->getCType();
+                $grid = $this->tcaRegistry->getGrid($cType);
+                if (is_array($grid)) {
+                    $items = [];
+                    foreach ($grid as $rows) {
+                        foreach ($rows as $column) {
+                            $items[] = [
+                                $column['name'],
+                                $column['colPos']
+                            ];
+                        }
                     }
+                    $parameters['items'] = $items;
+                    return;
                 }
-                $parameters['items'] = $items;
-                return;
+            } catch (Exception $e) {
+
             }
         }
 
@@ -69,11 +85,19 @@ class ItemProcFunc
         $row = $parameters['row'];
         $items = [];
         if ($row['tx_container_parent'] > 0) {
-            $containerRecord = $this->database->fetchOneRecord($row['tx_container_parent']);
-            $items[] = [
-                $containerRecord['CType'],
-                $containerRecord['uid']
-            ];
+            try {
+                $container = $this->containerFactory->buildContainer($row['tx_container_parent']);
+                $cType = $container->getCType();
+                $items[] = [
+                    $cType,
+                    $row['tx_container_parent']
+                ];
+            } catch (Exception $e) {
+                $items[] = [
+                    '-',
+                    0
+                ];
+            }
         } else {
             $items[] = [
                 '-',

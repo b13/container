@@ -10,22 +10,25 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Versioning\VersionState;
+use B13\Container\Domain\Factory\ContainerFactory;
 
 
 class ContainerLayoutView extends PageLayoutView
 {
+
     /**
-     * @var Database
+     * @var ContainerFactory
      */
-    protected $database = null;
+    protected $containerFactory = null;
+
 
     /**
      * ContainerLayoutView constructor.
-     * @param Database $database
+     * @param ContainerFactory|null $containerFactory
      */
-    public function __construct(Database $database = null)
+    public function __construct(ContainerFactory $containerFactory = null)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         parent::__construct();
     }
 
@@ -39,20 +42,16 @@ class ContainerLayoutView extends PageLayoutView
     {
 
         $this->initWebLayoutModuleData();
-        $containerRecord = $this->database->fetchOneRecord($uid);
+
+        try {
+            $container = $this->containerFactory->buildContainer($uid);
+        } catch (\B13\Container\Domain\Factory\Exception $e) {
+            return '';
+        }
+
+        $containerRecord = $container->getContainerRecord();
         $this->resolveSiteLanguages($containerRecord['pid']);
-
-        $language = 0;
-        if ($containerRecord['sys_language_uid'] > 0) {
-            $language = (int)$containerRecord['sys_language_uid'];
-            $containerRecord = $this->database->fetchOneDefaultRecord($containerRecord);
-        }
-        // always default records
-        $records = $this->database->fetchRecordsByParentAndColPos($containerRecord['uid'], $colPos);
-        if ($language > 0) {
-            $records = $this->database->fetchOverlayRecords($records, $language);
-        }
-
+        $records = $container->getChildsByColPos($colPos);
 
         $this->nextThree = 1;
         $this->generateTtContentDataArray($records);
