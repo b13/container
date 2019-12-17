@@ -3,6 +3,7 @@ namespace B13\Container\Tests\Functional;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -29,6 +30,10 @@ class DatahandlerTest extends FunctionalTestCase
         'typo3conf/ext/container_example'
     ];
 
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \TYPO3\TestingFramework\Core\Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,6 +43,16 @@ class DatahandlerTest extends FunctionalTestCase
         Bootstrap::initializeLanguageObject();
         $this->backendUser = $this->setUpBackendUserFromFixture(1);
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()->removeAll();
+        return $queryBuilder;
     }
 
     /**
@@ -56,8 +71,8 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeAll();
+
+        $queryBuilder = $this->getQueryBuilder();
         $row = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
@@ -95,8 +110,7 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder = $this->getQueryBuilder();
         $row = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
@@ -126,8 +140,7 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder = $this->getQueryBuilder();
         $row = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
@@ -157,8 +170,7 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder = $this->getQueryBuilder();
         $row = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
@@ -172,6 +184,33 @@ class DatahandlerTest extends FunctionalTestCase
         $this->assertIsArray($row);
         $this->assertSame(1, (int)$row['tx_container_parent']);
         $this->assertSame(200, (int)$row['colPos']);
+    }
 
+    /**
+     * @test
+     */
+    public function deleteContainerDeleteChilds(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'delete' => 1
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        $this->assertSame(1, $row['deleted']);
     }
 }

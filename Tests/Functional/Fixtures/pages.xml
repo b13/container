@@ -10,6 +10,7 @@
 		<pid>0</pid>
         <sys_language_uid>1</sys_language_uid>
         <l10n_parent>1</l10n_parent>
+        <l10n_source>1</l10n_source>
         <title>page-1-language-1</title>
 	</pages>
 </dataset>

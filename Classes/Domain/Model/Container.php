@@ -43,6 +43,18 @@ class Container
     }
 
     /**
+     * @return array
+     */
+    public function getChildRecords(): array
+    {
+        $childRecords = [];
+        foreach ($this->childRecords as $colPos => $records) {
+            $childRecords = array_merge($childRecords, $records);
+        }
+        return $childRecords;
+    }
+
+    /**
      * @param int $colPos
      * @return array
      */
@@ -61,4 +73,5 @@ class Container
     {
         return array_keys($this->childRecords);
     }
+
 }

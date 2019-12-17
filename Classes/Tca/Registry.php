@@ -73,6 +73,15 @@ class Registry implements SingletonInterface
 
     /**
      * @param string $cType
+     * @return bool
+     */
+    public function isContainerElement(string $cType): bool
+    {
+        return !empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]);
+    }
+
+    /**
+     * @param string $cType
      * @return array
      */
     public function getGrid(string $cType): array
