@@ -12,7 +12,6 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Versioning\VersionState;
 
 
-
 class ContainerLayoutView extends PageLayoutView
 {
     /**
@@ -41,6 +40,7 @@ class ContainerLayoutView extends PageLayoutView
 
         $this->initWebLayoutModuleData();
         $containerRecord = $this->database->fetchOneRecord($uid);
+        $this->resolveSiteLanguages($containerRecord['pid']);
 
         $language = 0;
         if ($containerRecord['sys_language_uid'] > 0) {
@@ -154,8 +154,8 @@ class ContainerLayoutView extends PageLayoutView
         }
         $editUidList = '';
 
+
         foreach ((array)$recods as $rKey => $row) {
-            $this->contentElementCache[$lP][$colPos][$row['uid']] = $row;
             if ($this->tt_contentConfig['languageMode']) {
                 $languageColumn[$colPos][$lP] = $head . $content;
             }

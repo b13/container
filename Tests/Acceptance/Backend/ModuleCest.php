@@ -2,29 +2,17 @@
 declare(strict_types = 1);
 namespace B13\Container\Tests\Acceptance\Backend;
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\Remote\RemoteWebElement;
+
 
 /**
  * Tests the styleguide backend module can be loaded
  */
 class ModuleCest
 {
+
 
     /**
      * @param BackendTester $I
@@ -41,11 +29,38 @@ class ModuleCest
     public function overlayModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
-        $pageTree->openPath(['page-10']);
+
+        $pageTree->openPath(['home', 'pageWithLocalization']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->see('2cols-header-0');
         $I->see('header-header-0');
+        $I->dontSee('2cols-header-1');
+        $I->dontSee('header-header-1');
+        $I->selectOption('select[name="languageMenu"]', 'german');
+
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->see('2cols-header-1');
+        $I->see('header-header-1');
+        $I->dontSee('2cols-header-0');
+        $I->dontSee('header-header-0');
+
+
+        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+
+        // td.t3-grid-cell:nth-child(1)
+        $languageCol = 'td.t3-grid-cell:nth-child(1)';
+        $I->see('2cols-header-0', $languageCol);
+        $I->see('header-header-0', $languageCol);
+        $I->dontSee('2cols-header-1', $languageCol);
+        $I->dontSee('header-header-1', $languageCol);
+        //td.t3-grid-cell:nth-child(2)
+        $languageCol = 'td.t3-grid-cell:nth-child(2)';
+        $I->see('2cols-header-1', $languageCol);
+        $I->see('header-header-1', $languageCol);
+        $I->dontSee('2cols-header-0', $languageCol);
+        $I->dontSee('header-header-0', $languageCol);
     }
 
 
@@ -58,7 +73,7 @@ class ModuleCest
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
-        $pageTree->openPath(['page-1']);
+        $pageTree->openPath(['home', 'emptyPage']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->click('Content');
@@ -83,7 +98,7 @@ class ModuleCest
     public function newElementInHeaderColumnHasExpectedColPosAndParentSeletected(BackendTester $I, PageTree $pageTree): void
     {
         $I->click('Page');
-        $pageTree->openPath(['page-2']);
+        $pageTree->openPath(['home', 'pageWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
@@ -105,10 +120,11 @@ class ModuleCest
     {
         //@depends canCreateContainer
         $I->click('Page');
-        $pageTree->openPath(['page-2']);
+        $pageTree->openPath(['home', 'pageWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        // header
+        $selecor = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
+        $I->dontSee('english', $selecor);
         $I->click('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
         $I->switchToIFrame();
         $I->waitForElement('#NewContentElementController');
@@ -118,13 +134,7 @@ class ModuleCest
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        // todo element is visible
-
-        // todo more tests
-        /*
-         * localization shows container colPos
-         * new in edit element has default values
-         */
+        $I->see('english', $selecor);
     }
 
 }

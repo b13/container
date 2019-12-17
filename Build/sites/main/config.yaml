@@ -1,0 +1,34 @@
+base: 'http://core10/'
+baseVariants: {  }
+errorHandling: {  }
+languages:
+  -
+    title: englisch
+    enabled: true
+    base: /
+    typo3Language: default
+    locale: en_US.UTF-8
+    iso-639-1: ab
+    navigationTitle: ''
+    hreflang: ''
+    direction: ''
+    flag: ar
+    languageId: '0'
+    websiteTitle: ''
+  -
+    title: 'german'
+    enabled: true
+    base: /de/
+    typo3Language: da
+    locale: de_DE.UTF-8
+    iso-639-1: de
+    navigationTitle: ''
+    hreflang: ''
+    direction: ''
+    fallbackType: strict
+    fallbacks: ''
+    flag: de
+    languageId: '1'
+rootPageId: 1 
+routes: {  }
+websiteTitle: 'Testing'

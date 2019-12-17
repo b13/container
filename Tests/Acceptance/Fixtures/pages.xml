@@ -3,24 +3,31 @@
 	<pages>
 		<uid>1</uid>
 		<pid>0</pid>
-        <title>page-1</title>
+        <is_siteroot>1</is_siteroot>
+        <title>home</title>
 	</pages>
+    <pages>
+        <uid>2</uid>
+        <pid>1</pid>
+        <title>emptyPage</title>
+    </pages>
 	<pages>
-		<uid>2</uid>
-		<pid>0</pid>
-        <title>page-2</title>
+		<uid>3</uid>
+		<pid>1</pid>
+        <title>pageWithContainer</title>
 	</pages>
 
     <pages>
         <uid>10</uid>
-        <pid>0</pid>
-        <title>page-10</title>
+        <pid>1</pid>
+        <title>pageWithLocalization</title>
     </pages>
     <pages>
         <uid>11</uid>
-        <pid>0</pid>
+        <pid>1</pid>
         <sys_language_uid>1</sys_language_uid>
         <l10n_parent>10</l10n_parent>
-        <title>page-10-language-1</title>
+        <l10n_source>10</l10n_source>
+        <title>pageWithLocalization-1</title>
     </pages>
 </dataset>
