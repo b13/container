@@ -3,7 +3,7 @@ baseVariants: {  }
 errorHandling: {  }
 languages:
   -
-    title: englisch
+    title: english
     enabled: true
     base: /
     typo3Language: default

@@ -49,6 +49,13 @@ TCA namespace
 Registry as singeleton ohne static
 rm demo from EXT:container
 rm ContainerRenderedChildsProcessor
+mv Container to other page
+unused Elements
 
+integrity
 
+// todo more tests
+
+* localization shows container colPos
+* new in edit element has default values
 

@@ -134,7 +134,7 @@ class ModuleCest
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        #$I->see('english', $selecor);
+        $I->see('english', $selecor);
     }
 
 }
