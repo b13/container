@@ -1,14 +1,10 @@
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
 
-#\B13\Container\TcaRegistry::addPageTS();
-
-
-
 \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
     \TYPO3\CMS\Backend\Utility\BackendUtility::class,
     'getPagesTSconfigPreInclude',
-    B13\Container\TcaRegistry::class,
+    B13\Container\Tca\Registry::class,
     'addPageTS'
 );
 

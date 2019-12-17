@@ -6,7 +6,7 @@ $additionalColumns = [
         'config' => [
             'default' => 0,
             'type' => 'select',
-            'itemsProcFunc' => \B13\Container\TcaContainerItems::class . '->listItemProcFunc',
+            'itemsProcFunc' => \B13\Container\Tca\ItemProcFunc::class . '->txContainerParent',
             'renderType' => 'selectSingle'
         ]
     ]
@@ -25,7 +25,7 @@ $additionalColumns = [
     'tx_container_parent'
 );
 
-$GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['itemsProcFunc'] = \B13\Container\BackendLayoutView::class . '->colPosListItemProcFunc';
+$GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['itemsProcFunc'] = \B13\Container\Tca\ItemProcFunc::class . '->colPos';
 // copyAfterDuplFields colPos,sys_language_uid
 // useColumnsForDefaultValues colPos,sys_language_uid,CType
 $GLOBALS['TCA']['tt_content']['ctrl']['useColumnsForDefaultValues'] .= ',tx_container_parent';

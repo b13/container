@@ -1,15 +1,16 @@
 <?php
 
-namespace B13\Container;
+namespace B13\Container\Tca;
 
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
-class TcaRegistry
+class Registry implements SingletonInterface
 {
 
-    public static function registerContainer (
+    public function registerContainer (
         string $cType,
         string $label,
         string $description,
@@ -68,8 +69,34 @@ class TcaRegistry
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['pageTS'] = $pageTS;
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] = $grid;
 
+    }
 
+    /**
+     * @param string $cType
+     * @return array
+     */
+    public function getGrid(string $cType): array
+    {
+        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'])) {
+            return [];
+        }
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'];
+    }
 
+    /**
+     * @param string $cType
+     * @return array
+     */
+    public function getAvaiableColumns(string $cType): array
+    {
+        $columns = [];
+        $grid = $this->getGrid($cType);
+        foreach ($grid as $row) {
+            foreach ($row as $column) {
+                $columns[] = $column;
+            }
+        }
+        return $columns;
     }
 
     /**

@@ -1,14 +1,14 @@
 <?php
 
-namespace B13\Container;
+namespace B13\Container\Tca;
 
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Backend\View\BackendLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use B13\Container\Database;
 
-class BackendLayoutView extends \TYPO3\CMS\Backend\View\BackendLayoutView
+class ItemProcFunc
 {
-
 
     /**
      * @var Database
@@ -16,13 +16,18 @@ class BackendLayoutView extends \TYPO3\CMS\Backend\View\BackendLayoutView
     protected $database = null;
 
     /**
+     * @var BackendLayoutView
+     */
+    protected $backendLayoutView = null;
+
+    /**
      * ContainerLayoutView constructor.
      * @param Database $database
      */
-    public function __construct(Database $database = null)
+    public function __construct(Database $database = null, BackendLayoutView $backendLayoutView = null)
     {
         $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        parent::__construct();
+        $this->backendLayoutView = $backendLayoutView ?? GeneralUtility::makeInstance(BackendLayoutView::class);
     }
 
     /**
@@ -32,7 +37,7 @@ class BackendLayoutView extends \TYPO3\CMS\Backend\View\BackendLayoutView
      *
      * @param array $parameters
      */
-    public function colPosListItemProcFunc(array $parameters): void
+    public function colPos(array $parameters): void
     {
         $row = $parameters['row'];
         if ($row['tx_container_parent'] > 0) {
@@ -53,7 +58,29 @@ class BackendLayoutView extends \TYPO3\CMS\Backend\View\BackendLayoutView
             }
         }
 
-        parent::colPosListItemProcFunc($parameters);
+        $this->backendLayoutView->colPosListItemProcFunc($parameters);
+    }
+
+    /**
+     * @param array $parameters
+     */
+    public function txContainerParent(array $parameters): void
+    {
+        $row = $parameters['row'];
+        $items = [];
+        if ($row['tx_container_parent'] > 0) {
+            $containerRecord = $this->database->fetchOneRecord($row['tx_container_parent']);
+            $items[] = [
+                $containerRecord['CType'],
+                $containerRecord['uid']
+            ];
+        } else {
+            $items[] = [
+                '-',
+                0
+            ];
+        }
+        $parameters['items'] = $items;
     }
 
 }
