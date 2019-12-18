@@ -7,6 +7,8 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DatahandlerTest extends UnitTestCase
 {
+
+    protected $resetSingletonInstances = true;
     /**
      * @test
      */

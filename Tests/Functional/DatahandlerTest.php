@@ -46,16 +46,6 @@ class DatahandlerTest extends FunctionalTestCase
     }
 
     /**
-     * @return QueryBuilder
-     */
-    protected function getQueryBuilder(): QueryBuilder
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder;
-    }
-
-    /**
      * @test
      */
     public function moveElementResolvesContainerId(): void
@@ -71,19 +61,7 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
-
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-        $this->assertIsArray($row);
+        $row = $this->fetchOneRecord('uid', 2);
         $this->assertSame(3, (int)$row['tx_container_parent']);
         $this->assertSame(202, (int)$row['colPos']);
     }
@@ -110,18 +88,7 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                 $queryBuilder->expr()->eq(
-                     't3_origuid',
-                     $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                 )
-            )
-            ->execute()
-            ->fetch();
-        $this->assertIsArray($row);
+        $row = $this->fetchOneRecord('t3_origuid', 2);
         $this->assertSame(3, (int)$row['tx_container_parent']);
         $this->assertSame(202, (int)$row['colPos']);
     }
@@ -140,18 +107,7 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-        $this->assertIsArray($row);
+        $row = $this->fetchOneRecord('t3_origuid', 2);
         $this->assertSame(1, (int)$row['tx_container_parent']);
         $this->assertSame(200, (int)$row['colPos']);
     }
@@ -170,18 +126,7 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-        $this->assertIsArray($row);
+        $row = $this->fetchOneRecord('t3_origuid', 2);
         $this->assertSame(1, (int)$row['tx_container_parent']);
         $this->assertSame(200, (int)$row['colPos']);
     }
@@ -200,17 +145,93 @@ class DatahandlerTest extends FunctionalTestCase
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 2);
+        $this->assertSame(1, $row['deleted']);
+    }
+
+    /**
+     * @test
+     */
+    public function moveMovesChilds(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('uid', 2);
+        $this->assertSame(3, $child['pid']);
+        $this->assertSame(1, $child['tx_container_parent']);
+        $this->assertSame(200, $child['colPos']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyCopiesChilds(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $copiedRecord = $this->fetchOneRecord('t3_origuid', 1);
+        $child = $this->fetchOneRecord('t3_origuid', 2);
+        $this->assertSame(3, $child['pid']);
+        $this->assertSame($copiedRecord['uid'], $child['tx_container_parent']);
+        $this->assertSame(200, $child['colPos']);
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()->removeAll();
+        return $queryBuilder;
+    }
+
+
+    /**
+     * @param string $field
+     * @param int $id
+     * @return array
+     */
+    protected function fetchOneRecord(string $field, int $id): array
+    {
         $queryBuilder = $this->getQueryBuilder();
         $row = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                    $field,
+                    $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT)
                 )
             )
             ->execute()
             ->fetch();
-        $this->assertSame(1, $row['deleted']);
+        $this->assertIsArray($row);
+        return $row;
     }
 }

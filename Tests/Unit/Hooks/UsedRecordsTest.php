@@ -11,6 +11,8 @@ use B13\Container\Hooks\UsedRecords;
 
 class UsedRecordsTest extends UnitTestCase
 {
+
+    protected $resetSingletonInstances = true;
     /**
      * @test
      */

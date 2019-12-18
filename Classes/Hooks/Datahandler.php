@@ -61,6 +61,53 @@ class Datahandler
     }
 
     /**
+     * @param string $command
+     * @param string $table
+     * @param int $id
+     * @param int $value
+     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+     * @param $pasteUpdate
+     * @param $pasteDatamap
+     * @return void
+     */
+    public function processCmdmap_postProcess(string $command, string $table, int $id, int $value, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
+    {
+        if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
+            $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
+        } elseif ($table === 'tt_content' && $command === 'move') {
+            $this->copyOrMoveChilds($id, $value, $id, 'move', $dataHandler);
+        }
+    }
+
+    protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    {
+        try {
+            $container = $this->containerFactory->buildContainer($origUid);
+            $childs = $container->getChildRecords();
+            $cmd = ['tt_content' => []];
+            foreach ($childs as $colPos => $record) {
+                $cmd['tt_content'][$record['uid']] = [
+                    $command => [
+                        'action' => 'paste',
+                        'target' => $newId,
+                        'update' => [
+                            'tx_container_parent' => $containerId,
+                            'colPos' =>  $record['colPos']
+                        ]
+                    ]
+                ];
+            }
+            if (count($cmd['tt_content']) > 0) {
+                $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+                $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
+                $localDataHandler->process_cmdmap();
+            }
+        } catch (Exception $e) {
+            // nothing todo
+        }
+    }
+
+    /**
      * @param string $table
      * @param int $id
      * @param array $recordToDelete
@@ -100,7 +147,7 @@ class Datahandler
                 if (!empty($data['colPos'])) {
                     $colPos = $data['colPos'];
                     if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-                        list($containerId, $newColPos) = GeneralUtility::intExplode('-', $colPos);
+                        [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
                         $data['colPos'] = $newColPos;
                         $data['tx_container_parent'] = $containerId;
                     } elseif (!isset($data['tx_container_parent'])) {
@@ -123,7 +170,7 @@ class Datahandler
                     if (!empty($cmd['update']) && !empty($cmd['update']['colPos'])) {
                         $colPos = $cmd['update']['colPos'];
                         if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-                            list($containerId, $newColPos) = GeneralUtility::intExplode('-', $colPos);
+                            [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
                             $cmd['update']['colPos'] = $newColPos;
                             $cmd['update']['tx_container_parent'] = $containerId;
                         } elseif (!isset($cmd['update']['tx_container_parent'])) {
