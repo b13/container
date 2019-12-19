@@ -32,7 +32,7 @@ class Registry implements SingletonInterface
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
-            [$label, $cType, $this->getIcon($cType, $extKey)]
+            [$label, $cType, $cType]
         );
 
         foreach ($grid as $row) {
@@ -43,6 +43,8 @@ class Registry implements SingletonInterface
                 ];
             }
         }
+
+        $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$cType] = $cType;
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType] = [
             'cType' => $cType,
