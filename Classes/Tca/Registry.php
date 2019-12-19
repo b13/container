@@ -5,70 +5,84 @@ namespace B13\Container\Tca;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
+use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
+use TYPO3\CMS\Core\Imaging\IconRegistry;
 
 class Registry implements SingletonInterface
 {
 
-    public function registerContainer (
+    /**
+     * @param string $cType
+     * @param string $label
+     * @param string $description
+     * @param string $extKey
+     * @param array $grid
+     * @param string $backendTemplate
+     * @return void
+     */
+    public function registerContainer(
         string $cType,
         string $label,
         string $description,
-    string $extKey,
-    array $grid = [],
-    string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html'
-    ): void
-    {
+        string $extKey,
+        array $grid = [],
+        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html'
+    ): void {
 
-        $icon = 'EXT:' . $extKey . '/Resources/Public/Icons/' . $cType . '.svg';
-        if (!file_exists(GeneralUtility::getFileAbsFileName($icon))) {
-            $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
-        }
-        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-        $iconRegistry->registerIcon(
-            $cType,
-            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-            [
-                'source' => $icon
-            ]
-        );
-        #return;
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
-            [$label, $cType, $icon]
+            [$label, $cType, $this->getIcon($cType, $extKey)]
         );
 
-        $pageTS = '';
-        $pageTS .= 'mod.wizards.newContentElement.wizardItems.container.elements {
-    ' . $cType . ' {
-        title = ' . $label . '
-        description = ' . $description . '
-        iconIdentifier = ' . $cType . '
-        tt_content_defValues.CType = ' . $cType . '
-    }
-}
-';
-
-        $pageTS .= 'mod.web_layout.tt_content.preview {
-    ' . $cType . ' = ' . $backendTemplate . '
-}
-';
-
-
         foreach ($grid as $row) {
-            foreach($row as $column) {
+            foreach ($row as $column) {
                 $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
-                    $column['name'], $column['colPos']
+                    $column['name'],
+                    $column['colPos']
                 ];
             }
         }
 
+        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType] = [
+            'cType' => $cType,
+            'extKey' => $extKey,
+            'label' => $label,
+            'description' => $description,
+            'backendTemplate' => $backendTemplate,
+            'grid' => $grid
+        ];
+    }
 
+    /**
+     * @return void
+     */
+    public function registerIcons(): void
+    {
+        if (is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
+            $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+            foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
+                $iconRegistry->registerIcon(
+                    $containerConfiguration['cType'],
+                    SvgIconProvider::class,
+                    ['source' => $this->getIcon($containerConfiguration['cType'], $containerConfiguration['extKey'])]
+                );
+            }
+        }
+    }
 
-        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['pageTS'] = $pageTS;
-        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] = $grid;
-
+    /**
+     * @param string $cType
+     * @param string $extKey
+     * @return string
+     */
+    protected function getIcon(string $cType, string $extKey): string
+    {
+        $icon = 'EXT:' . $extKey . '/Resources/Public/Icons/' . $cType . '.svg';
+        if (!file_exists(GeneralUtility::getFileAbsFileName($icon))) {
+            $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
+        }
+        return $icon;
     }
 
     /**
@@ -114,8 +128,8 @@ class Registry implements SingletonInterface
     public function getAllAvailableColumns(): array
     {
         $columns = [];
-        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cTypeConfiguration) {
-            $grid = $cTypeConfiguration['grid'];
+        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
+            $grid = $containerConfiguration['grid'];
             foreach ($grid as $row) {
                 foreach ($row as $column) {
                     $columns[] = $column;
@@ -142,9 +156,20 @@ mod.wizards.newContentElement.wizardItems.container.header = Container
 mod.wizards.newContentElement.wizardItems.container.show = *
 ';
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {
-                if (!empty($containerConfiguration['pageTS'])) {
-                    $content .= $containerConfiguration['pageTS'];
-                }
+                $content .= 'mod.wizards.newContentElement.wizardItems.container.elements {
+    ' . $cType . ' {
+        title = ' . $containerConfiguration['label'] . '
+        description = ' . $containerConfiguration['description'] . '
+        iconIdentifier = ' . $cType . '
+        tt_content_defValues.CType = ' . $cType . '
+    }
+}
+';
+
+                $content .= 'mod.web_layout.tt_content.preview {
+    ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
+}
+';
             }
             $TSdataArray['default'] .= LF . $content;
         }
