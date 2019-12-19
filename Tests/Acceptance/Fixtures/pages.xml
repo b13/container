@@ -30,4 +30,20 @@
         <l10n_source>10</l10n_source>
         <title>pageWithLocalization-1</title>
     </pages>
+
+    <pages>
+        <uid>12</uid>
+        <pid>1</pid>
+        <title>pageWithLocalizationFreeModeWidthContainer</title>
+    </pages>
+    <pages>
+        <uid>13</uid>
+        <pid>1</pid>
+        <sys_language_uid>1</sys_language_uid>
+        <l10n_parent>12</l10n_parent>
+        <l10n_source>12
+        </l10n_source>
+        <title>pageWithLocalizationFreeModeWidthContainer-1</title>
+    </pages>
+
 </dataset>

@@ -12,7 +12,6 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use B13\Container\Domain\Factory\ContainerFactory;
 
-
 class ContainerLayoutView extends PageLayoutView
 {
 
@@ -121,17 +120,18 @@ class ContainerLayoutView extends PageLayoutView
     {
         $content = '';
         $head = '';
-        $lP = 0;
+        // bug 1 todo
+        $currentLanguage = $containerRecord['sys_language_uid'];
         $id = $containerRecord['pid'];
 
         // Start wrapping div
-        $content .= '<div data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '" data-language-uid="' . $lP . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $lP . ' t3-page-ce-wrapper">';
+        $content .= '<div data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '" data-language-uid="' . $currentLanguage . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $currentLanguage . ' t3-page-ce-wrapper">';
         // Add new content at the top most position
         $link = '';
         if ($this->isContentEditable()
-            && (!$this->checkIfTranslationsExistInLanguage($recods, $lP))
+            && (!$this->checkIfTranslationsExistInLanguage($recods, $currentLanguage))
         ) {
-            $url = $this->buildNewContentElementWizardLinkTop($colPos, $containerRecord, $lP);
+            $url = $this->buildNewContentElementWizardLinkTop($colPos, $containerRecord, $currentLanguage);
             $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
             $link = '<a href="' . htmlspecialchars($url) . '" '
                 . 'title="' . $title . '"'
@@ -141,7 +141,7 @@ class ContainerLayoutView extends PageLayoutView
                 . ' '
                 . htmlspecialchars($this->getLanguageService()->getLL('content')) . '</a>';
         }
-        if ($this->getBackendUser()->checkLanguageAccess($lP)) {
+        if ($this->getBackendUser()->checkLanguageAccess($currentLanguage)) {
             $content .= '
                 <div class="t3-page-ce t3js-page-ce" data-page="' . (int)$id . '" id="' . StringUtility::getUniqueId() . '">
                     <div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-' . $colPos . '-page-' . $id . '-' . StringUtility::getUniqueId() . '">'
@@ -156,15 +156,15 @@ class ContainerLayoutView extends PageLayoutView
 
         foreach ((array)$recods as $rKey => $row) {
             if ($this->tt_contentConfig['languageMode']) {
-                $languageColumn[$colPos][$lP] = $head . $content;
+                $languageColumn[$colPos][$currentLanguage] = $head . $content;
             }
             if (is_array($row) && !VersionState::cast($row['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)) {
                 $singleElementHTML = '<div class="t3-page-ce-dragitem" id="' . StringUtility::getUniqueId() . '">';
-                if (!$lP && ($this->defLangBinding || $row['sys_language_uid'] != -1)) {
+                if (!$currentLanguage && ($this->defLangBinding || $row['sys_language_uid'] != -1)) {
                     $defaultLanguageElementsByColumn[$colPos][] = ($row['_ORIG_uid'] ?? $row['uid']);
                 }
                 $editUidList .= $row['uid'] . ',';
-                $disableMoveAndNewButtons = $this->defLangBinding && $lP > 0 && $this->checkIfTranslationsExistInLanguage($recods, $lP);
+                $disableMoveAndNewButtons = $this->defLangBinding && $currentLanguage > 0 && $this->checkIfTranslationsExistInLanguage($recods, $currentLanguage);
                 $singleElementHTML .= $this->tt_content_drawHeader(
                     $row,
                     $this->tt_contentConfig['showInfo'] ? 15 : 5,
@@ -192,8 +192,8 @@ class ContainerLayoutView extends PageLayoutView
                 // Add icon "new content element below"
                 if (!$disableMoveAndNewButtons
                     && $this->isContentEditable()
-                    && $this->getBackendUser()->checkLanguageAccess($lP)
-                    && (!$this->checkIfTranslationsExistInLanguage($recods, $lP))
+                    && $this->getBackendUser()->checkLanguageAccess($currentLanguage)
+                    && (!$this->checkIfTranslationsExistInLanguage($recods, $currentLanguage))
                 ) {
                     $url = $this->buildNewContentElementWizardLinkAfterCurrent($row, $containerRecord);
                     $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
@@ -207,7 +207,7 @@ class ContainerLayoutView extends PageLayoutView
                 }
                 $singleElementHTML .= '</div></div><div class="t3-page-ce-dropzone-available t3js-page-ce-dropzone-available"></div></div>';
                 if ($this->defLangBinding && $this->tt_contentConfig['languageMode']) {
-                    $defLangBinding[$colPos][$lP][$row[$lP ? 'l18n_parent' : 'uid'] ?: $row['uid']] = $singleElementHTML;
+                    $defLangBinding[$colPos][$currentLanguage][$row[$currentLanguage ? 'l18n_parent' : 'uid'] ?: $row['uid']] = $singleElementHTML;
                 } else {
                     $content .= $singleElementHTML;
                 }
@@ -220,5 +220,19 @@ class ContainerLayoutView extends PageLayoutView
         $head .= $this->tt_content_drawColHeader($colTitle);
 
         return $head . $content;
+    }
+
+    /**
+     * Checks whether translated Content Elements exist in the desired language
+     * If so, deny creating new ones via the UI
+     *
+     * @param array $contentElements
+     * @param int $language
+     * @return bool
+     */
+    protected function checkIfTranslationsExistInLanguage(array $contentElements, int $language)
+    {
+        // bug 2 todo
+        return false;
     }
 }

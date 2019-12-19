@@ -20,8 +20,8 @@
                 as = childsRight
             }
         }
-    } 
-    
+    }
+
 
 ## Template
 
@@ -32,9 +32,9 @@
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
-        
+
     </f:for>
-    
+
 
     <f:for each="{childsRight}" as="record">
         {record.header} <br />
@@ -58,4 +58,11 @@ integrity
 
 * localization shows container colPos
 * new in edit element has default values
+* new childElement in translated Container in free has the translated Container uid as parent
+* list module edit stuff
+* change ColPos
+* checkIfTranslationsExistInLanguage
 
+
+* copyToLanguage do not copy childs
+* localize localize childs

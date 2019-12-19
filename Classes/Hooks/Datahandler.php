@@ -76,9 +76,45 @@ class Datahandler
             $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
             $this->copyOrMoveChilds($id, $value, $id, 'move', $dataHandler);
+        } elseif ($table === 'tt_content' && $command === 'localize') {
+            $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
         }
     }
 
+    /**
+     * @param int $uid
+     * @param int $language
+     * @param string $command
+     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+     * @return void
+     */
+    protected function localizeOrCopyToLanguage(int $uid, int $language, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    {
+        try {
+            $container = $this->containerFactory->buildContainer($uid);
+            $childs = $container->getChildRecords();
+            $cmd = ['tt_content' => []];
+            foreach ($childs as $colPos => $record) {
+                $cmd['tt_content'][$record['uid']] = [$command => $language];
+            }
+            if (count($cmd['tt_content']) > 0) {
+                $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+                $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
+                $localDataHandler->process_cmdmap();
+            }
+        } catch (Exception $e) {
+            // nothing todo
+        }
+    }
+
+    /**
+     * @param int $origUid
+     * @param int $newId
+     * @param int $containerId
+     * @param string $command
+     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+     * @return void
+     */
     protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
         try {

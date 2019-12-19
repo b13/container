@@ -40,4 +40,13 @@
         <CType>header</CType>
     </tt_content>
 
+    <tt_content>
+        <uid>104</uid>
+        <pid>12</pid>
+        <header>2cols-header-1</header>
+        <l18n_parent>0</l18n_parent>
+        <sys_language_uid>1</sys_language_uid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+
 </dataset>

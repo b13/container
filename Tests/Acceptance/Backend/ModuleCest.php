@@ -137,4 +137,36 @@ class ModuleCest
         $I->see('english', $selecor);
     }
 
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
+     */
+    public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree)
+    {
+        //@depends canCreateContainer
+        $I->click('Page');
+        $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWidthContainer']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+
+        $I->selectOption('select[name="languageMenu"]', 'german');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+
+        $uid = 104;
+
+        $selecor = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
+        $I->dontSee('german', $selecor);
+        $I->click('Content', '#element-tt_content-' . $uid . ' div[data-colpos="' . $uid . '-200"]');
+        $I->switchToIFrame();
+        $I->waitForElement('#NewContentElementController');
+        $I->click('Header Only');
+        $I->switchToContentFrame();
+        $I->click('Save');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->click('Close');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->see('german', $selecor);
+    }
+
 }

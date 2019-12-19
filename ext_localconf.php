@@ -35,6 +35,7 @@ if (TYPO3_MODE === 'BE') {
         \B13\Container\Hooks\Datahandler::class;
 
     // Xclass LocalizationController: adds grid columns to pageColumns to translate
+    // not used
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
         'className' => \B13\Container\Xclass\LocalizationController::class
     ];

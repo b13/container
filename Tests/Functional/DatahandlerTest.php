@@ -96,39 +96,48 @@ class DatahandlerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function localizeContainerWithContentKeepsColPosAndParentInNonConnectedMode(): void
+    public function copyToLanguageContainerCopiesNoChilds(): void
     {
         $cmdmap = [
             'tt_content' => [
-                2 => [
+                1 => [
                     'copyToLanguage' => 1
                 ]
             ]
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('t3_origuid', 2);
-        $this->assertSame(1, (int)$row['tx_container_parent']);
-        $this->assertSame(200, (int)$row['colPos']);
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        $this->assertFalse($row);
     }
 
     /**
      * @test
      */
-    public function localizeContainerWithContentKeepsColPosAndParentInConnectedMode(): void
+    public function localizeContainerLocalizeChilds(): void
     {
         $cmdmap = [
             'tt_content' => [
-                2 => [
+                1 => [
                     'localize' => 1
                 ]
             ]
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('t3_origuid', 2);
-        $this->assertSame(1, (int)$row['tx_container_parent']);
-        $this->assertSame(200, (int)$row['colPos']);
+        $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);
+        $this->assertSame(1, (int)$translatedChildRow['tx_container_parent']);
+        $this->assertSame(200, (int)$translatedChildRow['colPos']);
     }
 
     /**

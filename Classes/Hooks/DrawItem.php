@@ -23,7 +23,8 @@ class DrawItem implements PageLayoutViewDrawItemHookInterface
     public function preProcess(PageLayoutView &$pageLayoutView, &$drawItem, &$headerContent, &$itemContent, array &$row)
     {
 
-        if ($row['CType'] === 'foo') {
+        if ($row['CType'] === 'b13-2cols-with-header-container') {
+
 
             #$containerLayouView = GeneralUtility::makeInstance(ContainerLayoutView::class);
             #$containerLayouView->setContainerRecord($row);

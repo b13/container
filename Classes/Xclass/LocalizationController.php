@@ -29,6 +29,7 @@ class LocalizationController extends \TYPO3\CMS\Backend\Controller\Page\Localiza
      */
     protected function getPageColumns(int $pageId): array
     {
+        return parent::getPageColumns($pageId);
         $pagesColumns = parent::getPageColumns($pageId);
         $gridColumns = $this->tcaRegistry->getAllAvailableColumns();
         foreach ($gridColumns as $gridColumn) {
