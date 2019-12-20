@@ -6,6 +6,7 @@ use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class ContainerFactory implements SingletonInterface
 {
@@ -47,24 +48,25 @@ class ContainerFactory implements SingletonInterface
         }
 
         $defaultRecord = null;
-        if ($record['sys_language_uid'] > 0) {
+        $language = (int)$record['sys_language_uid'];
+        if ($language > 0) {
             $defaultRecord = $this->database->fetchOneDefaultRecord($record);
             if ($defaultRecord === null) {
                 // free mode
-                $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $record['sys_language_uid']);
+                $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
             } else {
                 // connected mode
                 $childRecords = $this->database->fetchRecordsByParentAndLanguage($defaultRecord['uid'], 0);
-                $childRecords = $this->database->fetchOverlayRecords($childRecords, $record['sys_language_uid']);
+                $childRecords = $this->database->fetchOverlayRecords($childRecords, $language);
             }
         } else {
-            $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $record['sys_language_uid']);
+            $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
         }
         $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
         if ($defaultRecord === null) {
-            $container = new Container($record, $childRecordByColPosKey);
+            $container = new Container($record, $childRecordByColPosKey, $language);
         } else {
-            $container = new Container($defaultRecord, $childRecordByColPosKey);
+            $container = new Container($defaultRecord, $childRecordByColPosKey, $language);
         }
         return $container;
     }

@@ -4,7 +4,6 @@ namespace B13\Container\Domain\Model;
 
 class Container
 {
-
     /**
      * @var array
      */
@@ -16,14 +15,44 @@ class Container
     protected $childRecords = null;
 
     /**
+     * @var int
+     */
+    protected $lanuage = 0;
+
+    /**
      * Container constructor.
      * @param array $containerRecord
      * @param array $childRecords
      */
-    public function __construct(array $containerRecord, array $childRecords)
+    public function __construct(array $containerRecord, array $childRecords, $language = 0)
     {
         $this->containerRecord = $containerRecord;
         $this->childRecords = $childRecords;
+        $this->language = $language;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUid(): int
+    {
+        return (int)$this->containerRecord['uid'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConnectedMode(): bool
+    {
+        return (int)$this->containerRecord['sys_language_uid'] === 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLanguage(): int
+    {
+        return $this->language;
     }
 
     /**

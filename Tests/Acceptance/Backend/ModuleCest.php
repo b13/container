@@ -26,7 +26,7 @@ class ModuleCest
      * @param BackendTester $I
      * @param PageTree $pageTree
      */
-    public function overlayModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree)
+    public function connectedModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
 
@@ -50,17 +50,37 @@ class ModuleCest
         $I->waitForElementNotVisible('#t3js-ui-block');
 
         // td.t3-grid-cell:nth-child(1)
+        // default language
         $languageCol = 'td.t3-grid-cell:nth-child(1)';
         $I->see('2cols-header-0', $languageCol);
         $I->see('header-header-0', $languageCol);
         $I->dontSee('2cols-header-1', $languageCol);
         $I->dontSee('header-header-1', $languageCol);
         //td.t3-grid-cell:nth-child(2)
+        // german language
         $languageCol = 'td.t3-grid-cell:nth-child(2)';
         $I->see('2cols-header-1', $languageCol);
         $I->see('header-header-1', $languageCol);
         $I->dontSee('2cols-header-0', $languageCol);
         $I->dontSee('header-header-0', $languageCol);
+    }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     */
+    public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree)
+    {
+        $I->click('Page');
+        $pageTree->openPath(['home', 'pageWithLocalization']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->selectOption('select[name="languageMenu"]', 'german');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->dontSee('Content', '#element-tt_content-102');
+        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->dontSee('Content', '#element-tt_content-102');
     }
 
 

@@ -73,6 +73,7 @@ class Datahandler
     public function processCmdmap_postProcess(string $command, string $table, int $id, int $value, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
+            // todo my be sys_language_uid changed
             $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
             $this->copyOrMoveChilds($id, $value, $id, 'move', $dataHandler);

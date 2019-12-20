@@ -11,6 +11,7 @@ use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Model\Container;
 
 class ContainerLayoutView extends PageLayoutView
 {
@@ -19,6 +20,11 @@ class ContainerLayoutView extends PageLayoutView
      * @var ContainerFactory
      */
     protected $containerFactory = null;
+
+    /**
+     * @var Container
+     */
+    protected $container = null;
 
 
     /**
@@ -47,29 +53,23 @@ class ContainerLayoutView extends PageLayoutView
         } catch (\B13\Container\Domain\Factory\Exception $e) {
             return '';
         }
-
-        $containerRecord = $container->getContainerRecord();
-        $this->resolveSiteLanguages($containerRecord['pid']);
-        $records = $container->getChildsByColPos($colPos);
-
-        $this->nextThree = 1;
-        $this->generateTtContentDataArray($records);
-        $content = $this->renderRecords($records, $colPos, $containerRecord);
+        $this->container = $container;
+        $content = $this->renderRecords($colPos);
         return $content;
     }
 
     /**
      * @param int $colPos
-     * @param array $containerRecord
      * @param int $lang
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
-    protected function buildNewContentElementWizardLinkTop(int $colPos, array $containerRecord, int $lang = 0): string
+    protected function buildNewContentElementWizardLinkTop(int $colPos): string
     {
+        $containerRecord = $this->container->getContainerRecord();
         $urlParameters = [
             'id' => $containerRecord['pid'],
-            'sys_language_uid' => $lang,
+            'sys_language_uid' => $this->container->getLanguage(),
             'tx_container_parent' => $containerRecord['uid'],
             'colPos' => $colPos,
             'uid_pid' => $containerRecord['pid'],
@@ -82,12 +82,12 @@ class ContainerLayoutView extends PageLayoutView
 
     /**
      * @param array $currentRecord
-     * @param array $containerRecord
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
-    protected function buildNewContentElementWizardLinkAfterCurrent(array $currentRecord, array $containerRecord): string
+    protected function buildNewContentElementWizardLinkAfterCurrent(array $currentRecord): string
     {
+        $containerRecord = $this->container->getContainerRecord();
         $colPos = $currentRecord['colPos'];
         $target = -$currentRecord['uid'];
         $lang = $currentRecord['sys_language_uid'];
@@ -113,25 +113,54 @@ class ContainerLayoutView extends PageLayoutView
         if (isset($webLayoutModuleData['tt_content_showHidden'])) {
             $this->tt_contentConfig['showHidden'] = $webLayoutModuleData['tt_content_showHidden'];
         }
+        #$this->tt_contentConfig['sys_language_uid'] = (int)$webLayoutModuleData['language'];
+        #if ((int)$webLayoutModuleData['function'] === 2) {
+        #    $this->tt_contentConfig['languageMode'] = 1;
+        #}
+    }
+
+    /**
+     * Creates the icon image tag for record from table and wraps it in a link which will trigger the click menu.
+     *
+     * @param string $table Table name
+     * @param array $row Record array
+     * @param string $enabledClickMenuItems Passthrough to wrapClickMenuOnIcon
+     * @return string HTML for the icon
+     */
+    public function getIcon($table, $row, $enabledClickMenuItems = '')
+    {
+        if ($this->isLanguageEditable()) {
+            return parent::getIcon($table, $row, $enabledClickMenuItems);
+        } else {
+            $toolTip = BackendUtility::getRecordToolTip($row, 'tt_content');
+            $icon = '<span ' . $toolTip . '>' . $this->iconFactory->getIconForRecord($table, $row, Icon::SIZE_SMALL)->render() . '</span>';
+            $this->counter++;
+            // do not render click-menu
+            return $icon;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isLanguageEditable(): bool
+    {
+        return $this->container->getLanguage() === 0 || !$this->container->isConnectedMode();
     }
 
 
-    protected function renderRecords(array $recods, int $colPos, array $containerRecord): string
+    /**
+     * @param int $colPos
+     * @return string
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
+     */
+    protected function renderNewContentButtonAtTop(int $colPos): string
     {
-        $content = '';
-        $head = '';
-        // bug 1 todo
-        $currentLanguage = $containerRecord['sys_language_uid'];
-        $id = $containerRecord['pid'];
-
-        // Start wrapping div
-        $content .= '<div data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '" data-language-uid="' . $currentLanguage . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $currentLanguage . ' t3-page-ce-wrapper">';
         // Add new content at the top most position
         $link = '';
-        if ($this->isContentEditable()
-            && (!$this->checkIfTranslationsExistInLanguage($recods, $currentLanguage))
-        ) {
-            $url = $this->buildNewContentElementWizardLinkTop($colPos, $containerRecord, $currentLanguage);
+        $content = '';
+        if ($this->isContentEditable() && $this->isLanguageEditable()) {
+            $url = $this->buildNewContentElementWizardLinkTop($colPos);
             $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
             $link = '<a href="' . htmlspecialchars($url) . '" '
                 . 'title="' . $title . '"'
@@ -141,30 +170,67 @@ class ContainerLayoutView extends PageLayoutView
                 . ' '
                 . htmlspecialchars($this->getLanguageService()->getLL('content')) . '</a>';
         }
-        if ($this->getBackendUser()->checkLanguageAccess($currentLanguage)) {
-            $content .= '
-                <div class="t3-page-ce t3js-page-ce" data-page="' . (int)$id . '" id="' . StringUtility::getUniqueId() . '">
-                    <div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-' . $colPos . '-page-' . $id . '-' . StringUtility::getUniqueId() . '">'
+
+        if ($this->getBackendUser()->checkLanguageAccess($this->container->getLanguage())) {
+            $content = '
+                <div class="t3-page-ce t3js-page-ce" data-page="' . $this->container->getUid() . '" id="' . StringUtility::getUniqueId() . '">
+                    <div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-' . $colPos . '-page-' . $this->container->getUid() . '-' . StringUtility::getUniqueId() . '">'
                 . $link
                 . '</div>
                     <div class="t3-page-ce-dropzone-available t3js-page-ce-dropzone-available"></div>
                 </div>
                 ';
         }
-        $editUidList = '';
+        return $content;
+    }
 
+    /**
+     * @param array $row
+     * @return string
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
+     */
+    protected function renderNewContentButtonAfterContentElement(array $row): string
+    {
+        $url = $this->buildNewContentElementWizardLinkAfterCurrent($row);
+        $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
+        return  '<a href="' . htmlspecialchars($url) . '" '
+            . 'title="' . $title . '"'
+            . 'data-title="' . $title . '"'
+            . 'class="btn btn-default btn-sm t3js-toggle-new-content-element-wizard">'
+            . $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render()
+            . ' '
+            . htmlspecialchars($this->getLanguageService()->getLL('content')) . '</a>';
+    }
 
-        foreach ((array)$recods as $rKey => $row) {
-            if ($this->tt_contentConfig['languageMode']) {
-                $languageColumn[$colPos][$currentLanguage] = $head . $content;
-            }
+    /**
+     * @param int $colPos
+     * @return string
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
+     * @throws \TYPO3\CMS\Core\Exception\SiteNotFoundException
+     */
+    protected function renderRecords(int $colPos): string
+    {
+        $containerRecord = $this->container->getContainerRecord();
+        $this->resolveSiteLanguages($containerRecord['pid']);
+        $records = $this->container->getChildsByColPos($colPos);
+        $this->nextThree = 1;
+        $this->generateTtContentDataArray($records);
+
+        $content = '';
+        $head = '';
+        $currentLanguage = $containerRecord['sys_language_uid'];
+        $id = $containerRecord['pid'];
+
+        // Start wrapping div
+        $content .= '<div data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '" data-language-uid="' . $currentLanguage . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $currentLanguage . ' t3-page-ce-wrapper">';
+        $content .= $this->renderNewContentButtonAtTop($colPos);
+
+        foreach ($records as $row) {
             if (is_array($row) && !VersionState::cast($row['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)) {
                 $singleElementHTML = '<div class="t3-page-ce-dragitem" id="' . StringUtility::getUniqueId() . '">';
-                if (!$currentLanguage && ($this->defLangBinding || $row['sys_language_uid'] != -1)) {
-                    $defaultLanguageElementsByColumn[$colPos][] = ($row['_ORIG_uid'] ?? $row['uid']);
-                }
-                $editUidList .= $row['uid'] . ',';
-                $disableMoveAndNewButtons = $this->defLangBinding && $currentLanguage > 0 && $this->checkIfTranslationsExistInLanguage($recods, $currentLanguage);
+                // new is visible ... s. ContextMenuController
+                $disableMoveAndNewButtons = !$this->isLanguageEditable();
+                // todo info
                 $singleElementHTML .= $this->tt_content_drawHeader(
                     $row,
                     $this->tt_contentConfig['showInfo'] ? 15 : 5,
@@ -172,6 +238,7 @@ class ContainerLayoutView extends PageLayoutView
                     true,
                     $this->getBackendUser()->doesUserHaveAccess($this->pageinfo, Permission::CONTENT_EDIT)
                 );
+
                 $innerContent = '<div ' . ($row['_ORIG_uid'] ? ' class="ver-element"' : '') . '>'
                     . $this->tt_content_drawItem($row) . '</div>';
                 $singleElementHTML .= '<div class="t3-page-ce-body-inner">' . $innerContent . '</div></div>'
@@ -179,11 +246,8 @@ class ContainerLayoutView extends PageLayoutView
                 $isDisabled = $this->isDisabled('tt_content', $row);
                 $statusHidden = $isDisabled ? ' t3-page-ce-hidden t3js-hidden-record' : '';
                 $displayNone = !$this->tt_contentConfig['showHidden'] && $isDisabled ? ' style="display: none;"' : '';
-                $highlightHeader = '';
-                if ($this->checkIfTranslationsExistInLanguage([], (int)$row['sys_language_uid']) && (int)$row['l18n_parent'] === 0) {
-                    $highlightHeader = ' t3-page-ce-danger';
-                }
-                $singleElementHTML = '<div class="t3-page-ce' . $highlightHeader . ' t3js-page-ce t3js-page-ce-sortable ' . $statusHidden . '" id="element-tt_content-'
+
+                $singleElementHTML = '<div class="t3-page-ce t3js-page-ce t3js-page-ce-sortable ' . $statusHidden . '" id="element-tt_content-'
                     . $row['uid'] . '" data-table="tt_content" data-uid="' . $row['uid'] . '"' . $displayNone . '>' . $singleElementHTML . '</div>';
 
                 $singleElementHTML .= '<div class="t3-page-ce" data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '">';
@@ -193,26 +257,11 @@ class ContainerLayoutView extends PageLayoutView
                 if (!$disableMoveAndNewButtons
                     && $this->isContentEditable()
                     && $this->getBackendUser()->checkLanguageAccess($currentLanguage)
-                    && (!$this->checkIfTranslationsExistInLanguage($recods, $currentLanguage))
                 ) {
-                    $url = $this->buildNewContentElementWizardLinkAfterCurrent($row, $containerRecord);
-                    $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
-                    $singleElementHTML .= '<a href="' . htmlspecialchars($url) . '" '
-                        . 'title="' . $title . '"'
-                        . 'data-title="' . $title . '"'
-                        . 'class="btn btn-default btn-sm t3js-toggle-new-content-element-wizard">'
-                        . $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render()
-                        . ' '
-                        . htmlspecialchars($this->getLanguageService()->getLL('content')) . '</a>';
+                    $singleElementHTML .= $this->renderNewContentButtonAfterContentElement($row);
                 }
                 $singleElementHTML .= '</div></div><div class="t3-page-ce-dropzone-available t3js-page-ce-dropzone-available"></div></div>';
-                if ($this->defLangBinding && $this->tt_contentConfig['languageMode']) {
-                    $defLangBinding[$colPos][$currentLanguage][$row[$currentLanguage ? 'l18n_parent' : 'uid'] ?: $row['uid']] = $singleElementHTML;
-                } else {
-                    $content .= $singleElementHTML;
-                }
-            } else {
-                unset($recods[$rKey]);
+                $content .= $singleElementHTML;
             }
         }
         $content .= '</div>';
@@ -222,17 +271,4 @@ class ContainerLayoutView extends PageLayoutView
         return $head . $content;
     }
 
-    /**
-     * Checks whether translated Content Elements exist in the desired language
-     * If so, deny creating new ones via the UI
-     *
-     * @param array $contentElements
-     * @param int $language
-     * @return bool
-     */
-    protected function checkIfTranslationsExistInLanguage(array $contentElements, int $language)
-    {
-        // bug 2 todo
-        return false;
-    }
 }
