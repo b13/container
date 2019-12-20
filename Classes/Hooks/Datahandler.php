@@ -72,11 +72,14 @@ class Datahandler
      */
     public function processCmdmap_postProcess(string $command, string $table, int $id, int $value, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
+        $language = null;
+        if (!empty($pasteUpdate['sys_language_uid'])) {
+            $language = (int)$pasteUpdate['sys_language_uid'];
+        }
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
-            // todo my be sys_language_uid changed
-            $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
+            $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']), $language,'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
-            $this->copyOrMoveChilds($id, $value, $id, 'move', $dataHandler);
+            $this->copyOrMoveChilds($id, $value, $id, $language,'move', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'localize') {
             $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
         }
@@ -116,7 +119,7 @@ class Datahandler
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      * @return void
      */
-    protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, ?int $language, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
         try {
             $container = $this->containerFactory->buildContainer($origUid);
@@ -133,6 +136,9 @@ class Datahandler
                         ]
                     ]
                 ];
+                if ($language !== null) {
+                    $cmd['tt_content'][$record['uid']][$command]['update']['sys_language_uid'] = $language;
+                }
             }
             if (count($cmd['tt_content']) > 0) {
                 $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);

@@ -161,6 +161,33 @@ class DatahandlerTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function moveChangedLanguageOfChilds(): void
+    {
+        // works also for copy
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'sys_language_uid' => 1
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('uid', 2);
+        $this->assertSame(1, $child['pid']);
+        $this->assertSame(1, $child['tx_container_parent']);
+        $this->assertSame(1, $child['sys_language_uid']);
+    }
+
+    /**
+     * @test
+     */
     public function moveMovesChilds(): void
     {
         $cmdmap = [
