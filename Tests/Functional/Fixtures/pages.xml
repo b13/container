@@ -18,4 +18,19 @@
         <pid>0</pid>
         <title>page-2</title>
     </pages>
+
+    <pages>
+        <uid>4</uid>
+        <pid>0</pid>
+        <title>page-3</title>
+    </pages>
+    <pages>
+        <uid>5</uid>
+        <pid>0</pid>
+        <sys_language_uid>1</sys_language_uid>
+        <l10n_parent>4</l10n_parent>
+        <l10n_source>4</l10n_source>
+        <title>page-3-language-1</title>
+    </pages>
+
 </dataset>

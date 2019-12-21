@@ -44,7 +44,7 @@
     </f:for>
 
 
-
+done:
 TCA namespace
 Registry as singeleton ohne static
 rm demo from EXT:container
@@ -52,17 +52,28 @@ rm ContainerRenderedChildsProcessor
 mv Container to other page
 unused Elements
 
+todo
 integrity
 
 // todo more tests
 
-* localization shows container colPos
-* new in edit element has default values
-* new childElement in translated Container in free has the translated Container uid as parent
+* wieder weggeschmissen, s. u.: localization shows container colPos
+* done new in edit element has default values
+* done new childElement in translated Container in free has the translated Container uid as parent
 * list module edit stuff
-* change ColPos
-* checkIfTranslationsExistInLanguage
+* done: change ColPos
+* change CType
 
 
 * copyToLanguage do not copy childs
-* localize localize childs
+* localize localize childs -> childs are not localizable during translation
+* allow mixed mode
+* fallback for FE
+
+* move Element outside container reset parent field
+* move child element changed localization colPos and parent
+
+moveChildOutsideContainerResetParentField und moveChildElementMovesTranslations ist nicht das selbe, wie wenn ich das im BE verschiebe !!!
+
+
+

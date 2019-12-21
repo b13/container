@@ -188,6 +188,55 @@ class DatahandlerTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function moveChildOutsideContainerResetParentField(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                2 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [
+                            'colPos' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('uid', 2);
+        $this->assertSame(0, $child['tx_container_parent']);
+    }
+
+    /**
+     * @test
+     */
+    public function moveChildElementMovesTranslations(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                5 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -4,
+                        'update' => [
+                            'colPos' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('l18n_parent', 5);
+        $this->assertSame(0, $child['tx_container_parent']);
+        $this->assertSame(0, $child['colPos']);
+    }
+
+    /**
+     * @test
+     */
     public function moveMovesChilds(): void
     {
         $cmdmap = [

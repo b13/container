@@ -20,9 +20,9 @@ class Container
     protected $lanuage = 0;
 
     /**
-     * Container constructor.
      * @param array $containerRecord
      * @param array $childRecords
+     * @param int $language
      */
     public function __construct(array $containerRecord, array $childRecords, $language = 0)
     {

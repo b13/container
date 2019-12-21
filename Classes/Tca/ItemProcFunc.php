@@ -60,10 +60,13 @@ class ItemProcFunc
                     $items = [];
                     foreach ($grid as $rows) {
                         foreach ($rows as $column) {
-                            $items[] = [
-                                $column['name'],
-                                $column['colPos']
-                            ];
+                            // only one item is show, so it is not changeable
+                            if ((int)$column['colPos'] === (int)$row['colPos']) {
+                                $items[] = [
+                                    $column['name'],
+                                    $column['colPos']
+                                ];
+                            }
                         }
                     }
                     $parameters['items'] = $items;
