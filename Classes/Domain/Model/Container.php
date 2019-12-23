@@ -40,6 +40,14 @@ class Container
     }
 
     /**
+     * @return int
+     */
+    public function getPid(): int
+    {
+        return (int)$this->containerRecord['pid'];
+    }
+
+    /**
      * @return bool
      */
     public function isConnectedMode(): bool

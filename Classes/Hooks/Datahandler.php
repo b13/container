@@ -49,6 +49,7 @@ class Datahandler
      */
     public function processCmdmap_beforeStart(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
+        // clipboard move
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
     }
 
@@ -57,6 +58,7 @@ class Datahandler
      */
     public function processDatamap_beforeStart(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
+        // ajax move (drag & drop)
         $dataHandler->datamap = $this->extractContainerIdFromColPosInDatamap($dataHandler->datamap);
     }
 
@@ -187,7 +189,7 @@ class Datahandler
     {
         if (!empty($datamap['tt_content'])) {
             foreach ($datamap['tt_content'] as $id => &$data) {
-                if (!empty($data['colPos'])) {
+                if (isset($data['colPos'])) {
                     $colPos = $data['colPos'];
                     if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
                         [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
@@ -195,6 +197,7 @@ class Datahandler
                         $data['tx_container_parent'] = $containerId;
                     } elseif (!isset($data['tx_container_parent'])) {
                         $data['tx_container_parent'] = 0;
+                        $data['colPos'] = (int)$colPos;
                     }
                 }
             }
@@ -211,7 +214,7 @@ class Datahandler
             foreach ($cmdmap['tt_content'] as $id => &$cmds) {
                 foreach ($cmds as &$cmd) {
                     if (
-                        (!empty($cmd['update']) || (!empty($cmd['action']) && $cmd['action'] === 'paste')) &&
+                        (!empty($cmd['update'])) &&
                         isset($cmd['update']['colPos'])
                     ) {
                         $colPos = $cmd['update']['colPos'];

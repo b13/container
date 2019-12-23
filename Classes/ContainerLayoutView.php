@@ -173,7 +173,7 @@ class ContainerLayoutView extends PageLayoutView
 
         if ($this->getBackendUser()->checkLanguageAccess($this->container->getLanguage())) {
             $content = '
-                <div class="t3-page-ce t3js-page-ce" data-page="' . $this->container->getUid() . '" id="' . StringUtility::getUniqueId() . '">
+                <div class="t3-page-ce t3js-page-ce" data-page="' . $this->container->getPid() . '" id="' . StringUtility::getUniqueId() . '">
                     <div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-' . $colPos . '-page-' . $this->container->getUid() . '-' . StringUtility::getUniqueId() . '">'
                 . $link
                 . '</div>

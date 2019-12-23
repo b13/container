@@ -32,5 +32,14 @@ class IntegrityFactory implements SingletonInterface
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
+    public function childsHasSamePidAsContainer(): array
+    {
+        return [];
+    }
+
+    public function childsHasColPosAvailableInContainerContainer(): array
+    {
+        return [];
+    }
 
 }

@@ -64,7 +64,7 @@ class DatahandlerTest extends UnitTestCase
     /**
      * @test
      */
-    public function extractContainerIdFromColPosInDatamapModifiesDatamap(): void
+    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
     {
         $dataHandlerHook = $this->getAccessibleMock(Datahandler::class, ['foo']);
         $datamap = [
@@ -79,4 +79,24 @@ class DatahandlerTest extends UnitTestCase
         $this->assertSame(34, $datamap['tt_content'][39]['colPos']);
         $this->assertSame(2, $datamap['tt_content'][39]['tx_container_parent']);
     }
+
+    /**
+     * @test
+     */
+    public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
+    {
+        $dataHandlerHook = $this->getAccessibleMock(Datahandler::class, ['foo']);
+        $datamap = [
+            'tt_content' => [
+                39 => [
+                    'colPos' => '0',
+                    'sys_language_uid' => 0
+                ]
+            ]
+        ];
+        $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
+        $this->assertSame(0, $datamap['tt_content'][39]['colPos']);
+        $this->assertSame(0, $datamap['tt_content'][39]['tx_container_parent']);
+    }
+
 }

@@ -27,12 +27,18 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =
         \B13\Container\Hooks\WizardItems::class;
 
-    // resolve <containerUid>-<colPos>
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container'] =
-        \B13\Container\Hooks\Datahandler::class;
+    // before workspace hook, which delete container record
+    if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'])) {
+        $classes = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'];
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'] = array_merge(
+            ['tx_container' => \B13\Container\Hooks\Datahandler::class],
+            $classes
+        );
 
+    }
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container'] =
         \B13\Container\Hooks\Datahandler::class;
+
 
     // Xclass LocalizationController: adds grid columns to pageColumns to translate
     // not used

@@ -2,7 +2,8 @@
     "name": "b13/container",
     "description": "Container Content Elements",
     "require": {
-        "typo3/cms-backend": "^10.0"
+        "typo3/cms-backend": "^10.0",
+        "typo3/cms-workspaces": "^10.0"
     },
     "repositories": [
         {
@@ -38,7 +39,7 @@
         "post-autoload-dump": [
             "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare",
             "if [ ! -e .Build/Web/typo3conf/ext/container_example ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/b13/container-example container_example && cd -; fi",
-			"if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
+            "if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
         ]
     },
     "extra": {
