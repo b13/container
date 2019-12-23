@@ -121,7 +121,6 @@ class Datahandler
      */
     protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, ?int $language, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
-        // todo parent is container -> move localizations parent (colPos already works)
         try {
             $container = $this->containerFactory->buildContainer($origUid);
             $childs = $container->getChildRecords();
@@ -208,7 +207,6 @@ class Datahandler
      */
     protected function extractContainerIdFromColPosOnUpdate(array $cmdmap): array
     {
-        // todo test action? ("paste")
         if (!empty($cmdmap['tt_content'])) {
             foreach ($cmdmap['tt_content'] as $id => &$cmds) {
                 foreach ($cmds as &$cmd) {

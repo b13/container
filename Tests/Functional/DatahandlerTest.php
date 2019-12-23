@@ -193,13 +193,7 @@ class DatahandlerTest extends FunctionalTestCase
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => -1,
-                        'update' => [
-                            'colPos' => 0
-                        ]
-                    ]
+                    'move' => -1
                 ]
             ]
         ];
@@ -217,13 +211,7 @@ class DatahandlerTest extends FunctionalTestCase
         $cmdmap = [
             'tt_content' => [
                 5 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => -4,
-                        'update' => [
-                            'colPos' => 0
-                        ]
-                    ]
+                    'move' => -4
                 ]
             ]
         ];
@@ -242,13 +230,7 @@ class DatahandlerTest extends FunctionalTestCase
         $cmdmap = [
             'tt_content' => [
                 1 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 3,
-                        'update' => [
-                            'colPos' => 0
-                        ]
-                    ]
+                    'move' => 3
                 ]
             ]
         ];
