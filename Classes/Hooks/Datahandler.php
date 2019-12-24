@@ -103,27 +103,6 @@ class Datahandler
             foreach ($datamap['tt_content'] as $id => &$data) {
                 if (isset($data['colPos'])) {
                     $datamapForLocalizations = $this->buildDatamapForLocalizedChilds((int)$id, $data);
-                    #var_dump($t1);
-                    /*
-                    $record = $this->dataHandlerDatabase->fetchOneRecord((int)$id);
-                    if ($record !== null &&
-                        $record['sys_language_uid'] === 0 &&
-                        (
-                            $record['tx_container_parent'] > 0 || (isset($data['tx_container_parent']) && $data['tx_container_parent'] > 0)
-                        )
-                    ) {
-                        $translations = $this->dataHandlerDatabase->fetchOverlayRecords($record);
-                        foreach ($translations as $translation) {
-                            $datamapForLocalizations['tt_content'][$translation['uid']] = [
-                                'colPos' => $data['colPos']
-                            ];
-                            if (isset($data['tx_container_parent'])) {
-                                $datamapForLocalizations['tt_content'][$translation['uid']]['tx_container_parent'] = $data['tx_container_parent'];
-                            }
-                        }
-                    }
-                    */
-
                 }
             }
         }
@@ -186,26 +165,6 @@ class Datahandler
 
             if (isset($pasteUpdate['colPos'])) {
                 $datamapForLocalizations = $this->buildDatamapForLocalizedChilds((int)$id, $pasteUpdate);
-                /*
-                $datamapForLocalizations = ['tt_content' => []];
-                $record = $this->dataHandlerDatabase->fetchOneRecord((int)$id);
-                if ($record !== null &&
-                    $record['sys_language_uid'] === 0 &&
-                    (
-                        $record['tx_container_parent'] > 0 || (isset($pasteUpdate['tx_container_parent']) && $pasteUpdate['tx_container_parent'] > 0)
-                    )
-                ) {
-                    $translations = $this->dataHandlerDatabase->fetchOverlayRecords($record);
-                    foreach ($translations as $translation) {
-                        $datamapForLocalizations['tt_content'][$translation['uid']] = [
-                            'colPos' => $pasteUpdate['colPos']
-                        ];
-                        if (isset($pasteUpdate['tx_container_parent'])) {
-                            $datamapForLocalizations['tt_content'][$translation['uid']]['tx_container_parent'] = $pasteUpdate['tx_container_parent'];
-                        }
-                    }
-                }
-                */
                 if (count($datamapForLocalizations['tt_content']) > 0) {
                     $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
                     $localDataHandler->start($datamapForLocalizations, [], $dataHandler->BE_USER);
