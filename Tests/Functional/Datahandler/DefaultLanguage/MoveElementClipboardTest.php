@@ -1,7 +1,9 @@
 <?php
-namespace B13\Container\Tests\Functional\Datahandler;
+namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
-class MoveElementClipboardDefaultLanguageTest extends DatahandlerTest
+use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+
+class MoveElementClipboardTest extends DatahandlerTest
 {
 
     /**

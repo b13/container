@@ -1,5 +1,7 @@
 <?php
-namespace B13\Container\Tests\Functional\Datahandler;
+namespace B13\Container\Tests\Functional\Datahandler\Localization;
+
+use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
 class LocalizeTest extends DatahandlerTest
 {
@@ -61,5 +63,6 @@ class LocalizeTest extends DatahandlerTest
         $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);
         $this->assertSame(1, (int)$translatedChildRow['tx_container_parent']);
         $this->assertSame(200, (int)$translatedChildRow['colPos']);
+        $this->assertSame(1, (int)$translatedChildRow['pid']);
     }
 }

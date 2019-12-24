@@ -1,7 +1,9 @@
 <?php
-namespace B13\Container\Tests\Functional\Datahandler;
+namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
-class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
+use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+
+class MoveElementAjaxTest extends DatahandlerTest
 {
 
     /**
@@ -13,7 +15,6 @@ class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_other_page.xml');
     }
 
     /**
@@ -24,28 +25,28 @@ class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 3,
-                        'update' => [
-                            'colPos' => 0,
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
+                    'move' => 1
                 ]
             ]
         ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $datamap = [
+            'tt_content' => [
+                2 => [
+                    'colPos' => 0,
+                    'sys_language_uid' => 0
+
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 2);
         $this->assertSame(0, (int)$row['tx_container_parent']);
         $this->assertSame(0, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
+        $this->assertSame(1, (int)$row['pid']);
         $this->assertSame(0, (int)$row['sys_language_uid']);
     }
-
 
     /**
      * @test
@@ -55,26 +56,26 @@ class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => -14,
-                        'update' => [
-                            'colPos' => 0,
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
+                    'move' => -4
                 ]
             ]
         ];
+        $datamap = [
+            'tt_content' => [
+                2 => [
+                    'colPos' => 0,
+                    'sys_language_uid' => 0
 
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 2);
         $this->assertSame(0, (int)$row['tx_container_parent']);
         $this->assertSame(0, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
+        $this->assertSame(1, (int)$row['pid']);
         $this->assertSame(0, (int)$row['sys_language_uid']);
     }
 
@@ -86,26 +87,26 @@ class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 3,
-                        'update' => [
-                            'colPos' => '11-201',
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
+                    'move' => 1
                 ]
             ]
         ];
+        $datamap = [
+            'tt_content' => [
+                2 => [
+                    'colPos' => '1-201',
+                    'sys_language_uid' => 0
 
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 2);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
+        $this->assertSame(1, (int)$row['tx_container_parent']);
         $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
+        $this->assertSame(1, (int)$row['pid']);
         $this->assertSame(0, (int)$row['sys_language_uid']);
     }
 
@@ -117,25 +118,26 @@ class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => -13,
-                        'update' => [
-                            'colPos' => '11-201',
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
+                    'move' => -3
                 ]
             ]
         ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $datamap = [
+            'tt_content' => [
+                2 => [
+                    'colPos' => '1-201',
+                    'sys_language_uid' => 0
+
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 2);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
+        $this->assertSame(1, (int)$row['tx_container_parent']);
         $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
+        $this->assertSame(1, (int)$row['pid']);
         $this->assertSame(0, (int)$row['sys_language_uid']);
     }
 
@@ -147,26 +149,26 @@ class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 4 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 3,
-                        'update' => [
-                            'colPos' => '11-201',
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
+                    'move' => 1
                 ]
             ]
         ];
+        $datamap = [
+            'tt_content' => [
+                4 => [
+                    'colPos' => '1-201',
+                    'sys_language_uid' => 0
 
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 4);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
+        $this->assertSame(1, (int)$row['tx_container_parent']);
         $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
+        $this->assertSame(1, (int)$row['pid']);
         $this->assertSame(0, (int)$row['sys_language_uid']);
     }
 
@@ -178,25 +180,26 @@ class MoveElementClipboardDefaultLanguageOtherPageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 4 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => -13,
-                        'update' => [
-                            'colPos' => '11-201',
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
+                    'move' => -3
                 ]
             ]
         ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $datamap = [
+            'tt_content' => [
+                4 => [
+                    'colPos' => '1-201',
+                    'sys_language_uid' => 0
+
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 4);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
+        $this->assertSame(1, (int)$row['tx_container_parent']);
         $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
+        $this->assertSame(1, (int)$row['pid']);
         $this->assertSame(0, (int)$row['sys_language_uid']);
     }
 }
