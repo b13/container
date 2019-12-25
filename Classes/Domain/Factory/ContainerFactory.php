@@ -6,7 +6,6 @@ use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class ContainerFactory implements SingletonInterface
 {

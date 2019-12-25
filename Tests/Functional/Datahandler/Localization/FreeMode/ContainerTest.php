@@ -126,4 +126,93 @@ class ContainerTest extends DatahandlerTest
         $this->assertSame(1, $child['sys_language_uid']);
     }
 
+    /**
+     * @test
+     */
+    public function copyClipboardToOtherLanguageCopiesChilds(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $copiedRecord = $this->fetchOneRecord('t3_origuid', 51);
+        $child = $this->fetchOneRecord('t3_origuid', 52);
+        $this->assertSame(3, $child['pid']);
+        $this->assertSame($copiedRecord['uid'], $child['tx_container_parent']);
+        $this->assertSame(200, $child['colPos']);
+        $this->assertSame(0, $child['sys_language_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function moveContainerClipboardToOtherLanguageMovesChilds(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0
+
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('uid', 52);
+        $this->assertSame(3, $child['pid']);
+        $this->assertSame(51, $child['tx_container_parent']);
+        $this->assertSame(200, $child['colPos']);
+        $this->assertSame(0, $child['sys_language_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function moveContainerAjaxToOtherLanguageMovesChilds(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'move' => 1
+                ]
+            ]
+        ];
+        $datamap = [
+            'tt_content' => [
+                51 => [
+                    'colPos' => '0',
+                    'sys_language_uid' => 0
+
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('uid', 52);
+        $this->assertSame(1, $child['pid']);
+        $this->assertSame(51, $child['tx_container_parent']);
+        $this->assertSame(200, $child['colPos']);
+        $this->assertSame(0, $child['sys_language_uid']);
+    }
+
 }

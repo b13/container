@@ -35,7 +35,6 @@ class MoveElementAjaxTest extends DatahandlerTest
                 52 => [
                     'colPos' => 0,
                     'sys_language_uid' => 1
-
                 ]
             ]
         ];
@@ -66,7 +65,6 @@ class MoveElementAjaxTest extends DatahandlerTest
                 52 => [
                     'colPos' => 0,
                     'sys_language_uid' => 1
-
                 ]
             ]
         ];
@@ -97,7 +95,6 @@ class MoveElementAjaxTest extends DatahandlerTest
                 52 => [
                     'colPos' => '51-201',
                     'sys_language_uid' => 1
-
                 ]
             ]
         ];
@@ -128,7 +125,6 @@ class MoveElementAjaxTest extends DatahandlerTest
                 52 => [
                     'colPos' => '51-201',
                     'sys_language_uid' => 1
-
                 ]
             ]
         ];
@@ -159,7 +155,6 @@ class MoveElementAjaxTest extends DatahandlerTest
                 54 => [
                     'colPos' => '51-201',
                     'sys_language_uid' => 1
-
                 ]
             ]
         ];
@@ -190,7 +185,6 @@ class MoveElementAjaxTest extends DatahandlerTest
                 54 => [
                     'colPos' => '51-201',
                     'sys_language_uid' => 1
-
                 ]
             ]
         ];

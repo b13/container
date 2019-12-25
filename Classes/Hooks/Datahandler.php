@@ -65,6 +65,66 @@ class Datahandler
         // ajax move (drag & drop)
         $dataHandler->datamap = $this->extractContainerIdFromColPosInDatamap($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildLocalizations($dataHandler->datamap);
+        $dataHandler->datamap = $this->datamapForChildsChangeContainerLanguage($dataHandler->datamap);
+    }
+
+
+    /**
+     * @param string $command
+     * @param string $table
+     * @param int $id
+     * @param int $value
+     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+     * @param $pasteUpdate
+     * @param $pasteDatamap
+     * @return void
+     */
+    public function processCmdmap_postProcess(string $command, string $table, int $id, int $value, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
+    {
+        if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
+            $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
+        } elseif ($table === 'tt_content' && $command === 'move') {
+            $this->copyOrMoveChilds($id, $value, $id,'move', $dataHandler);
+            if (isset($pasteUpdate['colPos'])) {
+                $datamapForLocalizations = $this->buildDatamapForLocalizedChilds((int)$id, $pasteUpdate);
+                if (count($datamapForLocalizations['tt_content']) > 0) {
+                    $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+                    $localDataHandler->start($datamapForLocalizations, [], $dataHandler->BE_USER);
+                    $localDataHandler->process_datamap();
+                }
+            }
+        } elseif ($table === 'tt_content' && $command === 'localize') {
+            $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
+        }
+    }
+
+    /**
+     * @param string $table
+     * @param int $id
+     * @param array $recordToDelete
+     * @param bool $recordWasDeleted
+     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+     */
+    public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    {
+        if ($table === 'tt_content') {
+            try {
+                $container = $this->containerFactory->buildContainer($id);
+                $childs = $container->getChildRecords();
+                $toDelete = [];
+                foreach ($childs as $colPos => $record) {
+                    $toDelete[$record['uid']] = ['delete' => 1];
+                }
+                if (count($toDelete) > 0) {
+                    $cmd = ['tt_content' => $toDelete];
+                    $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+                    $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
+                    $localDataHandler->process_cmdmap();
+                }
+            } catch (Exception $e) {
+                // nothing todo
+            }
+        }
     }
 
 
@@ -122,6 +182,38 @@ class Datahandler
         return $datamap;
     }
 
+    /**
+     * @param array $datamap
+     * @return array
+     */
+    protected function datamapForChildsChangeContainerLanguage(array $datamap): array
+    {
+        $datamapForLocalizations = ['tt_content' => []];
+        if (!empty($datamap['tt_content'])) {
+            foreach ($datamap['tt_content'] as $id => $data) {
+                if (isset($data['sys_language_uid'])) {
+                    try {
+                        $container = $this->containerFactory->buildContainer((int)$id);
+                        $childs = $container->getChildRecords();
+                        foreach ($childs as $child) {
+                            if ($child['sys_language_uid'] !== $data['sys_language_uid']) {
+                                $datamapForLocalizations['tt_content'][$child['uid']] = [
+                                    'sys_language_uid' => $data['sys_language_uid']
+                                ];
+                            }
+                        }
+                    } catch (Exception $e) {
+                        // nothing todo
+                    }
+                }
+            }
+        }
+        if (count($datamapForLocalizations['tt_content']) > 0) {
+            $datamap['tt_content'] = array_replace($datamap['tt_content'], $datamapForLocalizations['tt_content']);
+        }
+        return $datamap;
+    }
+
 
     /**
      * @param array $cmdmap
@@ -141,41 +233,6 @@ class Datahandler
             }
         }
         return $cmdmap;
-    }
-
-
-    /**
-     * @param string $command
-     * @param string $table
-     * @param int $id
-     * @param int $value
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     * @param $pasteUpdate
-     * @param $pasteDatamap
-     * @return void
-     */
-    public function processCmdmap_postProcess(string $command, string $table, int $id, int $value, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
-    {
-        $language = null;
-        if (!empty($pasteUpdate['sys_language_uid'])) {
-            $language = (int)$pasteUpdate['sys_language_uid'];
-        }
-
-        if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
-            $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']), $language,'copy', $dataHandler);
-        } elseif ($table === 'tt_content' && $command === 'move') {
-            $this->copyOrMoveChilds($id, $value, $id, $language,'move', $dataHandler);
-            if (isset($pasteUpdate['colPos'])) {
-                $datamapForLocalizations = $this->buildDatamapForLocalizedChilds((int)$id, $pasteUpdate);
-                if (count($datamapForLocalizations['tt_content']) > 0) {
-                    $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-                    $localDataHandler->start($datamapForLocalizations, [], $dataHandler->BE_USER);
-                    $localDataHandler->process_datamap();
-                }
-            }
-        } elseif ($table === 'tt_content' && $command === 'localize') {
-            $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
-        }
     }
 
     /**
@@ -240,9 +297,10 @@ class Datahandler
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      * @return void
      */
-    protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, ?int $language, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, string $command, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
         try {
+            // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
             $childs = $container->getChildRecords();
             $cmd = ['tt_content' => []];
@@ -257,9 +315,6 @@ class Datahandler
                         ]
                     ]
                 ];
-                if ($language !== null) {
-                    $cmd['tt_content'][$record['uid']][$command]['update']['sys_language_uid'] = $language;
-                }
             }
             if (count($cmd['tt_content']) > 0) {
                 $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
@@ -270,34 +325,4 @@ class Datahandler
             // nothing todo
         }
     }
-
-    /**
-     * @param string $table
-     * @param int $id
-     * @param array $recordToDelete
-     * @param bool $recordWasDeleted
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     */
-    public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
-    {
-        if ($table === 'tt_content') {
-            try {
-                $container = $this->containerFactory->buildContainer($id);
-                $childs = $container->getChildRecords();
-                $toDelete = [];
-                foreach ($childs as $colPos => $record) {
-                    $toDelete[$record['uid']] = ['delete' => 1];
-                }
-                if (count($toDelete) > 0) {
-                    $cmd = ['tt_content' => $toDelete];
-                    $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-                    $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
-                    $localDataHandler->process_cmdmap();
-                }
-            } catch (Exception $e) {
-                // nothing todo
-            }
-        }
-    }
-
 }
