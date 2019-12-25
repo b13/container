@@ -1,5 +1,5 @@
 <?php
-namespace B13\Container\Tests\Functional\Datahandler\Localization;
+namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
 
 use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
@@ -13,6 +13,7 @@ class MoveElementAjaxTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');

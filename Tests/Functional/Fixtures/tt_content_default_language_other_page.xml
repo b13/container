@@ -6,6 +6,7 @@
         <CType>b13-2cols-with-header-container</CType>
         <header>container</header>
         <sorting>256</sorting>
+        <sys_language_uid>0</sys_language_uid>
 	</tt_content>
     <tt_content>
         <uid>12</uid>
@@ -15,6 +16,7 @@
         <CType>header</CType>
         <sorting>128</sorting>
         <header>header</header>
+        <sys_language_uid>0</sys_language_uid>
     </tt_content>
     <tt_content>
         <uid>13</uid>
@@ -24,6 +26,7 @@
         <CType>header</CType>
         <header>left side</header>
         <sorting>64</sorting>
+        <sys_language_uid>0</sys_language_uid>
     </tt_content>
     <tt_content>
         <uid>14</uid>
@@ -32,6 +35,7 @@
         <CType>header</CType>
         <header>outside</header>
         <sorting>512</sorting>
+        <sys_language_uid>0</sys_language_uid>
     </tt_content>
 
 </dataset>
