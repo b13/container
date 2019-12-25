@@ -77,19 +77,29 @@ class Datahandler
         if (!empty($datamap['tt_content'])) {
             foreach ($datamap['tt_content'] as $id => &$data) {
                 if (isset($data['colPos'])) {
-                    $colPos = $data['colPos'];
-                    if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-                        [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
-                        $data['colPos'] = $newColPos;
-                        $data['tx_container_parent'] = $containerId;
-                    } elseif (!isset($data['tx_container_parent'])) {
-                        $data['tx_container_parent'] = 0;
-                        $data['colPos'] = (int)$colPos;
-                    }
+                    $data = $this->dataFromContainerIdColPos($data);
                 }
             }
         }
         return $datamap;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function dataFromContainerIdColPos(array $data): array
+    {
+        $colPos = $data['colPos'];
+        if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
+            [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
+            $data['colPos'] = $newColPos;
+            $data['tx_container_parent'] = $containerId;
+        } elseif (!isset($data['tx_container_parent'])) {
+            $data['tx_container_parent'] = 0;
+            $data['colPos'] = (int)$colPos;
+        }
+        return $data;
     }
 
     /**
@@ -125,14 +135,7 @@ class Datahandler
                         (!empty($cmd['update'])) &&
                         isset($cmd['update']['colPos'])
                     ) {
-                        $colPos = $cmd['update']['colPos'];
-                        if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-                            [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
-                            $cmd['update']['colPos'] = $newColPos;
-                            $cmd['update']['tx_container_parent'] = $containerId;
-                        } elseif (!isset($cmd['update']['tx_container_parent'])) {
-                            $cmd['update']['tx_container_parent'] = 0;
-                        }
+                        $cmd['update'] = $this->dataFromContainerIdColPos($cmd['update']);
                     }
                 }
             }
@@ -162,7 +165,6 @@ class Datahandler
             $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']), $language,'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
             $this->copyOrMoveChilds($id, $value, $id, $language,'move', $dataHandler);
-
             if (isset($pasteUpdate['colPos'])) {
                 $datamapForLocalizations = $this->buildDatamapForLocalizedChilds((int)$id, $pasteUpdate);
                 if (count($datamapForLocalizations['tt_content']) > 0) {
