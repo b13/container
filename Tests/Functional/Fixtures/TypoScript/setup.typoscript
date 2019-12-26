@@ -1,0 +1,7 @@
+@import 'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript'
+@import 'EXT:container_example/Configuration/TypoScript/setup.typoscript'
+# Default PAGE object:
+page = PAGE
+page.10 = TEXT
+page.10.value = HELLO WORLD!
+page.20 < styles.content.get

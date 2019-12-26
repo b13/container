@@ -1,4 +1,4 @@
-base: 'http://core10/'
+base: 'http://localhost/'
 baseVariants: {  }
 errorHandling: {  }
 languages:
@@ -29,6 +29,6 @@ languages:
     fallbacks: ''
     flag: de
     languageId: '1'
-rootPageId: 1 
+rootPageId: 1
 routes: {  }
 websiteTitle: 'Testing'
