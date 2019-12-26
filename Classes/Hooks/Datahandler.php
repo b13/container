@@ -51,15 +51,6 @@ class Datahandler
     /**
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      */
-    public function processCmdmap_beforeStart(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
-    {
-        // clipboard move
-        $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
-    }
-
-    /**
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     */
     public function processDatamap_beforeStart(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
         // ajax move (drag & drop)
@@ -85,14 +76,6 @@ class Datahandler
             $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
             $this->copyOrMoveChilds($id, $value, $id,'move', $dataHandler);
-            if (isset($pasteUpdate['colPos'])) {
-                $datamapForLocalizations = $this->buildDatamapForLocalizedChilds((int)$id, $pasteUpdate);
-                if (count($datamapForLocalizations['tt_content']) > 0) {
-                    $localDataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-                    $localDataHandler->start($datamapForLocalizations, [], $dataHandler->BE_USER);
-                    $localDataHandler->process_datamap();
-                }
-            }
         } elseif ($table === 'tt_content' && $command === 'localize') {
             $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
         }
@@ -137,29 +120,19 @@ class Datahandler
         if (!empty($datamap['tt_content'])) {
             foreach ($datamap['tt_content'] as $id => &$data) {
                 if (isset($data['colPos'])) {
-                    $data = $this->dataFromContainerIdColPos($data);
+                    $colPos = $data['colPos'];
+                    if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
+                        [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
+                        $data['colPos'] = $newColPos;
+                        $data['tx_container_parent'] = $containerId;
+                    } elseif (!isset($data['tx_container_parent'])) {
+                        $data['tx_container_parent'] = 0;
+                        $data['colPos'] = (int)$colPos;
+                    }
                 }
             }
         }
         return $datamap;
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     */
-    protected function dataFromContainerIdColPos(array $data): array
-    {
-        $colPos = $data['colPos'];
-        if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-            [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
-            $data['colPos'] = $newColPos;
-            $data['tx_container_parent'] = $containerId;
-        } elseif (!isset($data['tx_container_parent'])) {
-            $data['tx_container_parent'] = 0;
-            $data['colPos'] = (int)$colPos;
-        }
-        return $data;
     }
 
     /**
@@ -212,27 +185,6 @@ class Datahandler
             $datamap['tt_content'] = array_replace($datamap['tt_content'], $datamapForLocalizations['tt_content']);
         }
         return $datamap;
-    }
-
-
-    /**
-     * @param array $cmdmap
-     */
-    protected function extractContainerIdFromColPosOnUpdate(array $cmdmap): array
-    {
-        if (!empty($cmdmap['tt_content'])) {
-            foreach ($cmdmap['tt_content'] as $id => &$cmds) {
-                foreach ($cmds as &$cmd) {
-                    if (
-                        (!empty($cmd['update'])) &&
-                        isset($cmd['update']['colPos'])
-                    ) {
-                        $cmd['update'] = $this->dataFromContainerIdColPos($cmd['update']);
-                    }
-                }
-            }
-        }
-        return $cmdmap;
     }
 
     /**

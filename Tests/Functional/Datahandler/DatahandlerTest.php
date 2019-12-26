@@ -22,7 +22,7 @@ abstract class DatahandlerTest extends FunctionalTestCase
     protected $backendUser = null;
 
     /**
-     * @var array Have styleguide loaded
+     * @var array
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/container',

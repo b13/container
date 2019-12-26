@@ -45,59 +45,6 @@ class DatahandlerTest extends UnitTestCase
         $this->assertIsArray($modDatamap['tt_content'][3]);
         $this->assertSame(1, $modDatamap['tt_content'][3]['tx_container_parent']);
     }
-
-    /**
-     * @test
-     */
-    public function extractContainerIdFromColPosOnUpdateModifiesCmdMap(): void
-    {
-        $dataHandlerHook = $this->getAccessibleMock(Datahandler::class, ['foo']);
-        $cmdmap = [
-            'tt_content' => [
-                39 => [
-                    'copy' => [
-                        'action' => 'paste',
-                        'target' => 137, // pageId
-                        'update' => [
-                            'colPos' => '2-34',
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
-                ]
-            ]
-        ];
-        $cmdmap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $cmdmap);
-        $this->assertSame(34, $cmdmap['tt_content'][39]['copy']['update']['colPos']);
-        $this->assertSame(2, $cmdmap['tt_content'][39]['copy']['update']['tx_container_parent']);
-    }
-
-    /**
-     * @test
-     */
-    public function extractContainerIdFromColPosOnUpdateWithColPosIntegerReturnsOriginalCmdmap(): void
-    {
-        $dataHandlerHook = $this->getAccessibleMock(Datahandler::class, ['foo']);
-        $cmdmap = [
-            'tt_content' => [
-                39 => [
-                    'copy' => [
-                        'action' => 'paste',
-                        'target' => 137, // pageId
-                        'update' => [
-                            'colPos' => 34,
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
-                ]
-            ]
-        ];
-        $newCmdmap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $cmdmap);
-        $this->assertSame(34, $newCmdmap['tt_content'][39]['copy']['update']['colPos']);
-        $this->assertSame(0, $newCmdmap['tt_content'][39]['copy']['update']['tx_container_parent']);
-    }
-
     /**
      * @test
      */
