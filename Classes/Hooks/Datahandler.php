@@ -145,7 +145,24 @@ class Datahandler
         if (!empty($datamap['tt_content'])) {
             foreach ($datamap['tt_content'] as $id => &$data) {
                 if (isset($data['colPos'])) {
-                    $datamapForLocalizations = $this->buildDatamapForLocalizedChilds((int)$id, $data);
+                    $record = $this->dataHandlerDatabase->fetchOneRecord((int)$id);
+                    if ($record !== null &&
+                        $record['sys_language_uid'] === 0 &&
+                        (
+                            $record['tx_container_parent'] > 0
+                            || (isset($data['tx_container_parent']) && $data['tx_container_parent'] > 0)
+                        )
+                    ) {
+                        $translations = $this->dataHandlerDatabase->fetchOverlayRecords($record);
+                        foreach ($translations as $translation) {
+                            $datamapForLocalizations['tt_content'][$translation['uid']] = [
+                                'colPos' => $data['colPos']
+                            ];
+                            if (isset($data['tx_container_parent'])) {
+                                $datamapForLocalizations['tt_content'][$translation['uid']]['tx_container_parent'] = $data['tx_container_parent'];
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -185,34 +202,6 @@ class Datahandler
             $datamap['tt_content'] = array_replace($datamap['tt_content'], $datamapForLocalizations['tt_content']);
         }
         return $datamap;
-    }
-
-    /**
-     * @param int $id
-     * @param array $data
-     * @return array
-     */
-    protected function buildDatamapForLocalizedChilds(int $id, array $data): array
-    {
-        $datamapForLocalizations = ['tt_content' => []];
-        $record = $this->dataHandlerDatabase->fetchOneRecord((int)$id);
-        if ($record !== null &&
-            $record['sys_language_uid'] === 0 &&
-            (
-                $record['tx_container_parent'] > 0 || (isset($data['tx_container_parent']) && $data['tx_container_parent'] > 0)
-            )
-        ) {
-            $translations = $this->dataHandlerDatabase->fetchOverlayRecords($record);
-            foreach ($translations as $translation) {
-                $datamapForLocalizations['tt_content'][$translation['uid']] = [
-                    'colPos' => $data['colPos']
-                ];
-                if (isset($data['tx_container_parent'])) {
-                    $datamapForLocalizations['tt_content'][$translation['uid']]['tx_container_parent'] = $data['tx_container_parent'];
-                }
-            }
-        }
-        return $datamapForLocalizations;
     }
 
     /**
