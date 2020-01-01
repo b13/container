@@ -18,7 +18,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "B13\\Container\\Tests\\": "Tests"
+            "B13\\Container\\Tests\\": "Tests",
+            "TYPO3\\JsonResponse\\": ".Build/Web/typo3conf/ext/json_response/Classes"
         }
     },
     "config": {
@@ -38,6 +39,8 @@
     "scripts": {
         "post-autoload-dump": [
             "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare",
+			"if [ ! -e .Build/Web/vendor ]; then cd .Build/Web  && ln -s ../vendor && cd -; fi",
+            "if [ ! -e .Build/Web/typo3conf/ext/json_response ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/typo3/testing-framework/Resources/Core/Functional/Extensions/json_response && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/ext/container_example ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/b13/container-example container_example && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
         ]

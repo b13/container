@@ -3,6 +3,7 @@
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
+
 /**
  * Contains functional tests for the XmlSitemap Index
  */
@@ -12,6 +13,13 @@ class DefaultLanguageTest extends FunctionalTestCase
      * @var string[]
      */
     protected $coreExtensionsToLoad = ['core', 'frontend', 'workspaces'];
+    
+    /**
+     * @var string[]
+     */
+    protected $pathsToLinkInTestInstance = [
+        'typo3conf/ext/container/Build/sites' => 'typo3conf/sites',
+    ];
 
     /**
      * @var array
@@ -37,14 +45,11 @@ class DefaultLanguageTest extends FunctionalTestCase
     }
 
     /**
-     * @atestb
+     * @test
      */
     public function checkIfSiteMapIndexContainsPagesSitemap(): void
     {
-        $response = $this->executeFrontendRequest(
-            (new InternalRequest('http://localhost/'))
-        );
-
+        $response = $this->executeFrontendRequest(new InternalRequest());
         self::assertEquals(200, $response->getStatusCode());
         #self::assertArrayHasKey('Content-Length', $response->getHeaders());
         #self::assertGreaterThan(0, $response->getHeader('Content-Length')[0]);

@@ -4,6 +4,7 @@
         <uid>1</uid>
         <pid>0</pid>
         <title>page-1</title>
+        <slug>/</slug>
     </pages>
     <pages>
         <uid>2</uid>
