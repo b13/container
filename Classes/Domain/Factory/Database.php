@@ -127,4 +127,32 @@ class Database implements SingletonInterface
 
         return $records;
     }
+
+    /**
+     * @param int $uid
+     * @param int $language
+     * @return array
+     */
+    public function fetchOneOverlayRecord(int $uid, int $language): ?array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $record = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        if ($record === false) {
+            return null;
+        }
+        return $record;
+    }
 }
