@@ -3,6 +3,11 @@
 	<sys_language>
 		<uid>1</uid>
 		<pid>0</pid>
-        <title>language-1</title>
+        <title>de</title>
 	</sys_language>
+    <sys_language>
+        <uid>2</uid>
+        <pid>0</pid>
+        <title>fr</title>
+    </sys_language>
 </dataset>

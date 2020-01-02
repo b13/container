@@ -4,7 +4,7 @@
 		<uid>51</uid>
 		<pid>1</pid>
         <CType>b13-2cols-with-header-container</CType>
-        <header>container</header>
+        <header>container-language-1</header>
         <sorting>256</sorting>
         <sys_language_uid>1</sys_language_uid>
 	</tt_content>
@@ -13,7 +13,7 @@
         <pid>1</pid>
         <colPos>200</colPos>
         <tx_container_parent>51</tx_container_parent>
-        <CType>header</CType>
+        <CType>header-language-1</CType>
         <sorting>128</sorting>
         <header>header</header>
         <sys_language_uid>1</sys_language_uid>
@@ -24,7 +24,7 @@
         <colPos>201</colPos>
         <tx_container_parent>51</tx_container_parent>
         <CType>header</CType>
-        <header>left side</header>
+        <header>left-side-language-1</header>
         <sorting>64</sorting>
         <sys_language_uid>1</sys_language_uid>
     </tt_content>

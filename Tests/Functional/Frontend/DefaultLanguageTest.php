@@ -12,8 +12,8 @@ class DefaultLanguageTest extends FunctionalTestCase
     /**
      * @var string[]
      */
-    protected $coreExtensionsToLoad = ['core', 'frontend', 'workspaces'];
-    
+    protected $coreExtensionsToLoad = ['core', 'frontend', 'workspaces', 'fluid_styled_content'];
+
     /**
      * @var string[]
      */
@@ -47,16 +47,12 @@ class DefaultLanguageTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function checkIfSiteMapIndexContainsPagesSitemap(): void
+    public function childsAreRendered(): void
     {
         $response = $this->executeFrontendRequest(new InternalRequest());
-        self::assertEquals(200, $response->getStatusCode());
-        #self::assertArrayHasKey('Content-Length', $response->getHeaders());
-        #self::assertGreaterThan(0, $response->getHeader('Content-Length')[0]);
-        #self::assertArrayHasKey('Content-Type', $response->getHeaders());
-        #self::assertEquals('application/xml;charset=utf-8', $response->getHeader('Content-Type')[0]);
-        #self::assertArrayHasKey('X-Robots-Tag', $response->getHeaders());
-        #self::assertEquals('noindex', $response->getHeader('X-Robots-Tag')[0]);
-        #self::assertRegExp('/<loc>http:\/\/localhost\/\?sitemap=pages&amp;type=1533906435&amp;cHash=[^<]+<\/loc>/', (string)$response->getBody());
+        $body = (string)$response->getBody();
+        $this->assertStringContainsString('<h1 class="container">container-default</h1>', $body, 'container-default heading not found');
+        $this->assertStringContainsString('<h6 class="header-childs">header-default</h6>', $body, 'header-default heading not found');
+        $this->assertStringContainsString('<h6 class="left-childs">left-side-default</h6>', $body, 'left-side-default heading not found');
     }
 }
