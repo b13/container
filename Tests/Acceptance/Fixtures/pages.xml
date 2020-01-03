@@ -18,6 +18,12 @@
 	</pages>
 
     <pages>
+        <uid>20</uid>
+        <pid>1</pid>
+        <title>pageWithWorkspace</title>
+    </pages>
+
+    <pages>
         <uid>10</uid>
         <pid>1</pid>
         <title>pageWithLocalization</title>
@@ -34,16 +40,15 @@
     <pages>
         <uid>12</uid>
         <pid>1</pid>
-        <title>pageWithLocalizationFreeModeWidthContainer</title>
+        <title>pageWithLocalizationFreeModeWithContainer</title>
     </pages>
     <pages>
         <uid>13</uid>
         <pid>1</pid>
         <sys_language_uid>1</sys_language_uid>
         <l10n_parent>12</l10n_parent>
-        <l10n_source>12
-        </l10n_source>
-        <title>pageWithLocalizationFreeModeWidthContainer-1</title>
+        <l10n_source>12</l10n_source>
+        <title>pageWithLocalizationFreeModeWithContainer-1</title>
     </pages>
 
 </dataset>

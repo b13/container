@@ -89,6 +89,10 @@ class Database implements SingletonInterface
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
                     $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_oid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
             ->orderBy('sorting', 'ASC')
@@ -125,6 +129,35 @@ class Database implements SingletonInterface
             ->execute()
             ->fetchAll();
 
+        return $records;
+    }
+
+    /**
+     * @param array $records
+     * @param int $workspaceId
+     * @return array
+     */
+    public function fetchWorkspaceRecords(array $records, int $workspaceId): array
+    {
+        $uids = [];
+        foreach ($records as $record) {
+            $uids[] = $record['uid'];
+        }
+        $queryBuilder = $this->getQueryBuilder();
+        $records = (array)$queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->in(
+                    't3ver_oid',
+                    $queryBuilder->createNamedParameter($uids, Connection::PARAM_INT_ARRAY)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_wsid',
+                    $queryBuilder->createNamedParameter($workspaceId, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
         return $records;
     }
 

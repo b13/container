@@ -20,6 +20,7 @@ class BackendContainerEnvironment extends BackendEnvironment
             'install',
             'frontend',
             'recordlist',
+            'workspaces'
         ],
         'pathsToLinkInTestInstance' => [
             'typo3conf/ext/container/Build/sites' => 'typo3conf/sites'
@@ -34,6 +35,7 @@ class BackendContainerEnvironment extends BackendEnvironment
             'PACKAGE:typo3/testing-framework/Resources/Core/Acceptance/Fixtures/be_groups.xml',
             'EXT:container/Tests/Acceptance/Fixtures/sys_language.xml',
             'EXT:container/Tests/Acceptance/Fixtures/pages.xml',
+            'EXT:container/Tests/Acceptance/Fixtures/sys_workspace.xml',
             'EXT:container/Tests/Acceptance/Fixtures/tt_content.xml'
         ],
     ];

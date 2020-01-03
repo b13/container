@@ -49,4 +49,55 @@
         <CType>b13-2cols-with-header-container</CType>
     </tt_content>
 
+    <!-- WS -->
+    <tt_content>
+        <uid>200</uid>
+        <pid>20</pid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+
+    <tt_content>
+        <uid>201</uid>
+        <pid>20</pid>
+        <header>header-live</header>
+        <colPos>200</colPos>
+        <tx_container_parent>200</tx_container_parent>
+        <CType>header</CType>
+    </tt_content>
+
+    <tt_content>
+        <uid>202</uid>
+        <pid>-1</pid>
+        <header>header-ws</header>
+        <colPos>200</colPos>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>201</t3ver_oid>
+        <tx_container_parent>200</tx_container_parent>
+        <CType>header</CType>
+    </tt_content>
+
+    <!-- new element-->
+
+    <tt_content>
+        <uid>203</uid>
+        <pid>20</pid>
+        <header>header-new-ws</header>
+        <colPos>200</colPos>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>0</t3ver_oid>
+        <tx_container_parent>200</tx_container_parent>
+        <CType>header</CType>
+    </tt_content>
+
+    <tt_content>
+        <uid>204</uid>
+        <pid>-1</pid>
+        <header>header-new-ws</header>
+        <colPos>200</colPos>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>203</t3ver_oid>
+        <tx_container_parent>200</tx_container_parent>
+        <CType>header</CType>
+    </tt_content>
+
 </dataset>

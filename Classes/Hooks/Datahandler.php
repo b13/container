@@ -64,14 +64,19 @@ class Datahandler
      * @param string $command
      * @param string $table
      * @param int $id
-     * @param int $value
+     * @param mixed $value
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      * @param $pasteUpdate
      * @param $pasteDatamap
      * @return void
      */
-    public function processCmdmap_postProcess(string $command, string $table, int $id, int $value, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
+    public function processCmdmap_postProcess(string $command, string $table, int $id, $value, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
+        if (is_array($value)) {
+            // WS
+            #$value = ["action"]=> string(3) "new" ["label"]=> string(22) "Auto-created for WS #1" }
+            return;
+        }
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
             $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
@@ -186,7 +191,7 @@ class Datahandler
                         $container = $this->containerFactory->buildContainer((int)$id);
                         $childs = $container->getChildRecords();
                         foreach ($childs as $child) {
-                            if ($child['sys_language_uid'] !== $data['sys_language_uid']) {
+                            if ((int)$child['sys_language_uid'] !== (int)$data['sys_language_uid']) {
                                 $datamapForLocalizations['tt_content'][$child['uid']] = [
                                     'sys_language_uid' => $data['sys_language_uid']
                                 ];

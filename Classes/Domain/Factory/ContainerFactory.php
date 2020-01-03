@@ -74,6 +74,7 @@ class ContainerFactory implements SingletonInterface
         } else {
             $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
         }
+        $childRecords = $this->doWorkspaceOverlay($childRecords);
         $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
         if ($defaultRecord === null) {
             $container = new Container($record, $childRecordByColPosKey, $language);
@@ -81,6 +82,43 @@ class ContainerFactory implements SingletonInterface
             $container = new Container($defaultRecord, $childRecordByColPosKey, $language);
         }
         return $container;
+    }
+
+    /**
+     * @param array $defaultRecords
+     * @return array
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     */
+    protected function doWorkspaceOverlay(array $defaultRecords): array
+    {
+        $workspaceId = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('workspace', 'id');
+        if ($workspaceId > 0) {
+            $workspaceRecords = $this->database->fetchWorkspaceRecords($defaultRecords, $workspaceId);
+            $overlayed = [];
+            foreach ($defaultRecords as $defaultRecord) {
+                $foundOverlay = null;
+                foreach ($workspaceRecords as $workspaceRecord) {
+                    if($workspaceRecord['t3ver_oid'] === $defaultRecord['uid']) {
+                        $foundOverlay = $workspaceRecord;
+                    }
+                }
+                if ($foundOverlay !== null) {
+                    $overlayed[] = $foundOverlay;
+                } else {
+                    $overlayed[] = $defaultRecord;
+                }
+            }
+            return $overlayed;
+        } else {
+            // filter workspace placeholders
+            $filtered = [];
+            foreach($defaultRecords as $defaultRecord) {
+                if ($defaultRecord['t3ver_wsid'] === 0) {
+                    $filtered[] = $defaultRecord;
+                }
+            }
+            return $filtered;
+        }
     }
 
     /**
@@ -125,6 +163,7 @@ class ContainerFactory implements SingletonInterface
             }
         }
 
+        $childRecords = $this->doWorkspaceOverlay($childRecords);
         $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
         if ($defaultRecord === null) {
             $container = new Container($record, $childRecordByColPosKey, $language);
@@ -142,8 +181,6 @@ class ContainerFactory implements SingletonInterface
     protected function doOverlay(array $defaultRecords, array $localizedRecords): array
     {
         $overlayed = [];
-        #DebuggerUtility::var_dump($defaultRecords);
-        #DebuggerUtility::var_dump($localizedRecords);
         foreach ($defaultRecords as $defaultRecord) {
             $foundOverlay = null;
             foreach ($localizedRecords as $localizedRecord) {
@@ -157,7 +194,6 @@ class ContainerFactory implements SingletonInterface
                 $overlayed[] = $defaultRecord;
             }
         }
-        #DebuggerUtility::var_dump($overlayed);
         return $overlayed;
     }
 

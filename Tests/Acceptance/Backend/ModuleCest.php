@@ -115,7 +115,7 @@ class ModuleCest
      * @param BackendTester $I
      * @param PageTree $pageTree
      */
-    public function newElementInHeaderColumnHasExpectedColPosAndParentSeletected(BackendTester $I, PageTree $pageTree): void
+    public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree): void
     {
         $I->click('Page');
         $pageTree->openPath(['home', 'pageWithContainer']);
@@ -166,7 +166,7 @@ class ModuleCest
     {
         //@depends canCreateContainer
         $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWidthContainer']);
+        $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
 
