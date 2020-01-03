@@ -1,6 +1,6 @@
 <?php
 
-namespace  B13\Container\Hooks;
+namespace  B13\Container\Hooks\Datahandler;
 
 
 use TYPO3\CMS\Core\Database\Connection;
@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class DatahandlerDatabase implements SingletonInterface
+class Database implements SingletonInterface
 {
 
     /**
