@@ -27,17 +27,19 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =
         \B13\Container\Hooks\WizardItems::class;
 
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container-post-process'] =
+        \B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook::class;
+
     // before workspace hook, which delete container record
     if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'])) {
         $classes = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'];
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'] = array_merge(
-            ['tx_container' => \B13\Container\Hooks\Datahandler::class],
+            ['tx_container-delete' => \B13\Container\Hooks\Datahandler\DeleteHook::class],
             $classes
         );
-
     }
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container'] =
-        \B13\Container\Hooks\Datahandler::class;
+        \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class;
 
 
     // Xclass LocalizationController: adds grid columns to pageColumns to translate

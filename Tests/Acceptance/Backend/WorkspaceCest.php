@@ -68,6 +68,4 @@ class WorkspaceCest
         $I->see('header-ws');
         $I->see('header-new-ws');
     }
-
-
 }

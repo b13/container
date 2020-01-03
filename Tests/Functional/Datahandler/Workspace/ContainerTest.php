@@ -38,9 +38,13 @@ class ContainerTest extends DatahandlerTest
 
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
-        $row = $this->fetchOneRecord('uid', 5);
-        $this->assertSame(1, $row['t3ver_wsid']);
-        $this->assertSame(1, $row['t3ver_oid']);
+        // new container
+        $row = $this->fetchOneRecord('t3ver_oid', 1);
+        // child
+        $childRow = $this->fetchOneRecord('t3ver_oid', 2);
+        $this->assertSame(1, $childRow['t3ver_wsid']);
+        $this->assertSame($row['uid'], $childRow['tx_container_parent']);
+        //
     }
 
 }

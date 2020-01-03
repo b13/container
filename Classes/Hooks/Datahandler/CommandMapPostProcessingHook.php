@@ -35,10 +35,10 @@ class CommandMapPostProcessingHook
      */
     public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
-        if (is_array($value)) {
-            // WS
-            #$value = ["action"]=> string(3) "new" ["label"]=> string(22) "Auto-created for WS #1" }
-            return;
+        $action = (string)$value['action'];
+        if ($table === 'tt_content' && $command === 'version' && $action === 'new' && !empty($dataHandler->copyMappingArray['tt_content'][$id])) {
+            $newId = (int)$dataHandler->copyMappingArray['tt_content'][$id];
+            $this->verionizeChilds($id, $newId, $dataHandler);
         }
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
             $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
@@ -46,6 +46,33 @@ class CommandMapPostProcessingHook
             $this->copyOrMoveChilds($id, $value, $id,'move', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'localize') {
             $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
+        }
+    }
+
+    /**
+     * @param int $origContainerUid
+     * @param int $newContainerUid
+     * @param DataHandler $dataHandler
+     * @return void
+     */
+    protected function verionizeChilds(int $origContainerUid, int $newContainerUid, DataHandler $dataHandler): void
+    {
+        try {
+            $container = $this->containerFactory->buildContainer($origContainerUid);
+            $childs = $container->getChildRecords();
+            $datamap = ['tt_content' => []];
+            foreach ($childs as $colPos => $record) {
+                $datamap['tt_content'][$record['uid']] = [
+                    'tx_container_parent' => $newContainerUid,
+                ];
+            }
+            if (count($datamap['tt_content']) > 0) {
+                $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->start($datamap, [], $dataHandler->BE_USER);
+                $localDataHandler->process_datamap();
+            }
+        } catch (Exception $e) {
+            // nothing todo
         }
     }
 
