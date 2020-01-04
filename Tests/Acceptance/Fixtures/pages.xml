@@ -22,6 +22,14 @@
         <pid>1</pid>
         <title>pageWithWorkspace</title>
     </pages>
+    <pages>
+        <uid>21</uid>
+        <pid>1</pid>
+        <sys_language_uid>1</sys_language_uid>
+        <l10n_parent>20</l10n_parent>
+        <l10n_source>20</l10n_source>
+        <title>pageWithWorkspace-1</title>
+    </pages>
 
     <pages>
         <uid>10</uid>

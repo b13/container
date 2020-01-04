@@ -100,4 +100,38 @@
         <CType>header</CType>
     </tt_content>
 
+    <!-- translation -->
+
+    <tt_content>
+        <uid>205</uid>
+        <pid>20</pid>
+        <CType>b13-2cols-with-header-container</CType>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>200</l18n_parent>
+    </tt_content>
+
+    <tt_content>
+        <uid>206</uid>
+        <pid>20</pid>
+        <header>translation-live</header>
+        <colPos>200</colPos>
+        <tx_container_parent>200</tx_container_parent>
+        <CType>header</CType>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>201</l18n_parent>
+    </tt_content>
+
+    <tt_content>
+        <uid>207</uid>
+        <pid>-1</pid>
+        <header>translation-ws</header>
+        <colPos>200</colPos>
+        <tx_container_parent>200</tx_container_parent>
+        <CType>header</CType>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>201</l18n_parent>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>206</t3ver_oid>
+    </tt_content>
+
 </dataset>
