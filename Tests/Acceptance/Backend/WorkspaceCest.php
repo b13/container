@@ -33,7 +33,7 @@ class WorkspaceCest
     /**
      * @param BackendTester $I
      * @param PageTree $pageTree
-     * @group workspacex
+     * @group workspace
      */
     public function liveWorkspaceShowsLiveElements(BackendTester $I, PageTree $pageTree)
     {

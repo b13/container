@@ -22,29 +22,35 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function newVersionCreateNewVersionOfChilds(): void
+    public function newVersionNotCreateNewVersionOfChilds(): void
     {
         $datamap = [
             'tt_content' => [
                 1 => [
-                    'sys_language_uid' => '0',
-                    'CType' => 'b13-2cols-with-header-container',
                     'header' => 'container-ws',
-                    'tx_container_parent' => 0,
-                    'colPos' => 0
                 ]
             ]
         ];
 
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
+        
         // new container
         $row = $this->fetchOneRecord('t3ver_oid', 1);
+        $this->assertSame(1, $row['t3ver_wsid']);
         // child
-        $childRow = $this->fetchOneRecord('t3ver_oid', 2);
-        $this->assertSame(1, $childRow['t3ver_wsid']);
-        $this->assertSame($row['uid'], $childRow['tx_container_parent']);
-        //
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3ver_oid',
+                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        $this->assertFalse($row);
     }
 
 }
