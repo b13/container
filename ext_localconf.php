@@ -38,8 +38,10 @@ if (TYPO3_MODE === 'BE') {
             $classes
         );
     }
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container'] =
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container-before-start'] =
         \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container-after-database-operations'] =
+        \B13\Container\Hooks\Datahandler\DatamapAfterDatabaseOperationHook::class;
 
 
     // Xclass LocalizationController: adds grid columns to pageColumns to translate

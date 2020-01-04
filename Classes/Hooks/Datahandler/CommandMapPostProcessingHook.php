@@ -35,10 +35,6 @@ class CommandMapPostProcessingHook
      */
     public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
-        $action = (string)$value['action'];
-        if ($table === 'tt_content' && $command === 'version' && $action === 'new' && !empty($dataHandler->copyMappingArray['tt_content'][$id])) {
-            $newId = (int)$dataHandler->copyMappingArray['tt_content'][$id];
-        }
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
             $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {

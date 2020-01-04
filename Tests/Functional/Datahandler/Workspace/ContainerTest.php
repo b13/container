@@ -34,7 +34,7 @@ class ContainerTest extends DatahandlerTest
 
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
-        
+
         // new container
         $row = $this->fetchOneRecord('t3ver_oid', 1);
         $this->assertSame(1, $row['t3ver_wsid']);
@@ -51,6 +51,60 @@ class ContainerTest extends DatahandlerTest
             ->execute()
             ->fetch();
         $this->assertFalse($row);
+    }
+
+    /**
+     * @test
+     */
+    public function copyContainer(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $containerRow = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_oid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        $this->assertIsArray($containerRow);
+        $queryBuilder = $this->getQueryBuilder();
+        $rows = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        foreach ($rows as $row) {
+            $this->assertSame(1, $row['t3ver_wsid']);
+            $this->assertSame($containerRow['uid'], $row['tx_container_parent']);
+        }
     }
 
 }
