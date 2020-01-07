@@ -19,12 +19,14 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
         \B13\Container\Hooks\UsedRecords::class . '->addContainerChilds';
 
-    // add tx_container_parent parameter to urls
+    // add tx_container_parent parameter to wizard items
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =
         \B13\Container\Hooks\WizardItems::class;
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container-post-process'] =
         \B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container-before-start'] =
+        \B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook::class;
 
     // before workspace hook, which delete container record
     if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'])) {
@@ -38,4 +40,24 @@ if (TYPO3_MODE === 'BE') {
         \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container-after-database-operations'] =
         \B13\Container\Hooks\Datahandler\DatamapAfterDatabaseOperationHook::class;
+
+    $packageManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Package\PackageManager::class);
+    if ($packageManager->isPackageActive('content_defender')) {
+
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container-content-defender'] =
+            \B13\Container\ContentDefender\Hooks\WizardItems::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][ \B13\Container\ContentDefender\Form\FormDataProvider\TcaCTypeItems::class] = [
+            'depends' => [
+                \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class
+            ]
+        ];
+
+        // must be after tx_container
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container-content-defender'] =
+            \B13\Container\ContentDefender\Hooks\CommandMapHook::class;
+
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container-content-defender'] =
+            \B13\Container\ContentDefender\Hooks\DatamapHook::class;
+    }
+
 }

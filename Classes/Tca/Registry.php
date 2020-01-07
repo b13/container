@@ -15,6 +15,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class Registry implements SingletonInterface
 {
@@ -62,6 +63,25 @@ class Registry implements SingletonInterface
             'backendTemplate' => $backendTemplate,
             'grid' => $grid
         ];
+    }
+
+    /**
+     * @param string $cType
+     * @param int $colPos
+     * @return array
+     */
+    public function getAllowedConfiguration(string $cType, int $colPos): array
+    {
+        $allowed = [];
+        $rows = $this->getGrid($cType);
+            foreach ($rows as $columns) {
+                foreach ($columns as $column) {
+                    if ((int)$column['colPos'] === $colPos && is_array($column['allowed'])) {
+                        $allowed = $column['allowed'];
+                    }
+                }
+            }
+        return $allowed;
     }
 
     /**
