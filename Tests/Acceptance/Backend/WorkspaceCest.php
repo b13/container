@@ -48,7 +48,7 @@ class WorkspaceCest
         $I->dontSee('header-ws');
         $I->dontSee('header-new-ws');
     }
-    
+
 
     /**
      * @param BackendTester $I

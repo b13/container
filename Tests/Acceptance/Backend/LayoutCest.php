@@ -14,7 +14,7 @@ use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 
 
-class ModuleCest
+class LayoutCest
 {
 
 

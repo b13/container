@@ -22,11 +22,17 @@ class TableConfigurationPostProcessing implements TableConfigurationPostProcessi
      */
     protected $tcaRegistry = null;
 
+    /**
+     * @param Registry|null $tcaRegistry
+     */
     public function __construct(Registry $tcaRegistry = null)
     {
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
+    /**
+     * @return void
+     */
     public function processData()
     {
         $this->tcaRegistry->registerIcons();
