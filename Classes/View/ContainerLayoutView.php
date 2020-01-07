@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container;
+namespace B13\Container\View;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.

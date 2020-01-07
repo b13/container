@@ -10,7 +10,7 @@ namespace B13\Container\ViewHelpers;
  * of the License, or any later version.
  */
 
-use B13\Container\ContainerLayoutView;
+use B13\Container\View\ContainerLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;

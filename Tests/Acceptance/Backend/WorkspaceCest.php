@@ -48,6 +48,7 @@ class WorkspaceCest
         $I->dontSee('header-ws');
         $I->dontSee('header-new-ws');
     }
+    
 
     /**
      * @param BackendTester $I
@@ -56,9 +57,7 @@ class WorkspaceCest
      */
     public function testWorkspaceShowsWorkspaceElements(BackendTester $I, PageTree $pageTree)
     {
-        $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee('test-ws', self::$topBarModuleSelector);
-        $I->click('test-ws', self::$topBarModuleSelector);
+        $this->switchToTestWs($I);
         $I->click('Page');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
@@ -66,10 +65,7 @@ class WorkspaceCest
         $I->dontSee('header-live');
         $I->see('header-ws');
         $I->see('header-new-ws');
-        $I->switchToMainFrame();
-        $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee('LIVE workspace', self::$topBarModuleSelector);
-        $I->click('LIVE workspace', self::$topBarModuleSelector);
+        $this->switchToLiveWs($I);
     }
 
     /**
@@ -98,9 +94,7 @@ class WorkspaceCest
      */
     public function testWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
     {
-        $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee('test-ws', self::$topBarModuleSelector);
-        $I->click('test-ws', self::$topBarModuleSelector);
+        $this->switchToTestWs($I);
         $I->click('Page');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
@@ -110,9 +104,37 @@ class WorkspaceCest
 
         $I->dontSee('translation-live');
         $I->see('translation-ws');
+        $this->switchToLiveWs($I);
+    }
+
+    /**
+     * @param BackendTester $I
+     * @return void
+     */
+    protected function switchToLiveWs(BackendTester $I): void
+    {
+        $this->switchToWs($I, 'LIVE workspace');
+    }
+
+    /**
+     * @param BackendTester $I
+     * @return void
+     */
+    protected function switchToTestWs(BackendTester $I): void
+    {
+        $this->switchToWs($I, 'test-ws');
+    }
+
+    /**
+     * @param BackendTester $I
+     * @param string $ws
+     * @return void
+     */
+    protected function switchToWs(BackendTester $I, string $ws): void
+    {
         $I->switchToMainFrame();
         $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee('LIVE workspace', self::$topBarModuleSelector);
-        $I->click('LIVE workspace', self::$topBarModuleSelector);
+        $I->canSee($ws, self::$topBarModuleSelector);
+        $I->click($ws, self::$topBarModuleSelector);
     }
 }

@@ -10,7 +10,7 @@ namespace  B13\Container\Hooks;
  * of the License, or any later version.
  */
 
-use B13\Container\ContainerLayoutView;
+
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -32,12 +32,7 @@ class DrawItem implements PageLayoutViewDrawItemHookInterface
     {
 
         if ($row['CType'] === 'b13-2cols-with-header-container') {
-
-
-            #$containerLayouView = GeneralUtility::makeInstance(ContainerLayoutView::class);
-            #$containerLayouView->setContainerRecord($row);
-            #$content = $containerLayouView->getTable_tt_content($row['pid']);
-
+            
             #$drawItem = false;
             #$itemContent = $content;
         }
