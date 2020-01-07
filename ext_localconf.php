@@ -11,10 +11,6 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 if (TYPO3_MODE === 'BE') {
 
-    // not used
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem']['tx_container'] =
-        \B13\Container\Hooks\DrawItem::class;
-
     // register icons
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =
         \B13\Container\Hooks\TableConfigurationPostProcessing::class;
@@ -42,12 +38,4 @@ if (TYPO3_MODE === 'BE') {
         \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container-after-database-operations'] =
         \B13\Container\Hooks\Datahandler\DatamapAfterDatabaseOperationHook::class;
-
-
-    // Xclass LocalizationController: adds grid columns to pageColumns to translate
-    // not used
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
-        'className' => \B13\Container\Xclass\LocalizationController::class
-    ];
-
 }
