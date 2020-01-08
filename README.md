@@ -1,6 +1,47 @@
 # EXT:container
 
-## TypoScript
+## Features
+- simple amazing containers (grids) as TYPO3 CE
+- supports multilanguage (conntected or free mode (mixed mode not supported)) 
+- supports workspaces
+- supports the `àllowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
+- Frontend Rendering via DataProcessor
+
+
+## Configuration
+- Register your Container in your Extension in Configuration/TCA/Overrides/tt_content.php as new CType
+- add TypoScript and Template for Frontend-Rendering
+- add an Icon in Resources/Public/Icons/<CType>.svg
+- s. EXT:container_example for a simple usage
+
+### Registration of Container Elements
+
+    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->registerContainer(
+        'b13-2cols-with-header-container', // CType
+        '2 Column Container With Header', // label
+        'Some Description of the Container', // description
+        'container_example', // extKey
+        [
+            [
+                ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']]
+            ],
+            [
+                ['name' => 'left side', 'colPos' => 201],
+                ['name' => 'right side', 'colPos' => 202]
+            ]
+        ] // grid
+    );
+    
+__Notes__    
+- if EXT:content_defender ist installed allowed-CType Parameter in column Configuration cat be configured to restrict allowed CTypes in a container column
+- you should provide an Icon in Resources/Public/Icons/<CType>.svg
+- this registry do
+  - add CType to TCA Select Items 
+  - register your Icon (s. above)
+  - adds page TS for newContentElement.wizardItems
+  - saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
+
+### TypoScript
 
     tt_content.2Cols < lib.contentElement
     tt_content.2Cols {
@@ -23,9 +64,7 @@
     }
 
 
-## Template
-
-
+### Template
 
     <f:for each="{childsLeft}" as="record">
         {record.header} <br />
@@ -35,7 +74,6 @@
 
     </f:for>
 
-
     <f:for each="{childsRight}" as="record">
         {record.header} <br />
         <f:format.raw>
@@ -43,37 +81,14 @@
         </f:format.raw>
     </f:for>
 
+## Concepts
+- Complete Registration is done with one Call to TCA-Registry
+- a container in the BE Page-Module is rendered like a page itselfs (s. View/ContainerLayoutView)
+- for BE Clipboard and Drag & Drop <tx_container_parent>_<colPos> use used in the data-colpos Attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
+- the <tx_container_parent>_<colPos> Parameter ist resolved to tx_container_parent and colPos Value in Datahandler Hooks
+- when translate a container all child Elements gets also translated (the child Elements are not explicit listed during the Translation-Dialog)
+- copy or move childs of a container copies or moves translations also
 
-done:
-TCA namespace
-Registry as singeleton ohne static
-rm demo from EXT:container
-rm ContainerRenderedChildsProcessor
-mv Container to other page
-unused Elements
-
-todo
-integrity
-
-// todo more tests
-
-* wieder weggeschmissen, s. u.: localization shows container colPos
-* done new in edit element has default values
-* done new childElement in translated Container in free has the translated Container uid as parent
-* list module edit stuff
-* done: change ColPos
-* change CType
-
-
-* copyToLanguage do not copy childs
-* localize localize childs -> childs are not localizable during translation
-* allow mixed mode
-* fallback for FE
-
-* move Element outside container reset parent field
-* move child element changed localization colPos and parent
-
-moveChildOutsideContainerResetParentField und moveChildElementMovesTranslations ist nicht das selbe, wie wenn ich das im BE verschiebe !!!
-
-
-
+## TODOs / Proofments
+- integrity proofment
+- list modlue actions
