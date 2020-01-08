@@ -12,12 +12,12 @@ namespace  B13\Container\ContentDefender\Hooks;
 
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use B13\Container\Domain\Factory\ContainerFactory;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use B13\Container\Hooks\Datahandler\Database;
 
 class CommandMapHook
 {
@@ -32,15 +32,22 @@ class CommandMapHook
     protected $containerFactory = null;
 
     /**
-     * UsedRecords constructor.
+     * @var Database
+     */
+    protected $database = null;
+
+    /**
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $tcaRegistry
+     * @param Database|null $database
      */
-    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
+    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, Database $database = null)
     {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
     }
+
     /**
      * @param DataHandler $dataHandler
      */
@@ -48,18 +55,8 @@ class CommandMapHook
     {
         if (!empty($dataHandler->cmdmap['tt_content'])) {
             foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {
-                #var_dump($id);
-                #var_dump($dataHandler->datamap);
+
                 foreach ($cmds as $cmd => $data) {
-                    #var_dump($cmd);
-                    #var_dump($data);
-                    #var_dump($dataHandler->datamap['tt_content']);
-                    if (!empty($data['update'])) {
-
-                    } elseif ($dataHandler->datamap['tt_content'][$id]) {
-                        #var_dump($dataHandler->datamap['tt_content'][$id]);
-                    }
-
                     if (
                         ($cmd === 'copy' || $cmd === 'move') &&
                         (!empty($data['update'])) &&
@@ -70,7 +67,8 @@ class CommandMapHook
 
                     ) {
                         try {
-                            $record = BackendUtility::getRecord('tt_content', $id);
+                            $record = $this->database->fetchOneRecord((int)$id);
+
                             $recordCType = $record['CType'];
                             $parent = (int)$data['update']['tx_container_parent'];
                             $colPos = (int)$data['update']['colPos'];

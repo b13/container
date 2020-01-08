@@ -38,24 +38,6 @@ class DatamapBeforeStartHook
         $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
     }
 
-    /*
-     * processDatamap_beforeStart
-     * processDatamap_preProcessFieldArray
-     * processDatamap_postProcessFieldArray
-     * processDatamap_afterDatabaseOperations
-     * processDatamap_afterAllOperations
-     *
-     * processCmdmap_beforeStart
-     * processCmdmap_preProcess
-     * processCmdmap_postProcess
-     * processCmdmap_afterFinish
-     *
-     * processCmdmap_deleteAction
-     * moveRecord
-     * processCmdmap_deleteAction
-     *
-     */
-
     /**
      * @param DataHandler $dataHandler
      */

@@ -12,7 +12,6 @@ namespace  B13\Container\ContentDefender\Hooks;
 
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,15 +33,22 @@ class DatamapHook
     protected $containerFactory = null;
 
     /**
-     * UsedRecords constructor.
+     * @var Database
+     */
+    protected $database = null;
+
+    /**
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $tcaRegistry
+     * @param Database|null $database
      */
-    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
+    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, Database $database = null)
     {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
     }
+
     /**
      * @param DataHandler $dataHandler
      */
@@ -50,8 +56,6 @@ class DatamapHook
     {
         if (is_array($dataHandler->datamap['tt_content'])) {
             foreach ($dataHandler->datamap['tt_content'] as $id => $values) {
-               # var_dump($id);
-               # var_dump($values);
                 if (
                     isset($values['tx_container_parent']) &&
                     $values['tx_container_parent'] > 0 &&
@@ -61,7 +65,11 @@ class DatamapHook
                     if (isset($values['CType'])) {
                         $recordCType = $values['CType'];
                     } elseif (MathUtility::canBeInterpretedAsInteger($id)) {
-                        $record = BackendUtility::getRecord('tt_content', $id);
+                        $record = $this->database->fetchOneRecord((int)$id);
+                        if ($record['sys_language_uid'] > 0 && $record['l18n_parent'] > 0) {
+                            // use default language CType
+                            $record = $this->database->fetchOneRecord((int)$record['l18n_parent']);
+                        }
                         $recordCType = $record['CType'];
                     } else {
                         continue;
