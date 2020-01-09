@@ -2,7 +2,7 @@
 
 ## Features
 - simple amazing containers (grids) as TYPO3 CE
-- supports multilanguage (conntected or free mode (mixed mode not supported)) 
+- supports multilanguage (conntected or free mode (mixed mode not supported))
 - supports workspaces
 - supports the `àllowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
 - Frontend Rendering via DataProcessor
@@ -31,12 +31,12 @@
             ]
         ] // grid
     );
-    
-__Notes__    
+
+__Notes__
 - if EXT:content_defender ist installed allowed-CType Parameter in column Configuration cat be configured to restrict allowed CTypes in a container column
-- you should provide an Icon in Resources/Public/Icons/<CType>.svg
+- you should provide an Icon in `Resources/Public/Icons/<CType>.svg`
 - this registry do
-  - add CType to TCA Select Items 
+  - add CType to TCA Select Items
   - register your Icon (s. above)
   - adds page TS for newContentElement.wizardItems
   - saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
@@ -71,7 +71,6 @@ __Notes__
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
-
     </f:for>
 
     <f:for each="{childsRight}" as="record">
