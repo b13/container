@@ -35,6 +35,10 @@ class DefaultLanguageTest extends FunctionalTestCase
         'typo3conf/ext/container_example'
     ];
 
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \TYPO3\TestingFramework\Core\Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,13 +56,33 @@ class DefaultLanguageTest extends FunctionalTestCase
 
     /**
      * @test
+     * @group frontend
      */
     public function childsAreRendered(): void
     {
         $response = $this->executeFrontendRequest(new InternalRequest());
         $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
         $this->assertStringContainsString('<h1 class="container">container-default</h1>', $body, 'container-default heading not found');
         $this->assertStringContainsString('<h6 class="header-childs">header-default</h6>', $body, 'header-default heading not found');
         $this->assertStringContainsString('<h6 class="left-childs">left-side-default</h6>', $body, 'left-side-default heading not found');
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    protected function prepareContent(string $string): string
+    {
+        $lines = explode("\n", $string);
+        $notEmpty = [];
+        foreach ($lines as $line) {
+            if (trim($line) !== '') {
+                $notEmpty[] = trim($line);
+            }
+        }
+        $content = implode('', $notEmpty);
+        $content = preg_replace('/<div id="container-start"><\/div>(.*)<div id="container-end"><\/div>/', '$1', $content);
+        return $content;
     }
 }
