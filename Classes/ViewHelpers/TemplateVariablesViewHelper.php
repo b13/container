@@ -58,7 +58,7 @@ class TemplateVariablesViewHelper extends AbstractViewHelper
         }
 
         $output = $renderChildrenClosure();
-        $templateVariableContainer->remove('containerConfiguration');
+        $templateVariableContainer->remove('grid');
         return $output;
     }
 }

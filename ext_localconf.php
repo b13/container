@@ -23,6 +23,7 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =
         \B13\Container\Hooks\WizardItems::class;
 
+    // datahandler hooks
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container-post-process'] =
         \B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container-before-start'] =
@@ -41,6 +42,7 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container-after-database-operations'] =
         \B13\Container\Hooks\Datahandler\DatamapAfterDatabaseOperationHook::class;
 
+    // EXT:content_defender
     $packageManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Package\PackageManager::class);
     if ($packageManager->isPackageActive('content_defender')) {
 
