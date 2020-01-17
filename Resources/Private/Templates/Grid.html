@@ -8,7 +8,7 @@
         <f:for each="{grid}" as="row">
             <tr>
                 <f:for each="{row}" as="column">
-                    <td{f:if(condition:"{column.colspan}", then: ' colspan="{column.colspan}"')}>
+                    <td valign="top"{f:if(condition:"{column.colspan}", then: ' colspan="{column.colspan}"')}>
 
                     <container:drawChilds uid="{uid}" colPos="{column.colPos}"  />
 
