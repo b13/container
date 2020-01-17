@@ -4,8 +4,8 @@
     "type": "typo3-cms-extension",
     "require": {
         "typo3/cms-backend": "^10.0",
-        "typo3/cms-workspaces": "^10.0",
-        "typo3/cms-fluid-styled-content": "^10.0"
+        "typo3/cms-fluid-styled-content": "^10.0",
+        "typo3/cms-workspaces": "^10.0"
     },
     "repositories": [
         {

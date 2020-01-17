@@ -23,7 +23,7 @@
         'container_example', // extKey
         [
             [
-                ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']]
+                ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']] // rowspan also supported
             ],
             [
                 ['name' => 'left side', 'colPos' => 201],
@@ -32,6 +32,7 @@
         ] // grid
         'EXT:container/Resources/Private/Templates/Container.html' // Template for Backend View
         'EXT:container/Resources/Private/Templates/Grid.html' // Template for Grid
+        true // register in new content element wizard
     );
 
 __Notes__
@@ -93,3 +94,10 @@ __Notes__
 ## TODOs / Proofments
 - integrity proofment
 - list modlue actions
+
+## Extension Tests
+- run `composer install && composer require typo3/cms-workspaces:^10.0` (we do not want want EXT:workspace as Project Dependency (but needed for Tests))
+- run `Build/Scripts/runTests.sh -s unit`
+- run `Build/Scripts/runTests.sh -s functional`
+- run `Build/Scripts/runTests.sh -s acceptance`
+

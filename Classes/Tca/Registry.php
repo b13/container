@@ -27,7 +27,8 @@ class Registry implements SingletonInterface
      * @param string $extKey
      * @param array $grid
      * @param string $backendTemplate
-     * @return void
+     * @param string $gridTemplate
+     * @param bool $registerInNewContentElementWizard
      */
     public function registerContainer(
         string $cType,
@@ -36,8 +37,10 @@ class Registry implements SingletonInterface
         string $extKey,
         array $grid = [],
         string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
-        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html'
-    ): void {
+        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
+        bool $registerInNewContentElementWizard = true
+    ): void
+    {
 
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
@@ -63,7 +66,8 @@ class Registry implements SingletonInterface
             'description' => $description,
             'backendTemplate' => $backendTemplate,
             'grid' => $grid,
-            'gridTemplate' => $gridTemplate
+            'gridTemplate' => $gridTemplate,
+            'registerInNewContentElementWizard' => $registerInNewContentElementWizard
         ];
     }
 
@@ -200,7 +204,8 @@ mod.wizards.newContentElement.wizardItems.container.header = Container
 mod.wizards.newContentElement.wizardItems.container.show = *
 ';
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {
-                $content .= 'mod.wizards.newContentElement.wizardItems.container.elements {
+                if ($containerConfiguration['registerInNewContentElementWizard'] === true) {
+                    $content .= 'mod.wizards.newContentElement.wizardItems.container.elements {
     ' . $cType . ' {
         title = ' . $containerConfiguration['label'] . '
         description = ' . $containerConfiguration['description'] . '
@@ -209,7 +214,7 @@ mod.wizards.newContentElement.wizardItems.container.show = *
     }
 }
 ';
-
+                }
                 $content .= 'mod.web_layout.tt_content.preview {
     ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
