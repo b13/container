@@ -35,7 +35,8 @@ class Registry implements SingletonInterface
         string $description,
         string $extKey,
         array $grid = [],
-        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html'
+        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
+        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html'
     ): void {
 
         ExtensionManagementUtility::addTcaSelectItem(
@@ -61,7 +62,8 @@ class Registry implements SingletonInterface
             'label' => $label,
             'description' => $description,
             'backendTemplate' => $backendTemplate,
-            'grid' => $grid
+            'grid' => $grid,
+            'gridTemplate' => $gridTemplate
         ];
     }
 
@@ -134,6 +136,18 @@ class Registry implements SingletonInterface
             return [];
         }
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'];
+    }
+
+    /**
+     * @param string $cType
+     * @return string|null
+     */
+    public function getGridTemplate(string $cType): ?string
+    {
+        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridTemplate'])) {
+            return null;
+        }
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridTemplate'];
     }
 
     /**

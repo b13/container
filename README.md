@@ -30,6 +30,8 @@
                 ['name' => 'right side', 'colPos' => 202]
             ]
         ] // grid
+        'EXT:container/Resources/Private/Templates/Container.html' // Template for Backend View
+        'EXT:container/Resources/Private/Templates/Grid.html' // Template for Grid
     );
 
 __Notes__

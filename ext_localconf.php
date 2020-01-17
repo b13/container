@@ -11,6 +11,9 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 if (TYPO3_MODE === 'BE') {
 
+    // draw container grid
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
+        \B13\Container\Hooks\DrawItem::class;
     // register icons
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =
         \B13\Container\Hooks\TableConfigurationPostProcessing::class;
