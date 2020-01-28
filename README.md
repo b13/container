@@ -20,7 +20,7 @@
         'b13-2cols-with-header-container', // CType
         '2 Column Container With Header', // label
         'Some Description of the Container', // description
-        'container_example', // extKey
+        'EXT:container/Resources/Public/Icons/Extension.svg', // icon file, or existing icon identifier
         [
             [
                 ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']] // rowspan also supported
@@ -37,10 +37,9 @@
 
 __Notes__
 - if EXT:content_defender ist installed allowed-CType Parameter in column Configuration cat be configured to restrict allowed CTypes in a container column
-- you should provide an Icon in `Resources/Public/Icons/<CType>.svg`
 - this registry do
   - add CType to TCA Select Items
-  - register your Icon (s. above)
+  - register your Icon
   - adds page TS for newContentElement.wizardItems
   - saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
 

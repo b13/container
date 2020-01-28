@@ -24,7 +24,7 @@ class Registry implements SingletonInterface
      * @param string $cType
      * @param string $label
      * @param string $description
-     * @param string $extKey
+     * @param string $icon
      * @param array $grid
      * @param string $backendTemplate
      * @param string $gridTemplate
@@ -34,7 +34,7 @@ class Registry implements SingletonInterface
         string $cType,
         string $label,
         string $description,
-        string $extKey,
+        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
         array $grid = [],
         string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
         string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
@@ -61,7 +61,7 @@ class Registry implements SingletonInterface
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType] = [
             'cType' => $cType,
-            'extKey' => $extKey,
+            'icon' => $icon,
             'label' => $label,
             'description' => $description,
             'backendTemplate' => $backendTemplate,
@@ -98,27 +98,26 @@ class Registry implements SingletonInterface
         if (is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
-                $iconRegistry->registerIcon(
-                    $containerConfiguration['cType'],
-                    SvgIconProvider::class,
-                    ['source' => $this->getIcon($containerConfiguration['cType'], $containerConfiguration['extKey'])]
-                );
+                if (file_exists(GeneralUtility::getFileAbsFileName($containerConfiguration['icon']))) {
+                    $iconRegistry->registerIcon(
+                        $containerConfiguration['cType'],
+                        SvgIconProvider::class,
+                        ['source' => $containerConfiguration['icon']]
+                    );
+                } else {
+                    try {
+                        $existingIconConfiguration = $iconRegistry->getIconConfigurationByIdentifier($containerConfiguration['icon']);
+                        $iconRegistry->registerIcon(
+                            $containerConfiguration['cType'],
+                            $existingIconConfiguration['provider'],
+                            $existingIconConfiguration['options']
+                        );
+                    } catch (\TYPO3\CMS\Core\Exception $e) {
+
+                    }
+                }
             }
         }
-    }
-
-    /**
-     * @param string $cType
-     * @param string $extKey
-     * @return string
-     */
-    protected function getIcon(string $cType, string $extKey): string
-    {
-        $icon = 'EXT:' . $extKey . '/Resources/Public/Icons/' . $cType . '.svg';
-        if (!file_exists(GeneralUtility::getFileAbsFileName($icon))) {
-            $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
-        }
-        return $icon;
     }
 
     /**
