@@ -20,7 +20,7 @@
         'b13-2cols-with-header-container', // CType
         '2 Column Container With Header', // label
         'Some Description of the Container', // description
-        'EXT:container/Resources/Public/Icons/Extension.svg', // icon
+        'EXT:container/Resources/Public/Icons/Extension.svg', // icon file, or existing icon identifier
         [
             [
                 ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']] // rowspan also supported

@@ -98,11 +98,24 @@ class Registry implements SingletonInterface
         if (is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
-                $iconRegistry->registerIcon(
-                    $containerConfiguration['cType'],
-                    SvgIconProvider::class,
-                    ['source' => $containerConfiguration['icon']]
-                );
+                if (file_exists(GeneralUtility::getFileAbsFileName($containerConfiguration['icon']))) {
+                    $iconRegistry->registerIcon(
+                        $containerConfiguration['cType'],
+                        SvgIconProvider::class,
+                        ['source' => $containerConfiguration['icon']]
+                    );
+                } else {
+                    try {
+                        $existingIconConfiguration = $iconRegistry->getIconConfigurationByIdentifier($containerConfiguration['icon']);
+                        $iconRegistry->registerIcon(
+                            $containerConfiguration['cType'],
+                            $existingIconConfiguration['provider'],
+                            $existingIconConfiguration['options']
+                        );
+                    } catch (\TYPO3\CMS\Core\Exception $e) {
+
+                    }
+                }
             }
         }
     }
