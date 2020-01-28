@@ -96,7 +96,7 @@ __Notes__
 - list modlue actions
 
 ## Extension Tests
-- run `composer install && composer require typo3/cms-workspaces:^10.0` (we do not want want EXT:workspace as Project Dependency (but needed for Tests))
+- run `composer install`
 - run `Build/Scripts/runTests.sh -s unit`
 - run `Build/Scripts/runTests.sh -s functional`
 - run `Build/Scripts/runTests.sh -s acceptance`

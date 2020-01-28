@@ -3,14 +3,13 @@
     "description": "Container Content Elements",
     "type": "typo3-cms-extension",
     "require": {
-        "typo3/cms-backend": "^10.0",
-        "typo3/cms-fluid-styled-content": "^10.0",
-        "typo3/cms-workspaces": "^10.0"
+        "typo3/cms-backend": "^9.5 || ^10.0",
+        "typo3/cms-fluid-styled-content": "^9.5 || ^10.0"
     },
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@code.b13.com:afritz/container-example.git"
+            "url": "git@code.b13.com:typo3-extensions/container-example.git"
         }
     ],
     "autoload": {
@@ -31,11 +30,14 @@
     },
     "require-dev": {
         "b13/container-example": "dev-master",
-		"ichhabrecht/content-defender": "dev-master",
+        "ichhabrecht/content-defender": "dev-master",
         "typo3/cms-install": "^10.0",
         "typo3/cms-about": "^10.0",
         "typo3/testing-framework": "~6.1.0",
-        "codeception/codeception": "^3"
+        "codeception/codeception": "^3",
+        "typo3/cms-workspaces": "^10.0",
+        "typo3/cms-backend": "^10.0",
+        "typo3/cms-fluid-styled-content": "^10.0"
     },
     "replace": {
         "typo3-ter/container": "self.version"
@@ -46,8 +48,8 @@
             "if [ ! -e .Build/Web/vendor ]; then cd .Build/Web  && ln -s ../vendor && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/ext/json_response ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/typo3/testing-framework/Resources/Core/Functional/Extensions/json_response && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/ext/container_example ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/b13/container-example container_example && cd -; fi",
-			"if [ ! -e .Build/Web/typo3conf/ext/content_defender ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/ichhabrecht/content-defender content_defender && cd -; fi",
-			"if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
+            "if [ ! -e .Build/Web/typo3conf/ext/content_defender ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/ichhabrecht/content-defender content_defender && cd -; fi",
+            "if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
         ]
     },
     "extra": {
