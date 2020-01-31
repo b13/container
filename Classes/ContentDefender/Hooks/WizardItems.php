@@ -59,10 +59,30 @@ class WizardItems extends WizardItemsHook
                     $allowedValues = GeneralUtility::trimExplode(',', $value);
                     $wizardItems = $this->removeDisallowedValues($wizardItems, $field, $allowedValues);
                 }
+                $wizardItems = $this->removeEmptyTabs($wizardItems);
             } catch (Exception $e) {
                 // not a container
             }
         }
+    }
+
+    /**
+     * @param array $wizardItems
+     * @return array
+     */
+    protected function removeEmptyTabs(array $wizardItems): array
+    {
+        $availableWizardItems = [];
+        foreach ($wizardItems as $key => $def) {
+            $keyParts = explode('_', $key, 2);
+            if (count($keyParts) === 1) {
+                continue;
+            }
+            $availableWizardItems[$keyParts[0]] = $key;
+            $availableWizardItems[$key] = $key;
+        }
+
+        return array_intersect_key($wizardItems, $availableWizardItems);
     }
 
 
