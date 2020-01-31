@@ -23,7 +23,7 @@ class ContainerFactory implements SingletonInterface
     /**
      * @var Database
      */
-    protected $database;
+    protected $database = null;
 
     /**
      * @var Registry

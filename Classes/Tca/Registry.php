@@ -130,6 +130,14 @@ class Registry implements SingletonInterface
     }
 
     /**
+     * @return array
+     */
+    public function getRegisteredCTypes(): array
+    {
+        return array_keys((array)$GLOBALS['TCA']['tt_content']['containerConfiguration']);
+    }
+
+    /**
      * @param string $cType
      * @return array
      */

@@ -10,12 +10,10 @@ namespace B13\Container\Command;
  * of the License, or any later version.
  */
 
+use B13\Container\Integrity\Integrity;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class IntegrityCommand extends Command
@@ -27,25 +25,16 @@ class IntegrityCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $cmdmap = [
-            'tt_content' => [
-                2 => [
-                    'copy' => [
-                        'action' => 'paste',
-                        'target' => 2,
-                        'update' => [
-                            'colPos' => 0
-                        ]
-                    ]
-                ]
-            ]
-        ];
-        Bootstrap::initializeBackendAuthentication();
-        $datahander = GeneralUtility::makeInstance(DataHandler::class);
-        #$adminUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
-        #$adminUser->isAdmin()
-        $datahander->start([], $cmdmap);
-        $datahander->process_cmdmap();
+        $integrity = GeneralUtility::makeInstance(Integrity::class);
+        $res = $integrity->run();
+        if (count($res['errors']) > 0) {
+            $output->writeln('ERRORS');
+            $output->writeln(implode("\n", $res['errors']));
+        }
+        if (count($res['warnings']) > 0) {
+            $output->writeln('WARNINGS');
+            $output->writeln(implode("\n", $res['warnings']));
+        }
     }
 
 }
