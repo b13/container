@@ -10,6 +10,9 @@ namespace B13\Container\Integrity;
  * of the License, or any later version.
  */
 
+use B13\Container\Integrity\Error\NonExistingParentError;
+use B13\Container\Integrity\Error\UnusedColPosWarning;
+use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -58,22 +61,14 @@ class Integrity implements SingletonInterface
         $containerChildRecords = $this->database->getContainerChildRecords();
         foreach ($containerChildRecords as $containerChildRecord) {
             if (empty($containerRecords[$containerChildRecord['tx_container_parent']])) {
-                $res['errors'][] = 'container child with uid ' . $containerChildRecord['uid'] .
-                    ' has non existing tx_container_parent ' . $containerChildRecord['tx_container_parent'];
+                $res['errors'][] = new NonExistingParentError($containerChildRecord);
             } else {
                 $containerRecord = $containerRecords[$containerChildRecord['tx_container_parent']];
                 if ($containerRecord['pid'] !== $containerChildRecord['pid']) {
-                    $res['errors'][] = 'container child with uid ' . $containerChildRecord['uid'] .
-                        ' has pid ' . $containerChildRecord['pid']
-                        . ' but tx_container_parent ' . $containerChildRecord['tx_container_parent']
-                        . ' has pid ' . $containerRecord['pid'];
+                    $res['errors'][] = new WrongPidError($containerChildRecord, $containerRecord);
                 }
                 if (!in_array($containerChildRecord['colPos'], $colPosByCType[$containerRecord['CType']])) {
-                    $res['warnings'][] = 'container child with uid ' . $containerChildRecord['uid']
-                        . ' on page ' . $containerChildRecord['pid'] .
-                        ' has invlid colPos ' . $containerChildRecord['colPos']
-                        . ' in container ' . $containerChildRecord['tx_container_parent']
-                        . ' with CType ' . $containerRecord['CType'];
+                    $res['warnings'][] = new UnusedColPosWarning($containerChildRecord, $containerRecord);
                 }
             }
 

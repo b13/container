@@ -29,11 +29,15 @@ class IntegrityCommand extends Command
         $res = $integrity->run();
         if (count($res['errors']) > 0) {
             $output->writeln('ERRORS');
-            $output->writeln(implode("\n", $res['errors']));
+            foreach ($res['errors'] as $error) {
+                $output->writeln($error->getErrorMessage());
+            }
         }
         if (count($res['warnings']) > 0) {
             $output->writeln('WARNINGS');
-            $output->writeln(implode("\n", $res['warnings']));
+            foreach ($res['warnings'] as $error) {
+                $output->writeln($error->getErrorMessage());
+            }
         }
     }
 
