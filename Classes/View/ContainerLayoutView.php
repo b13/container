@@ -55,6 +55,7 @@ class ContainerLayoutView extends PageLayoutView
     {
 
         $this->initWebLayoutModuleData();
+        $this->initLabels();
 
         try {
             $container = $this->containerFactory->buildContainer($uid);
@@ -64,6 +65,22 @@ class ContainerLayoutView extends PageLayoutView
         $this->container = $container;
         $content = $this->renderRecords($colPos);
         return $content;
+    }
+
+    /**
+     * @return void
+     */
+    protected function initLabels(): void
+    {
+        $this->CType_labels = [];
+        foreach ($GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'] as $val) {
+            $this->CType_labels[$val[1]] = $this->getLanguageService()->sL($val[0]);
+        }
+
+        $this->itemLabels = [];
+        foreach ($GLOBALS['TCA']['tt_content']['columns'] as $name => $val) {
+            $this->itemLabels[$name] = $this->getLanguageService()->sL($val['label']);
+        }
     }
 
     /**
@@ -121,10 +138,6 @@ class ContainerLayoutView extends PageLayoutView
         if (isset($webLayoutModuleData['tt_content_showHidden'])) {
             $this->tt_contentConfig['showHidden'] = $webLayoutModuleData['tt_content_showHidden'];
         }
-        #$this->tt_contentConfig['sys_language_uid'] = (int)$webLayoutModuleData['language'];
-        #if ((int)$webLayoutModuleData['function'] === 2) {
-        #    $this->tt_contentConfig['languageMode'] = 1;
-        #}
     }
 
     /**
@@ -238,7 +251,6 @@ class ContainerLayoutView extends PageLayoutView
                 $singleElementHTML = '<div class="t3-page-ce-dragitem" id="' . StringUtility::getUniqueId() . '">';
                 // new is visible ... s. ContextMenuController
                 $disableMoveAndNewButtons = !$this->isLanguageEditable();
-                // todo info
                 $singleElementHTML .= $this->tt_content_drawHeader(
                     $row,
                     $this->tt_contentConfig['showInfo'] ? 15 : 5,
