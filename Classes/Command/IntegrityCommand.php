@@ -23,7 +23,7 @@ class IntegrityCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    public function execute(InputInterface $input, OutputInterface $output): void
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $integrity = GeneralUtility::makeInstance(Integrity::class);
         $res = $integrity->run();
@@ -39,6 +39,10 @@ class IntegrityCommand extends Command
                 $output->writeln($error->getErrorMessage());
             }
         }
+        if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
+            $output->writeln('Godo Job, no ERRORS/WARNINGS');
+        }
+        return 0;
     }
 
 }
