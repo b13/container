@@ -100,3 +100,9 @@ __Notes__
 - run `Build/Scripts/runTests.sh -s functional`
 - run `Build/Scripts/runTests.sh -s acceptance`
 
+## Credits
+
+This extension was created by Achim Fritz in 2020 for [b13 GmbH, Stuttgart](https://b13.com).
+
+[Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code..
+
