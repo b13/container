@@ -4,7 +4,7 @@
 - simple amazing containers (grids) as TYPO3 CE
 - supports multilanguage (conntected or free mode (mixed mode not supported))
 - supports workspaces
-- supports the `àllowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
+- supports the `allowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
 - Frontend Rendering via DataProcessor
 
 
