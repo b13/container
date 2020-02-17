@@ -4,7 +4,7 @@
 - simple amazing containers (grids) as TYPO3 CE
 - supports multilanguage (conntected or free mode (mixed mode not supported))
 - supports workspaces
-- supports the `àllowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
+- supports the `allowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
 - Frontend Rendering via DataProcessor
 
 
@@ -99,4 +99,10 @@ __Notes__
 - run `Build/Scripts/runTests.sh -s unit`
 - run `Build/Scripts/runTests.sh -s functional`
 - run `Build/Scripts/runTests.sh -s acceptance`
+
+## Credits
+
+This extension was created by Achim Fritz in 2020 for [b13 GmbH, Stuttgart](https://b13.com).
+
+[Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code..
 
