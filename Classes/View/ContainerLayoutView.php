@@ -62,6 +62,8 @@ class ContainerLayoutView extends PageLayoutView
         } catch (\B13\Container\Domain\Factory\Exception $e) {
             return '';
         }
+        $this->id = $container->getPid();
+        $this->pageinfo = BackendUtility::readPageAccess($this->id, '');
         $this->container = $container;
         $content = $this->renderRecords($colPos);
         return $content;
