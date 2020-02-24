@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <be_groups>
+        <uid>1</uid>
+        <pid>0</pid>
+        <tstamp>1452959228</tstamp>
+        <title>some test group</title>
+        <db_mountpoints>1</db_mountpoints>
+        <tables_modify>tt_content</tables_modify>
+        <tables_select>pages,tt_content</tables_select>
+        <groupMods>web_layout,help_AboutAbout</groupMods>
+        <crdate>1452959228</crdate>
+        <cruser_id>1</cruser_id>
+    </be_groups>
+</dataset>
+
+

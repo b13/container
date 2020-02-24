@@ -5,6 +5,7 @@
 		<pid>0</pid>
         <is_siteroot>1</is_siteroot>
         <title>home</title>
+        <perms_everybody>17</perms_everybody>
 	</pages>
     <pages>
         <uid>2</uid>
@@ -15,6 +16,7 @@
 		<uid>3</uid>
 		<pid>1</pid>
         <title>pageWithContainer</title>
+        <perms_everybody>17</perms_everybody>
 	</pages>
 
     <pages>
