@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container\Tests\Functional\ContentDefender;
+namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,8 +10,9 @@ namespace B13\Container\Tests\Functional\ContentDefender;
  * of the License, or any later version.
  */
 
+use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
-class DefaultLanguageTest extends \B13\Container\Tests\Functional\Datahandler\DatahandlerTest
+class DefaultLanguageTest extends DatahandlerTest
 {
     /**
      * @var array

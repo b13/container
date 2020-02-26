@@ -37,7 +37,8 @@
         "codeception/codeception": "^3",
         "typo3/cms-workspaces": "^10.0",
         "typo3/cms-backend": "^10.0",
-        "typo3/cms-fluid-styled-content": "^10.0"
+        "typo3/cms-fluid-styled-content": "^10.0",
+        "phpstan/phpstan": "^0.12.11"
     },
     "replace": {
         "typo3-ter/container": "self.version"

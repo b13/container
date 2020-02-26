@@ -25,7 +25,7 @@ class Container
     /**
      * @var int
      */
-    protected $lanuage = 0;
+    protected $language = 0;
 
     /**
      * @param array $containerRecord

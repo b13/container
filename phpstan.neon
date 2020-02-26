@@ -1,0 +1,24 @@
+includes:
+    - .Build/vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+  level: 2
+
+  paths:
+    - %currentWorkingDirectory%/Classes
+    - %currentWorkingDirectory%/Tests
+
+  ignoreErrors:
+    -
+      message: '#Constant ORIGINAL_ROOT not found.#'
+      path: Tests
+    -
+      message: '#Call to an undefined method Prophecy\\Prophecy\ObjectProphecy::.*#'
+      path: Tests
+    -
+      message: '#Method TYPO3\TestingFramework\Core\AccessibleObjectInterface::_call() invoked with 2 parameters, 1 required.#'
+      path: Tests
+    -
+      message: '#Constant TYPO3_MODE not found.#'
+      path: Classes
+    - '#Constant LF not found.#'

@@ -150,6 +150,7 @@ class ContainerFactory implements SingletonInterface
             throw new Exception('not a container element with uid ' . $uid, 1576572853);
         }
 
+        $defaultRecord = null;
         if ($record['sys_language_uid'] > 0) {
             $defaultRecord = $this->database->fetchOneDefaultRecord($record);
             if ($defaultRecord === null) {
