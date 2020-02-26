@@ -21,7 +21,7 @@ class DatamapAfterDatabaseOperationHook
     /**
      * @param string $status
      * @param string $table
-     * @param $id
+     * @param mixed $id
      * @param array $fieldArray
      * @param DataHandler $dataHandler
      * @return void

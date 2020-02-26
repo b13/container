@@ -21,7 +21,7 @@ class NonExistingParentError implements ErrorInterface
     protected $childRecord = null;
 
     /**
-     * @var null
+     * @var string
      */
     protected $errorMessage = null;
 

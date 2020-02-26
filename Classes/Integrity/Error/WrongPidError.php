@@ -26,7 +26,7 @@ class WrongPidError implements ErrorInterface
     protected $containerRecord = null;
 
     /**
-     * @var null
+     * @var string
      */
     protected $errorMessage = null;
 

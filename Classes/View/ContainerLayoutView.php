@@ -87,7 +87,6 @@ class ContainerLayoutView extends PageLayoutView
 
     /**
      * @param int $colPos
-     * @param int $lang
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
@@ -287,7 +286,7 @@ class ContainerLayoutView extends PageLayoutView
             }
         }
         $content .= '</div>';
-        $colTitle = BackendUtility::getProcessedValue('tt_content', 'colPos', $colPos);
+        $colTitle = BackendUtility::getProcessedValue('tt_content', 'colPos', (string)$colPos);
         $head .= $this->tt_content_drawColHeader($colTitle);
 
         return $head . $content;

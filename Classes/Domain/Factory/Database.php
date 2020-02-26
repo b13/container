@@ -81,7 +81,7 @@ class Database implements SingletonInterface
 
     /**
      * @param int $parent
-     * @param int $colPos
+     * @param int $language
      * @return array
      */
     public function fetchRecordsByParentAndLanguage(int $parent, int $language): array

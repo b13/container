@@ -2,7 +2,7 @@ includes:
     - .Build/vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
-  level: 2
+  level: 5
 
   paths:
     - %currentWorkingDirectory%/Classes
@@ -13,11 +13,17 @@ parameters:
       message: '#Constant ORIGINAL_ROOT not found.#'
       path: Tests
     -
-      message: '#Call to an undefined method Prophecy\\Prophecy\ObjectProphecy::.*#'
+      message: '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::.*#'
       path: Tests
     -
-      message: '#Method TYPO3\TestingFramework\Core\AccessibleObjectInterface::_call() invoked with 2 parameters, 1 required.#'
+      message: '#PHPDoc tag @.*#'
+      path: Tests/Acceptance/Support/_generated/BackendTesterActions.php
+    -
+      message: '#Method TYPO3\\TestingFramework\\Core\\AccessibleObjectInterface::_call().*#'
       path: Tests
+    -
+      message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
+      path: Tests/Acceptance/Support/PageTree.php
     -
       message: '#Constant TYPO3_MODE not found.#'
       path: Classes

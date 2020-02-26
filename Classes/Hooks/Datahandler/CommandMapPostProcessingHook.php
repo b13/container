@@ -36,8 +36,8 @@ class CommandMapPostProcessingHook
      * @param int $id
      * @param mixed $value
      * @param DataHandler $dataHandler
-     * @param $pasteUpdate
-     * @param $pasteDatamap
+     * @param mixed $pasteUpdate
+     * @param mixed $pasteDatamap
      * @return void
      */
     public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
