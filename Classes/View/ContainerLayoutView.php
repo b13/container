@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ContainerLayoutView extends PageLayoutView
 {
@@ -39,10 +40,10 @@ class ContainerLayoutView extends PageLayoutView
      * ContainerLayoutView constructor.
      * @param ContainerFactory|null $containerFactory
      */
-    public function __construct(ContainerFactory $containerFactory = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher, ContainerFactory $containerFactory = null)
     {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        parent::__construct();
+        parent::__construct($eventDispatcher);
     }
 
 
