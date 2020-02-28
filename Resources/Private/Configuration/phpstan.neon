@@ -1,5 +1,5 @@
 includes:
-    - .Build/vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - ../../../.Build/vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
   level: 5
@@ -11,20 +11,20 @@ parameters:
   ignoreErrors:
     -
       message: '#Constant ORIGINAL_ROOT not found.#'
-      path: Tests
+      path: %currentWorkingDirectory%/Tests
     -
       message: '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::.*#'
-      path: Tests
+      path: %currentWorkingDirectory%/Tests
     -
       message: '#PHPDoc tag @.*#'
-      path: Tests/Acceptance/Support/_generated/BackendTesterActions.php
+      path: %currentWorkingDirectory%/Tests/Acceptance/Support/_generated/BackendTesterActions.php
     -
       message: '#Method TYPO3\\TestingFramework\\Core\\AccessibleObjectInterface::_call().*#'
-      path: Tests
+      path: %currentWorkingDirectory%/Tests
     -
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
-      path: Tests/Acceptance/Support/PageTree.php
+      path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
     -
       message: '#Constant TYPO3_MODE not found.#'
-      path: Classes
+      path: %currentWorkingDirectory%/Classes
     - '#Constant LF not found.#'
