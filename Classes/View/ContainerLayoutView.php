@@ -38,12 +38,18 @@ class ContainerLayoutView extends PageLayoutView
 
     /**
      * ContainerLayoutView constructor.
+     * @param EventDispatcherInterface|null $eventDispatcher
      * @param ContainerFactory|null $containerFactory
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, ContainerFactory $containerFactory = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher = null, ContainerFactory $containerFactory = null)
     {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        parent::__construct($eventDispatcher);
+
+        if (version_compare(TYPO3_branch, '10.3', '<')) {
+            parent::__construct();
+        } else {
+            parent::__construct($eventDispatcher);
+        }
     }
 
 

@@ -90,6 +90,12 @@ __Notes__
 - when translate a container all child Elements gets also translated (the child Elements are not explicit listed during the Translation-Dialog)
 - copy or move childs of a container copies or moves translations also
 
+## Remark
+fluidBasedPageModule Feature is not supported. Must be disabled by
+
+``$GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['fluidBasedPageModule'] = false;``
+
+
 ## TODOs / Proofments
 - integrity proofment
 - list modlue actions
