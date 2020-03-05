@@ -25,7 +25,7 @@ class UsedRecordsTest extends UnitTestCase
     /**
      * @test
      */
-    public function addContainerChildsReturnsUsedOfParamsIfTxContainerParentIsZero(): void
+    public function addContainerChildrenReturnsUsedOfParamsIfTxContainerParentIsZero(): void
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
@@ -35,15 +35,15 @@ class UsedRecordsTest extends UnitTestCase
             'used' => true,
             'record' => ['tx_container_parent' => 0]
         ];
-        $this->assertTrue($userRecords->addContainerChilds($params, $pageLayoutView->reveal()));
+        $this->assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
         $params['used'] = false;
-        $this->assertFalse($userRecords->addContainerChilds($params, $pageLayoutView->reveal()));
+        $this->assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 
     /**
      * @test
      */
-    public function addContainerChildsReturnsTrueIfColPosIsInConfiguredGrid(): void
+    public function addContainerChildrenReturnsTrueIfColPosIsInConfiguredGrid(): void
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
@@ -56,14 +56,14 @@ class UsedRecordsTest extends UnitTestCase
             'used' => false,
             'record' => ['tx_container_parent' => 1, 'colPos' => 2]
         ];
-        $this->assertTrue($userRecords->addContainerChilds($params, $pageLayoutView->reveal()));
+        $this->assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
 
     }
 
     /**
      * @test
      */
-    public function addContainerChildsReturnsFalseIfColPosIsNotInConfiguredGrid(): void
+    public function addContainerChildrenReturnsFalseIfColPosIsNotInConfiguredGrid(): void
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
@@ -76,6 +76,6 @@ class UsedRecordsTest extends UnitTestCase
             'used' => true,
             'record' => ['tx_container_parent' => 1, 'colPos' => 2]
         ];
-        $this->assertFalse($userRecords->addContainerChilds($params, $pageLayoutView->reveal()));
+        $this->assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 }

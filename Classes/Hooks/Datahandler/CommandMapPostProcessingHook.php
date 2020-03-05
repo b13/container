@@ -43,9 +43,9 @@ class CommandMapPostProcessingHook
     public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
-            $this->copyOrMoveChilds($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
+            $this->copyOrMoveChildren($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
-            $this->copyOrMoveChilds($id, $value, $id,'move', $dataHandler);
+            $this->copyOrMoveChildren($id, $value, $id,'move', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'localize') {
             $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
         }
@@ -62,9 +62,9 @@ class CommandMapPostProcessingHook
     {
         try {
             $container = $this->containerFactory->buildContainer($uid);
-            $childs = $container->getChildRecords();
+            $children = $container->getChildRecords();
             $cmd = ['tt_content' => []];
-            foreach ($childs as $colPos => $record) {
+            foreach ($children as $colPos => $record) {
                 $cmd['tt_content'][$record['uid']] = [$command => $language];
             }
             if (count($cmd['tt_content']) > 0) {
@@ -85,14 +85,14 @@ class CommandMapPostProcessingHook
      * @param DataHandler $dataHandler
      * @return void
      */
-    protected function copyOrMoveChilds(int $origUid, int $newId, int $containerId, string $command, DataHandler $dataHandler): void
+    protected function copyOrMoveChildren(int $origUid, int $newId, int $containerId, string $command, DataHandler $dataHandler): void
     {
         try {
             // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
-            $childs = $container->getChildRecords();
+            $children = $container->getChildRecords();
             $cmd = ['tt_content' => []];
-            foreach ($childs as $colPos => $record) {
+            foreach ($children as $colPos => $record) {
                 $cmd['tt_content'][$record['uid']] = [
                     $command => [
                         'action' => 'paste',

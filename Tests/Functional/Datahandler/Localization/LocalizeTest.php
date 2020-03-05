@@ -29,7 +29,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyToLanguageContainerCopiesNoChilds(): void
+    public function copyToLanguageContainerCopiesNoChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -57,7 +57,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function localizeContainerLocalizeChilds(): void
+    public function localizeContainerLocalizeChildren(): void
     {
         $cmdmap = [
             'tt_content' => [

@@ -21,7 +21,7 @@ if (TYPO3_MODE === 'BE') {
 
     // remove container colPos from "unused" page-elements
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
-        \B13\Container\Hooks\UsedRecords::class . '->addContainerChilds';
+        \B13\Container\Hooks\UsedRecords::class . '->addContainerChildren';
 
     // add tx_container_parent parameter to wizard items
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =

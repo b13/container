@@ -30,7 +30,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function newVersionNotCreateNewVersionOfChilds(): void
+    public function newVersionDoesNotCreateNewVersionsOfChildren(): void
     {
         $datamap = [
             'tt_content' => [

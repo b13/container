@@ -25,8 +25,8 @@ class LanguageFallbackTest extends AbstractFrontendTest
         $body = $this->prepareContent($body);
         $this->assertStringContainsString('<h1 class="container">container-default</h1>', $body);
         $this->assertStringNotContainsString('<h1 class="container">container-fr</h1>', $body);
-        $this->assertStringContainsString('<h6 class="header-childs">header-default</h6>', $body);
-        $this->assertStringNotContainsString('<h6 class="header-childs">header-fr</h6>', $body);
+        $this->assertStringContainsString('<h6 class="header-children">header-default</h6>', $body);
+        $this->assertStringNotContainsString('<h6 class="header-children">header-fr</h6>', $body);
         // rendered content
         $this->assertStringNotContainsString('<h2 class="">header-fr</h2>', $body);
         $this->assertStringContainsString('<h2 class="">header-default</h2>', $body);
@@ -43,8 +43,8 @@ class LanguageFallbackTest extends AbstractFrontendTest
         $body = $this->prepareContent($body);
         $this->assertStringContainsString('<h1 class="container">container-fr</h1>', $body);
         $this->assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
-        $this->assertStringContainsString('<h6 class="header-childs">header-fr</h6>', $body);
-        $this->assertStringNotContainsString('<h6 class="header-childs">header-default</h6>', $body);
+        $this->assertStringContainsString('<h6 class="header-children">header-fr</h6>', $body);
+        $this->assertStringNotContainsString('<h6 class="header-children">header-default</h6>', $body);
         // rendered content
         $this->assertStringContainsString('<h2 class="">header-fr</h2>', $body);
         $this->assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
@@ -61,8 +61,8 @@ class LanguageFallbackTest extends AbstractFrontendTest
         $body = $this->prepareContent($body);
         $this->assertStringContainsString('<h1 class="container">container-default</h1>', $body);
         $this->assertStringNotContainsString('<h1 class="container">container-fr</h1>', $body);
-        $this->assertStringContainsString('<h6 class="header-childs">header-fr</h6>', $body);
-        $this->assertStringNotContainsString('<h6 class="header-childs">header-default</h6>', $body);
+        $this->assertStringContainsString('<h6 class="header-children">header-fr</h6>', $body);
+        $this->assertStringNotContainsString('<h6 class="header-children">header-default</h6>', $body);
         // rendered content
         $this->assertStringContainsString('<h2 class="">header-fr</h2>', $body);
         $this->assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
@@ -79,8 +79,8 @@ class LanguageFallbackTest extends AbstractFrontendTest
         $body = $this->prepareContent($body);
         $this->assertStringContainsString('<h1 class="container">container-fr</h1>', $body);
         $this->assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
-        $this->assertStringContainsString('<h6 class="header-childs">header-default</h6>', $body);
-        $this->assertStringNotContainsString('<h6 class="header-childs">header-fr</h6>', $body);
+        $this->assertStringContainsString('<h6 class="header-children">header-default</h6>', $body);
+        $this->assertStringNotContainsString('<h6 class="header-children">header-fr</h6>', $body);
         // rendered content
         $this->assertStringNotContainsString('<h2 class="">header-fr</h2>', $body);
         $this->assertStringContainsString('<h2 class="">header-default</h2>', $body);

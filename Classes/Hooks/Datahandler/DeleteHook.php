@@ -42,9 +42,9 @@ class DeleteHook
         if ($table === 'tt_content') {
             try {
                 $container = $this->containerFactory->buildContainer($id);
-                $childs = $container->getChildRecords();
+                $children = $container->getChildRecords();
                 $toDelete = [];
-                foreach ($childs as $colPos => $record) {
+                foreach ($children as $colPos => $record) {
                     $toDelete[$record['uid']] = ['delete' => 1];
                 }
                 if (count($toDelete) > 0) {

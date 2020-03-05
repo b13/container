@@ -103,7 +103,7 @@ class Container
      * @param int $colPos
      * @return array
      */
-    public function getChildsByColPos(int $colPos): array
+    public function getChildrenByColPos(int $colPos): array
     {
         if (empty($this->childRecords[$colPos])) {
             return [];
@@ -114,7 +114,7 @@ class Container
     /**
      * @return array
      */
-    public function getChildsColPos(): array
+    public function getChildrenColPos(): array
     {
         return array_keys($this->childRecords);
     }

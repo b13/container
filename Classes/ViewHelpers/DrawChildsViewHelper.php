@@ -17,7 +17,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 
-class DrawChildsViewHelper extends AbstractViewHelper
+class DrawChildrenViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
@@ -45,7 +45,7 @@ class DrawChildsViewHelper extends AbstractViewHelper
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $containerLayouView = GeneralUtility::makeInstance(ContainerLayoutView::class);
-        $content = $containerLayouView->renderContainerChilds((int)$arguments['uid'], (int)$arguments['colPos']);
+        $content = $containerLayouView->renderContainerChildren((int)$arguments['uid'], (int)$arguments['colPos']);
         return $content;
     }
 }

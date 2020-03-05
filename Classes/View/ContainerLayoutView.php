@@ -51,7 +51,7 @@ class ContainerLayoutView extends PageLayoutView
      * @param int $colPos
      * @return string
      */
-    public function renderContainerChilds(int $uid, int $colPos): string
+    public function renderContainerChildren(int $uid, int $colPos): string
     {
 
         $this->initWebLayoutModuleData();
@@ -234,7 +234,7 @@ class ContainerLayoutView extends PageLayoutView
     {
         $containerRecord = $this->container->getContainerRecord();
         $this->resolveSiteLanguages($containerRecord['pid']);
-        $records = $this->container->getChildsByColPos($colPos);
+        $records = $this->container->getChildrenByColPos($colPos);
         $this->nextThree = 1;
         $this->generateTtContentDataArray($records);
 

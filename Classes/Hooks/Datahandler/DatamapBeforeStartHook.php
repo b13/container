@@ -46,7 +46,7 @@ class DatamapBeforeStartHook
         // ajax move (drag & drop)
         $dataHandler->datamap = $this->extractContainerIdFromColPosInDatamap($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildLocalizations($dataHandler->datamap);
-        $dataHandler->datamap = $this->datamapForChildsChangeContainerLanguage($dataHandler->datamap);
+        $dataHandler->datamap = $this->datamapForChildrenChangeContainerLanguage($dataHandler->datamap);
     }
 
 
@@ -115,7 +115,7 @@ class DatamapBeforeStartHook
      * @param array $datamap
      * @return array
      */
-    protected function datamapForChildsChangeContainerLanguage(array $datamap): array
+    protected function datamapForChildrenChangeContainerLanguage(array $datamap): array
     {
         $datamapForLocalizations = ['tt_content' => []];
         if (!empty($datamap['tt_content'])) {
@@ -123,8 +123,8 @@ class DatamapBeforeStartHook
                 if (isset($data['sys_language_uid'])) {
                     try {
                         $container = $this->containerFactory->buildContainer((int)$id);
-                        $childs = $container->getChildRecords();
-                        foreach ($childs as $child) {
+                        $children = $container->getChildRecords();
+                        foreach ($children as $child) {
                             if ((int)$child['sys_language_uid'] !== (int)$data['sys_language_uid']) {
                                 $datamapForLocalizations['tt_content'][$child['uid']] = [
                                     'sys_language_uid' => $data['sys_language_uid']
