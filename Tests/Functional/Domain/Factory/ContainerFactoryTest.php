@@ -11,13 +11,8 @@ namespace B13\Container\Tests\Functional\Domain\Factory;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Core\Bootstrap;
 
 class ContainerFactoryTest extends FunctionalTestCase
 {
