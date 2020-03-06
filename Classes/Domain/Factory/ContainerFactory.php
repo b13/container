@@ -76,8 +76,9 @@ class ContainerFactory implements SingletonInterface
                 $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
             } else {
                 // connected mode
-                $childRecords = $this->database->fetchRecordsByParentAndLanguage($defaultRecord['uid'], 0);
-                $childRecords = $this->database->fetchOverlayRecords($childRecords, $language);
+                $defaultRecords = $this->database->fetchRecordsByParentAndLanguage($defaultRecord['uid'], 0);
+                $localizedRecords = $this->database->fetchOverlayRecords($defaultRecords, $language);
+                $childRecords = $this->sortLocalizedRecordsByDefaultRecords($defaultRecords, $localizedRecords);
             }
         } else {
             $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
@@ -133,7 +134,7 @@ class ContainerFactory implements SingletonInterface
      * @param int $uid
      * @return Container
      */
-    public function buildContainerWithOverlay(int $uid, LanguageAspect $languageAspect): Container
+    protected function buildContainerWithOverlay(int $uid, LanguageAspect $languageAspect): Container
     {
         $language = $languageAspect->get('id');
         $record = $this->database->fetchOneOverlayRecord($uid, $language);
@@ -180,6 +181,24 @@ class ContainerFactory implements SingletonInterface
             $container = new Container($defaultRecord, $childRecordByColPosKey, $language);
         }
         return $container;
+    }
+
+    /**
+     * @param array $defaultRecords
+     * @param array $localizedRecords
+     * @return array
+     */
+    protected function sortLocalizedRecordsByDefaultRecords(array $defaultRecords, array $localizedRecords): array
+    {
+        $sorted = [];
+        foreach ($defaultRecords as $defaultRecord) {
+            foreach ($localizedRecords as $localizedRecord) {
+                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid']) {
+                    $sorted[] = $localizedRecord;
+                }
+            }
+        }
+        return $sorted;
     }
 
     /**
