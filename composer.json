@@ -3,15 +3,19 @@
     "description": "Container Content Elements",
     "type": "typo3-cms-extension",
     "require": {
-        "typo3/cms-backend": "^9.5 || ^10.2",
-        "typo3/cms-fluid-styled-content": "^9.5 || ^10.2"
+        "typo3/cms-backend": "^9.5 || ^10.0",
+        "typo3/cms-fluid-styled-content": "^9.5 || ^10.0"
     },
     "repositories": [
         {
             "type": "vcs",
             "url": "git@code.b13.com:typo3-extensions/container-example.git"
-        }
-    ],
+        },
+		{
+			"type": "vcs",
+			"url": "https://github.com/b13/content_defender"
+		}
+	],
     "autoload": {
         "psr-4": {
             "B13\\Container\\": "Classes/"
@@ -31,13 +35,13 @@
     "require-dev": {
         "b13/container-example": "dev-master",
         "ichhabrecht/content-defender": "dev-master",
-        "typo3/cms-install": "^10.2",
-        "typo3/cms-about": "^10.2",
+        "typo3/cms-install": "^10.0",
+        "typo3/cms-about": "^10.0",
         "typo3/testing-framework": "~6.1.0",
         "codeception/codeception": "^3",
-        "typo3/cms-workspaces": "^10.2",
-        "typo3/cms-backend": "^10.2",
-        "typo3/cms-fluid-styled-content": "^10.2",
+        "typo3/cms-workspaces": "^10.0",
+        "typo3/cms-backend": "^10.0",
+        "typo3/cms-fluid-styled-content": "^10.0",
         "phpstan/phpstan": "^0.12.11"
     },
     "replace": {

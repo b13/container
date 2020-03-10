@@ -90,7 +90,7 @@ class CommandMapPostProcessingHook
         try {
             // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
-            $children = $container->getChildRecords();
+            $children = array_reverse($container->getChildRecords());
             $cmd = ['tt_content' => []];
             foreach ($children as $colPos => $record) {
                 $cmd['tt_content'][$record['uid']] = [

@@ -36,6 +36,9 @@ class BackendContainerEnvironment extends BackendEnvironment
             'typo3conf/ext/container',
             'typo3conf/ext/container_example'
         ],
+        'configurationToUseInTestInstance' => [
+            'SYS' => ['features' => ['fluidBasedPageModule' => false]]
+        ],
         'xmlDatabaseFixtures' => [
             'PACKAGE:typo3/testing-framework/Resources/Core/Acceptance/Fixtures/be_users.xml',
             'PACKAGE:typo3/testing-framework/Resources/Core/Acceptance/Fixtures/be_sessions.xml',

@@ -134,4 +134,29 @@ class ContainerTest extends DatahandlerTest
         $this->assertSame(0, $child['sys_language_uid']);
     }
 
+    /**
+     * @test
+     */
+    public function copyClipboardKeepsSortingOfChildren(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('t3_origuid', 2);
+        $secondChild = $this->fetchOneRecord('t3_origuid', 5);
+        $this->assertTrue($child['sorting'] < $secondChild['sorting']);
+    }
+
 }

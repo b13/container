@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  B13\Container\View\ContainerLayoutView:
+    shared: false
+    public: true
