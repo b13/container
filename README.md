@@ -55,12 +55,12 @@ __Notes__
             100 = B13\Container\DataProcessing\ContainerProcessor
             100 {
                 colPos = 100
-                as = childsLeft
+                as = childrenLeft
             }
             101 = B13\Container\DataProcessing\ContainerProcessor
             101 {
                 colPos = 101
-                as = childsRight
+                as = childrenRight
             }
         }
     }
@@ -68,14 +68,14 @@ __Notes__
 
 ### Template
 
-    <f:for each="{childsLeft}" as="record">
+    <f:for each="{childrenLeft}" as="record">
         {record.header} <br />
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
     </f:for>
 
-    <f:for each="{childsRight}" as="record">
+    <f:for each="{childrenRight}" as="record">
         {record.header} <br />
         <f:format.raw>
             {record.renderedContent}
@@ -88,7 +88,7 @@ __Notes__
 - for BE Clipboard and Drag & Drop <tx_container_parent>_<colPos> use used in the data-colpos Attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
 - the <tx_container_parent>_<colPos> Parameter ist resolved to tx_container_parent and colPos Value in Datahandler Hooks
 - when translate a container all child Elements gets also translated (the child Elements are not explicit listed during the Translation-Dialog)
-- copy or move childs of a container copies or moves translations also
+- copying or moving children of a container copies or moves translations as well
 
 ## Remark
 fluidBasedPageModule Feature is not supported. Must be disabled by

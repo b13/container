@@ -38,7 +38,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
         $container = $containerFactory->buildContainer(2);
-        $children = $container->getChildsByColPos(201);
+        $children = $container->getChildrenByColPos(201);
         $this->assertSame(2, count($children));
         $first = $children[0];
         $this->assertSame(6, $first['uid']);

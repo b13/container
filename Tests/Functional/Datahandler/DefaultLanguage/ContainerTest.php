@@ -29,7 +29,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function deleteContainerDeleteChilds(): void
+    public function deleteContainerDeleteChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -49,7 +49,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerAjaxToBottomMovesChilds(): void
+    public function moveContainerAjaxToBottomMovesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -80,7 +80,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerClipboardToOtherPageMovesChilds(): void
+    public function moveContainerClipboardToOtherPageMovesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -109,7 +109,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyClipboardCopiesChilds(): void
+    public function copyClipboardCopiesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [

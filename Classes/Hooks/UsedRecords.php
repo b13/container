@@ -45,7 +45,7 @@ class UsedRecords
      * @param PageLayoutView $pageLayoutView
      * @return bool
      */
-    public function addContainerChilds(array $params, PageLayoutView $pageLayoutView): bool
+    public function addContainerChildren(array $params, PageLayoutView $pageLayoutView): bool
     {
         $record = $params['record'];
         if ($record['tx_container_parent'] > 0) {

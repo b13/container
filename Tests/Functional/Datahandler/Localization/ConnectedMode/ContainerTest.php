@@ -30,7 +30,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function deleteContainerDeleteTranslatedChilds(): void
+    public function deleteContainerDeleteTranslatedChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -50,7 +50,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerAjaxToBottomMovesChilds(): void
+    public function moveContainerAjaxToBottomMovesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -81,7 +81,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerClipboardToOtherPageMovesChilds(): void
+    public function moveContainerClipboardToOtherPageMovesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [

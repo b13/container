@@ -64,13 +64,13 @@ class ContainerProcessor implements DataProcessorInterface
 
         try {
             $container = $this->containerFactory->buildContainer($contentId);
-            $childs = $container->getChildsByColPos($colPos);
+            $children = $container->getChildrenByColPos($colPos);
 
             $contentRecordRenderer = new RecordsContentObject($cObj);
             $conf = [
                 'tables' => 'tt_content'
             ];
-            foreach ($childs as &$child) {
+            foreach ($children as &$child) {
                 if ($child['t3ver_oid'] > 0) {
                     $conf['source'] = $child['t3ver_oid'];
                 } else {
@@ -80,9 +80,9 @@ class ContainerProcessor implements DataProcessorInterface
             }
 
             if ($processorConfiguration['as']) {
-                $processedData[$processorConfiguration['as']] = $childs;
+                $processedData[$processorConfiguration['as']] = $children;
             } else {
-                $processedData['childs'] = $childs;
+                $processedData['children'] = $children;
             }
         } catch (Exception $e) {
             // nothing is done
