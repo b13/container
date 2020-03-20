@@ -6,6 +6,7 @@ $additionalColumns = [
         'config' => [
             'default' => 0,
             'type' => 'select',
+            'foreign_table' => 'tt_content',
             'itemsProcFunc' => \B13\Container\Tca\ItemProcFunc::class . '->txContainerParent',
             'renderType' => 'selectSingle'
         ]
