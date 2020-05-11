@@ -91,20 +91,21 @@ class CommandMapPostProcessingHook
             // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
             $children = array_reverse($container->getChildRecords());
-            $cmd = ['tt_content' => []];
             foreach ($children as $colPos => $record) {
-                $cmd['tt_content'][$record['uid']] = [
-                    $command => [
-                        'action' => 'paste',
-                        'target' => $newId,
-                        'update' => [
-                            'tx_container_parent' => $containerId,
-                            'colPos' =>  $record['colPos']
+                $cmd = [
+                    'tt_content' => [
+                        $record['uid'] => [
+                            $command => [
+                                'action' => 'paste',
+                                'target' => $newId,
+                                'update' => [
+                                    'tx_container_parent' => $containerId,
+                                    'colPos' => $record['colPos']
+                                ]
+                            ]
                         ]
                     ]
                 ];
-            }
-            if (count($cmd['tt_content']) > 0) {
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
