@@ -40,7 +40,7 @@ class IntegrityCommand extends Command
             }
         }
         if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
-            $output->writeln('Godo Job, no ERRORS/WARNINGS');
+            $output->writeln('Good Job, no ERRORS/WARNINGS');
         }
         return 0;
     }
