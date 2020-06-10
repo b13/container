@@ -1,20 +1,45 @@
-# EXT:container
+# EXT:container - A TYPO3 Extension for creating nested content elements
 
 ## Features
-- simple amazing containers (grids) as TYPO3 CE
-- supports multilanguage (conntected or free mode (mixed mode not supported))
-- supports workspaces
+- Simple amazing containers (grids) as custom TYPO3 Content Elements
+- No default containers, everything will be built the way its needed for a project
+- Supports multilanguage (connected or free mode (mixed mode not supported))
+- Supports workspaces
 - supports the `allowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
-- Frontend Rendering via DataProcessor
+- Frontend Rendering via DataProcessor and Fluid Templates
 
+## Why did we create another "Grid" extension?
 
-## Configuration
-- Register your Container in your Extension in Configuration/TCA/Overrides/tt_content.php as new CType
-- add TypoScript and Template for Frontend-Rendering
-- add an Icon in Resources/Public/Icons/<CType>.svg
-- s. EXT:container_example for a simple usage
+At b13 we've been long supporters and fans of gridelements, which we are thankful for and we used it in the past with great pleasure.
+
+However, we've had our pains in the past with any common solutions we've evaluted and worked with, which, and these are our reasons:
+
+- We wanted an extension that works with multiple versions of TYPO3 Core with the same extension, to support our company's [TYPO3 upgrade strategy](https://b13.com/solutions/typo3-upgrades).
+- We wanted to overcome issues when dealing with `colPos` field and dislike any fixed value which isn't fully compatible with TYPO3 Core.
+- We wanted an extension that is fully tested with multilingual and workspaces functionality.
+- We wanted an extension that only does one thing: EXT:container ONLY adds tools to create and render container elements, and nothing else. No FlexForms, no permission handling or custom rendering.
+- We wanted an extension where every grid has its own Content Type (CType) making it as close to Core functionality as possible.
+- We wanted an extension where the configuration of a grid container element is located at one single place to make creation of custom containers easy.
+- We wanted an extension that has a progressive development workflow: We were working with new projects in TYPO3 v10 sprint releases, and needed custom container elements, and did not want to wait until TYPO3 v10 LTS.
+
+## Installation
+
+Install this extension via `composer req b13/container` or download it from the TYPO3 Extension Repository (extension name "container"), and activate
+the extension in the Extension Manager of your TYPO3 installation.
+
+Once installed, add a custom content element to your site extension (see "Adding your own container element").
+
+## Adding your own container element
+
+- Register your custom container in your Extension in Configuration/TCA/Overrides/tt_content.php as new Content Type
+- Add TypoScript and your Fluid Template for Frontend-Rendering
+- Add an Icon in Resources/Public/Icons/<CType>.svg
+
+see `EXT:container_example` for a simple usage of a custom container.
 
 ### Registration of Container Elements
+
+This is an example for create a 2 column container
 
     \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->registerContainer(
         'b13-2cols-with-header-container', // CType
@@ -29,19 +54,19 @@
                 ['name' => 'left side', 'colPos' => 201],
                 ['name' => 'right side', 'colPos' => 202]
             ]
-        ] // grid
+        ] // grid configuration
         'EXT:container/Resources/Private/Templates/Container.html' // Template for Backend View
         'EXT:container/Resources/Private/Templates/Grid.html' // Template for Grid
         true // register in new content element wizard
     );
 
 __Notes__
-- if EXT:content_defender ist installed allowed-CType Parameter in column Configuration cat be configured to restrict allowed CTypes in a container column
-- this registry do
-  - add CType to TCA Select Items
-  - register your Icon
-  - adds page TS for newContentElement.wizardItems
-  - saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
+- if EXT:content_defender is installed allowed-CType parameter in column Configuration can be configured to restrict allowed CTypes in a container column
+- The Container Registry does multiple things:
+  - Adds CType to TCA Select Items
+  - Registers your Icon
+  - Adds PageTSconfig for newContentElement.wizardItems
+  - Saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
 
 ### TypoScript
 
@@ -83,18 +108,23 @@ __Notes__
     </f:for>
 
 ## Concepts
-- Complete Registration is done with one Call to TCA-Registry
-- a container in the BE Page-Module is rendered like a page itselfs (s. View/ContainerLayoutView)
-- for BE Clipboard and Drag & Drop <tx_container_parent>_<colPos> use used in the data-colpos Attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
-- the <tx_container_parent>_<colPos> Parameter ist resolved to tx_container_parent and colPos Value in Datahandler Hooks
-- when translate a container all child Elements gets also translated (the child Elements are not explicit listed during the Translation-Dialog)
-- copying or moving children of a container copies or moves translations as well
+- Complete Registration is done with one PHP call to TCA Registry
+- A container in the BE Page-Module is rendered like a page itselfs (s. View/ContainerLayoutView)
+- for BE Clipboard and Drag & Drop <tx_container_parent>_<colPos> used in the data-colpos Attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
+- The <tx_container_parent>_<colPos> parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler Hooks
+- When translating a container all child elements gets also translated (the child elements are not explicit listed during the translation dialog)
+- Copying or moving children of a container copies or moves translations as well
+- Custom definitions make use of custom `colPos` values so Site Owners build their own elements, no fixed `colPos` given, so no interference with existing solutions
+- Each container type is just a definition for its own `CType`
 
 ## TODOs / Proofments
-- integrity proofment
-- list modlue actions
+- Integrity proofment
+- List module actions
 
 ## Extension Tests
+
+You can run our test suite for this extension yourself:
+
 - run `composer install`
 - run `Build/Scripts/runTests.sh -s unit`
 - run `Build/Scripts/runTests.sh -s functional`
