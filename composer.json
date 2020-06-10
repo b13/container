@@ -1,21 +1,13 @@
 {
     "name": "b13/container",
-    "description": "Container Content Elements",
+    "description": "Create Custom Container Content Elements for TYPO3",
     "type": "typo3-cms-extension",
+    "homepage": "https://b13.com",
+    "license": ["GPL-2.0-or-later"],
     "require": {
         "typo3/cms-backend": "^9.5 || ^10.0",
         "typo3/cms-fluid-styled-content": "^9.5 || ^10.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@code.b13.com:typo3-extensions/container-example.git"
-        },
-		{
-			"type": "vcs",
-			"url": "https://github.com/b13/content_defender"
-		}
-	],
     "autoload": {
         "psr-4": {
             "B13\\Container\\": "Classes/"
@@ -40,8 +32,6 @@
         "typo3/testing-framework": "~6.1.0",
         "codeception/codeception": "^3",
         "typo3/cms-workspaces": "^10.0",
-        "typo3/cms-backend": "^10.0",
-        "typo3/cms-fluid-styled-content": "^10.0",
         "phpstan/phpstan": "^0.12.11"
     },
     "replace": {
