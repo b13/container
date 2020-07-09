@@ -10,6 +10,7 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -99,9 +100,13 @@ class Registry implements SingletonInterface
             $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
                 if (file_exists(GeneralUtility::getFileAbsFileName($containerConfiguration['icon']))) {
+                    $provider = BitmapIconProvider::class;
+                    if (strpos($containerConfiguration['icon'], '.svg') !== false) {
+                        $provider = SvgIconProvider::class;
+                    }
                     $iconRegistry->registerIcon(
                         $containerConfiguration['cType'],
-                        SvgIconProvider::class,
+                        $provider,
                         ['source' => $containerConfiguration['icon']]
                     );
                 } else {
