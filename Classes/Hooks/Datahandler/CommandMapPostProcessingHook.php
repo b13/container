@@ -46,8 +46,8 @@ class CommandMapPostProcessingHook
             $this->copyOrMoveChildren($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
             $this->copyOrMoveChildren($id, $value, $id,'move', $dataHandler);
-        } elseif ($table === 'tt_content' && $command === 'localize') {
-            $this->localizeOrCopyToLanguage($id, $value, 'localize', $dataHandler);
+        } elseif ($table === 'tt_content' && ($command === 'localize' || $command === 'copyToLanguage')) {
+            $this->localizeOrCopyToLanguage($id, $value, $command, $dataHandler);
         }
     }
 

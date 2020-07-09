@@ -29,7 +29,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyToLanguageContainerCopiesNoChildren(): void
+    public function copyToLanguageContainerCopiesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -38,20 +38,15 @@ class LocalizeTest extends DatahandlerTest
                 ]
             ]
         ];
+
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-        $this->assertFalse($row);
+        $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);
+        $translatedContainerRow = $this->fetchOneRecord('t3_origuid', 1);
+        $this->assertSame($translatedContainerRow['uid'], $translatedChildRow['tx_container_parent']);
+        $this->assertSame(200, $translatedChildRow['colPos']);
+        $this->assertSame(1, $translatedChildRow['pid']);
+        $this->assertSame(0, $translatedChildRow['l18n_parent']);
     }
 
     /**
@@ -69,8 +64,9 @@ class LocalizeTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);
-        $this->assertSame(1, (int)$translatedChildRow['tx_container_parent']);
-        $this->assertSame(200, (int)$translatedChildRow['colPos']);
-        $this->assertSame(1, (int)$translatedChildRow['pid']);
+        $this->assertSame(1, $translatedChildRow['tx_container_parent']);
+        $this->assertSame(200, $translatedChildRow['colPos']);
+        $this->assertSame(1, $translatedChildRow['pid']);
+        $this->assertSame(2, $translatedChildRow['l18n_parent']);
     }
 }
