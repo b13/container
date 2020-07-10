@@ -1,16 +1,14 @@
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
 
-\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
-    \TYPO3\CMS\Backend\Utility\BackendUtility::class,
-    'getPagesTSconfigPreInclude',
-    B13\Container\Tca\Registry::class,
-    'addPageTS'
-);
-
-
-if (TYPO3_MODE === 'BE') {
-
+call_user_func(function () {
+    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
+        \TYPO3\CMS\Backend\Utility\BackendUtility::class,
+        'getPagesTSconfigPreInclude',
+        B13\Container\Tca\Registry::class,
+        'addPageTS'
+    );
+    
     // draw container grid
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
         \B13\Container\Hooks\DrawItem::class;
@@ -68,5 +66,4 @@ if (TYPO3_MODE === 'BE') {
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_container-content-defender'] =
             \B13\Container\ContentDefender\Hooks\DatamapHook::class;
     }
-
-}
+});
