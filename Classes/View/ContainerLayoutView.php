@@ -10,6 +10,7 @@ namespace B13\Container\View;
  * of the License, or any later version.
  */
 
+use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -31,6 +32,11 @@ class ContainerLayoutView extends PageLayoutView
     protected $containerFactory = null;
 
     /**
+     * @var Registry
+     */
+    protected $registry = null;
+
+    /**
      * @var Container
      */
     protected $container = null;
@@ -41,9 +47,10 @@ class ContainerLayoutView extends PageLayoutView
      * @param EventDispatcherInterface|null $eventDispatcher
      * @param ContainerFactory|null $containerFactory
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher = null, ContainerFactory $containerFactory = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher = null, ContainerFactory $containerFactory = null, Registry $registry = null)
     {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
 
         if (version_compare(TYPO3_branch, '10.3', '<')) {
             parent::__construct();
@@ -293,7 +300,7 @@ class ContainerLayoutView extends PageLayoutView
             }
         }
         $content .= '</div>';
-        $colTitle = BackendUtility::getProcessedValue('tt_content', 'colPos', (string)$colPos);
+        $colTitle = $this->getLanguageService()->sL($this->registry->getColPosName($this->container->getCType(), (int)$colPos));
         $head .= $this->tt_content_drawColHeader($colTitle);
 
         return $head . $content;

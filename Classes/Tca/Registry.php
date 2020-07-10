@@ -16,7 +16,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class Registry implements SingletonInterface
 {
@@ -169,8 +168,37 @@ class Registry implements SingletonInterface
     /**
      * @param string $cType
      * @return array
+     * @deprecated
      */
     public function getAvaiableColumns(string $cType): array
+    {
+        trigger_error('use "getAvailableColumns" instead of "getAvaiableColumns"', E_USER_DEPRECATED);
+        return $this->getAvailableColumns($cType);
+    }
+
+    /**
+     * @param string $cType
+     * @param int $colPos
+     * @return string|null
+     */
+    public function getColPosName(string $cType, int $colPos): ?string
+    {
+        $grid = $this->getGrid($cType);
+        foreach ($grid as $row) {
+            foreach ($row as $column) {
+                if ($column['colPos'] === $colPos) {
+                    return (string)$column['name'];
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $cType
+     * @return array
+     */
+    public function getAvailableColumns(string $cType): array
     {
         $columns = [];
         $grid = $this->getGrid($cType);

@@ -50,7 +50,7 @@ class UsedRecordsTest extends UnitTestCase
         $container = new Container(['CType' => 'myCType'], []);
         $containerFactory->buildContainer(1)->willReturn($container);
         $tcaRegistry = $this->prophesize(Registry::class);
-        $tcaRegistry->getAvaiableColumns('myCType')->willReturn([['colPos' => 2]]);
+        $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 2]]);
         $userRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
         $params = [
             'used' => false,
@@ -70,7 +70,7 @@ class UsedRecordsTest extends UnitTestCase
         $container = new Container(['CType' => 'myCType'], []);
         $containerFactory->buildContainer(1)->willReturn($container);
         $tcaRegistry = $this->prophesize(Registry::class);
-        $tcaRegistry->getAvaiableColumns('myCType')->willReturn([['colPos' => 3]]);
+        $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 3]]);
         $userRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
         $params = [
             'used' => true,
