@@ -54,9 +54,9 @@ This is an example for create a 2 column container
                 ['name' => 'left side', 'colPos' => 201],
                 ['name' => 'right side', 'colPos' => 202]
             ]
-        ] // grid configuration
-        'EXT:container/Resources/Private/Templates/Container.html' // Template for Backend View
-        'EXT:container/Resources/Private/Templates/Grid.html' // Template for Grid
+        ], // grid configuration
+        'EXT:container/Resources/Private/Templates/Container.html', // Template for Backend View
+        'EXT:container/Resources/Private/Templates/Grid.html', // Template for Grid
         true // register in new content element wizard
     );
 
