@@ -51,7 +51,7 @@ class Integrity implements SingletonInterface
         $cTypes = $this->tcaRegistry->getRegisteredCTypes();
         $colPosByCType = [];
         foreach ($cTypes as $cType) {
-            $columns = $this->tcaRegistry->getAvaiableColumns($cType);
+            $columns = $this->tcaRegistry->getAvailableColumns($cType);
             $colPosByCType[$cType] = [];
             foreach ($columns as $column) {
                 $colPosByCType[$cType][] = $column['colPos'];
