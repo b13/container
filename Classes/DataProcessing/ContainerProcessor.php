@@ -11,6 +11,7 @@ namespace B13\Container\DataProcessing;
  */
 
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use B13\Container\Domain\Factory\ContainerFactory;
@@ -56,38 +57,69 @@ class ContainerProcessor implements DataProcessorInterface
         } else {
             $contentId = (int)$cObj->data['uid'];
         }
-        if ($processorConfiguration['colPos.']) {
-            $colPos = (int)$cObj->stdWrap($processorConfiguration['colPos'], $processorConfiguration['colPos.']);
-        } else {
-            $colPos = (int)$processorConfiguration['colPos'];
-        }
 
         try {
             $container = $this->containerFactory->buildContainer($contentId);
-            $children = $container->getChildrenByColPos($colPos);
-
-            $contentRecordRenderer = new RecordsContentObject($cObj);
-            $conf = [
-                'tables' => 'tt_content'
-            ];
-            foreach ($children as &$child) {
-                if ($child['t3ver_oid'] > 0) {
-                    $conf['source'] = $child['t3ver_oid'];
-                } else {
-                    $conf['source'] = $child['uid'];
-                }
-                $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
-            }
-
-            if ($processorConfiguration['as']) {
-                $processedData[$processorConfiguration['as']] = $children;
-            } else {
-                $processedData['children'] = $children;
-            }
         } catch (Exception $e) {
-            // nothing is done
+            // do nothing
+            return $processedData;
         }
 
+        if (empty($processorConfiguration['colPos']) && empty($processorConfiguration['colPos.'])) {
+            $allColPos = $container->getChildrenColPos();
+            foreach ($allColPos as $colPos) {
+                $processedData = $this->processColPos(
+                    $cObj,
+                    $container,
+                    $colPos,
+                    'children_' . $colPos,
+                    $processedData
+                );
+            }
+        } else {
+            if ($processorConfiguration['colPos.']) {
+                $colPos = (int)$cObj->stdWrap($processorConfiguration['colPos'], $processorConfiguration['colPos.']);
+            } else {
+                $colPos = (int)$processorConfiguration['colPos'];
+            }
+            $as = 'children';
+            if ($processorConfiguration['as']) {
+                $as = $processorConfiguration['as'];
+            }
+            $processedData = $this->processColPos(
+                $cObj,
+                $container,
+                $colPos,
+                $as,
+                $processedData
+            );
+
+        }
+        return $processedData;
+    }
+
+    protected function processColPos(
+        ContentObjectRenderer $cObj,
+        Container $container,
+        int $colPos,
+        string $as,
+        array $processedData
+    ): array {
+        $children = $container->getChildrenByColPos($colPos);
+
+        $contentRecordRenderer = new RecordsContentObject($cObj);
+        $conf = [
+            'tables' => 'tt_content'
+        ];
+        foreach ($children as &$child) {
+            if ($child['t3ver_oid'] > 0) {
+                $conf['source'] = $child['t3ver_oid'];
+            } else {
+                $conf['source'] = $child['uid'];
+            }
+            $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
+        }
+        $processedData[$as] = $children;
         return $processedData;
     }
 }

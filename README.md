@@ -70,9 +70,22 @@ __Notes__
 
 ### TypoScript
 
-    tt_content.2Cols < lib.contentElement
-    tt_content.2Cols {
-        templateName = 2Cols
+    // default/general configuration (will add 'children_<colPos>' Variable to processedData foreach colPos in container
+    tt_content.b13-2cols-with-header-container < lib.contentElement
+    tt_content.b13-2cols-with-header-container {
+        templateName = 2ColsWithHeader
+        templateRootPaths {
+            10 = EXT:container/Resources/Private/Contenttypes
+        }
+        dataProcessing {
+            100 = B13\Container\DataProcessing\ContainerProcessor
+        }
+    }
+
+    // explicite by colPos
+    tt_content.b13-2cols-with-header-container < lib.contentElement
+    tt_content.b13-2cols-with-header-container {
+        templateName = 2ColsWithHeader
         templateRootPaths {
             10 = EXT:container/Resources/Private/Contenttypes
         }
@@ -93,19 +106,21 @@ __Notes__
 
 ### Template
 
-    <f:for each="{childrenLeft}" as="record">
+    <f:for each="{children_100}" as="record">
         {record.header} <br />
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
     </f:for>
 
-    <f:for each="{childrenRight}" as="record">
+    <f:for each="{children_101}" as="record">
         {record.header} <br />
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
     </f:for>
+
+with explicite colPos defined use children<Left|Right> analog
 
 ## Concepts
 - Complete Registration is done with one PHP call to TCA Registry
