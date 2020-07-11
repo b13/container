@@ -41,11 +41,10 @@ see `EXT:container_example` for a simple usage of a custom container.
 
 This is an example for create a 2 column container
 
-    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->registerContainer(
+    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->addContainer(
         'b13-2cols-with-header-container', // CType
         '2 Column Container With Header', // label
         'Some Description of the Container', // description
-        'EXT:container/Resources/Public/Icons/Extension.svg', // icon file, or existing icon identifier
         [
             [
                 ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']] // rowspan also supported
@@ -55,6 +54,7 @@ This is an example for create a 2 column container
                 ['name' => 'right side', 'colPos' => 202]
             ]
         ], // grid configuration
+        'EXT:container/Resources/Public/Icons/Extension.svg', // icon file, or existing icon identifier
         'EXT:container/Resources/Private/Templates/Container.html', // Template for Backend View
         'EXT:container/Resources/Private/Templates/Grid.html', // Template for Grid
         true // register in new content element wizard

@@ -24,18 +24,18 @@ class Registry implements SingletonInterface
      * @param string $cType
      * @param string $label
      * @param string $description
-     * @param string $icon
      * @param array $grid
+     * @param string $icon
      * @param string $backendTemplate
      * @param string $gridTemplate
      * @param bool $registerInNewContentElementWizard
      */
-    public function registerContainer(
+    public function addContainer(
         string $cType,
         string $label,
         string $description,
+        array $grid,
         string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
-        array $grid = [],
         string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
         string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
         bool $registerInNewContentElementWizard = true
@@ -69,6 +69,41 @@ class Registry implements SingletonInterface
             'gridTemplate' => $gridTemplate,
             'registerInNewContentElementWizard' => $registerInNewContentElementWizard
         ];
+    }
+
+
+    /**
+     * @param string $cType
+     * @param string $label
+     * @param string $description
+     * @param string $icon
+     * @param array $grid
+     * @param string $backendTemplate
+     * @param string $gridTemplate
+     * @param bool $registerInNewContentElementWizard
+     */
+    public function registerContainer(
+        string $cType,
+        string $label,
+        string $description,
+        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
+        array $grid = [],
+        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
+        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
+        bool $registerInNewContentElementWizard = true
+    ): void
+    {
+        trigger_error('use "addContainer" instead of "registerContainer", parameter order changed!', E_USER_DEPRECATED);
+        $this->addContainer(
+            $cType,
+            $label,
+            $description,
+            $grid,
+            $icon,
+            $backendTemplate,
+            $gridTemplate,
+            $registerInNewContentElementWizard
+        );
     }
 
     /**
