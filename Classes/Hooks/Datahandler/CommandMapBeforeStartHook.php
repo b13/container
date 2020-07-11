@@ -15,6 +15,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use B13\Container\Domain\Factory\ContainerFactory;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 
 class CommandMapBeforeStartHook
 {
@@ -29,21 +31,69 @@ class CommandMapBeforeStartHook
     protected $containerFactory = null;
 
     /**
+     * @var Database
+     */
+    protected $database = null;
+
+    /**
      * UsedRecords constructor.
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $tcaRegistry
      */
-    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
-    {
+    public function __construct(
+        ContainerFactory $containerFactory = null,
+        Registry $tcaRegistry = null,
+        Database $database = null
+    ) {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
     }
     /**
      * @param DataHandler $dataHandler
      */
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
+        $this->unsetInconsistentLocalizeCommands($dataHandler);
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
+    }
+
+
+    protected function unsetInconsistentLocalizeCommands(DataHandler $dataHandler): void
+    {
+        if (!empty($dataHandler->cmdmap['tt_content'])) {
+            foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {
+                foreach ($cmds as $cmd => $data) {
+                    if ($cmd === 'localize') {
+                        $record = $this->database->fetchOneRecord((int)$id);
+                        if ($record['tx_container_parent'] > 0 ) {
+                            $container = $this->database->fetchOneRecord($record['tx_container_parent']);
+                            if ($container === null) {
+                                // should not happen
+                                continue;
+                            }
+                            $translatedContainer = $this->database->fetchOneTranslatedRecord($container['uid'], (int)$data);
+                            if ($translatedContainer === null || (int)$translatedContainer['l18n_parent'] === 0) {
+                                $flashMessage = GeneralUtility::makeInstance(
+                                    FlashMessage::class,
+                                    'Localization failed: container is in free mode or not translated',
+                                    '',
+                                    FlashMessage::ERROR,
+                                    true
+                                );
+                                $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+                                $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+                                $defaultFlashMessageQueue->enqueue($flashMessage);
+                                unset($dataHandler->cmdmap['tt_content'][$id][$cmd]);
+                                if (!empty($dataHandler->cmdmap['tt_content'][$id])) {
+                                    unset($dataHandler->cmdmap['tt_content'][$id]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -83,7 +133,4 @@ class CommandMapBeforeStartHook
         }
         return $data;
     }
-
-
-
 }

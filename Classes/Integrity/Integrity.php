@@ -12,6 +12,7 @@ namespace B13\Container\Integrity;
 
 use B13\Container\Integrity\Error\NonExistingParentError;
 use B13\Container\Integrity\Error\UnusedColPosWarning;
+use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -30,6 +31,14 @@ class Integrity implements SingletonInterface
      */
     protected $tcaRegistry = null;
 
+    /**
+     * @var string[][]
+     */
+    protected $res = [
+        'errors' => [],
+        'warnings' => []
+    ];
+
 
     /**
      * ContainerFactory constructor.
@@ -42,12 +51,9 @@ class Integrity implements SingletonInterface
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
+
     public function run(): array
     {
-        $res = [
-            'errors' => [],
-            'warnings' => []
-        ];
         $cTypes = $this->tcaRegistry->getRegisteredCTypes();
         $colPosByCType = [];
         foreach ($cTypes as $cType) {
@@ -57,23 +63,53 @@ class Integrity implements SingletonInterface
                 $colPosByCType[$cType][] = $column['colPos'];
             }
         }
+        $this->defaultLanguageRecords($cTypes, $colPosByCType);
+        $this->localizedRecords($cTypes, $colPosByCType);
+        return $this->res;
+    }
+
+    /**
+     * @param array $cTypes
+     * @param array $colPosByCType
+     */
+    private function localizedRecords(array $cTypes, array $colPosByCType): void
+    {
+        $containerChildRecords = $this->database->getTranslatedContainerChildRecords();
+        $containerRecords = $this->database->getTranslatedContainerRecords($cTypes);
+        foreach ($containerChildRecords as $containerChildRecord) {
+            $containerRecord = $containerRecords[$containerChildRecord['tx_container_parent']];
+            if (
+                ($containerRecord['l18n_parent'] === 0 && $containerChildRecord['l18n_parent'] !== 0) ||
+                ($containerRecord['l18n_parent'] !== 0 && $containerChildRecord['l18n_parent'] === 0)
+            ) {
+                $this->res['errors'][] = new WrongL18nParentError($containerChildRecord, $containerRecord);
+            }
+        }
+    }
+
+    /**
+     * @param array $cTypes
+     * @param array $colPosByCType
+     */
+    private function defaultLanguageRecords(array $cTypes, array $colPosByCType): void
+    {
         $containerRecords = $this->database->getContainerRecords($cTypes);
         $containerChildRecords = $this->database->getContainerChildRecords();
         foreach ($containerChildRecords as $containerChildRecord) {
             if (empty($containerRecords[$containerChildRecord['tx_container_parent']])) {
-                $res['errors'][] = new NonExistingParentError($containerChildRecord);
+                $this->res['errors'][] = new NonExistingParentError($containerChildRecord);
             } else {
                 $containerRecord = $containerRecords[$containerChildRecord['tx_container_parent']];
                 if ($containerRecord['pid'] !== $containerChildRecord['pid']) {
-                    $res['errors'][] = new WrongPidError($containerChildRecord, $containerRecord);
+                    $this->res['errors'][] = new WrongPidError($containerChildRecord, $containerRecord);
                 }
                 if (!in_array($containerChildRecord['colPos'], $colPosByCType[$containerRecord['CType']])) {
-                    $res['warnings'][] = new UnusedColPosWarning($containerChildRecord, $containerRecord);
+                    $this->res['warnings'][] = new UnusedColPosWarning($containerChildRecord, $containerRecord);
                 }
             }
 
         }
-        return $res;
     }
+
 
 }

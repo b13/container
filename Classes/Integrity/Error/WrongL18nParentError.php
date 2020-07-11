@@ -13,7 +13,7 @@ namespace B13\Container\Integrity\Error;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
 
-class UnusedColPosWarning implements ErrorInterface
+class WrongL18nParentError implements ErrorInterface
 {
     /**
      * @var array
@@ -38,11 +38,10 @@ class UnusedColPosWarning implements ErrorInterface
     {
         $this->childRecord = $childRecord;
         $this->containerRecord = $containerRecord;
-        $this->errorMessage = 'container child with uid ' . $childRecord['uid']
-            . ' on page ' . $childRecord['pid'] .
-            ' has invlid colPos ' . $childRecord['colPos']
-            . ' in container ' . $childRecord['tx_container_parent']
-            . ' with CType ' . $containerRecord['CType'];
+        $this->errorMessage = 'container child with uid ' . $childRecord['uid'] .
+            ' has l18n_parent ' . $childRecord['l18n_parent']
+            . ' but tx_container_parent ' . $childRecord['tx_container_parent']
+            . ' has l18n_parent ' . $containerRecord['l18n_parent'];
 
     }
 
@@ -59,7 +58,23 @@ class UnusedColPosWarning implements ErrorInterface
      */
     public function getSeverity(): int
     {
-        return AbstractMessage::WARNING;
+        return AbstractMessage::ERROR;
+    }
+
+    /**
+     * @return array
+     */
+    public function getChildRecord(): array
+    {
+        return $this->childRecord;
+    }
+
+    /**
+     * @return array
+     */
+    public function getContainerRecord(): array
+    {
+        return $this->containerRecord;
     }
 
 }

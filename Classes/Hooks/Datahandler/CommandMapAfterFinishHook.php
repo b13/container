@@ -13,7 +13,6 @@ namespace  B13\Container\Hooks\Datahandler;
 use B13\Container\Domain\Factory\Database;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use B13\Container\Domain\Factory\ContainerFactory;
 
 class CommandMapAfterFinishHook
 {

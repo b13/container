@@ -24,6 +24,8 @@ class LocalizeTest extends DatahandlerTest
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_container_free_mode.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_container_connected_mode.xml');
     }
 
     /**
@@ -68,5 +70,82 @@ class LocalizeTest extends DatahandlerTest
         $this->assertSame(200, $translatedChildRow['colPos']);
         $this->assertSame(1, $translatedChildRow['pid']);
         $this->assertSame(2, $translatedChildRow['l18n_parent']);
+    }
+
+    /**
+     * @test
+     */
+    public function localizeChildFailedIfContainerIsInFreeMode(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                72 => [
+                    'localize' => 1
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter(72, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+       $this->assertFalse($row);
+    }
+
+    /**
+     * @test
+     */
+    public function localizeChildFailedIfContainerIsNotTranslated(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                2 => [
+                    'localize' => 1
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        $this->assertFalse($row);
+    }
+
+    /**
+     * @test
+     */
+    public function localizeChildKeepsRelationsIfContainerIsInConnectedMode(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                82 => [
+                    'localize' => 1
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $translatedChildRow = $this->fetchOneRecord('t3_origuid', 82);
+        $this->assertSame(81, $translatedChildRow['tx_container_parent']);
+        $this->assertSame(200, $translatedChildRow['colPos']);
+        $this->assertSame(1, $translatedChildRow['pid']);
+        $this->assertSame(82, $translatedChildRow['l18n_parent']);
     }
 }
