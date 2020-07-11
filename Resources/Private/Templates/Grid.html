@@ -11,7 +11,7 @@
                 <f:for each="{row}" as="column">
                     <td valign="top"{f:if(condition:"{column.colspan}", then: ' colspan="{column.colspan}"')}{f:if(condition:"{column.rowspan}", then: ' rowspan="{column.rowspan}"')}>
 
-                    <container:drawChildren uid="{uid}" colPos="{column.colPos}"  />
+                        <container:drawChildren uid="{uid}" colPos="{column.colPos}" />
 
                     </td>
                 </f:for>
@@ -19,6 +19,5 @@
         </f:for>
     </table>
 </f:if>
-
 
 </html>
