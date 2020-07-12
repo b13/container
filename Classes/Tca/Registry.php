@@ -58,7 +58,23 @@ class Registry implements SingletonInterface
         }
 
         $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$cType] = $cType;
-        $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = 'sys_language_uid,CType,tx_container_parent,colPos,hidden';
+        $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = '
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+                    --palette--;;general,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
+                    --palette--;;frames,
+                    --palette--;;appearanceLinks,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+                    --palette--;;hidden,
+                    --palette--;;access,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
+                    categories,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
+                    rowDescription,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+';
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType] = [
             'cType' => $cType,
