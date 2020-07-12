@@ -124,7 +124,7 @@ with explicit colPos defined use '{children<Left|Right>}' as set in the example 
 
 ## Concepts
 - Complete Registration is done with one PHP call to TCA Registry
-- A container in the BE Page-Module is rendered like a page itselfs (s. View/ContainerLayoutView)
+- A container in the BE Page-Module is rendered like a page itself (s. View/ContainerLayoutView)
 - for BE Clipboard and Drag & Drop <tx_container_parent>_<colPos> used in the data-colpos Attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
 - The <tx_container_parent>_<colPos> parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler Hooks
 - When translating a container all child elements gets also translated (the child elements are not explicit listed during the translation dialog)
