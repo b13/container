@@ -107,7 +107,7 @@ __Notes__
 ### Template
 
     <f:for each="{children_100}" as="record">
-        {record.header} <br />
+        {record.header} <br>
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
@@ -150,4 +150,3 @@ You can run our test suite for this extension yourself:
 This extension was created by Achim Fritz in 2020 for [b13 GmbH, Stuttgart](https://b13.com).
 
 [Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code..
-
