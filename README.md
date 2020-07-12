@@ -71,9 +71,22 @@ __Notes__
 
 ### TypoScript
 
-    tt_content.2Cols < lib.contentElement
-    tt_content.2Cols {
-        templateName = 2Cols
+    // default/general configuration (will add 'children_<colPos>' variable to processedData for each colPos in container
+    tt_content.b13-2cols-with-header-container < lib.contentElement
+    tt_content.b13-2cols-with-header-container {
+        templateName = 2ColsWithHeader
+        templateRootPaths {
+            10 = EXT:container/Resources/Private/Contenttypes
+        }
+        dataProcessing {
+            100 = B13\Container\DataProcessing\ContainerProcessor
+        }
+    }
+
+    // if need be you can use ContainerProcessor with explicitly set colPos/variable values
+    tt_content.b13-2cols-with-header-container < lib.contentElement
+    tt_content.b13-2cols-with-header-container {
+        templateName = 2ColsWithHeader
         templateRootPaths {
             10 = EXT:container/Resources/Private/Contenttypes
         }
@@ -94,23 +107,25 @@ __Notes__
 
 ### Template
 
-    <f:for each="{childrenLeft}" as="record">
-        {record.header} <br />
+    <f:for each="{children_100}" as="record">
+        {record.header} <br>
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
     </f:for>
 
-    <f:for each="{childrenRight}" as="record">
-        {record.header} <br />
+    <f:for each="{children_101}" as="record">
+        {record.header} <br>
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
     </f:for>
+
+with explicit colPos defined use '{children<Left|Right>}' as set in the example above
 
 ## Concepts
 - Complete Registration is done with one PHP call to TCA Registry
-- A container in the BE Page-Module is rendered like a page itselfs (s. View/ContainerLayoutView)
+- A container in the BE Page-Module is rendered like a page itself (s. View/ContainerLayoutView)
 - for BE Clipboard and Drag & Drop <tx_container_parent>_<colPos> used in the data-colpos Attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
 - The <tx_container_parent>_<colPos> parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler Hooks
 - When translating a container all child elements gets also translated (the child elements are not explicit listed during the translation dialog)
@@ -136,4 +151,3 @@ You can run our test suite for this extension yourself:
 This extension was created by Achim Fritz in 2020 for [b13 GmbH, Stuttgart](https://b13.com).
 
 [Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code..
-
