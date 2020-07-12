@@ -58,6 +58,7 @@ class Registry implements SingletonInterface
         }
 
         $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$cType] = $cType;
+        $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = 'sys_language_uid,CType,tx_container_parent,colPos,hidden';
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType] = [
             'cType' => $cType,
