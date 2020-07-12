@@ -57,8 +57,8 @@ This is an example for create a 2 column container
         'EXT:container/Resources/Public/Icons/Extension.svg', // icon file, or existing icon identifier
         'EXT:container/Resources/Private/Templates/Container.html', // Template for Backend View
         'EXT:container/Resources/Private/Templates/Grid.html', // Template for Grid
-        true, // register in new content element wizard
-        true // saveAndClose for new content element wizard (v10 only)
+        true, // saveAndClose for new content element wizard (v10 only)
+        true // register in new content element wizard
     );
 
 __Notes__

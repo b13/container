@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Imaging\IconRegistry;
 
 class Registry implements SingletonInterface
 {
-
     /**
      * @param string $cType
      * @param string $label
@@ -28,6 +27,7 @@ class Registry implements SingletonInterface
      * @param string $icon
      * @param string $backendTemplate
      * @param string $gridTemplate
+     * @param bool $saveAndCloseInNewContentElementWizard
      * @param bool $registerInNewContentElementWizard
      */
     public function addContainer(
@@ -38,8 +38,8 @@ class Registry implements SingletonInterface
         string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
         string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
         string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
-        bool $registerInNewContentElementWizard = true,
-        bool $saveAndCloseInNewContentElementWizard = true
+        bool $saveAndCloseInNewContentElementWizard = true,
+        bool $registerInNewContentElementWizard = true
     ): void
     {
 
@@ -68,8 +68,8 @@ class Registry implements SingletonInterface
             'backendTemplate' => $backendTemplate,
             'grid' => $grid,
             'gridTemplate' => $gridTemplate,
-            'registerInNewContentElementWizard' => $registerInNewContentElementWizard,
-            'saveAndCloseInNewContentElementWizard' => $saveAndCloseInNewContentElementWizard
+            'saveAndCloseInNewContentElementWizard' => $saveAndCloseInNewContentElementWizard,
+            'registerInNewContentElementWizard' => $registerInNewContentElementWizard
         ];
     }
 
@@ -104,6 +104,7 @@ class Registry implements SingletonInterface
             $icon,
             $backendTemplate,
             $gridTemplate,
+            false,
             $registerInNewContentElementWizard
         );
     }
