@@ -114,7 +114,7 @@ __Notes__
     </f:for>
 
     <f:for each="{children_101}" as="record">
-        {record.header} <br />
+        {record.header} <br>
         <f:format.raw>
             {record.renderedContent}
         </f:format.raw>
