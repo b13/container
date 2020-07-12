@@ -19,7 +19,6 @@ use B13\Container\Tca\Registry;
 
 class ContainerFactory implements SingletonInterface
 {
-
     /**
      * @var Database
      */
@@ -86,9 +85,9 @@ class ContainerFactory implements SingletonInterface
         $childRecords = $this->doWorkspaceOverlay($childRecords);
         $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
         if ($defaultRecord === null) {
-            $container = new Container($record, $childRecordByColPosKey, $language);
+            $container = GeneralUtility::makeInstance(Container::class, $record, $childRecordByColPosKey, $language);
         } else {
-            $container = new Container($defaultRecord, $childRecordByColPosKey, $language);
+            $container = GeneralUtility::makeInstance(Container::class, $defaultRecord, $childRecordByColPosKey, $language);
         }
         return $container;
     }
@@ -176,9 +175,9 @@ class ContainerFactory implements SingletonInterface
         $childRecords = $this->doWorkspaceOverlay($childRecords);
         $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
         if ($defaultRecord === null) {
-            $container = new Container($record, $childRecordByColPosKey, $language);
+            $container = GeneralUtility::makeInstance(Container::class, $record, $childRecordByColPosKey, $language);
         } else {
-            $container = new Container($defaultRecord, $childRecordByColPosKey, $language);
+            $container = GeneralUtility::makeInstance(Container::class, $defaultRecord, $childRecordByColPosKey, $language);
         }
         return $container;
     }
