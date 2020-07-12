@@ -200,4 +200,5 @@ class Database implements SingletonInterface
         }
         return $record;
     }
+
 }

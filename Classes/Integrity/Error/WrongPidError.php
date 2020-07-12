@@ -58,7 +58,7 @@ class WrongPidError implements ErrorInterface
      */
     public function getSeverity(): int
     {
-        return AbstractMessage::WARNING;
+        return AbstractMessage::ERROR;
     }
 
     /**

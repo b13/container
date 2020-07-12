@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class Database implements SingletonInterface
 {
+    private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 't3_origuid', 'colPos', 'tx_container_parent'];
 
     /**
      * @return QueryBuilder
@@ -30,6 +31,61 @@ class Database implements SingletonInterface
         return $queryBuilder;
     }
 
+    /**
+     * @param array $cTypes
+     * @return array
+     */
+    public function getTranslatedContainerRecords(array $cTypes): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $stm = $queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->in(
+                    'CType',
+                    $queryBuilder->createNamedParameter($cTypes, Connection::PARAM_STR_ARRAY)
+                ),
+                $queryBuilder->expr()->neq(
+                    'l10n_source',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                )
+            )
+            ->execute();
+        $rows = [];
+        while ($result = $stm->fetch()) {
+            $rows[$result['uid']] = $result;
+        }
+        return $rows;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTranslatedContainerChildRecords(): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $stm = $queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->gt(
+                    'tx_container_parent',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->neq(
+                    'l10n_source',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                )
+            )
+            ->execute();
+        $rows = [];
+        while ($result = $stm->fetch()) {
+            $rows[$result['uid']] = $result;
+        }
+        return $rows;
+    }
+
 
     /**
      * @param array $cTypes
@@ -38,8 +94,8 @@ class Database implements SingletonInterface
     public function getContainerRecords(array $cTypes): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $results = $queryBuilder
-            ->select('*')
+        $stm = $queryBuilder
+            ->select(...$this->fields)
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->in(
@@ -51,10 +107,9 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAll();
+            ->execute();
         $rows = [];
-        foreach ($results as $result) {
+        while ($result = $stm->fetch()) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -66,8 +121,8 @@ class Database implements SingletonInterface
     public function getContainerChildRecords(): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $results = $queryBuilder
-            ->select('*')
+        $stm = $queryBuilder
+            ->select(...$this->fields)
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->gt(
@@ -79,10 +134,9 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAll();
+            ->execute();
         $rows = [];
-        foreach ($results as $result) {
+        while ($result = $stm->fetch()) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
