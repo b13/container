@@ -120,7 +120,7 @@ __Notes__
         </f:format.raw>
     </f:for>
 
-with explicite colPos defined use children<Left|Right> analog
+with explicit colPos defined use '{children<Left|Right>}' as set in the example above
 
 ## Concepts
 - Complete Registration is done with one PHP call to TCA Registry
