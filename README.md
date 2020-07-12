@@ -70,7 +70,7 @@ __Notes__
 
 ### TypoScript
 
-    // default/general configuration (will add 'children_<colPos>' Variable to processedData foreach colPos in container
+    // default/general configuration (will add 'children_<colPos>' variable to processedData for each colPos in container
     tt_content.b13-2cols-with-header-container < lib.contentElement
     tt_content.b13-2cols-with-header-container {
         templateName = 2ColsWithHeader
