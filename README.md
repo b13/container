@@ -82,7 +82,7 @@ __Notes__
         }
     }
 
-    // explicite by colPos
+    // if need be you can use ContainerProcessor with explicitly set colPos/variable values
     tt_content.b13-2cols-with-header-container < lib.contentElement
     tt_content.b13-2cols-with-header-container {
         templateName = 2ColsWithHeader
