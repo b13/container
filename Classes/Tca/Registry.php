@@ -38,7 +38,8 @@ class Registry implements SingletonInterface
         string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
         string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
         string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
-        bool $registerInNewContentElementWizard = true
+        bool $registerInNewContentElementWizard = true,
+        bool $saveAndCloseInNewContentElementWizard = true
     ): void
     {
 
@@ -67,7 +68,8 @@ class Registry implements SingletonInterface
             'backendTemplate' => $backendTemplate,
             'grid' => $grid,
             'gridTemplate' => $gridTemplate,
-            'registerInNewContentElementWizard' => $registerInNewContentElementWizard
+            'registerInNewContentElementWizard' => $registerInNewContentElementWizard,
+            'saveAndCloseInNewContentElementWizard' => $saveAndCloseInNewContentElementWizard
         ];
     }
 
@@ -286,6 +288,7 @@ mod.wizards.newContentElement.wizardItems.container.show = *
         description = ' . $containerConfiguration['description'] . '
         iconIdentifier = ' . $cType . '
         tt_content_defValues.CType = ' . $cType . '
+        saveAndClose = ' . $containerConfiguration['saveAndCloseInNewContentElementWizard'] . '
     }
 }
 ';
