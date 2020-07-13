@@ -67,6 +67,7 @@ __Notes__
   - Adds CType to TCA Select Items
   - Registers your Icon
   - Adds PageTSconfig for newContentElement.wizardItems
+  - Sets ``showitem`` for this CType (to: `sys_language_uid,CType,tx_container_parent,colPos,hidden`)
   - Saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
 
 ### TypoScript
