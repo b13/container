@@ -42,6 +42,18 @@ class ContainerLayoutView extends PageLayoutView
     protected $container;
 
     /**
+     * variable and calls can be dropped on v10
+     * @var int
+     */
+    protected $counter = 0;
+
+    /**
+     * variable and calls can be dropped on v10
+     * @var int
+     */
+    protected $nextThree = 3;
+
+    /**
      * ContainerLayoutView constructor.
      * @param EventDispatcherInterface|null $eventDispatcher
      * @param ContainerFactory|null $containerFactory
@@ -151,13 +163,12 @@ class ContainerLayoutView extends PageLayoutView
      *
      * @param string $table Table name
      * @param array $row Record array
-     * @param string $enabledClickMenuItems Passthrough to wrapClickMenuOnIcon
      * @return string HTML for the icon
      */
-    public function getIcon($table, $row, $enabledClickMenuItems = '')
+    public function getIcon($table, $row)
     {
         if ($this->isLanguageEditable()) {
-            return parent::getIcon($table, $row, $enabledClickMenuItems);
+            return parent::getIcon($table, $row);
         }
         $toolTip = BackendUtility::getRecordToolTip($row, 'tt_content');
         $icon = '<span ' . $toolTip . '>' . $this->iconFactory->getIconForRecord($table, $row, Icon::SIZE_SMALL)->render() . '</span>';
