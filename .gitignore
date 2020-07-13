@@ -2,3 +2,4 @@
 Build/testing-docker/.env
 var/
 composer.lock
+.php_cs.cache

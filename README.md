@@ -138,7 +138,7 @@ with explicit colPos defined use '{children<Left|Right>}' as set in the example 
 - Integrity proofment
 - List module actions
 
-## Extension Tests
+## Extension Tests and Coding Guidelines
 
 You can run our test suite for this extension yourself:
 
@@ -146,6 +146,11 @@ You can run our test suite for this extension yourself:
 - run `Build/Scripts/runTests.sh -s unit`
 - run `Build/Scripts/runTests.sh -s functional`
 - run `Build/Scripts/runTests.sh -s acceptance`
+
+and assure Coding Guidelines are fullfilled:
+
+- run ``.Build/bin/phpstan analyse -c Resources/Private/Configuration/phpstan.neon``
+- run ``.Build/bin/php-cs-fixer fix --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist --dry-run --stop-on-violation --using-cache=no Classes``
 
 ## Credits
 
