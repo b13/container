@@ -39,8 +39,8 @@ class ContainerFactoryTest extends FunctionalTestCase
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
         $container = $containerFactory->buildContainer(2);
         $children = $container->getChildrenByColPos(201);
-        $this->assertSame(2, count($children));
+        self::assertSame(2, count($children));
         $first = $children[0];
-        $this->assertSame(6, $first['uid']);
+        self::assertSame(6, $first['uid']);
     }
 }

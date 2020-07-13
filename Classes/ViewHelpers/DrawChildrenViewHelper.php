@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\ViewHelpers;
 
 /*
@@ -12,17 +14,16 @@ namespace B13\Container\ViewHelpers;
 
 use B13\Container\View\ContainerLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-
 
 class DrawChildrenViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 

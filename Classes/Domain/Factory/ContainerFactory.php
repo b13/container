@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\Domain\Factory;
 
 /*
@@ -11,24 +13,23 @@ namespace B13\Container\Domain\Factory;
  */
 
 use B13\Container\Domain\Model\Container;
+use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use B13\Container\Tca\Registry;
 
 class ContainerFactory implements SingletonInterface
 {
     /**
      * @var Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
-
+    protected $tcaRegistry;
 
     /**
      * ContainerFactory constructor.
@@ -106,7 +107,7 @@ class ContainerFactory implements SingletonInterface
             foreach ($defaultRecords as $defaultRecord) {
                 $foundOverlay = null;
                 foreach ($workspaceRecords as $workspaceRecord) {
-                    if($workspaceRecord['t3ver_oid'] === $defaultRecord['uid']) {
+                    if ($workspaceRecord['t3ver_oid'] === $defaultRecord['uid']) {
                         $foundOverlay = $workspaceRecord;
                     }
                 }
@@ -117,16 +118,15 @@ class ContainerFactory implements SingletonInterface
                 }
             }
             return $overlayed;
-        } else {
-            // filter workspace placeholders
-            $filtered = [];
-            foreach($defaultRecords as $defaultRecord) {
-                if ($defaultRecord['t3ver_wsid'] === 0) {
-                    $filtered[] = $defaultRecord;
-                }
-            }
-            return $filtered;
         }
+        // filter workspace placeholders
+        $filtered = [];
+        foreach ($defaultRecords as $defaultRecord) {
+            if ($defaultRecord['t3ver_wsid'] === 0) {
+                $filtered[] = $defaultRecord;
+            }
+        }
+        return $filtered;
     }
 
     /**
@@ -211,7 +211,7 @@ class ContainerFactory implements SingletonInterface
         foreach ($defaultRecords as $defaultRecord) {
             $foundOverlay = null;
             foreach ($localizedRecords as $localizedRecord) {
-                if($localizedRecord['l18n_parent'] === $defaultRecord['uid']) {
+                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid']) {
                     $foundOverlay = $localizedRecord;
                 }
             }
@@ -239,5 +239,4 @@ class ContainerFactory implements SingletonInterface
         }
         return $recordsByColPosKey;
     }
-
 }

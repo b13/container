@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\Tca;
 
 /*
@@ -10,10 +12,10 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use B13\Container\Domain\Factory\ContainerFactory;
 
 class ItemProcFunc
 {
@@ -21,18 +23,17 @@ class ItemProcFunc
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * @var BackendLayoutView
      */
-    protected $backendLayoutView = null;
+    protected $backendLayoutView;
 
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
-
+    protected $tcaRegistry;
 
     /**
      * ItemProcFunc constructor.
@@ -79,7 +80,6 @@ class ItemProcFunc
                     return;
                 }
             } catch (Exception $e) {
-
             }
         }
 
@@ -115,5 +115,4 @@ class ItemProcFunc
         }
         $parameters['items'] = $items;
     }
-
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\ContentDefender\Form\FormDataProvider;
+declare(strict_types=1);
+
+namespace B13\Container\ContentDefender\Form\FormDataProvider;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -13,8 +15,8 @@ namespace  B13\Container\ContentDefender\Form\FormDataProvider;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TcaCTypeItems implements FormDataProviderInterface
 {
@@ -22,12 +24,12 @@ class TcaCTypeItems implements FormDataProviderInterface
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
+    protected $tcaRegistry;
 
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * UsedRecords constructor.
@@ -71,5 +73,4 @@ class TcaCTypeItems implements FormDataProviderInterface
         }
         return $result;
     }
-
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks;
+declare(strict_types=1);
+
+namespace B13\Container\Hooks;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -15,7 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class WizardItems implements NewContentElementWizardHookInterface
 {
-
     public function manipulateWizardItems(&$wizardItems, &$parentObject)
     {
         $parent = (int)GeneralUtility::_GP('tx_container_parent');
@@ -23,10 +24,7 @@ class WizardItems implements NewContentElementWizardHookInterface
             foreach ($wizardItems as $key => $wizardItem) {
                 $wizardItems[$key]['tt_content_defValues']['tx_container_parent'] = $parent;
                 $wizardItems[$key]['params'] .= '&defVals[tt_content][tx_container_parent]=' . $parent;
-
             }
         }
     }
-
-
 }

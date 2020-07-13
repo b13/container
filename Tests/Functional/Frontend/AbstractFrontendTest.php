@@ -35,7 +35,6 @@ abstract class AbstractFrontendTest extends FunctionalTestCase
     ];
 
     /**
-     * @return void
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception
      */

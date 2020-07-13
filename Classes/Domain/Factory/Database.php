@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\Domain\Factory;
 
 /*
@@ -111,7 +113,6 @@ class Database implements SingletonInterface
         return $records;
     }
 
-
     /**
      * @param array $records
      * @param int $language
@@ -202,5 +203,4 @@ class Database implements SingletonInterface
         }
         return $record;
     }
-
 }

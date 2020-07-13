@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
 
 /*
@@ -53,12 +55,11 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 22);
-        $this->assertSame(0, (int)$row['tx_container_parent']);
-        $this->assertSame(0, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
-        $this->assertSame(1, (int)$row['sys_language_uid']);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+        self::assertSame(3, (int)$row['pid']);
+        self::assertSame(1, (int)$row['sys_language_uid']);
     }
-
 
     /**
      * @test
@@ -85,10 +86,10 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 22);
-        $this->assertSame(0, (int)$row['tx_container_parent']);
-        $this->assertSame(0, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
-        $this->assertSame(1, (int)$row['sys_language_uid']);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+        self::assertSame(3, (int)$row['pid']);
+        self::assertSame(1, (int)$row['sys_language_uid']);
     }
 
     /**
@@ -116,10 +117,10 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 22);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
-        $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
-        $this->assertSame(1, (int)$row['sys_language_uid']);
+        self::assertSame(11, (int)$row['tx_container_parent']);
+        self::assertSame(201, (int)$row['colPos']);
+        self::assertSame(3, (int)$row['pid']);
+        self::assertSame(1, (int)$row['sys_language_uid']);
     }
 
     /**
@@ -146,10 +147,10 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 22);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
-        $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
-        $this->assertSame(1, (int)$row['sys_language_uid']);
+        self::assertSame(11, (int)$row['tx_container_parent']);
+        self::assertSame(201, (int)$row['colPos']);
+        self::assertSame(3, (int)$row['pid']);
+        self::assertSame(1, (int)$row['sys_language_uid']);
     }
 
     /**
@@ -177,10 +178,10 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 24);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
-        $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
-        $this->assertSame(1, (int)$row['sys_language_uid']);
+        self::assertSame(11, (int)$row['tx_container_parent']);
+        self::assertSame(201, (int)$row['colPos']);
+        self::assertSame(3, (int)$row['pid']);
+        self::assertSame(1, (int)$row['sys_language_uid']);
     }
 
     /**
@@ -207,9 +208,9 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 24);
-        $this->assertSame(11, (int)$row['tx_container_parent']);
-        $this->assertSame(201, (int)$row['colPos']);
-        $this->assertSame(3, (int)$row['pid']);
-        $this->assertSame(1, (int)$row['sys_language_uid']);
+        self::assertSame(11, (int)$row['tx_container_parent']);
+        self::assertSame(201, (int)$row['colPos']);
+        self::assertSame(3, (int)$row['pid']);
+        self::assertSame(1, (int)$row['sys_language_uid']);
     }
 }

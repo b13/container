@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\DataProcessing;
 
 /*
@@ -10,14 +12,13 @@ namespace B13\Container\DataProcessing;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
-use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use B13\Container\Domain\Factory\ContainerFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 use TYPO3\CMS\Frontend\ContentObject\RecordsContentObject;
-
 
 class ContainerProcessor implements DataProcessorInterface
 {
@@ -25,7 +26,7 @@ class ContainerProcessor implements DataProcessorInterface
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     public function __construct(ContainerFactory $containerFactory = null)
     {
@@ -44,9 +45,7 @@ class ContainerProcessor implements DataProcessorInterface
         array $contentObjectConfiguration,
         array $processorConfiguration,
         array $processedData
-    )
-    {
-
+    ) {
         if (isset($processorConfiguration['if.']) && !$cObj->checkIf($processorConfiguration['if.'])) {
             return $processedData;
         }
@@ -93,7 +92,6 @@ class ContainerProcessor implements DataProcessorInterface
                 $as,
                 $processedData
             );
-
         }
         return $processedData;
     }

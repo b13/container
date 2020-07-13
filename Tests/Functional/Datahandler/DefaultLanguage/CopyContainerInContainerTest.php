@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -48,7 +50,7 @@ class CopyContainerInContainerTest extends DatahandlerTest
         $copiedContentInChildContainer1 = $this->fetchOneRecord('t3_origuid', 3);
         $copiedChildContainer2 = $this->fetchOneRecord('t3_origuid', 4);
         $copiedContentInChildContainer2 = $this->fetchOneRecord('t3_origuid', 5);
-        $this->assertSame($copiedChildContainer1['uid'], $copiedContentInChildContainer1['tx_container_parent']);
-        $this->assertSame($copiedChildContainer2['uid'], $copiedContentInChildContainer2['tx_container_parent']);
+        self::assertSame($copiedChildContainer1['uid'], $copiedContentInChildContainer1['tx_container_parent']);
+        self::assertSame($copiedChildContainer2['uid'], $copiedContentInChildContainer2['tx_container_parent']);
     }
 }

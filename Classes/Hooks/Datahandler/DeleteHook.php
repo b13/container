@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks\Datahandler;
+declare(strict_types=1);
+
+namespace B13\Container\Hooks\Datahandler;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,17 +12,17 @@ namespace  B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\Exception;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DeleteHook
 {
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * @param ContainerFactory|null $containerFactory
@@ -58,5 +60,4 @@ class DeleteHook
             }
         }
     }
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\Domain\Factory;
 
 /*
@@ -12,5 +14,4 @@ namespace B13\Container\Domain\Factory;
 
 class Exception extends \B13\Container\Exception
 {
-
 }

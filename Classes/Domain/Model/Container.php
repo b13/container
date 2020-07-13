@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\Domain\Model;
 
 /*
@@ -15,12 +17,12 @@ class Container
     /**
      * @var array
      */
-    protected $containerRecord = null;
+    protected $containerRecord;
 
     /**
      * @var array
      */
-    protected $childRecords = null;
+    protected $childRecords;
 
     /**
      * @var int
@@ -118,5 +120,4 @@ class Container
     {
         return array_keys($this->childRecords);
     }
-
 }

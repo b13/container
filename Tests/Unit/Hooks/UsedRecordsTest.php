@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace B13\Container\Tests\Unit\Hooks;
 
 /*
@@ -12,15 +13,14 @@ namespace B13\Container\Tests\Unit\Hooks;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
+use B13\Container\Hooks\UsedRecords;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
-use B13\Container\Hooks\UsedRecords;
 
 class UsedRecordsTest extends UnitTestCase
 {
-
     protected $resetSingletonInstances = true;
     /**
      * @test
@@ -35,9 +35,9 @@ class UsedRecordsTest extends UnitTestCase
             'used' => true,
             'record' => ['tx_container_parent' => 0]
         ];
-        $this->assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
         $params['used'] = false;
-        $this->assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 
     /**
@@ -56,8 +56,7 @@ class UsedRecordsTest extends UnitTestCase
             'used' => false,
             'record' => ['tx_container_parent' => 1, 'colPos' => 2]
         ];
-        $this->assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
-
+        self::assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 
     /**
@@ -76,6 +75,6 @@ class UsedRecordsTest extends UnitTestCase
             'used' => true,
             'record' => ['tx_container_parent' => 1, 'colPos' => 2]
         ];
-        $this->assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 }

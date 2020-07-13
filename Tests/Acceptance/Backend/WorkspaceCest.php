@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -23,7 +24,6 @@ class WorkspaceCest
      * @var string
      */
     public static $topBarModuleSelector = '#typo3-cms-workspaces-backend-toolbaritems-workspaceselectortoolbaritem';
-
 
     /**
      * @param BackendTester $I
@@ -49,7 +49,6 @@ class WorkspaceCest
         $I->dontSee('header-new-ws');
     }
 
-
     /**
      * @param BackendTester $I
      * @param PageTree $pageTree
@@ -71,7 +70,6 @@ class WorkspaceCest
     /**
      * @param BackendTester $I
      * @param PageTree $pageTree
-     * @return void
      * @group workspace
      */
     public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
@@ -89,7 +87,6 @@ class WorkspaceCest
     /**
      * @param BackendTester $I
      * @param PageTree $pageTree
-     * @return void
      * @group workspace
      */
     public function testWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
@@ -109,7 +106,6 @@ class WorkspaceCest
 
     /**
      * @param BackendTester $I
-     * @return void
      */
     protected function switchToLiveWs(BackendTester $I): void
     {
@@ -118,7 +114,6 @@ class WorkspaceCest
 
     /**
      * @param BackendTester $I
-     * @return void
      */
     protected function switchToTestWs(BackendTester $I): void
     {
@@ -128,7 +123,6 @@ class WorkspaceCest
     /**
      * @param BackendTester $I
      * @param string $ws
-     * @return void
      */
     protected function switchToWs(BackendTester $I, string $ws): void
     {

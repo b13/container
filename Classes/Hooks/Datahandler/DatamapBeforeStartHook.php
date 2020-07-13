@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks\Datahandler;
+declare(strict_types=1);
+
+namespace B13\Container\Hooks\Datahandler;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,23 +12,23 @@ namespace  B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use B13\Container\Domain\Factory\ContainerFactory;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 class DatamapBeforeStartHook
 {
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * @var Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * @param ContainerFactory|null $containerFactory
@@ -48,7 +50,6 @@ class DatamapBeforeStartHook
         $dataHandler->datamap = $this->datamapForChildLocalizations($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildrenChangeContainerLanguage($dataHandler->datamap);
     }
-
 
     /**
      * @param array $datamap

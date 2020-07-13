@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks\Datahandler;
+declare(strict_types=1);
+
+namespace B13\Container\Hooks\Datahandler;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -11,9 +13,9 @@ namespace  B13\Container\Hooks\Datahandler;
  */
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 class DatamapAfterDatabaseOperationHook
 {
@@ -24,7 +26,6 @@ class DatamapAfterDatabaseOperationHook
      * @param mixed $id
      * @param array $fieldArray
      * @param DataHandler $dataHandler
-     * @return void
      */
     public function processDatamap_afterDatabaseOperations(string $status, string $table, $id, array $fieldArray, DataHandler $dataHandler): void
     {
@@ -52,6 +53,4 @@ class DatamapAfterDatabaseOperationHook
             }
         }
     }
-
-
 }

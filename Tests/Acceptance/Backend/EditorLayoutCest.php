@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -13,10 +14,8 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 
-
 class EditorLayoutCest
 {
-
 
     /**
      * @param BackendTester $I
@@ -40,5 +39,4 @@ class EditorLayoutCest
         // header
         $I->see('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
     }
-
 }

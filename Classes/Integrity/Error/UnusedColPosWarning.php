@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\Integrity\Error;
 
 /*
@@ -12,23 +14,22 @@ namespace B13\Container\Integrity\Error;
 
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
-
 class UnusedColPosWarning implements ErrorInterface
 {
     /**
      * @var array
      */
-    protected $childRecord = null;
+    protected $childRecord;
 
     /**
      * @var array
      */
-    protected $containerRecord = null;
+    protected $containerRecord;
 
     /**
      * @var string
      */
-    protected $errorMessage = null;
+    protected $errorMessage;
 
     /**
      * @param array $childRecord
@@ -43,7 +44,6 @@ class UnusedColPosWarning implements ErrorInterface
             ' has invlid colPos ' . $childRecord['colPos']
             . ' in container ' . $childRecord['tx_container_parent']
             . ' with CType ' . $containerRecord['CType'];
-
     }
 
     /**
@@ -61,5 +61,4 @@ class UnusedColPosWarning implements ErrorInterface
     {
         return AbstractMessage::WARNING;
     }
-
 }

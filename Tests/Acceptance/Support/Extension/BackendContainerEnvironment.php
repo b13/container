@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace B13\Container\Tests\Acceptance\Support\Extension;
 

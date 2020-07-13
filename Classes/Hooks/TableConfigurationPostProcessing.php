@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace B13\Container\Hooks;
 
 /*
@@ -20,7 +22,7 @@ class TableConfigurationPostProcessing implements TableConfigurationPostProcessi
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
+    protected $tcaRegistry;
 
     /**
      * @param Registry|null $tcaRegistry
@@ -30,9 +32,6 @@ class TableConfigurationPostProcessing implements TableConfigurationPostProcessi
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
-    /**
-     * @return void
-     */
     public function processData()
     {
         $this->tcaRegistry->registerIcons();
