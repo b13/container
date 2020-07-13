@@ -29,7 +29,7 @@
         "ichhabrecht/content-defender": "dev-master",
         "typo3/cms-install": "^10.0",
         "typo3/cms-about": "^10.0",
-        "typo3/testing-framework": "~6.1.0",
+        "typo3/testing-framework": "^6.2.4",
         "codeception/codeception": "^3",
         "typo3/cms-workspaces": "^10.0",
         "phpstan/phpstan": "^0.12.11"
