@@ -44,8 +44,8 @@ class DrawChildrenViewHelper extends AbstractViewHelper
      */
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        $containerLayouView = GeneralUtility::makeInstance(ContainerLayoutView::class);
-        $content = $containerLayouView->renderContainerChildren((int)$arguments['uid'], (int)$arguments['colPos']);
+        $containerLayoutView = GeneralUtility::makeInstance(ContainerLayoutView::class);
+        $content = $containerLayoutView->renderContainerChildren((int)$arguments['uid'], (int)$arguments['colPos']);
         return $content;
     }
 }
