@@ -48,7 +48,7 @@ class ContainerFactory implements SingletonInterface
     public function buildContainer(int $uid): Container
     {
 
-        // FE $uid alays default language uid
+        // FE $uid always default language uid
         // BE $uid localized $uid
         if (TYPO3_MODE === 'FE') {
             $languageAspect =  GeneralUtility::makeInstance(Context::class)->getAspect('language');
