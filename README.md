@@ -41,7 +41,7 @@ see `EXT:container_example` for a simple usage of a custom container.
 
 This is an example for create a 2 column container
 
-    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->addContainer(
+    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->registerContainer(
         'b13-2cols-with-header-container', // CType
         '2 Column Container With Header', // label
         'Some Description of the Container', // description
