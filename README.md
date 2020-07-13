@@ -150,7 +150,7 @@ You can run our test suite for this extension yourself:
 and assure Coding Guidelines are fullfilled:
 
 - run ``.Build/bin/phpstan analyse -c Resources/Private/Configuration/phpstan.neon``
-- run ``.Build/bin/php-cs-fixer fix --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist --dry-run --stop-on-violation --using-cache=no Classes``
+- run ``.Build/bin/php-cs-fixer fix --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist --dry-run --stop-on-violation --using-cache=no .``
 
 ## Credits
 
