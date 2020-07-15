@@ -28,7 +28,7 @@ class DatamapAfterDatabaseOperationHook
      */
     public function processDatamap_afterDatabaseOperations(string $status, string $table, $id, array $fieldArray, DataHandler $dataHandler): void
     {
-        // change tx_container_parent of placeholder if neccessary
+        // change tx_container_parent of placeholder if necessary
         if (
             $table === 'tt_content' &&
             $status === 'update' &&

@@ -46,6 +46,7 @@ class ContainerLayoutView extends PageLayoutView
      * ContainerLayoutView constructor.
      * @param EventDispatcherInterface|null $eventDispatcher
      * @param ContainerFactory|null $containerFactory
+     * @param Registry|null $registry
      */
     public function __construct(EventDispatcherInterface $eventDispatcher = null, ContainerFactory $containerFactory = null, Registry $registry = null)
     {

@@ -39,6 +39,7 @@ class CommandMapBeforeStartHook
      * UsedRecords constructor.
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $tcaRegistry
+     * @param Database|null $database
      */
     public function __construct(
         ContainerFactory $containerFactory = null,

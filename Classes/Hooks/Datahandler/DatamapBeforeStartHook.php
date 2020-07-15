@@ -82,7 +82,7 @@ class DatamapBeforeStartHook
     {
         $datamapForLocalizations = ['tt_content' => []];
         if (!empty($datamap['tt_content'])) {
-            foreach ($datamap['tt_content'] as $id => &$data) {
+            foreach ($datamap['tt_content'] as $id => $data) {
                 if (isset($data['colPos'])) {
                     $record = $this->database->fetchOneRecord((int)$id);
                     if ($record !== null &&
