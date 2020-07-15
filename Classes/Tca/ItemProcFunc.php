@@ -37,7 +37,7 @@ class ItemProcFunc
     /**
      * ItemProcFunc constructor.
      * @param ContainerFactory|null $containerFactory
-     * @param \B13\Container\Tca\Registry|null $tcaRegistry
+     * @param Registry|null $tcaRegistry
      * @param BackendLayoutView|null $backendLayoutView
      */
     public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, BackendLayoutView $backendLayoutView = null)

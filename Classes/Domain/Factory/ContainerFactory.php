@@ -131,7 +131,11 @@ class ContainerFactory implements SingletonInterface
 
     /**
      * @param int $uid
+     * @param LanguageAspect $languageAspect
      * @return Container
+     * @throws Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException
      */
     protected function buildContainerWithOverlay(int $uid, LanguageAspect $languageAspect): Container
     {

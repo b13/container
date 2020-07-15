@@ -1,6 +1,6 @@
 <?php
 
-call_user_func(function () {
+call_user_func(static function () {
     $additionalColumns = [
         'tx_container_parent' => [
             'label' => 'Container',

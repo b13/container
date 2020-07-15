@@ -60,7 +60,7 @@ class TcaCTypeItems implements FormDataProviderInterface
                     $allowedValues = GeneralUtility::trimExplode(',', $value);
                     $result['processedTca']['columns'][$field]['config']['items'] = array_filter(
                         $result['processedTca']['columns'][$field]['config']['items'],
-                        function ($item) use ($allowedValues) {
+                        static function ($item) use ($allowedValues) {
                             return in_array($item[1], $allowedValues);
                         }
                     );
