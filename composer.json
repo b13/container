@@ -33,7 +33,7 @@
         "codeception/codeception": "^3",
         "typo3/cms-workspaces": "^10.0",
         "phpstan/phpstan": "^0.12.11",
-        "typo3/coding-standards": "^0.1.0"
+        "typo3/coding-standards": "^0.2.0"
     },
     "replace": {
         "typo3-ter/container": "self.version"
