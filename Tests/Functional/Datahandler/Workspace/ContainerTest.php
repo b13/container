@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types = 1);
 namespace B13\Container\Tests\Functional\Datahandler\Workspace;
 
 /*
@@ -45,7 +47,7 @@ class ContainerTest extends DatahandlerTest
 
         // new container
         $row = $this->fetchOneRecord('t3ver_oid', 1);
-        $this->assertSame(1, $row['t3ver_wsid']);
+        self::assertSame(1, $row['t3ver_wsid']);
         // child
         $queryBuilder = $this->getQueryBuilder();
         $row = $queryBuilder->select('*')
@@ -58,7 +60,7 @@ class ContainerTest extends DatahandlerTest
             )
             ->execute()
             ->fetch();
-        $this->assertFalse($row);
+        self::assertFalse($row);
     }
 
     /**
@@ -97,7 +99,7 @@ class ContainerTest extends DatahandlerTest
             )
             ->execute()
             ->fetch();
-        $this->assertIsArray($containerRow);
+        self::assertIsArray($containerRow);
         $queryBuilder = $this->getQueryBuilder();
         $rows = $queryBuilder->select('*')
             ->from('tt_content')
@@ -110,9 +112,8 @@ class ContainerTest extends DatahandlerTest
             ->execute()
             ->fetchAll();
         foreach ($rows as $row) {
-            $this->assertSame(1, $row['t3ver_wsid']);
-            $this->assertSame($containerRow['uid'], $row['tx_container_parent']);
+            self::assertSame(1, $row['t3ver_wsid']);
+            self::assertSame($containerRow['uid'], $row['tx_container_parent']);
         }
     }
-
 }

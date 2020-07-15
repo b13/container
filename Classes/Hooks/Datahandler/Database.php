@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks\Datahandler;
+declare(strict_types = 1);
+
+namespace B13\Container\Hooks\Datahandler;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types = 1);
 namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
 
 /*
@@ -41,9 +43,9 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 51);
-        $this->assertSame(1, $row['deleted']);
+        self::assertSame(1, $row['deleted']);
         $row = $this->fetchOneRecord('uid', 52);
-        $this->assertSame(1, $row['deleted']);
+        self::assertSame(1, $row['deleted']);
     }
 
     /**
@@ -71,10 +73,10 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $child = $this->fetchOneRecord('uid', 52);
-        $this->assertSame(1, $child['pid']);
-        $this->assertSame(51, $child['tx_container_parent']);
-        $this->assertSame(200, $child['colPos']);
-        $this->assertSame(1, $child['sys_language_uid']);
+        self::assertSame(1, $child['pid']);
+        self::assertSame(51, $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+        self::assertSame(1, $child['sys_language_uid']);
     }
 
     /**
@@ -100,10 +102,10 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $child = $this->fetchOneRecord('uid', 52);
-        $this->assertSame(3, $child['pid']);
-        $this->assertSame(51, $child['tx_container_parent']);
-        $this->assertSame(200, $child['colPos']);
-        $this->assertSame(1, $child['sys_language_uid']);
+        self::assertSame(3, $child['pid']);
+        self::assertSame(51, $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+        self::assertSame(1, $child['sys_language_uid']);
     }
 
     /**
@@ -128,10 +130,10 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->process_cmdmap();
         $copiedRecord = $this->fetchOneRecord('t3_origuid', 51);
         $child = $this->fetchOneRecord('t3_origuid', 52);
-        $this->assertSame(3, $child['pid']);
-        $this->assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        $this->assertSame(200, $child['colPos']);
-        $this->assertSame(1, $child['sys_language_uid']);
+        self::assertSame(3, $child['pid']);
+        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+        self::assertSame(1, $child['sys_language_uid']);
     }
 
     /**
@@ -157,10 +159,10 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->process_cmdmap();
         $copiedRecord = $this->fetchOneRecord('t3_origuid', 51);
         $child = $this->fetchOneRecord('t3_origuid', 52);
-        $this->assertSame(3, $child['pid']);
-        $this->assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        $this->assertSame(200, $child['colPos']);
-        $this->assertSame(0, $child['sys_language_uid']);
+        self::assertSame(3, $child['pid']);
+        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+        self::assertSame(0, $child['sys_language_uid']);
     }
 
     /**
@@ -186,10 +188,10 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $child = $this->fetchOneRecord('uid', 52);
-        $this->assertSame(3, $child['pid']);
-        $this->assertSame(51, $child['tx_container_parent']);
-        $this->assertSame(200, $child['colPos']);
-        $this->assertSame(0, $child['sys_language_uid']);
+        self::assertSame(3, $child['pid']);
+        self::assertSame(51, $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+        self::assertSame(0, $child['sys_language_uid']);
     }
 
     /**
@@ -217,10 +219,9 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $child = $this->fetchOneRecord('uid', 52);
-        $this->assertSame(1, $child['pid']);
-        $this->assertSame(51, $child['tx_container_parent']);
-        $this->assertSame(200, $child['colPos']);
-        $this->assertSame(0, $child['sys_language_uid']);
+        self::assertSame(1, $child['pid']);
+        self::assertSame(51, $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+        self::assertSame(0, $child['sys_language_uid']);
     }
-
 }

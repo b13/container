@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace B13\Container\Integrity\Error;
 
 /*
@@ -12,18 +14,17 @@ namespace B13\Container\Integrity\Error;
 
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
-
 class NonExistingParentError implements ErrorInterface
 {
     /**
      * @var array
      */
-    protected $childRecord = null;
+    protected $childRecord;
 
     /**
      * @var string
      */
-    protected $errorMessage = null;
+    protected $errorMessage;
 
     /**
      * @param array $childRecord
@@ -33,7 +34,6 @@ class NonExistingParentError implements ErrorInterface
         $this->childRecord = $childRecord;
         $this->errorMessage = 'container child with uid ' . $childRecord['uid'] .
             ' has non existing tx_container_parent ' . $childRecord['tx_container_parent'];
-
     }
 
     /**
@@ -51,5 +51,4 @@ class NonExistingParentError implements ErrorInterface
     {
         return AbstractMessage::ERROR;
     }
-
 }

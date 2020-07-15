@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types = 1);
 namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
@@ -61,8 +62,8 @@ class LocalizationTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 72);
-        $this->assertSame(0, (int)$row['tx_container_parent']);
-        $this->assertSame(0, (int)$row['colPos']);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
     }
 
     /**
@@ -91,8 +92,8 @@ class LocalizationTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 72);
-        $this->assertSame(0, (int)$row['tx_container_parent']);
-        $this->assertSame(0, (int)$row['colPos']);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
     }
 
     /**
@@ -130,7 +131,6 @@ class LocalizationTest extends DatahandlerTest
             )
             ->execute()
             ->fetch();
-        $this->assertFalse($row);
+        self::assertFalse($row);
     }
-
 }

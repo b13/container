@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types = 1);
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -29,7 +31,6 @@ class CopyPageTest extends DatahandlerTest
      */
     public function copyPageCopiesChildrenOfContainer(): void
     {
-
         $cmdmap = [
             'pages' => [
                 1 => [
@@ -44,15 +45,14 @@ class CopyPageTest extends DatahandlerTest
         $copiedRecord = $this->fetchOneRecord('t3_origuid', 1);
         $child = $this->fetchOneRecord('t3_origuid', 2);
 
-        $this->assertSame(2, $child['pid']);
-        $this->assertSame(2, $copiedRecord['pid']);
+        self::assertSame(2, $child['pid']);
+        self::assertSame(2, $copiedRecord['pid']);
 
-        $this->assertSame(3, $copiedRecord['uid']);
-        $this->assertSame(4, $child['uid']);
+        self::assertSame(3, $copiedRecord['uid']);
+        self::assertSame(4, $child['uid']);
 
-        $this->assertSame(3, $child['tx_container_parent']);
-        $this->assertSame(200, $child['colPos']);
-        $this->assertSame(0, $child['sys_language_uid']);
-
+        self::assertSame(3, $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+        self::assertSame(0, $child['sys_language_uid']);
     }
 }

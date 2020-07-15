@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace B13\Container\Integrity;
 
 /*
@@ -24,12 +26,12 @@ class Integrity implements SingletonInterface
     /**
      * @var Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
+    protected $tcaRegistry;
 
     /**
      * @var string[][]
@@ -38,7 +40,6 @@ class Integrity implements SingletonInterface
         'errors' => [],
         'warnings' => []
     ];
-
 
     /**
      * ContainerFactory constructor.
@@ -50,7 +51,6 @@ class Integrity implements SingletonInterface
         $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
-
 
     public function run(): array
     {
@@ -107,9 +107,6 @@ class Integrity implements SingletonInterface
                     $this->res['warnings'][] = new UnusedColPosWarning($containerChildRecord, $containerRecord);
                 }
             }
-
         }
     }
-
-
 }

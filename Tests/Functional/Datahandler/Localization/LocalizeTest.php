@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types = 1);
 namespace B13\Container\Tests\Functional\Datahandler\Localization;
 
 /*
@@ -45,10 +47,10 @@ class LocalizeTest extends DatahandlerTest
         $this->dataHandler->process_cmdmap();
         $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);
         $translatedContainerRow = $this->fetchOneRecord('t3_origuid', 1);
-        $this->assertSame($translatedContainerRow['uid'], $translatedChildRow['tx_container_parent']);
-        $this->assertSame(200, $translatedChildRow['colPos']);
-        $this->assertSame(1, $translatedChildRow['pid']);
-        $this->assertSame(0, $translatedChildRow['l18n_parent']);
+        self::assertSame($translatedContainerRow['uid'], $translatedChildRow['tx_container_parent']);
+        self::assertSame(200, $translatedChildRow['colPos']);
+        self::assertSame(1, $translatedChildRow['pid']);
+        self::assertSame(0, $translatedChildRow['l18n_parent']);
     }
 
     /**
@@ -66,10 +68,10 @@ class LocalizeTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);
-        $this->assertSame(1, $translatedChildRow['tx_container_parent']);
-        $this->assertSame(200, $translatedChildRow['colPos']);
-        $this->assertSame(1, $translatedChildRow['pid']);
-        $this->assertSame(2, $translatedChildRow['l18n_parent']);
+        self::assertSame(1, $translatedChildRow['tx_container_parent']);
+        self::assertSame(200, $translatedChildRow['colPos']);
+        self::assertSame(1, $translatedChildRow['pid']);
+        self::assertSame(2, $translatedChildRow['l18n_parent']);
     }
 
     /**
@@ -97,7 +99,7 @@ class LocalizeTest extends DatahandlerTest
             )
             ->execute()
             ->fetch();
-       $this->assertFalse($row);
+        self::assertFalse($row);
     }
 
     /**
@@ -125,7 +127,7 @@ class LocalizeTest extends DatahandlerTest
             )
             ->execute()
             ->fetch();
-        $this->assertFalse($row);
+        self::assertFalse($row);
     }
 
     /**
@@ -143,9 +145,9 @@ class LocalizeTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $translatedChildRow = $this->fetchOneRecord('t3_origuid', 82);
-        $this->assertSame(81, $translatedChildRow['tx_container_parent']);
-        $this->assertSame(200, $translatedChildRow['colPos']);
-        $this->assertSame(1, $translatedChildRow['pid']);
-        $this->assertSame(82, $translatedChildRow['l18n_parent']);
+        self::assertSame(81, $translatedChildRow['tx_container_parent']);
+        self::assertSame(200, $translatedChildRow['colPos']);
+        self::assertSame(1, $translatedChildRow['pid']);
+        self::assertSame(82, $translatedChildRow['l18n_parent']);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types = 1);
 namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
@@ -60,8 +61,8 @@ class DefaultLanguageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 71);
-        $this->assertSame(0, (int)$row['tx_container_parent']);
-        $this->assertSame(0, (int)$row['colPos']);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
     }
 
     /**
@@ -89,8 +90,8 @@ class DefaultLanguageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 71);
-        $this->assertSame(0, (int)$row['tx_container_parent']);
-        $this->assertSame(0, (int)$row['colPos']);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
     }
 
     /**
@@ -128,7 +129,6 @@ class DefaultLanguageTest extends DatahandlerTest
             )
             ->execute()
             ->fetch();
-        $this->assertFalse($row);
+        self::assertFalse($row);
     }
-
 }

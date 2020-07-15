@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace B13\Container\Tca;
 
 /*
@@ -11,11 +13,11 @@ namespace B13\Container\Tca;
  */
 
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
+use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
+use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
-use TYPO3\CMS\Core\Imaging\IconRegistry;
 
 class Registry implements SingletonInterface
 {
@@ -40,9 +42,7 @@ class Registry implements SingletonInterface
         string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
         bool $saveAndCloseInNewContentElementWizard = true,
         bool $registerInNewContentElementWizard = true
-    ): void
-    {
-
+    ): void {
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
@@ -91,7 +91,6 @@ class Registry implements SingletonInterface
         ];
     }
 
-
     /**
      * @param string $cType
      * @param string $label
@@ -112,8 +111,7 @@ class Registry implements SingletonInterface
         string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
         string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
         bool $registerInNewContentElementWizard = true
-    ): void
-    {
+    ): void {
         trigger_error('use "addContainer" instead of "registerContainer", parameter order changed!', E_USER_DEPRECATED);
         $this->addContainer(
             $cType,
@@ -137,19 +135,16 @@ class Registry implements SingletonInterface
     {
         $allowed = [];
         $rows = $this->getGrid($cType);
-            foreach ($rows as $columns) {
-                foreach ($columns as $column) {
-                    if ((int)$column['colPos'] === $colPos && is_array($column['allowed'])) {
-                        $allowed = $column['allowed'];
-                    }
+        foreach ($rows as $columns) {
+            foreach ($columns as $column) {
+                if ((int)$column['colPos'] === $colPos && is_array($column['allowed'])) {
+                    $allowed = $column['allowed'];
                 }
             }
+        }
         return $allowed;
     }
 
-    /**
-     * @return void
-     */
     public function registerIcons(): void
     {
         if (is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
@@ -174,7 +169,6 @@ class Registry implements SingletonInterface
                             $existingIconConfiguration['options']
                         );
                     } catch (\TYPO3\CMS\Core\Exception $e) {
-
                     }
                 }
             }

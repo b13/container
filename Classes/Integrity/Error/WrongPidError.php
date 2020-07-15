@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace B13\Container\Integrity\Error;
 
 /*
@@ -12,23 +14,22 @@ namespace B13\Container\Integrity\Error;
 
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
-
 class WrongPidError implements ErrorInterface
 {
     /**
      * @var array
      */
-    protected $childRecord = null;
+    protected $childRecord;
 
     /**
      * @var array
      */
-    protected $containerRecord = null;
+    protected $containerRecord;
 
     /**
      * @var string
      */
-    protected $errorMessage = null;
+    protected $errorMessage;
 
     /**
      * @param array $childRecord
@@ -42,7 +43,6 @@ class WrongPidError implements ErrorInterface
             ' has pid ' . $childRecord['pid']
             . ' but tx_container_parent ' . $childRecord['tx_container_parent']
             . ' has pid ' . $containerRecord['pid'];
-
     }
 
     /**
@@ -76,5 +76,4 @@ class WrongPidError implements ErrorInterface
     {
         return $this->containerRecord;
     }
-
 }

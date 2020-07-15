@@ -17,12 +17,10 @@ call_user_func(static function () {
         ]
     ];
 
-
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
         'tt_content',
-         $additionalColumns
+        $additionalColumns
     );
-
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
         'tt_content',

@@ -11,24 +11,24 @@ namespace B13\Container\Tests\Functional\Datahandler;
  */
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Core\Bootstrap;
 
 abstract class DatahandlerTest extends FunctionalTestCase
 {
     /**
      * @var DataHandler
      */
-    protected $dataHandler = null;
+    protected $dataHandler;
 
     /**
      * @var BackendUserAuthentication
      */
-    protected $backendUser = null;
+    protected $backendUser;
 
     /**
      * @var array
@@ -55,7 +55,6 @@ abstract class DatahandlerTest extends FunctionalTestCase
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
     }
 
-
     /**
      * @return QueryBuilder
      */
@@ -65,7 +64,6 @@ abstract class DatahandlerTest extends FunctionalTestCase
         $queryBuilder->getRestrictions()->removeAll();
         return $queryBuilder;
     }
-
 
     /**
      * @param string $field
@@ -85,7 +83,7 @@ abstract class DatahandlerTest extends FunctionalTestCase
             )
             ->execute()
             ->fetch();
-        $this->assertIsArray($row);
+        self::assertIsArray($row);
         return $row;
     }
 }

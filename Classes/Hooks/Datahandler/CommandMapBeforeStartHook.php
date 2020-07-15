@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks\Datahandler;
+declare(strict_types = 1);
+
+namespace B13\Container\Hooks\Datahandler;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,30 +12,30 @@ namespace  B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CommandMapBeforeStartHook
 {
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
+    protected $tcaRegistry;
 
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * @var Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * UsedRecords constructor.
@@ -59,7 +61,6 @@ class CommandMapBeforeStartHook
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
     }
 
-
     protected function unsetInconsistentLocalizeCommands(DataHandler $dataHandler): void
     {
         if (!empty($dataHandler->cmdmap['tt_content'])) {
@@ -67,7 +68,7 @@ class CommandMapBeforeStartHook
                 foreach ($cmds as $cmd => $data) {
                     if ($cmd === 'localize') {
                         $record = $this->database->fetchOneRecord((int)$id);
-                        if ($record['tx_container_parent'] > 0 ) {
+                        if ($record['tx_container_parent'] > 0) {
                             $container = $this->database->fetchOneRecord($record['tx_container_parent']);
                             if ($container === null) {
                                 // should not happen

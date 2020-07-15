@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks\Datahandler;
+declare(strict_types = 1);
+
+namespace B13\Container\Hooks\Datahandler;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,17 +12,17 @@ namespace  B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\Exception;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Factory\Exception;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CommandMapPostProcessingHook
 {
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * @param ContainerFactory|null $containerFactory
@@ -38,14 +40,13 @@ class CommandMapPostProcessingHook
      * @param DataHandler $dataHandler
      * @param mixed $pasteUpdate
      * @param mixed $pasteDatamap
-     * @return void
      */
     public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
-            $this->copyOrMoveChildren($id, $value, (int)array_key_first($pasteDatamap['tt_content']),'copy', $dataHandler);
+            $this->copyOrMoveChildren($id, $value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
-            $this->copyOrMoveChildren($id, $value, $id,'move', $dataHandler);
+            $this->copyOrMoveChildren($id, $value, $id, 'move', $dataHandler);
         } elseif ($table === 'tt_content' && ($command === 'localize' || $command === 'copyToLanguage')) {
             $this->localizeOrCopyToLanguage($id, $value, $command, $dataHandler);
         }
@@ -56,7 +57,6 @@ class CommandMapPostProcessingHook
      * @param int $language
      * @param string $command
      * @param DataHandler $dataHandler
-     * @return void
      */
     protected function localizeOrCopyToLanguage(int $uid, int $language, string $command, DataHandler $dataHandler): void
     {
@@ -83,7 +83,6 @@ class CommandMapPostProcessingHook
      * @param int $containerId
      * @param string $command
      * @param DataHandler $dataHandler
-     * @return void
      */
     protected function copyOrMoveChildren(int $origUid, int $newId, int $containerId, string $command, DataHandler $dataHandler): void
     {

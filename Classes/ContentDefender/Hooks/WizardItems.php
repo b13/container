@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\ContentDefender\Hooks;
+declare(strict_types = 1);
+
+namespace B13\Container\ContentDefender\Hooks;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -22,12 +24,12 @@ class WizardItems extends WizardItemsHook
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
+    protected $tcaRegistry;
 
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * UsedRecords constructor.
@@ -43,7 +45,6 @@ class WizardItems extends WizardItemsHook
     /**
      * @param array $wizardItems
      * @param \TYPO3\CMS\Backend\Controller\ContentElement\NewContentElementController $parentObject
-     * @return void
      */
     public function manipulateWizardItems(&$wizardItems, &$parentObject)
     {
@@ -83,6 +84,4 @@ class WizardItems extends WizardItemsHook
 
         return array_intersect_key($wizardItems, $availableWizardItems);
     }
-
-
 }

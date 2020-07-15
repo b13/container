@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace B13\Container\Integrity\Error;
 
 /*
@@ -12,23 +14,22 @@ namespace B13\Container\Integrity\Error;
 
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
-
 class WrongL18nParentError implements ErrorInterface
 {
     /**
      * @var array
      */
-    protected $childRecord = null;
+    protected $childRecord;
 
     /**
      * @var array
      */
-    protected $containerRecord = null;
+    protected $containerRecord;
 
     /**
      * @var string
      */
-    protected $errorMessage = null;
+    protected $errorMessage;
 
     /**
      * @param array $childRecord
@@ -42,7 +43,6 @@ class WrongL18nParentError implements ErrorInterface
             ' has l18n_parent ' . $childRecord['l18n_parent']
             . ' but tx_container_parent ' . $childRecord['tx_container_parent']
             . ' has l18n_parent ' . $containerRecord['l18n_parent'];
-
     }
 
     /**
@@ -76,5 +76,4 @@ class WrongL18nParentError implements ErrorInterface
     {
         return $this->containerRecord;
     }
-
 }

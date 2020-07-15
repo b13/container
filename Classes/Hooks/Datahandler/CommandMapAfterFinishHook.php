@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\Hooks\Datahandler;
+declare(strict_types = 1);
+
+namespace B13\Container\Hooks\Datahandler;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -11,15 +13,15 @@ namespace  B13\Container\Hooks\Datahandler;
  */
 
 use B13\Container\Domain\Factory\Database;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CommandMapAfterFinishHook
 {
     /**
      * @var Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * @param Database|null $database
@@ -68,7 +70,5 @@ class CommandMapAfterFinishHook
                 $localDataHandler->process_datamap();
             }
         }
-
     }
-
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace  B13\Container\ContentDefender\Hooks;
+declare(strict_types = 1);
+
+namespace B13\Container\ContentDefender\Hooks;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,32 +12,32 @@ namespace  B13\Container\ContentDefender\Hooks;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use B13\Container\Domain\Factory\ContainerFactory;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use B13\Container\Hooks\Datahandler\Database;
 
 class DatamapHook
 {
     /**
      * @var Registry
      */
-    protected $tcaRegistry = null;
+    protected $tcaRegistry;
 
     /**
      * @var ContainerFactory
      */
-    protected $containerFactory = null;
+    protected $containerFactory;
 
     /**
      * @var Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * @param ContainerFactory|null $containerFactory
@@ -99,10 +101,7 @@ class DatamapHook
                         // not a container
                     }
                 }
-
             }
         }
-
     }
-
 }

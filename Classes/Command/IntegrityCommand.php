@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace B13\Container\Command;
 
 /*
@@ -50,5 +52,4 @@ class IntegrityCommand extends Command
         }
         return 0;
     }
-
 }

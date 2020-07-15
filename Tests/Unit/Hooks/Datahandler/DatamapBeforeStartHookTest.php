@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types = 1);
 namespace B13\Container\Tests\Unit\Hooks\Datahandler;
 
 /*
@@ -9,15 +11,13 @@ namespace B13\Container\Tests\Unit\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
 use B13\Container\Hooks\Datahandler\Database;
+use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DatamapBeforeStartHookTest extends UnitTestCase
 {
-
     protected $resetSingletonInstances = true;
-
 
     /**
      * @test
@@ -49,8 +49,8 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             ]
         ];
         $modDatamap = $dataHandlerHook->_call('datamapForChildLocalizations', $datamap);
-        $this->assertIsArray($modDatamap['tt_content'][3]);
-        $this->assertSame(1, $modDatamap['tt_content'][3]['tx_container_parent']);
+        self::assertIsArray($modDatamap['tt_content'][3]);
+        self::assertSame(1, $modDatamap['tt_content'][3]['tx_container_parent']);
     }
     /**
      * @test
@@ -67,8 +67,8 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             ]
         ];
         $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
-        $this->assertSame(34, $datamap['tt_content'][39]['colPos']);
-        $this->assertSame(2, $datamap['tt_content'][39]['tx_container_parent']);
+        self::assertSame(34, $datamap['tt_content'][39]['colPos']);
+        self::assertSame(2, $datamap['tt_content'][39]['tx_container_parent']);
     }
 
     /**
@@ -86,8 +86,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             ]
         ];
         $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
-        $this->assertSame(0, $datamap['tt_content'][39]['colPos']);
-        $this->assertSame(0, $datamap['tt_content'][39]['tx_container_parent']);
+        self::assertSame(0, $datamap['tt_content'][39]['colPos']);
+        self::assertSame(0, $datamap['tt_content'][39]['tx_container_parent']);
     }
-
 }
