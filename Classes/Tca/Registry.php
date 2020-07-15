@@ -100,6 +100,7 @@ class Registry implements SingletonInterface
      * @param string $backendTemplate
      * @param string $gridTemplate
      * @param bool $registerInNewContentElementWizard
+     * @deprecated
      */
     public function registerContainer(
         string $cType,
