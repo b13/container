@@ -41,6 +41,8 @@ see `EXT:container_example` for a simple usage of a custom container.
 
 This is an example for create a 2 column container
 
+```php
+
     \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->addContainer(
         'b13-2cols-with-header-container', // CType
         '2 Column Container With Header', // label
@@ -60,6 +62,7 @@ This is an example for create a 2 column container
         true, // saveAndClose for new content element wizard (v10 only)
         true // register in new content element wizard
     );
+```
 
 __Notes__
 - if EXT:content_defender is installed allowed-CType parameter in column Configuration can be configured to restrict allowed CTypes in a container column
