@@ -44,11 +44,11 @@ class CommandMapPostProcessingHook
     public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
-            $this->copyOrMoveChildren($id, $value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
+            $this->copyOrMoveChildren($id, (int)$value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
-            $this->copyOrMoveChildren($id, $value, $id, 'move', $dataHandler);
+            $this->copyOrMoveChildren($id, (int)$value, $id, 'move', $dataHandler);
         } elseif ($table === 'tt_content' && ($command === 'localize' || $command === 'copyToLanguage')) {
-            $this->localizeOrCopyToLanguage($id, $value, $command, $dataHandler);
+            $this->localizeOrCopyToLanguage($id, (int)$value, $command, $dataHandler);
         }
     }
 

@@ -134,4 +134,26 @@
         <t3ver_oid>206</t3ver_oid>
     </tt_content>
 
+    <tt_content>
+        <uid>210</uid>
+        <pid>14</pid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+    <tt_content>
+        <uid>211</uid>
+        <pid>14</pid>
+        <CType>b13-2cols-with-header-container</CType>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>210</l18n_parent>
+        <l10n_source>210</l10n_source>
+    </tt_content>
+    <tt_content>
+        <uid>212</uid>
+        <pid>14</pid>
+        <CType>header</CType>
+        <header>headerOfChild</header>
+        <colPos>200</colPos>
+        <tx_container_parent>210</tx_container_parent>
+    </tt_content>
+
 </dataset>

@@ -1,7 +1,6 @@
 @import 'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript'
 @import 'EXT:container_example/Configuration/TypoScript/setup.typoscript'
 
-tt_content.b13-2cols-with-header-container.templateRootPaths.10 = EXT:container/Tests/Functional/Fixtures/Templates
 page = PAGE
 page.config.disableAllHeaderCode = 1
 page.20 < styles.content.get

@@ -188,4 +188,22 @@ class LayoutCest
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->see('german', $selecor);
     }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
+     */
+    public function canTranslateChild(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->click('Page');
+        $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+
+        $I->click('headerOfChild', '#element-tt_content-212');
+
+        $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
+        $I->see('[Translate to language-1:] headerOfChild');
+    }
 }
