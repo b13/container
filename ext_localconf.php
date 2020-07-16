@@ -48,6 +48,28 @@ call_user_func(static function () {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_container-after-finish'] =
         \B13\Container\Hooks\Datahandler\CommandMapAfterFinishHook::class;
 
+    // register default icons
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Imaging\IconRegistry::class
+    );
+    $iconsToRegister = [
+        'container-1col',
+        'container-2col',
+        'container-2col-left',
+        'container-2col-right',
+        'container-3col',
+        'container-4col',
+    ];
+    foreach ($iconsToRegister as $icon) {
+        $iconRegistry->registerIcon(
+            $icon,
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            array(
+                'source' => 'EXT:container/Resources/Public/Icons/' . $icon . '.svg',
+            )
+        );
+    }
+
     // EXT:content_defender
     $packageManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Package\PackageManager::class);
     if ($packageManager->isPackageActive('content_defender')) {

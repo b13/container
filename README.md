@@ -71,6 +71,13 @@ __Notes__
   - Adds PageTSconfig for newContentElement.wizardItems
   - Sets ``showitem`` for this CType (to: `sys_language_uid,CType,tx_container_parent,colPos,hidden`)
   - Saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
+- We provide some default icons you can use, see `Resources/Public/Icons`
+  - container-1col
+  - container-2col
+  - container-2col-left
+  - container-2col-right
+  - container-3col
+  - container-4col 
 
 ### TypoScript
 
