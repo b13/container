@@ -60,7 +60,7 @@ class ItemProcFunc
         $row = $parameters['row'];
         if ($row['tx_container_parent'] > 0) {
             try {
-                $container = $this->containerFactory->buildContainer($row['tx_container_parent']);
+                $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
                 $grid = $this->tcaRegistry->getGrid($cType);
                 if (is_array($grid)) {
@@ -95,7 +95,7 @@ class ItemProcFunc
         $items = [];
         if ($row['tx_container_parent'] > 0) {
             try {
-                $container = $this->containerFactory->buildContainer($row['tx_container_parent']);
+                $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
                 $items[] = [
                     $cType,
