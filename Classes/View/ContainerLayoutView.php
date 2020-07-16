@@ -45,13 +45,13 @@ class ContainerLayoutView extends PageLayoutView
      * variable and calls can be dropped on v10
      * @var int
      */
-    protected $counter = 0;
+    public $counter = 0;
 
     /**
      * variable and calls can be dropped on v10
      * @var int
      */
-    protected $nextThree = 3;
+    public $nextThree = 3;
 
     /**
      * ContainerLayoutView constructor.
