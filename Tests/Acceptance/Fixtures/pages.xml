@@ -61,4 +61,18 @@
         <title>pageWithLocalizationFreeModeWithContainer-1</title>
     </pages>
 
+    <pages>
+        <uid>14</uid>
+        <pid>1</pid>
+        <title>pageWithTranslatedContainer</title>
+    </pages>
+    <pages>
+        <uid>15</uid>
+        <pid>1</pid>
+        <sys_language_uid>1</sys_language_uid>
+        <l10n_parent>14</l10n_parent>
+        <l10n_source>14</l10n_source>
+        <title>pageWithTranslatedContainer-1</title>
+    </pages>
+
 </dataset>
