@@ -53,6 +53,7 @@ call_user_func(static function () {
         \TYPO3\CMS\Core\Imaging\IconRegistry::class
     );
     $iconsToRegister = [
+        'container-1col',
         'container-2col',
         'container-2col-left',
         'container-2col-right',
