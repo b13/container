@@ -52,7 +52,7 @@ class UsedRecords
         $record = $params['record'];
         if ($record['tx_container_parent'] > 0) {
             try {
-                $container = $this->containerFactory->buildContainer($record['tx_container_parent']);
+                $container = $this->containerFactory->buildContainer((int)$record['tx_container_parent']);
                 $columns = $this->tcaRegistry->getAvailableColumns($container->getCType());
                 foreach ($columns as $column) {
                     if ($column['colPos'] === $record['colPos']) {
