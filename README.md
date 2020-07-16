@@ -166,4 +166,6 @@ and assure Coding Guidelines are fullfilled:
 
 This extension was created by Achim Fritz in 2020 for [b13 GmbH, Stuttgart](https://b13.com).
 
-[Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code..
+Find examples and use cases and best practices for this extension in our [Container blog series on b13.com](https://b13.com/blog/flexible-containers-and-grids-for-typo3).
+
+[Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code.
