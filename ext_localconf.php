@@ -64,9 +64,9 @@ call_user_func(static function () {
         $iconRegistry->registerIcon(
             $icon,
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-            array(
+            [
                 'source' => 'EXT:container/Resources/Public/Icons/' . $icon . '.svg',
-            )
+            ]
         );
     }
 

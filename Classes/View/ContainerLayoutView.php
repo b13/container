@@ -164,9 +164,10 @@ class ContainerLayoutView extends PageLayoutView
      *
      * @param string $table Table name
      * @param array $row Record array
+     * @param string $enabledClickMenuItems remove after v9 support
      * @return string HTML for the icon
      */
-    public function getIcon($table, $row)
+    public function getIcon($table, $row, $enabledClickMenuItems = '')
     {
         if ($this->isLanguageEditable()) {
             return parent::getIcon($table, $row);
