@@ -82,20 +82,17 @@ class DatamapHook
                         $container = $this->containerFactory->buildContainer($parent);
                         $cType = $container->getCType();
                         $allowedConfiguration = $this->tcaRegistry->getAllowedConfiguration($cType, $colPos);
-                        $allowed = true;
                         foreach ($allowedConfiguration as $field => $value) {
                             $allowedValues = GeneralUtility::trimExplode(',', $value);
                             if (in_array($recordCType, $allowedValues) === false) {
-                                $allowed = false;
+                                $msg = $recordCType . ' is not allowed in ' . $cType . ' on colPos ' . $colPos;
+                                $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $msg, '', FlashMessage::ERROR, true);
+                                $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+                                $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+                                $defaultFlashMessageQueue->enqueue($flashMessage);
+                                unset($dataHandler->datamap['tt_content'][$id]);
+                                continue;
                             }
-                        }
-                        if ($allowed === false) {
-                            unset($dataHandler->datamap['tt_content'][$id]);
-                            $msg = 'not allowed';
-                            $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $msg, '', FlashMessage::ERROR, true);
-                            $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-                            $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
-                            $defaultFlashMessageQueue->enqueue($flashMessage);
                         }
                     } catch (Exception $e) {
                         // not a container
