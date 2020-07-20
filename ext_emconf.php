@@ -1,7 +1,7 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Container',
+    'title' => 'Container Content Elements',
     'description' => 'Create Custom Container Content Elements for TYPO3',
     'category' => 'misc',
     'author' => 'b13 GmbH',
