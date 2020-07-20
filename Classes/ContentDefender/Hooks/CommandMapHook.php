@@ -79,7 +79,7 @@ class CommandMapHook
                             foreach ($allowedConfiguration as $field => $value) {
                                 $allowedValues = GeneralUtility::trimExplode(',', $value);
                                 if (in_array($recordCType, $allowedValues) === false) {
-                                    $msg = $recordCType . ' is not allowed in ' . $cType;
+                                    $msg = $recordCType . ' is not allowed in ' . $cType . ' on colPos ' . $colPos;
                                     $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $msg, '', FlashMessage::ERROR, true);
                                     $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
                                     $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
