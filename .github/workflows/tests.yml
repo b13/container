@@ -1,0 +1,64 @@
+name: TESTS
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+#    branches: [ master ]
+  pull_request:
+#    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          ref: '1.1.1'
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: php-actions/composer@v1
+
+      - name: checkout current branch
+        run: git checkout feature/github-actions
+      - name: foo
+        run: ls -l .Build/Web/typo3conf/
+      - name: fix FS rights
+        run: sudo chown -R runner .Build
+      - name: patch
+        run: sed -i 's/!is_dir(\$absoluteExtensionPath)/!is_dir(\$absoluteExtensionPath) \&\& !is_link(\$absoluteExtensionPath)/g' .Build/vendor/typo3/testing-framework/Classes/Core/Testbase.php
+     # - name: unit tests
+     #   run: .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit/
+      - name: functional tests
+        run: .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional/Domain
+       # run: .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional/Frontend/DefaultLanguageTest.php
+        env:
+          typo3DatabaseUsername: user
+          typo3DatabaseName: test
+          typo3DatabasePassword: password
+      #- name: Run chromedriver
+      #  run:  nohup $CHROMEWEBDRIVER/chromedriver --url-base=/wd/hub /dev/null 2>&1 &
+      #- name: Upload AcceptanceReports
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: AcceptanceReports
+      #    path: .Build/Web/typo3temp/var/tests/AcceptanceReports
