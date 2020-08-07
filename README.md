@@ -77,7 +77,7 @@ __Notes__
   - container-2col-left
   - container-2col-right
   - container-3col
-  - container-4col 
+  - container-4col
 
 ### TypoScript
 
@@ -156,6 +156,8 @@ You can run our test suite for this extension yourself:
 - run `Build/Scripts/runTests.sh -s unit`
 - run `Build/Scripts/runTests.sh -s functional`
 - run `Build/Scripts/runTests.sh -s acceptance`
+
+s. Tests/README.md for run the tests local (like github-actions runs the tests)
 
 and assure Coding Guidelines are fullfilled:
 

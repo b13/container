@@ -22,7 +22,7 @@ class LayoutCest
      */
     public function _before(BackendTester $I)
     {
-        $I->useExistingSession('admin');
+        $I->loginAs('admin');
     }
 
     /**

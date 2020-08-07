@@ -10,7 +10,7 @@ parameters:
 
   ignoreErrors:
     -
-      message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct().* invoked with 0 parameters, 1 required.#'
+      message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 0 parameters, 1 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
     -
       message: '#Constant TYPO3_branch not found.#'
@@ -25,7 +25,7 @@ parameters:
       message: '#PHPDoc tag @.*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/_generated/BackendTesterActions.php
     -
-      message: '#Method TYPO3\\TestingFramework\\Core\\AccessibleObjectInterface::_call().*#'
+      message: '#Method TYPO3\\TestingFramework\\Core\\AccessibleObjectInterface::_call\(\).*#'
       path: %currentWorkingDirectory%/Tests
     -
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'

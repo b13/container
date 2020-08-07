@@ -5,8 +5,8 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^9.5 || ^10.0",
-        "typo3/cms-fluid-styled-content": "^9.5 || ^10.0"
+        "typo3/cms-backend": "^9.5 || ^10.4",
+        "typo3/cms-fluid-styled-content": "^9.5 || ^10.4"
     },
     "autoload": {
         "psr-4": {
@@ -27,13 +27,18 @@
     "require-dev": {
         "b13/container-example": "dev-master",
         "ichhabrecht/content-defender": "dev-master",
-        "typo3/cms-install": "^10.0",
-        "typo3/cms-about": "^10.0",
-        "typo3/testing-framework": "^6.2.4",
-        "codeception/codeception": "^3",
-        "typo3/cms-workspaces": "^10.0",
+        "typo3/cms-install": "^10.4",
+        "typo3/cms-about": "^10.4",
+        "typo3/testing-framework": "^6",
+        "codeception/codeception": "^4.1",
+        "codeception/module-webdriver": "^1.0",
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-db": "^1.0",
+        "typo3/cms-workspaces": "^10.4",
         "phpstan/phpstan": "^0.12.11",
-        "typo3/coding-standards": "^0.2.0"
+        "typo3/coding-standards": "^0.2.0",
+        "helhum/typo3-console": "^6.3",
+        "helhum/dotenv-connector": "^2.3"
     },
     "replace": {
         "typo3-ter/container": "self.version"
