@@ -30,7 +30,7 @@ class Registry implements SingletonInterface
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
-            [$containerConfiguration->getLabel(), $containerConfiguration->getCType(), $containerConfiguration->getCType()]
+            [$containerConfiguration->getLabel(), $containerConfiguration->getCType(), $containerConfiguration->getCType(), 'container']
         );
 
         foreach ($containerConfiguration->getGrid() as $row) {
