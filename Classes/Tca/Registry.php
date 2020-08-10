@@ -46,7 +46,7 @@ class Registry implements SingletonInterface
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
-            [$label, $cType, $cType]
+            [$label, $cType, $cType, 'container']
         );
 
         foreach ($grid as $row) {
