@@ -39,7 +39,7 @@ class DefaultLanguageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAtTopClipboard(): void
+    public function moveElementIntoContainerAtTopWithClipboard(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -68,12 +68,70 @@ class DefaultLanguageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAtTopAjax(): void
+    public function moveElementIntoContainerAfterOtherElementWithClipboard(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                71 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -2,
+                        'update' => [
+                            'colPos' => '1-200',
+                            'sys_language_uid' => 0
+
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 71);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+    }
+
+    /**
+     * @test
+     */
+    public function moveElementIntoContainerAtTopWithAjax(): void
     {
         $cmdmap = [
             'tt_content' => [
                 71 => [
                     'move' => 1
+                ]
+            ]
+        ];
+        $datamap = [
+            'tt_content' => [
+                71 => [
+                    'colPos' => '1-200',
+                    'sys_language_uid' => 0
+
+                ]
+            ]
+        ];
+        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 71);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+    }
+
+    /**
+     * @test
+     */
+    public function moveElementIntoContainerAfterOtherElementWithAjax(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                71 => [
+                    'move' => -2
                 ]
             ]
         ];
