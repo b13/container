@@ -77,7 +77,7 @@ __Notes__
   - container-2col-left
   - container-2col-right
   - container-3col
-  - container-4col 
+  - container-4col
 
 ### TypoScript
 
@@ -101,14 +101,14 @@ __Notes__
             10 = EXT:container/Resources/Private/Contenttypes
         }
         dataProcessing {
-            100 = B13\Container\DataProcessing\ContainerProcessor
-            100 {
-                colPos = 100
+            200 = B13\Container\DataProcessing\ContainerProcessor
+            200 {
+                colPos = 200
                 as = childrenLeft
             }
-            101 = B13\Container\DataProcessing\ContainerProcessor
-            101 {
-                colPos = 101
+            201 = B13\Container\DataProcessing\ContainerProcessor
+            201 {
+                colPos = 201
                 as = childrenRight
             }
         }
@@ -118,14 +118,14 @@ __Notes__
 ### Template
 
 ```html
-<f:for each="{children_100}" as="record">
+<f:for each="{children_200}" as="record">
     {record.header} <br>
     <f:format.raw>
         {record.renderedContent}
     </f:format.raw>
 </f:for>
 
-<f:for each="{children_101}" as="record">
+<f:for each="{children_201}" as="record">
     {record.header} <br>
     <f:format.raw>
         {record.renderedContent}
