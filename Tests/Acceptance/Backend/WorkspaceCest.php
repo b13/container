@@ -30,7 +30,7 @@ class WorkspaceCest
      */
     public function _before(BackendTester $I)
     {
-        $I->useExistingSession('admin');
+        $I->loginAs('admin');
     }
 
     /**
@@ -110,6 +110,7 @@ class WorkspaceCest
     protected function switchToLiveWs(BackendTester $I): void
     {
         $this->switchToWs($I, 'LIVE workspace');
+        $I->wait(0.3);
     }
 
     /**
@@ -118,6 +119,7 @@ class WorkspaceCest
     protected function switchToTestWs(BackendTester $I): void
     {
         $this->switchToWs($I, 'test-ws');
+        $I->wait(0.3);
     }
 
     /**

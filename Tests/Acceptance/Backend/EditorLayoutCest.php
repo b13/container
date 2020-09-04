@@ -22,7 +22,7 @@ class EditorLayoutCest
      */
     public function _before(BackendTester $I)
     {
-        $I->useExistingSession('editor');
+        $I->loginAs('editor');
     }
 
     /**

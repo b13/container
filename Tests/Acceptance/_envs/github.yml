@@ -1,0 +1,17 @@
+modules:
+  enabled:
+    - WebDriver:
+        host: 'localhost'
+        extendedDebugging: true
+        port: 9515
+        url: 'http://GITHUB_DOMAIN/'
+        clear_cookies: true
+        cleanSession: true
+        browser: chrome
+        window_size: '1850x1024'
+        capabilities:
+          name: 'container tests'
+          extendedDebugging: true
+          chromeOptions:
+            w3c: false
+            args: ["--disable-gpu", "--headless", "--disable-dev-shm-usage", "--no-sandbox", "--disable-extensions", "--hide-scrollbars"]
