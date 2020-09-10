@@ -18,6 +18,9 @@ use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * @deprecated
+ */
 class TcaCTypeItems implements FormDataProviderInterface
 {
 

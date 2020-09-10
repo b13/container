@@ -131,8 +131,31 @@ class Registry implements SingletonInterface
      * @param int $colPos
      * @return array
      */
+    public function getContentDefenderConfiguration(string $cType, int $colPos): array
+    {
+        $contentDefenderConfiguration = [];
+        $rows = $this->getGrid($cType);
+        foreach ($rows as $columns) {
+            foreach ($columns as $column) {
+                if ((int)$column['colPos'] === $colPos) {
+                    $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
+                    $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
+                    $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                }
+            }
+        }
+        return $contentDefenderConfiguration;
+    }
+
+    /**
+     * @param string $cType
+     * @param int $colPos
+     * @return array
+     * @deprecated
+     */
     public function getAllowedConfiguration(string $cType, int $colPos): array
     {
+        trigger_error('should not be required, update EXT:content_defender to 3.1', E_USER_DEPRECATED);
         $allowed = [];
         $rows = $this->getGrid($cType);
         foreach ($rows as $columns) {

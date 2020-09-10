@@ -18,6 +18,9 @@ use B13\Container\Tca\Registry;
 use IchHabRecht\ContentDefender\Hooks\WizardItemsHook;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * @deprecated
+ */
 class WizardItems extends WizardItemsHook
 {
 

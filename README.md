@@ -5,7 +5,7 @@
 - No default containers, everything will be built the way its needed for a project
 - Supports multilanguage (connected or free mode (mixed mode not supported))
 - Supports workspaces
-- supports the `allowed CType` Feature like EXT:content_defender for container-columns (if EXT:content_defender is installed)
+- supports EXT:content_defender ColPos-Restrictions for EXT:content_defender:^3.1.0 is installed
 - Frontend Rendering via DataProcessor and Fluid Templates
 
 ## Why did we create another "Grid" extension?
@@ -64,7 +64,7 @@ This is an example for create a 2 column container
 ```
 
 __Notes__
-- if EXT:content_defender is installed allowed-CType parameter in column Configuration can be configured to restrict allowed CTypes in a container column
+- if EXT:content_defender:^3.1.0 is installed you can use allowed, disallowed and maxitems in the Column Configuration
 - The Container Registry does multiple things:
   - Adds CType to TCA Select Items
   - Registers your Icon

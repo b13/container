@@ -16,7 +16,6 @@
     "autoload-dev": {
         "psr-4": {
             "B13\\Container\\Tests\\": "Tests",
-            "IchHabRecht\\ContentDefender\\": "typo3conf/ext/container/Classes/",
             "TYPO3\\JsonResponse\\": ".Build/Web/typo3conf/ext/json_response/Classes"
         }
     },
