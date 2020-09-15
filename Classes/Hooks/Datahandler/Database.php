@@ -56,6 +56,29 @@ class Database implements SingletonInterface
     }
 
     /**
+     * @param int $uid
+     * @return array|null
+     */
+    public function fetchOneMovedRecord(int $uid): ?array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $record = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3ver_move_id',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        if ($record === false) {
+            return null;
+        }
+        return $record;
+    }
+
+    /**
      * @param array $record
      * @return array
      */

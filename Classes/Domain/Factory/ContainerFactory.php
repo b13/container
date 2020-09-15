@@ -32,14 +32,18 @@ class ContainerFactory implements SingletonInterface
     protected $tcaRegistry;
 
     /**
-     * ContainerFactory constructor.
-     * @param Database|null $database
-     * @param Registry|null $tcaRegistry
+     * @var int
      */
-    public function __construct(Database $database = null, Registry $tcaRegistry = null)
+    protected $workspaceId = 0;
+
+    public function __construct(Database $database = null, Registry $tcaRegistry = null, Context $context = null)
     {
         $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        if ($context === null) {
+            $context = GeneralUtility::makeInstance(Context::class);
+        }
+        $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
     /**
@@ -77,6 +81,7 @@ class ContainerFactory implements SingletonInterface
             } else {
                 // connected mode
                 $defaultRecords = $this->database->fetchRecordsByParentAndLanguage($defaultRecord['uid'], 0);
+                $defaultRecords = $this->doWorkspaceOverlay($defaultRecords);
                 $localizedRecords = $this->database->fetchOverlayRecords($defaultRecords, $language);
                 $childRecords = $this->sortLocalizedRecordsByDefaultRecords($defaultRecords, $localizedRecords);
             }
@@ -100,24 +105,20 @@ class ContainerFactory implements SingletonInterface
      */
     protected function doWorkspaceOverlay(array $defaultRecords): array
     {
-        $workspaceId = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('workspace', 'id');
-        if ($workspaceId > 0) {
-            $workspaceRecords = $this->database->fetchWorkspaceRecords($defaultRecords, $workspaceId);
-            $overlayed = [];
+        if (empty($defaultRecords)) {
+            return [];
+        }
+        if ($this->workspaceId > 0) {
+            $filtered = [];
+            $uidsHavingWorkspaceVersion = $this->database->fetchUidsHavingWorkspaceVersion($defaultRecords, $this->workspaceId);
             foreach ($defaultRecords as $defaultRecord) {
-                $foundOverlay = null;
-                foreach ($workspaceRecords as $workspaceRecord) {
-                    if ($workspaceRecord['t3ver_oid'] === $defaultRecord['uid']) {
-                        $foundOverlay = $workspaceRecord;
-                    }
-                }
-                if ($foundOverlay !== null) {
-                    $overlayed[] = $foundOverlay;
-                } else {
-                    $overlayed[] = $defaultRecord;
+                if ($defaultRecord['t3ver_wsid'] === $this->workspaceId) {
+                    $filtered[] = $defaultRecord;
+                } elseif (in_array($defaultRecord['uid'], $uidsHavingWorkspaceVersion, true) === false) {
+                    $filtered[] = $defaultRecord;
                 }
             }
-            return $overlayed;
+            return $filtered;
         }
         // filter workspace placeholders
         $filtered = [];
@@ -164,6 +165,7 @@ class ContainerFactory implements SingletonInterface
                 // connected mode
                 $childRecords = $this->database->fetchRecordsByParentAndLanguage($defaultRecord['uid'], 0);
                 if ($languageAspect->doOverlays()) {
+                    $childRecords = $this->doWorkspaceOverlay($childRecords);
                     $childRecordsOverlays = $this->database->fetchOverlayRecords($childRecords, $language);
                     $childRecords = $this->doOverlay($childRecords, $childRecordsOverlays);
                 }
@@ -171,6 +173,7 @@ class ContainerFactory implements SingletonInterface
         } else {
             $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], 0);
             if ($languageAspect->doOverlays()) {
+                $childRecords = $this->doWorkspaceOverlay($childRecords);
                 $childRecordsOverlays = $this->database->fetchOverlayRecords($childRecords, $language);
                 $childRecords = $this->doOverlay($childRecords, $childRecordsOverlays);
             }
@@ -196,7 +199,9 @@ class ContainerFactory implements SingletonInterface
         $sorted = [];
         foreach ($defaultRecords as $defaultRecord) {
             foreach ($localizedRecords as $localizedRecord) {
-                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid']) {
+                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid'] ||
+                    $localizedRecord['l18n_parent'] === $defaultRecord['t3ver_oid']
+                ) {
                     $sorted[] = $localizedRecord;
                 }
             }
@@ -215,7 +220,9 @@ class ContainerFactory implements SingletonInterface
         foreach ($defaultRecords as $defaultRecord) {
             $foundOverlay = null;
             foreach ($localizedRecords as $localizedRecord) {
-                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid']) {
+                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid'] ||
+                    $localizedRecord['l18n_parent'] === $defaultRecord['t3ver_oid']
+                ) {
                     $foundOverlay = $localizedRecord;
                 }
             }
