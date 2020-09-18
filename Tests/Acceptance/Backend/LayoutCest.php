@@ -194,6 +194,31 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
+    public function canTranslateChildWithTranslationModule(BackendTester $I, PageTree $pageTree): void
+    {
+        // test must be before canTranslateChild
+        $I->click('Page');
+        $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+
+        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        $I->waitForElementVisible('a.t3js-localize');
+        $I->click('a.t3js-localize');
+
+        $I->switchToIFrame();
+        $I->waitForElement('.t3js-localization-option');
+        $I->click('.t3js-localization-option');
+        $I->click('Next');
+        $I->wait(1);
+        $I->see('(212) headerOfChild');
+    }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
+     */
     public function canTranslateChild(BackendTester $I, PageTree $pageTree): void
     {
         $I->click('Page');

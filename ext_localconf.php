@@ -32,6 +32,11 @@ call_user_func(static function () {
         );
     }
 
+    // LocalizationController Xclass
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
+        'className' => \B13\Container\Xclasses\LocalizationController::class
+    ];
+
     // draw container grid
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
         \B13\Container\Hooks\DrawItem::class;

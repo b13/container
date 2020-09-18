@@ -102,4 +102,70 @@ class Database implements SingletonInterface
         }
         return $record;
     }
+
+    /**
+     * @param int $parent
+     * @param int $language
+     * @return array
+     */
+    public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $records = (array)$queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_container_parent',
+                    $queryBuilder->createNamedParameter($parent, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_oid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting', 'ASC')
+            ->execute()
+            ->fetchAll();
+        return $records;
+    }
+
+    /**
+     * @param int $defaultUid
+     * @param int $language
+     * @return array|null
+     */
+    public function fetchContainerRecordLocalizedFreeMode(int $defaultUid, int $language): ?array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $record = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'l10n_source',
+                    $queryBuilder->createNamedParameter($defaultUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_oid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+        if ($record === false) {
+            return null;
+        }
+        return $record;
+    }
 }

@@ -34,7 +34,26 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyToLanguageContainerCopiesChildren(): void
+    public function copyChildToLanguageFixContainerParent(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                72 => [
+                    'copyToLanguage' => 1
+                ]
+            ]
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('t3_origuid', 72);
+        self::assertSame(73, $child['tx_container_parent']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyContainerToLanguageCopiesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
