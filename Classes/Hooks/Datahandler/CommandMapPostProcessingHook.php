@@ -90,13 +90,18 @@ class CommandMapPostProcessingHook
             // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
             $children = array_reverse($container->getChildRecords());
+            if ($newId < 0) {
+                $target = $container->getPid();
+            } else {
+                $target = $newId;
+            }
             foreach ($children as $colPos => $record) {
                 $cmd = [
                     'tt_content' => [
                         $record['uid'] => [
                             $command => [
                                 'action' => 'paste',
-                                'target' => $newId,
+                                'target' => $target,
                                 'update' => [
                                     'tx_container_parent' => $containerId,
                                     'colPos' => $record['colPos']
