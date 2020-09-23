@@ -42,26 +42,37 @@ see `EXT:container_example` for a simple usage of a custom container.
 This is an example for create a 2 column container
 
 ```php
-\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->addContainer(
-    'b13-2cols-with-header-container', // CType
-    '2 Column Container With Header', // label
-    'Some Description of the Container', // description
-    [
-        [
-            ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']] // rowspan also supported
-        ],
-        [
-            ['name' => 'left side', 'colPos' => 201],
-            ['name' => 'right side', 'colPos' => 202]
-        ]
-    ], // grid configuration
-    'EXT:container/Resources/Public/Icons/Extension.svg', // icon file, or existing icon identifier
-    'EXT:container/Resources/Private/Templates/Container.html', // Template for Backend View
-    'EXT:container/Resources/Private/Templates/Grid.html', // Template for Grid
-    true, // saveAndClose for new content element wizard (v10 only)
-    true // register in new content element wizard
+\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->configureContainer(
+    (
+        new \B13\Container\Tca\ContainerConfiguration(
+            'b13-2cols-with-header-container', // CType
+            '2 Column Container With Header', // label
+            'Some Description of the Container', // description
+            [
+                [
+                    ['name' => 'header', 'colPos' => 200, 'colspan' => 2, 'allowed' => ['CType' => 'header, textmedia']]
+                ],
+                [
+                    ['name' => 'left side', 'colPos' => 201],
+                    ['name' => 'right side', 'colPos' => 202]
+                ]
+            ] // grid configuration
+        )
+    )
+    // set and optional icon configuration
+    ->setIcon('EXT:container_example/Resources/Public/Icons/b13-2cols-with-header-container.svg')
 );
 ```
+
+#### Methods of the ContainerConfiguration Object
+
+| Method name | Description | Parameters | Default |
+| ----------- | ----------- | ---------- | ---------- |
+| `setIcon` | icon file, or existing icon identifier | `string $icon` | `'EXT:container/Resources/Public/Icons/Extension.svg'` |
+| `setBackendTemplate` | Template for Backend View| `string $backendTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
+| `setGridTemplate` | Template for Grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
+| `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard (v10 only) | `bool $saveAndCloseInNewContentElementWizard` | `true` |
+| `setRegisterInNewContentElementWizard` |register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
 
 __Notes__
 - if EXT:content_defender:^3.1.0 is installed you can use allowed, disallowed and maxitems in the Column Configuration

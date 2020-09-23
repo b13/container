@@ -21,35 +21,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
+
     /**
-     * @param string $cType
-     * @param string $label
-     * @param string $description
-     * @param array $grid
-     * @param string $icon
-     * @param string $backendTemplate
-     * @param string $gridTemplate
-     * @param bool $saveAndCloseInNewContentElementWizard
-     * @param bool $registerInNewContentElementWizard
+     * @param ContainerConfiguration $containerConfiguration
      */
-    public function addContainer(
-        string $cType,
-        string $label,
-        string $description,
-        array $grid,
-        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
-        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
-        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
-        bool $saveAndCloseInNewContentElementWizard = true,
-        bool $registerInNewContentElementWizard = true
-    ): void {
+    public function configureContainer(ContainerConfiguration $containerConfiguration): void
+    {
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
-            [$label, $cType, $cType]
+            [$containerConfiguration->getLabel(), $containerConfiguration->getCType(), $containerConfiguration->getCType()]
         );
 
-        foreach ($grid as $row) {
+        foreach ($containerConfiguration->getGrid() as $row) {
             foreach ($row as $column) {
                 $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
                     $column['name'],
@@ -58,8 +42,8 @@ class Registry implements SingletonInterface
             }
         }
 
-        $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$cType] = $cType;
-        $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = '
+        $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$containerConfiguration->getCType()] = $containerConfiguration->getCType();
+        $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['showitem'] = '
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
                     --palette--;;general,
                     header;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header.ALT.div_formlabel,
@@ -78,17 +62,40 @@ class Registry implements SingletonInterface
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
 ';
 
-        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType] = [
-            'cType' => $cType,
-            'icon' => $icon,
-            'label' => $label,
-            'description' => $description,
-            'backendTemplate' => $backendTemplate,
-            'grid' => $grid,
-            'gridTemplate' => $gridTemplate,
-            'saveAndCloseInNewContentElementWizard' => $saveAndCloseInNewContentElementWizard,
-            'registerInNewContentElementWizard' => $registerInNewContentElementWizard
-        ];
+        $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerConfiguration->getCType()] = $containerConfiguration->toArray();
+    }
+
+    /**
+     * @param string $cType
+     * @param string $label
+     * @param string $description
+     * @param array $grid
+     * @param string $icon
+     * @param string $backendTemplate
+     * @param string $gridTemplate
+     * @param bool $saveAndCloseInNewContentElementWizard
+     * @param bool $registerInNewContentElementWizard
+     * @deprecated
+     */
+    public function addContainer(
+        string $cType,
+        string $label,
+        string $description,
+        array $grid,
+        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
+        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
+        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
+        bool $saveAndCloseInNewContentElementWizard = true,
+        bool $registerInNewContentElementWizard = true
+    ): void {
+        trigger_error('use "configureContainer" whith a ContainerConfiguration Object!', E_USER_DEPRECATED);
+        $configuration = (new ContainerConfiguration($cType, $label, $description, $grid))
+            ->setIcon($icon)
+            ->setBackendTemplate($backendTemplate)
+            ->setGridTemplate($gridTemplate)
+            ->setSaveAndCloseInNewContentElementWizard($saveAndCloseInNewContentElementWizard)
+            ->setRegisterInNewContentElementWizard($registerInNewContentElementWizard);
+        $this->configureContainer($configuration);
     }
 
     /**
@@ -112,18 +119,13 @@ class Registry implements SingletonInterface
         string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
         bool $registerInNewContentElementWizard = true
     ): void {
-        trigger_error('use "addContainer" instead of "registerContainer", parameter order changed!', E_USER_DEPRECATED);
-        $this->addContainer(
-            $cType,
-            $label,
-            $description,
-            $grid,
-            $icon,
-            $backendTemplate,
-            $gridTemplate,
-            false,
-            $registerInNewContentElementWizard
-        );
+        trigger_error('use "configureContainer" instead of "registerContainer"', E_USER_DEPRECATED);
+        $configuration = (new ContainerConfiguration($cType, $label, $description, $grid))
+            ->setIcon($icon)
+            ->setBackendTemplate($backendTemplate)
+            ->setGridTemplate($gridTemplate)
+            ->setRegisterInNewContentElementWizard($registerInNewContentElementWizard);
+        $this->configureContainer($configuration);
     }
 
     /**
