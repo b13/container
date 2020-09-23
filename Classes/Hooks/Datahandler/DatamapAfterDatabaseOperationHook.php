@@ -12,13 +12,24 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DatamapAfterDatabaseOperationHook
 {
+    /**
+     * @var Database
+     */
+    protected $database;
+
+    /**
+     * @param Database|null $database
+     */
+    public function __construct(Database $database = null)
+    {
+        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+    }
 
     /**
      * @param string $status
@@ -33,19 +44,35 @@ class DatamapAfterDatabaseOperationHook
         if (
             $table === 'tt_content' &&
             $status === 'update' &&
+            $dataHandler->BE_USER->workspace > 0 &&
             MathUtility::canBeInterpretedAsInteger($id) &&
             is_array($dataHandler->datamap['tt_content'])
         ) {
             $datamapForPlaceHolders = ['tt_content' => []];
             foreach ($dataHandler->datamap['tt_content'] as $origId => $data) {
                 if (!empty($data['tx_container_parent']) && $data['tx_container_parent'] > 0) {
-                    $workspaceVersion = BackendUtility::getWorkspaceVersionOfRecord($dataHandler->BE_USER->workspace, $table, $origId, 'uid,t3ver_oid');
-                    if ((int)$workspaceVersion['uid'] === (int)$id && (int)$workspaceVersion['uid'] !== (int)$origId) {
+                    $origRecord = $this->database->fetchOneRecord((int)$origId);
+                    // origRecord is copied placeholder
+                    if (
+                        (int)$origRecord['t3ver_oid'] === 0 &&
+                        (int)$origRecord['tx_container_parent'] !== (int)$data['tx_container_parent'] &&
+                        (int)$origRecord['t3ver_wsid'] === (int)$dataHandler->BE_USER->workspace
+                    ) {
                         $datamapForPlaceHolders['tt_content'][$origId] = ['tx_container_parent' => $data['tx_container_parent']];
+                    } else {
+                        // origRecord is moved placehoder
+                        $origRecord = $this->database->fetchOneMovedRecord((int)$origId);
+                        if (
+                            (int)$origRecord['t3ver_oid'] === 0 &&
+                            (int)$origRecord['tx_container_parent'] !== (int)$data['tx_container_parent'] &&
+                            (int)$origRecord['t3ver_wsid'] === (int)$dataHandler->BE_USER->workspace
+                        ) {
+                            $datamapForPlaceHolders['tt_content'][$origRecord['uid']] = ['tx_container_parent' => $data['tx_container_parent']];
+                        }
                     }
                 }
             }
-            if (count($datamapForPlaceHolders['tt_content']) > 0) {
+            if (!empty($datamapForPlaceHolders['tt_content'])) {
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
                 $localDataHandler->bypassWorkspaceRestrictions = true;
                 $localDataHandler->start($datamapForPlaceHolders, [], $dataHandler->BE_USER);

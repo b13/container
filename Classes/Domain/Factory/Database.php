@@ -12,16 +12,37 @@ namespace B13\Container\Domain\Factory;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendWorkspaceRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Versioning\VersionState;
 
 class Database implements SingletonInterface
 {
+    /**
+     * @var int
+     */
+    protected $backendUserId = 0;
+
+    /**
+     * @var int
+     */
+    protected $workspaceId = 0;
+
+    public function __construct(Context $context = null)
+    {
+        if ($context === null) {
+            $context = GeneralUtility::makeInstance(Context::class);
+        }
+        $this->backendUserId = (int)$context->getPropertyFromAspect('backend.user', 'id', 0);
+        $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
+    }
 
     /**
      * @return QueryBuilder
@@ -31,8 +52,11 @@ class Database implements SingletonInterface
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         if (TYPO3_MODE === 'BE') {
             $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-        } else {
+        } elseif (TYPO3_MODE === 'FE') {
             $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+            if ($this->backendUserId > 0) {
+                $queryBuilder->getRestrictions()->removeByType(FrontendWorkspaceRestriction::class);
+            }
         }
         return $queryBuilder;
     }
@@ -91,7 +115,8 @@ class Database implements SingletonInterface
     public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $records = (array)$queryBuilder->select('*')
+
+        return  (array)$queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -102,15 +127,21 @@ class Database implements SingletonInterface
                     'sys_language_uid',
                     $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
                 ),
-                $queryBuilder->expr()->eq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                $queryBuilder->expr()->notIn(
+                    't3ver_state',
+                    $queryBuilder->createNamedParameter(
+                        [VersionState::NEW_PLACEHOLDER, VersionState::MOVE_PLACEHOLDER],
+                        Connection::PARAM_INT_ARRAY
+                    )
+                ),
+                $queryBuilder->expr()->in(
+                    't3ver_wsid',
+                    $queryBuilder->createNamedParameter([0, $this->workspaceId], Connection::PARAM_INT_ARRAY)
                 )
             )
             ->orderBy('sorting', 'ASC')
             ->execute()
             ->fetchAll();
-        return $records;
     }
 
     /**
@@ -123,6 +154,9 @@ class Database implements SingletonInterface
         $uids = [];
         foreach ($records as $record) {
             $uids[] = $record['uid'];
+            if ($record['t3ver_oid'] > 0) {
+                $uids[] = $record['t3ver_oid'];
+            }
         }
         $queryBuilder = $this->getQueryBuilder();
         $records = (array)$queryBuilder->select('*')
@@ -136,30 +170,34 @@ class Database implements SingletonInterface
                     'sys_language_uid',
                     $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
                 ),
-                $queryBuilder->expr()->eq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                $queryBuilder->expr()->notIn(
+                    't3ver_state',
+                    $queryBuilder->createNamedParameter(
+                        [VersionState::NEW_PLACEHOLDER, VersionState::MOVE_PLACEHOLDER],
+                        Connection::PARAM_INT_ARRAY
+                    )
+                ),
+                $queryBuilder->expr()->in(
+                    't3ver_wsid',
+                    $queryBuilder->createNamedParameter([0, $this->workspaceId], Connection::PARAM_INT_ARRAY)
                 )
             )
             ->execute()
             ->fetchAll();
-
         return $records;
     }
 
-    /**
-     * @param array $records
-     * @param int $workspaceId
-     * @return array
-     */
-    public function fetchWorkspaceRecords(array $records, int $workspaceId): array
+    public function fetchUidsHavingWorkspaceVersion(array $records, int $workspaceId): array
     {
+        if (empty($records)) {
+            return [];
+        }
         $uids = [];
         foreach ($records as $record) {
             $uids[] = $record['uid'];
         }
         $queryBuilder = $this->getQueryBuilder();
-        $records = (array)$queryBuilder->select('*')
+        return  (array)$queryBuilder->select('t3ver_oid')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->in(
@@ -172,8 +210,7 @@ class Database implements SingletonInterface
                 )
             )
             ->execute()
-            ->fetchAll();
-        return $records;
+            ->fetchAll(\PDO::FETCH_COLUMN);
     }
 
     /**
