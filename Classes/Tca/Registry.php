@@ -21,7 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
-
     /**
      * @param ContainerConfiguration $containerConfiguration
      */
@@ -30,7 +29,12 @@ class Registry implements SingletonInterface
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
-            [$containerConfiguration->getLabel(), $containerConfiguration->getCType(), $containerConfiguration->getCType(), 'container']
+            [
+                $containerConfiguration->getLabel(),
+                $containerConfiguration->getCType(),
+                $containerConfiguration->getCType(),
+                $containerConfiguration->isUseContainerOptgroup() ? 'container' : ''
+            ]
         );
 
         foreach ($containerConfiguration->getGrid() as $row) {
@@ -316,7 +320,7 @@ class Registry implements SingletonInterface
     {
         if (!empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             $content = '
-mod.wizards.newContentElement.wizardItems.container.header = Container
+mod.wizards.newContentElement.wizardItems.container.header = LLL:EXT:container/Resources/Private/Language/locallang.xlf:container
 mod.wizards.newContentElement.wizardItems.container.show = *
 ';
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {

@@ -59,6 +59,11 @@ class ContainerConfiguration
      */
     protected $registerInNewContentElementWizard = true;
 
+    /**
+     * @var bool
+     */
+    protected $useContainerOptgroup = true;
+
     public function __construct(
         string $cType,
         string $label,
@@ -122,6 +127,16 @@ class ContainerConfiguration
     }
 
     /**
+     * @param bool $useContainerOptgroup
+     * @return ContainerConfiguration
+     */
+    public function setUseContainerOptgroup(bool $useContainerOptgroup): ContainerConfiguration
+    {
+        $this->useContainerOptgroup = $useContainerOptgroup;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getCType(): string
@@ -146,6 +161,14 @@ class ContainerConfiguration
     }
 
     /**
+     * @return bool
+     */
+    public function isUseContainerOptgroup(): bool
+    {
+        return $this->useContainerOptgroup;
+    }
+
+    /**
      * @return mixed[]
      */
     public function toArray(): array
@@ -159,7 +182,8 @@ class ContainerConfiguration
             'grid' => $this->grid,
             'gridTemplate' => $this->gridTemplate,
             'saveAndCloseInNewContentElementWizard' => $this->saveAndCloseInNewContentElementWizard,
-            'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard
+            'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard,
+            'useContainerOptgroup' => $this->useContainerOptgroup
         ];
     }
 }
