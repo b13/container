@@ -12,7 +12,6 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\Database;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -55,12 +54,21 @@ class CommandMapAfterFinishHook
                 }
                 $copyToLanguage = $incomingCmdArray['copyToLanguage'];
                 $newId = $copyMappingArray_merged['tt_content'][$id];
+                // container is copied
                 $childrenInCopiedLanguage = $this->database->fetchRecordsByParentAndLanguage($id, $copyToLanguage);
                 $data = [
                     'tt_content' => []
                 ];
                 foreach ($childrenInCopiedLanguage as $child) {
                     $data['tt_content'][$child['uid']] = ['tx_container_parent' => $newId];
+                }
+                // child in free mode is copied
+                $child = $this->database->fetchOneRecord($newId);
+                if ($child['tx_container_parent'] > 0) {
+                    $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$child['tx_container_parent'], $copyToLanguage);
+                    if ($freeModeContainer !== null) {
+                        $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                    }
                 }
                 if (empty($data['tt_content'])) {
                     continue;
