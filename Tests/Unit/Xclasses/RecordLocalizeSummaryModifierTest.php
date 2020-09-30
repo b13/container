@@ -11,6 +11,7 @@ namespace B13\Container\Tests\Unit\Xclasses;
  * of the License, or any later version.
  */
 
+use B13\Container\Tca\Registry;
 use B13\Container\Xclasses\RecordLocalizeSummaryModifier;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -62,5 +63,28 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
         $filtered = $recordLocalizeSummeryModifier->_call('filterRecords', $recordsToTranslate);
         self::assertTrue(1 === count($filtered[0]));
         self::assertTrue(1 === count($filtered[200]));
+    }
+
+    /**
+     * @test
+     */
+    public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns(): void
+    {
+        $tcaRegistry = $this->prophesize(Registry::class);
+        $tcaRegistry->getAllAvailableColumns()->willReturn(
+            [
+                ['colPos' => 2],
+                ['colPos' => 3],
+                ['colPos' => 2]
+            ]
+        );
+        $columns = ['columns' => [0 => 'main'], 'columnList' => [0]];
+        $recordLocalizeSummeryModifier = $this->getAccessibleMock(
+            RecordLocalizeSummaryModifier::class,
+            ['getContainerUids', 'getContainerChildren'],
+            [$tcaRegistry->reveal()]
+        );
+        $rebuildedColumns = $recordLocalizeSummeryModifier->_call('rebuildColumns', $columns);
+        self::assertSame([2, 3, 0], $rebuildedColumns['columnList']);
     }
 }
