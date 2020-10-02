@@ -83,11 +83,11 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
     protected function rebuildColumns(array $columns): array
     {
         // this can be done with AfterPageColumnsSelectedForLocalizationEvent event in v10
-        $containerColumns= $this->containerRegistry->getAllAvailableColumns();
+        $containerColumns = $this->containerRegistry->getAllAvailableColumns();
         foreach ($containerColumns as $containerColumn) {
             $columns = [
                 'columns' => array_replace([$containerColumn['colPos'] => 'Container Children (' . $containerColumn['colPos'] . ')'], $columns['columns']),
-                'columnList' => array_unique(array_merge([$containerColumn['colPos']], $columns['columnList']))
+                'columnList' => array_values(array_unique(array_merge([$containerColumn['colPos']], $columns['columnList'])))
             ];
         }
         return $columns;
