@@ -73,7 +73,7 @@ This is an example for create a 2 column container
 | `setGridTemplate` | Template for Grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard (v10 only) | `bool $saveAndCloseInNewContentElementWizard` | `true` |
 | `setRegisterInNewContentElementWizard` |register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
-| `setUseContainerOptgroup` | use Custom opt group in CType for Containers | `bool $useContainerOptgroup` | `true` |
+| `setGroup` | Custom Group (used as optgroup for CType Select, and as Tab in New Content Element Wiazrd) (if empty "container" is used as Tab and no optgroup in CType is used) | `string $group` | `'container'` |
 __Notes__
 - if EXT:content_defender:^3.1.0 is installed you can use allowed, disallowed and maxitems in the Column Configuration
 - The Container Registry does multiple things:

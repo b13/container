@@ -33,7 +33,7 @@ class Registry implements SingletonInterface
                 $containerConfiguration->getLabel(),
                 $containerConfiguration->getCType(),
                 $containerConfiguration->getCType(),
-                $containerConfiguration->isUseContainerOptgroup() ? 'container' : ''
+                $containerConfiguration->getGroup()
             ]
         );
 
@@ -318,26 +318,38 @@ class Registry implements SingletonInterface
      */
     public function addPageTS($TSdataArray, $id, $rootLine, $returnPartArray): array
     {
-        if (!empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
+        // group containers by group
+        $groupedByGroup = [];
+        $defaultGroup = 'container';
+        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {
+            if ($containerConfiguration['registerInNewContentElementWizard'] === true) {
+                $group = $containerConfiguration['group'] !== '' ? $containerConfiguration['group'] : $defaultGroup;
+                if (empty($groupedByGroup[$group])) {
+                    $groupedByGroup[$group] = [];
+                }
+                $groupedByGroup[$group][$cType] = $containerConfiguration;
+            }
+        }
+        foreach ($groupedByGroup as $group => $containerConfigurations) {
+            $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ? $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] : $group;
+
             $content = '
-mod.wizards.newContentElement.wizardItems.container.header = LLL:EXT:container/Resources/Private/Language/locallang.xlf:container
-mod.wizards.newContentElement.wizardItems.container.show = *
+mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabel . '
+mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 ';
-            foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {
-                if ($containerConfiguration['registerInNewContentElementWizard'] === true) {
-                    $content .= 'mod.wizards.newContentElement.wizardItems.container.elements {
-    ' . $cType . ' {
-        title = ' . $containerConfiguration['label'] . '
-        description = ' . $containerConfiguration['description'] . '
-        iconIdentifier = ' . $cType . '
-        tt_content_defValues.CType = ' . $cType . '
-        saveAndClose = ' . $containerConfiguration['saveAndCloseInNewContentElementWizard'] . '
-    }
+            foreach ($containerConfigurations as $cType => $containerConfiguration) {
+                $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
+' . $cType . ' {
+    title = ' . $containerConfiguration['label'] . '
+    description = ' . $containerConfiguration['description'] . '
+    iconIdentifier = ' . $cType . '
+    tt_content_defValues.CType = ' . $cType . '
+    saveAndClose = ' . $containerConfiguration['saveAndCloseInNewContentElementWizard'] . '
+}
 }
 ';
-                }
                 $content .= 'mod.web_layout.tt_content.preview {
-    ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
+' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
 ';
             }
