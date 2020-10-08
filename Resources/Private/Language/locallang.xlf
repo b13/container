@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" date="2020-08-10T10:26:01+02:00">
+        <body>
+            <trans-unit id="container" resname="container">
+                <source>Container</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
