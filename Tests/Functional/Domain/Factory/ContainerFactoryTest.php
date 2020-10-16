@@ -64,27 +64,26 @@ class ContainerFactoryTest extends FunctionalTestCase
         $children = $container->getChildrenByColPos(201);
         self::assertSame(1, count($children));
         $first = $children[0];
-        self::assertSame(104, $first['uid']);
+        self::assertSame(104, $first['_ORIG_uid']);
     }
 
     /**
      * @test
      */
-    public function containerHoldsMovedChildrenInWorkspaceAjax(): void
+    public function containerRespectSortingOfMovedChildrenInWorkspace(): void
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/sys_workspace.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceAjax.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceSorting.xml');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
-        self::assertSame(0, count($children));
-        $container = $containerFactory->buildContainer(103);
-        $children = $container->getChildrenByColPos(201);
-        self::assertSame(1, count($children));
+        self::assertSame(2, count($children));
         $first = $children[0];
-        self::assertSame(104, $first['uid']);
+        self::assertSame(104, $first['_ORIG_uid']);
+        $second = $children[1];
+        self::assertSame(102, $second['uid']);
     }
 
     /**
@@ -106,7 +105,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $children = $container->getChildrenByColPos(202);
         self::assertSame(1, count($children));
         $first = $children[0];
-        self::assertSame(110, $first['uid']);
+        self::assertSame(110, $first['_ORIG_uid']);
     }
 
     /**
@@ -126,6 +125,6 @@ class ContainerFactoryTest extends FunctionalTestCase
         $children = $container->getChildrenByColPos(201);
         self::assertSame(1, count($children));
         $first = $children[0];
-        self::assertSame(105, $first['uid']);
+        self::assertSame(105, $first['_ORIG_uid']);
     }
 }

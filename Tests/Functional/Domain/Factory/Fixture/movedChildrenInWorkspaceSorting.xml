@@ -9,36 +9,43 @@
         <uid>102</uid>
         <pid>1</pid>
         <colPos>200</colPos>
-        <header>live header</header>
+        <sorting>2</sorting>
+        <header>live header 1</header>
         <CType>header</CType>
         <tx_container_parent>101</tx_container_parent>
     </tt_content>
     <tt_content>
         <uid>103</uid>
         <pid>1</pid>
-        <CType>b13-2cols-with-header-container</CType>
+        <colPos>200</colPos>
+        <sorting>3</sorting>
+        <header>live header 2</header>
+        <CType>header</CType>
+        <tx_container_parent>101</tx_container_parent>
     </tt_content>
-    <!-- 1 ws cs -->
+    <!-- ws ce -->
     <tt_content>
         <uid>104</uid>
         <pid>1</pid>
-        <colPos>201</colPos>
+        <colPos>200</colPos>
         <CType>header</CType>
-        <header>ws header</header>
-        <tx_container_parent>103</tx_container_parent>
+        <header>ws header 2</header>
+        <sorting>4</sorting>
+        <tx_container_parent>101</tx_container_parent>
         <t3ver_wsid>1</t3ver_wsid>
-        <t3ver_oid>102</t3ver_oid>
+        <t3ver_oid>103</t3ver_oid>
         <t3ver_state>4</t3ver_state>
     </tt_content>
     <tt_content>
         <uid>105</uid>
         <pid>1</pid>
-        <colPos>201</colPos>
-        <tx_container_parent>103</tx_container_parent>
+        <sorting>1</sorting>
+        <colPos>200</colPos>
+        <tx_container_parent>101</tx_container_parent>
         <t3ver_wsid>1</t3ver_wsid>
         <t3ver_oid>0</t3ver_oid>
         <t3ver_state>3</t3ver_state>
-        <t3ver_move_id>102</t3ver_move_id>
+        <t3ver_move_id>103</t3ver_move_id>
         <header>[MOVE-TO PLACEHOLDER for #102, WS#1]</header>
     </tt_content>
 </dataset>
