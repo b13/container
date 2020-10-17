@@ -14,6 +14,7 @@ namespace B13\Container\Domain\Factory;
 
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -52,7 +53,6 @@ class ContainerFactory implements SingletonInterface
      */
     public function buildContainer(int $uid): Container
     {
-
         // FE $uid always default language uid
         // BE $uid localized $uid
         if (TYPO3_MODE === 'FE') {
@@ -105,26 +105,14 @@ class ContainerFactory implements SingletonInterface
      */
     protected function doWorkspaceOverlay(array $defaultRecords): array
     {
-        if (empty($defaultRecords)) {
-            return [];
+        if ($this->workspaceId === 0) {
+            return $defaultRecords;
         }
-        if ($this->workspaceId > 0) {
-            $filtered = [];
-            $uidsHavingWorkspaceVersion = $this->database->fetchUidsHavingWorkspaceVersion($defaultRecords, $this->workspaceId);
-            foreach ($defaultRecords as $defaultRecord) {
-                if ($defaultRecord['t3ver_wsid'] === $this->workspaceId) {
-                    $filtered[] = $defaultRecord;
-                } elseif (in_array($defaultRecord['uid'], $uidsHavingWorkspaceVersion, true) === false) {
-                    $filtered[] = $defaultRecord;
-                }
-            }
-            return $filtered;
-        }
-        // filter workspace placeholders
         $filtered = [];
-        foreach ($defaultRecords as $defaultRecord) {
-            if ($defaultRecord['t3ver_wsid'] === 0) {
-                $filtered[] = $defaultRecord;
+        foreach ($defaultRecords as $row) {
+            BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
+            if ($row) {
+                $filtered[] = $row;
             }
         }
         return $filtered;

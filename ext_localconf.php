@@ -61,8 +61,7 @@ call_user_func(static function () {
     ];
 
     $datamapHooks = [
-        'tx_container-before-start' => \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class,
-        'tx_container-after-database-operations' => \B13\Container\Hooks\Datahandler\DatamapAfterDatabaseOperationHook::class
+        'tx_container-before-start' => \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class
     ];
 
     // EXT:content_defender

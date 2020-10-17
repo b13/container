@@ -262,7 +262,7 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(1, count($rows));
         foreach ($rows as $row) {
             self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(1, $row['tx_container_parent']);
+            self::assertSame(0, $row['tx_container_parent']);
             self::assertSame(0, $row['colPos']);
         }
 
@@ -448,5 +448,34 @@ class ContainerTest extends DatahandlerTest
             self::assertSame($containerRow['uid'], $row['tx_container_parent']);
             self::assertSame(200, $row['colPos']);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function moveRecordInColPosCreatesPlaceholderInContainer()
+    {
+        $cmdmap = [
+            'tt_content' => [
+                5 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'colPos' => '1-200',
+                            'sys_language_uid' => 0
+
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $origFirstElement = $this->fetchOneRecord('uid', 2);
+        // moved placeholder
+        $placeHolderElement = $this->fetchOneRecord('t3ver_move_id', 5);
+        self::assertSame(1, $placeHolderElement['tx_container_parent']);
+        self::assertTrue($placeHolderElement['sorting'] < $origFirstElement['sorting']);
     }
 }
