@@ -12,8 +12,8 @@ namespace B13\Container\DataProcessing;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Factory\PageView\Frontend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;

@@ -10,7 +10,7 @@ namespace B13\Container\View;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
 use Psr\EventDispatcher\EventDispatcherInterface;

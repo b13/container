@@ -10,9 +10,10 @@
         <uid>201</uid>
         <pid>1</pid>
         <header>header-live</header>
-        <colPos>200</colPos>
-        <tx_container_parent>200</tx_container_parent>
+        <colPos>0</colPos>
+        <tx_container_parent>0</tx_container_parent>
         <CType>header</CType>
+        <t3ver_wsid>0</t3ver_wsid>
     </tt_content>
 
     <tt_content>
@@ -24,6 +25,10 @@
         <t3ver_oid>201</t3ver_oid>
         <tx_container_parent>200</tx_container_parent>
         <CType>header</CType>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>102</t3ver_oid>
+        <t3ver_state>0</t3ver_state>
     </tt_content>
+
 
 </dataset>

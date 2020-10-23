@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container\Tests\Functional\Domain\Factory;
+namespace B13\Container\Tests\Functional\Domain\Factory\PageView\Backend;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,7 +10,7 @@ namespace B13\Container\Tests\Functional\Domain\Factory;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
@@ -19,7 +19,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ContainerFactoryTest extends FunctionalTestCase
 {
-
     /**
      * @var array
      */
@@ -54,6 +53,7 @@ class ContainerFactoryTest extends FunctionalTestCase
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/sys_workspace.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceClipboard.xml');
+
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
@@ -65,6 +65,24 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(1, count($children));
         $first = $children[0];
         self::assertSame(104, $first['_ORIG_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function containerHoldsMovedChildrenInWorkspaceAjax(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/sys_workspace.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceAjax.xml');
+        $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
+        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
+        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $container = $containerFactory->buildContainer(101);
+        $children = $container->getChildrenByColPos(200);
+        self::assertSame(1, count($children));
+        $first = $children[0];
+        self::assertSame(200, $first['colPos']);
+        self::assertSame(101, $first['tx_container_parent']);
     }
 
     /**
@@ -126,5 +144,40 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(1, count($children));
         $first = $children[0];
         self::assertSame(105, $first['_ORIG_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function containerHoldsChildrenWhenMovedToOtherPage(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/sys_workspace.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
+        $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
+        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
+        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $container = $containerFactory->buildContainer(200);
+        $children = $container->getChildrenByColPos(201);
+        self::assertSame(1, count($children));
+        $first = $children[0];
+        self::assertSame(205, $first['_ORIG_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function containerHoldsLocalizedChildrenWhenMovedToOtherPage(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/sys_workspace.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_container_moved_to_other_page.xml');
+        $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
+        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
+        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $container = $containerFactory->buildContainer(210);
+        $children = $container->getChildrenByColPos(201);
+        self::assertSame(1, count($children));
+        $first = $children[0];
+        self::assertSame(215, $first['_ORIG_uid']);
     }
 }

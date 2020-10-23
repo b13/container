@@ -54,6 +54,9 @@ class Container
      */
     public function getPid(): int
     {
+        if (!empty($this->containerRecord['_ORIG_pid'])) {
+            return (int)$this->containerRecord['_ORIG_pid'];
+        }
         return (int)$this->containerRecord['pid'];
     }
 
