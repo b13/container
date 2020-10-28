@@ -295,6 +295,9 @@ class Registry implements SingletonInterface
      */
     public function getAllAvailableColumns(): array
     {
+        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
+            return [];
+        }
         $columns = [];
         foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
             $grid = $containerConfiguration['grid'];
@@ -318,6 +321,9 @@ class Registry implements SingletonInterface
      */
     public function addPageTS($TSdataArray, $id, $rootLine, $returnPartArray): array
     {
+        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
+            return [$TSdataArray, $id, $rootLine, $returnPartArray];
+        }
         // group containers by group
         $groupedByGroup = [];
         $defaultGroup = 'container';
