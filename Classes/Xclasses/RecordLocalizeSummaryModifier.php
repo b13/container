@@ -115,7 +115,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                 )
             )
             ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
+            ->fetchAll(\PDO::FETCH_COLUMN);
     }
 
     protected function getContainerChildren(array $uids): array
