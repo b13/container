@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tt_content>
+        <uid>1</uid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+    <tt_content>
+        <uid>2</uid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+</dataset>
