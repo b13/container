@@ -93,7 +93,6 @@ class WorkspaceTest extends AbstractFrontendTest
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
-        var_dump($body);
         self::assertStringContainsString('<h2 class="">header-ws</h2>', $body);
     }
 
@@ -111,7 +110,6 @@ class WorkspaceTest extends AbstractFrontendTest
         $response = $this->executeFrontendRequest(new InternalRequest('http://localhost/de/'), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
-        var_dump($body);
         self::assertStringContainsString('<h2 class="">header-ws loc</h2>', $body);
     }
 }
