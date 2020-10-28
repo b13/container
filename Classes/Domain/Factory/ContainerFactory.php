@@ -14,9 +14,7 @@ namespace B13\Container\Domain\Factory;
 
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -47,23 +45,23 @@ class ContainerFactory implements SingletonInterface
         $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
+    protected function containerByUid(int $uid): ?array
+    {
+        return $this->database->fetchOneRecord($uid);
+    }
+
+    protected function defaultContainer(array $localizedContainer): ?array
+    {
+        return $this->database->fetchOneDefaultRecord($localizedContainer);
+    }
+
     /**
      * @param int $uid
      * @return Container
      */
     public function buildContainer(int $uid): Container
     {
-        // FE $uid always default language uid
-        // BE $uid localized $uid
-        if (TYPO3_MODE === 'FE') {
-            $languageAspect =  GeneralUtility::makeInstance(Context::class)->getAspect('language');
-            $language = $languageAspect->get('id');
-            if ($language > 0) {
-                return $this->buildContainerWithOverlay($uid, $languageAspect);
-            }
-        }
-
-        $record = $this->database->fetchOneRecord($uid);
+        $record = $this->containerByUid($uid);
         if ($record === null) {
             throw new Exception('cannot fetch record with uid ' . $uid, 1576572850);
         }
@@ -74,21 +72,18 @@ class ContainerFactory implements SingletonInterface
         $defaultRecord = null;
         $language = (int)$record['sys_language_uid'];
         if ($language > 0) {
-            $defaultRecord = $this->database->fetchOneDefaultRecord($record);
+            $defaultRecord = $this->defaultContainer($record);
             if ($defaultRecord === null) {
                 // free mode
-                $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
+                $childRecords = $this->children($record, $language);
             } else {
                 // connected mode
-                $defaultRecords = $this->database->fetchRecordsByParentAndLanguage($defaultRecord['uid'], 0);
-                $defaultRecords = $this->doWorkspaceOverlay($defaultRecords);
-                $localizedRecords = $this->database->fetchOverlayRecords($defaultRecords, $language);
-                $childRecords = $this->sortLocalizedRecordsByDefaultRecords($defaultRecords, $localizedRecords);
+                $defaultRecords = $this->children($defaultRecord, 0);
+                $childRecords = $this->localizedRecordsByDefaultRecords($defaultRecords, $language);
             }
         } else {
-            $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
+            $childRecords = $this->children($record, $language);
         }
-        $childRecords = $this->doWorkspaceOverlay($childRecords);
         $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
         if ($defaultRecord === null) {
             $container = GeneralUtility::makeInstance(Container::class, $record, $childRecordByColPosKey, $language);
@@ -98,83 +93,16 @@ class ContainerFactory implements SingletonInterface
         return $container;
     }
 
-    /**
-     * @param array $defaultRecords
-     * @return array
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
-     */
-    protected function doWorkspaceOverlay(array $defaultRecords): array
+    protected function localizedRecordsByDefaultRecords(array $defaultRecords, int $language): array
     {
-        if ($this->workspaceId === 0) {
-            return $defaultRecords;
-        }
-        $filtered = [];
-        foreach ($defaultRecords as $row) {
-            BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
-            if ($row) {
-                $filtered[] = $row;
-            }
-        }
-        return $filtered;
+        $localizedRecords = $this->database->fetchOverlayRecords($defaultRecords, $language);
+        $childRecords = $this->sortLocalizedRecordsByDefaultRecords($defaultRecords, $localizedRecords);
+        return $childRecords;
     }
 
-    /**
-     * @param int $uid
-     * @param LanguageAspect $languageAspect
-     * @return Container
-     * @throws Exception
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException
-     */
-    protected function buildContainerWithOverlay(int $uid, LanguageAspect $languageAspect): Container
+    protected function children(array $containerRecord, int $language): array
     {
-        $language = $languageAspect->get('id');
-        $record = $this->database->fetchOneOverlayRecord($uid, $language);
-        if ($record === null) {
-            if ($languageAspect->doOverlays()) {
-                $record = $this->database->fetchOneRecord($uid);
-            }
-        }
-
-        if ($record === null) {
-            throw new Exception('cannot fetch record with uid ' . $uid, 1576572852);
-        }
-        if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
-            throw new Exception('not a container element with uid ' . $uid, 1576572853);
-        }
-
-        $defaultRecord = null;
-        if ($record['sys_language_uid'] > 0) {
-            $defaultRecord = $this->database->fetchOneDefaultRecord($record);
-            if ($defaultRecord === null) {
-                // free mode
-                $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], $language);
-            } else {
-                // connected mode
-                $childRecords = $this->database->fetchRecordsByParentAndLanguage($defaultRecord['uid'], 0);
-                if ($languageAspect->doOverlays()) {
-                    $childRecords = $this->doWorkspaceOverlay($childRecords);
-                    $childRecordsOverlays = $this->database->fetchOverlayRecords($childRecords, $language);
-                    $childRecords = $this->doOverlay($childRecords, $childRecordsOverlays);
-                }
-            }
-        } else {
-            $childRecords = $this->database->fetchRecordsByParentAndLanguage($record['uid'], 0);
-            if ($languageAspect->doOverlays()) {
-                $childRecords = $this->doWorkspaceOverlay($childRecords);
-                $childRecordsOverlays = $this->database->fetchOverlayRecords($childRecords, $language);
-                $childRecords = $this->doOverlay($childRecords, $childRecordsOverlays);
-            }
-        }
-
-        $childRecords = $this->doWorkspaceOverlay($childRecords);
-        $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
-        if ($defaultRecord === null) {
-            $container = GeneralUtility::makeInstance(Container::class, $record, $childRecordByColPosKey, $language);
-        } else {
-            $container = GeneralUtility::makeInstance(Container::class, $defaultRecord, $childRecordByColPosKey, $language);
-        }
-        return $container;
+        return $this->database->fetchRecordsByParentAndLanguage($containerRecord['uid'], $language);
     }
 
     /**
@@ -195,32 +123,6 @@ class ContainerFactory implements SingletonInterface
             }
         }
         return $sorted;
-    }
-
-    /**
-     * @param array $defaultRecords
-     * @param array $localizedRecords
-     * @return array
-     */
-    protected function doOverlay(array $defaultRecords, array $localizedRecords): array
-    {
-        $overlayed = [];
-        foreach ($defaultRecords as $defaultRecord) {
-            $foundOverlay = null;
-            foreach ($localizedRecords as $localizedRecord) {
-                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid'] ||
-                    $localizedRecord['l18n_parent'] === $defaultRecord['t3ver_oid']
-                ) {
-                    $foundOverlay = $localizedRecord;
-                }
-            }
-            if ($foundOverlay !== null) {
-                $overlayed[] = $foundOverlay;
-            } else {
-                $overlayed[] = $defaultRecord;
-            }
-        }
-        return $overlayed;
     }
 
     /**

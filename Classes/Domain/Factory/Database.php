@@ -60,6 +60,26 @@ class Database implements SingletonInterface
         return $queryBuilder;
     }
 
+    public function fetchRecordsByPidAndLanguage(int $pid, int $language): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        return (array)$queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting', 'ASC')
+            ->execute()
+            ->fetchAll();
+    }
+
     /**
      * @param int $uid
      * @return array|null
@@ -96,6 +116,10 @@ class Database implements SingletonInterface
                 $queryBuilder->expr()->eq(
                     'uid',
                     $queryBuilder->createNamedParameter($record['l18n_parent'], \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
             ->execute()
