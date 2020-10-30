@@ -115,12 +115,12 @@ __Notes__
             200 = B13\Container\DataProcessing\ContainerProcessor
             200 {
                 colPos = 200
-                as = childrenLeft
+                as = children_200
             }
             201 = B13\Container\DataProcessing\ContainerProcessor
             201 {
                 colPos = 201
-                as = childrenRight
+                as = children_201
             }
         }
     }
@@ -143,7 +143,7 @@ __Notes__
     </f:format.raw>
 </f:for>
 ```
-with explicit colPos defined use `{children<Left|Right>}` as set in the example above
+with explicit colPos defined use `{children_200]201>}` as set in the example above
 
 ## Concepts
 - Complete Registration is done with one PHP call to TCA Registry
