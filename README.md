@@ -33,7 +33,7 @@ Once installed, add a custom content element to your sitepackage or theme extens
 
 1. Register your custom container in your sitepackage or theme extension in `Configuration/TCA/Overrides/tt_content.php` as new Content Type
 2. Add TypoScript and your Fluid Template for frontend rendering
-3. Add an icon in Resources/Public/Icons/<CType>.svg
+3. Add an icon in Resources/Public/Icons/`<CType>`.svg
 
 See [EXT:container_example](https://github.com/b13/container-example) for a simple example of a custom container.
 
@@ -69,13 +69,13 @@ This is an example to create a 2 column container. The code snippet goes into a 
 | Method name | Description | Parameters | Default |
 | ----------- | ----------- | ---------- | ---------- |
 | `setIcon` | icon file, or existing icon identifier | `string $icon` | `'EXT:container/Resources/Public/Icons/Extension.svg'` |
-| `setBackendTemplate` | Template for Backend View| `string $backendTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
-| `setGridTemplate` | Template for Grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
+| `setBackendTemplate` | Template for backend view| `string $backendTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
+| `setGridTemplate` | Template for grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard (v10 only) | `bool $saveAndCloseInNewContentElementWizard` | `true` |
 | `setRegisterInNewContentElementWizard` |register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
-| `setGroup` | Custom Group (used as optgroup for CType Select (v10 only), and as Tab in New Content Element Wiazrd) (if empty "container" is used as Tab and no optgroup in CType is used) | `string $group` | `'container'` |
+| `setGroup` | Custom Group (used as optgroup for CType select (v10 only), and as tab in New Content Element Wiazrd). If empty "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
 
-__Notes__
+__Notes:__
 - If EXT:content_defender >= 3.1.0 is installed you can use `allowed`, `disallowed` and `maxitems` in the column configuration
 - The container registry does multiple things:
   - Adds CType to TCA select items
@@ -132,7 +132,7 @@ The TypoScript is necessary to define the rendering of the container in the fron
 
 ### Template
 
-The html template file goes in the folder that you have defined in your TypoScript above (see `templateRootPaths`). It's important to name it exacly as defined in `templateName` in TypoScript, in this case `2ColsWithHeader.html`. The file name is case sensitive!
+The html template file goes in the folder that you have defined in your TypoScript above (see `templateRootPaths`). It's important to name it exacly as defined in `templateName` in TypoScript, in this case `2ColsWithHeader.html`. The file name is case-sensitive!
 
 ```html
 <f:for each="{children_200}" as="record">
@@ -155,8 +155,8 @@ With explicit colPos defined use `{children_200]201>}` as set in the example abo
 ## Concepts
 - Complete registration is done with one PHP call to TCA Registry
 - A container in the TYPO3 backend Page module is rendered like a page itself (see View/ContainerLayoutView)
-- For backend clipboard and drag & drop <tx_container_parent>_<colPos> used in the data-colpos attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
-- The <tx_container_parent>_<colPos> parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler hooks
+- For backend clipboard and drag & drop `<tx_container_parent>_<colPos>` used in the data-colpos attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
+- The `<tx_container_parent>_<colPos>` parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler hooks
 - When translating a container, all child elements get also translated (the child elements are not explicit listed during the translation dialog)
 - Copying or moving children of a container copies or moves translations as well
 - Custom definitions make use of custom `colPos` values so site owners build their own elements, no fixed `colPos` given, so no interference with existing solutions
