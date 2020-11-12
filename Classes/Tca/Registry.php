@@ -92,7 +92,7 @@ class Registry implements SingletonInterface
         bool $saveAndCloseInNewContentElementWizard = true,
         bool $registerInNewContentElementWizard = true
     ): void {
-        trigger_error('use "configureContainer" whith a ContainerConfiguration Object!', E_USER_DEPRECATED);
+        trigger_error('use "configureContainer" with a ContainerConfiguration Object!', E_USER_DEPRECATED);
         $configuration = (new ContainerConfiguration($cType, $label, $description, $grid))
             ->setIcon($icon)
             ->setBackendTemplate($backendTemplate)
