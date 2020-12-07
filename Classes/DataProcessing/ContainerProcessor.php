@@ -117,7 +117,16 @@ class ContainerProcessor implements DataProcessorInterface
             }
             $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
         }
-        $processedData[$as] = $children;
+        if (strpos($as, '.') !== false) {
+            [$topKey, $subKey] = GeneralUtility::trimExplode('.', $as, false, 2);
+            if (isset($processedData[$topKey])) {
+                $processedData[$topKey][$subKey] = $children;
+            } else {
+                $processedData[$topKey] = [$subKey => $children];
+            }
+        } else {
+            $processedData[$as] = $children;
+        }
         return $processedData;
     }
 }
