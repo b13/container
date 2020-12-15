@@ -82,7 +82,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerClipboardToOtherPageMovesChildren(): void
+    public function moveContainerByClipboardToOtherPageAtTopMovesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -111,7 +111,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyClipboardCopiesChildren(): void
+    public function copyContainerToOtherPageAtTopCopiesChildren(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -134,6 +134,63 @@ class ContainerTest extends DatahandlerTest
         self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
         self::assertSame(200, $child['colPos']);
         self::assertSame(0, $child['sys_language_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyContainerToOtherPageAfterElementCopiesChildren(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_other_page.xml');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -14,
+                        'update' => [
+                            'colPos' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $copiedRecord = $this->fetchOneRecord('t3_origuid', 1);
+        $child = $this->fetchOneRecord('t3_origuid', 2);
+        self::assertSame(3, $child['pid']);
+        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
+    }
+
+    /**
+     * @test
+     */
+    public function moveContainerByClipboardToOtherPageAfterElementMovesChildren(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_other_page.xml');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -14,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0
+
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('uid', 2);
+        self::assertSame(3, $child['pid']);
+        self::assertSame(1, $child['tx_container_parent']);
+        self::assertSame(200, $child['colPos']);
     }
 
     /**

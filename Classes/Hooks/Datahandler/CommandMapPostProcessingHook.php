@@ -14,6 +14,7 @@ namespace B13\Container\Hooks\Datahandler;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -91,7 +92,8 @@ class CommandMapPostProcessingHook
             $container = $this->containerFactory->buildContainer($origUid);
             $children = array_reverse($container->getChildRecords());
             if ($newId < 0) {
-                $target = $container->getPid();
+                $previousRecord = BackendUtility::getRecord('tt_content', abs($newId), 'pid');
+                $target = (int)$previousRecord['pid'];
             } else {
                 $target = $newId;
             }
