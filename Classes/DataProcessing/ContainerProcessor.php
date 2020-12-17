@@ -16,6 +16,7 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Frontend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 use TYPO3\CMS\Frontend\ContentObject\RecordsContentObject;
@@ -28,9 +29,15 @@ class ContainerProcessor implements DataProcessorInterface
      */
     protected $containerFactory;
 
-    public function __construct(ContainerFactory $containerFactory = null)
+    /**
+     * @var ContentDataProcessor
+     */
+    protected $contentDataProcessor;
+
+    public function __construct(ContainerFactory $containerFactory = null, ContentDataProcessor $contentDataProcessor = null)
     {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->contentDataProcessor = $contentDataProcessor ?? GeneralUtility::makeInstance(ContentDataProcessor::class);
     }
 
     /**
@@ -72,7 +79,8 @@ class ContainerProcessor implements DataProcessorInterface
                     $container,
                     $colPos,
                     'children_' . $colPos,
-                    $processedData
+                    $processedData,
+                    $processorConfiguration
                 );
             }
         } else {
@@ -90,7 +98,8 @@ class ContainerProcessor implements DataProcessorInterface
                 $container,
                 $colPos,
                 $as,
-                $processedData
+                $processedData,
+                $processorConfiguration
             );
         }
         return $processedData;
@@ -101,7 +110,8 @@ class ContainerProcessor implements DataProcessorInterface
         Container $container,
         int $colPos,
         string $as,
-        array $processedData
+        array $processedData,
+        array $processorConfiguration
     ): array {
         $children = $container->getChildrenByColPos($colPos);
 
@@ -116,6 +126,10 @@ class ContainerProcessor implements DataProcessorInterface
                 $conf['source'] = $child['uid'];
             }
             $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
+            /** @var ContentObjectRenderer $recordContentObjectRenderer */
+            $recordContentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+            $recordContentObjectRenderer->start($child, 'tt_content');
+            $child = $this->contentDataProcessor->process($recordContentObjectRenderer, $processorConfiguration, $child);
         }
         $processedData[$as] = $children;
         return $processedData;
