@@ -97,7 +97,7 @@ __Notes__
     tt_content.b13-2cols-with-header-container {
         templateName = 2ColsWithHeader
         templateRootPaths {
-            10 = EXT:container/Resources/Private/Contenttypes
+            10 = EXT:container_example/Resources/Private/Templates
         }
         dataProcessing {
             100 = B13\Container\DataProcessing\ContainerProcessor
@@ -109,7 +109,7 @@ __Notes__
     tt_content.b13-2cols-with-header-container {
         templateName = 2ColsWithHeader
         templateRootPaths {
-            10 = EXT:container/Resources/Private/Contenttypes
+            10 = EXT:container_example/Resources/Private/Templates
         }
         dataProcessing {
             200 = B13\Container\DataProcessing\ContainerProcessor
