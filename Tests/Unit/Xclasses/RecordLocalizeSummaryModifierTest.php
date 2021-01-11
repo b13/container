@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 namespace B13\Container\Tests\Unit\Xclasses;
 
 /*
@@ -13,7 +12,7 @@ namespace B13\Container\Tests\Unit\Xclasses;
 
 use B13\Container\Tca\Registry;
 use B13\Container\Xclasses\RecordLocalizeSummaryModifier;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 class RecordLocalizeSummaryModifierTest extends UnitTestCase
 {
@@ -22,7 +21,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
     /**
      * @test
      */
-    public function filterRecordsRemovesContainerChildrenIfParentContainerIsTranslatedAsWell(): void
+    public function filterRecordsRemovesContainerChildrenIfParentContainerIsTranslatedAsWell()
     {
         $recordLocalizeSummeryModifier = $this->getAccessibleMock(
             RecordLocalizeSummaryModifier::class,
@@ -45,7 +44,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
     /**
      * @test
      */
-    public function filterRecordsKeepsContainerChildrenIfParentContainerIsNotTranslated(): void
+    public function filterRecordsKeepsContainerChildrenIfParentContainerIsNotTranslated()
     {
         $recordLocalizeSummeryModifier = $this->getAccessibleMock(
             RecordLocalizeSummaryModifier::class,
@@ -68,7 +67,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
     /**
      * @test
      */
-    public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns(): void
+    public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns()
     {
         $tcaRegistry = $this->prophesize(Registry::class);
         $tcaRegistry->getAllAvailableColumns()->willReturn(

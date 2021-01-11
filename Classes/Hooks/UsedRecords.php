@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks;
 
 /*
@@ -38,8 +36,14 @@ class UsedRecords
      */
     public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     /**
@@ -47,7 +51,7 @@ class UsedRecords
      * @param PageLayoutView $pageLayoutView
      * @return bool
      */
-    public function addContainerChildren(array $params, PageLayoutView $pageLayoutView): bool
+    public function addContainerChildren(array $params, PageLayoutView $pageLayoutView)
     {
         $record = $params['record'];
         if ($record['tx_container_parent'] > 0) {

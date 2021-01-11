@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 namespace B13\Container\Tests\Unit\Hooks;
 
 /*
@@ -17,7 +16,7 @@ use B13\Container\Hooks\UsedRecords;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 class UsedRecordsTest extends UnitTestCase
 {
@@ -25,7 +24,7 @@ class UsedRecordsTest extends UnitTestCase
     /**
      * @test
      */
-    public function addContainerChildrenReturnsUsedOfParamsIfTxContainerParentIsZero(): void
+    public function addContainerChildrenReturnsUsedOfParamsIfTxContainerParentIsZero()
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
@@ -43,7 +42,7 @@ class UsedRecordsTest extends UnitTestCase
     /**
      * @test
      */
-    public function addContainerChildrenReturnsTrueIfColPosIsInConfiguredGrid(): void
+    public function addContainerChildrenReturnsTrueIfColPosIsInConfiguredGrid()
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
@@ -62,7 +61,7 @@ class UsedRecordsTest extends UnitTestCase
     /**
      * @test
      */
-    public function addContainerChildrenReturnsFalseIfColPosIsNotInConfiguredGrid(): void
+    public function addContainerChildrenReturnsFalseIfColPosIsNotInConfiguredGrid()
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);

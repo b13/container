@@ -8,21 +8,17 @@ return [
         ]
     ],
     'DB' => [
-        'Connections' => [
-            'Default' => [
-                'charset' => 'utf8mb4',
-                'dbname' => getenv('typo3DatabaseName') . '_at',
-                'driver' => 'mysqli',
-                'host' => getenv('typo3DatabaseHost'),
-                'password' => getenv('typo3DatabasePassword'),
-                'port' => 3306,
-                'tableoptions' => [
-                    'charset' => 'utf8mb4',
-                    'collate' => 'utf8mb4_unicode_ci',
-                ],
-                'user' => getenv('typo3DatabaseUsername'),
-            ],
+        'charset' => 'utf8mb4',
+        'dbname' => getenv('typo3DatabaseName') . '_at',
+        'driver' => 'mysqli',
+        'host' => getenv('typo3DatabaseHost'),
+        'password' => getenv('typo3DatabasePassword'),
+        'port' => 3306,
+        'tableoptions' => [
+            'charset' => 'utf8mb4',
+            'collate' => 'utf8mb4_unicode_ci',
         ],
+        'user' => getenv('typo3DatabaseUsername'),
     ],
     'EXTENSIONS' => [
         'backend' => [

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
@@ -28,7 +28,7 @@ class DefaultLanguageTest extends DatahandlerTest
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
@@ -39,7 +39,7 @@ class DefaultLanguageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAtTopWithClipboard(): void
+    public function moveElementIntoContainerAtTopWithClipboard()
     {
         $cmdmap = [
             'tt_content' => [
@@ -68,7 +68,7 @@ class DefaultLanguageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAfterOtherElementWithClipboard(): void
+    public function moveElementIntoContainerAfterOtherElementWithClipboard()
     {
         $cmdmap = [
             'tt_content' => [
@@ -97,7 +97,7 @@ class DefaultLanguageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAtTopWithAjax(): void
+    public function moveElementIntoContainerAtTopWithAjax()
     {
         $cmdmap = [
             'tt_content' => [
@@ -126,7 +126,7 @@ class DefaultLanguageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAfterOtherElementWithAjax(): void
+    public function moveElementIntoContainerAfterOtherElementWithAjax()
     {
         $cmdmap = [
             'tt_content' => [
@@ -155,7 +155,7 @@ class DefaultLanguageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyElementIntoContainerAtTop(): void
+    public function copyElementIntoContainerAtTop()
     {
         $cmdmap = [
             'tt_content' => [

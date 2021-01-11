@@ -13,7 +13,6 @@ namespace B13\Container\View;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\PageLayoutView;
@@ -55,20 +54,21 @@ class ContainerLayoutView extends PageLayoutView
 
     /**
      * ContainerLayoutView constructor.
-     * @param EventDispatcherInterface|null $eventDispatcher
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $registry
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher = null, ContainerFactory $containerFactory = null, Registry $registry = null)
+    public function __construct(ContainerFactory $containerFactory = null, Registry $registry = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
-
-        if (version_compare(TYPO3_branch, '10.3', '<')) {
-            parent::__construct();
-        } else {
-            parent::__construct($eventDispatcher);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
         }
+        if ($registry === null) {
+            $registry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->containerFactory = $containerFactory;
+        $this->registry = $registry;
+
+        parent::__construct();
     }
 
     /**
@@ -76,7 +76,7 @@ class ContainerLayoutView extends PageLayoutView
      * @param int $colPos
      * @return string
      */
-    public function renderContainerChildren(int $uid, int $colPos): string
+    public function renderContainerChildren($uid, $colPos)
     {
         $this->initWebLayoutModuleData();
         $this->initLabels();
@@ -93,7 +93,7 @@ class ContainerLayoutView extends PageLayoutView
         return $content;
     }
 
-    protected function initLabels(): void
+    protected function initLabels()
     {
         $this->CType_labels = [];
         foreach ($GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'] as $val) {
@@ -111,7 +111,7 @@ class ContainerLayoutView extends PageLayoutView
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
-    protected function buildNewContentElementWizardLinkTop(int $colPos): string
+    protected function buildNewContentElementWizardLinkTop($colPos)
     {
         $containerRecord = $this->container->getContainerRecord();
         $urlParameters = [
@@ -123,7 +123,7 @@ class ContainerLayoutView extends PageLayoutView
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element', $urlParameters);
         return $url;
     }
 
@@ -132,7 +132,7 @@ class ContainerLayoutView extends PageLayoutView
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
-    protected function buildNewContentElementWizardLinkAfterCurrent(array $currentRecord): string
+    protected function buildNewContentElementWizardLinkAfterCurrent(array $currentRecord)
     {
         $containerRecord = $this->container->getContainerRecord();
         $colPos = $currentRecord['colPos'];
@@ -147,11 +147,11 @@ class ContainerLayoutView extends PageLayoutView
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element', $urlParameters);
         return $url;
     }
 
-    protected function initWebLayoutModuleData(): void
+    protected function initWebLayoutModuleData()
     {
         $webLayoutModuleData = BackendUtility::getModuleData([], [], 'web_layout');
         if (isset($webLayoutModuleData['tt_content_showHidden'])) {
@@ -182,7 +182,7 @@ class ContainerLayoutView extends PageLayoutView
     /**
      * @return bool
      */
-    protected function isLanguageEditable(): bool
+    protected function isLanguageEditable()
     {
         return $this->container->getLanguage() === 0 || !$this->container->isConnectedMode();
     }
@@ -192,7 +192,7 @@ class ContainerLayoutView extends PageLayoutView
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
-    protected function renderNewContentButtonAtTop(int $colPos): string
+    protected function renderNewContentButtonAtTop($colPos)
     {
         // Add new content at the top most position
         $link = '';
@@ -227,7 +227,7 @@ class ContainerLayoutView extends PageLayoutView
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
-    protected function renderNewContentButtonAfterContentElement(array $row): string
+    protected function renderNewContentButtonAfterContentElement(array $row)
     {
         $url = $this->buildNewContentElementWizardLinkAfterCurrent($row);
         $title = htmlspecialchars($this->getLanguageService()->getLL('newContentElement'));
@@ -244,12 +244,10 @@ class ContainerLayoutView extends PageLayoutView
      * @param int $colPos
      * @return string
      * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
-     * @throws \TYPO3\CMS\Core\Exception\SiteNotFoundException
      */
-    protected function renderRecords(int $colPos): string
+    protected function renderRecords($colPos)
     {
         $containerRecord = $this->container->getContainerRecord();
-        $this->resolveSiteLanguages($containerRecord['pid']);
         $records = $this->container->getChildrenByColPos($colPos);
         $this->nextThree = 1;
         $this->generateTtContentDataArray($records);
@@ -303,8 +301,13 @@ class ContainerLayoutView extends PageLayoutView
         }
         $content .= '</div>';
         $colTitle = $this->getLanguageService()->sL($this->registry->getColPosName($this->container->getCType(), (int)$colPos));
-        $head .= $this->tt_content_drawColHeader($colTitle);
+        $head .= $this->tt_content_drawColHeader($colTitle, '', '');
 
         return $head . $content;
+    }
+
+    protected function isContentEditable()
+    {
+        return $this->getPageLayoutController()->contentIsNotLockedForEditors();
     }
 }

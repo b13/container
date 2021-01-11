@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 namespace B13\Container\Tests\Unit\Tca;
 
 /*
@@ -13,7 +12,7 @@ namespace B13\Container\Tests\Unit\Tca;
 
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 class UsedRecordsTest extends UnitTestCase
 {
@@ -22,7 +21,7 @@ class UsedRecordsTest extends UnitTestCase
     /**
      * @test
      */
-    public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured(): void
+    public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured()
     {
         $registry = GeneralUtility::makeInstance(Registry::class);
         $columns = $registry->getAllAvailableColumns();
@@ -32,7 +31,7 @@ class UsedRecordsTest extends UnitTestCase
     /**
      * @test
      */
-    public function addPageTSReturnsOriginalTSIfNoContainerConfigured(): void
+    public function addPageTSReturnsOriginalTSIfNoContainerConfigured()
     {
         $registry = GeneralUtility::makeInstance(Registry::class);
         $res = $registry->addPageTS(['foo'], 1, [], []);

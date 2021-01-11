@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Domain\Factory\PageView\Frontend;
 
 /*
@@ -16,7 +14,6 @@ use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,18 +27,20 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
     public function __construct(
         Database $database = null,
         Registry $tcaRegistry = null,
-        Context $context = null,
         ContentStorage $contentStorage = null
     ) {
-        parent::__construct($database, $tcaRegistry, $context);
-        $this->contentStorage = $contentStorage ?? GeneralUtility::makeInstance(ContentStorage::class);
+        parent::__construct($database, $tcaRegistry);
+        if ($contentStorage === null) {
+            $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        }
+        $this->contentStorage = $contentStorage;
     }
 
     /**
      * @param int $uid
      * @return Container
      */
-    public function buildContainer(int $uid): Container
+    public function buildContainer($uid)
     {
         $languageAspect =  GeneralUtility::makeInstance(Context::class)->getAspect('language');
         $language = $languageAspect->get('id');
@@ -56,7 +55,7 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
      * @param array $localizedRecords
      * @return array
      */
-    protected function doOverlay(array $defaultRecords, array $localizedRecords): array
+    protected function doOverlay(array $defaultRecords, array $localizedRecords)
     {
         $overlayed = [];
         foreach ($defaultRecords as $defaultRecord) {
@@ -85,7 +84,7 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException
      */
-    protected function buildContainerWithOverlay(int $uid, LanguageAspect $languageAspect): Container
+    protected function buildContainerWithOverlay($uid, LanguageAspect $languageAspect)
     {
         $language = $languageAspect->get('id');
         $record = $this->database->fetchOneOverlayRecord($uid, $language);

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks\Datahandler;
 
 /*
@@ -29,7 +27,10 @@ class DeleteHook
      */
     public function __construct(ContainerFactory $containerFactory = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        $this->containerFactory = $containerFactory;
     }
 
     /**
@@ -39,7 +40,7 @@ class DeleteHook
      * @param bool $recordWasDeleted
      * @param DataHandler $dataHandler
      */
-    public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, DataHandler $dataHandler): void
+    public function processCmdmap_deleteAction($table, $id, array $recordToDelete, $recordWasDeleted, DataHandler $dataHandler)
     {
         if ($table === 'tt_content') {
             try {

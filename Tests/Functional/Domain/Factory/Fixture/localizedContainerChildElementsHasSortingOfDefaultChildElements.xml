@@ -4,13 +4,12 @@
         <uid>1</uid>
         <pid>0</pid>
     </pages>
-    <pages>
+    <pages_language_overlay>
         <uid>2</uid>
-        <pid>0</pid>
+        <pid>1</pid>
         <sys_language_uid>1</sys_language_uid>
-        <l10n_parent>1</l10n_parent>
-        <l10n_source>1</l10n_source>
-    </pages>
+    </pages_language_overlay>
+
 
     <tt_content>
         <uid>1</uid>

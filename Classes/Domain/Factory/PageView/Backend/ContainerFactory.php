@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Domain\Factory\PageView\Backend;
 
 /*
@@ -14,7 +12,6 @@ namespace B13\Container\Domain\Factory\PageView\Backend;
 
 use B13\Container\Domain\Factory\Database;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerFactory
@@ -27,10 +24,12 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
     public function __construct(
         Database $database = null,
         Registry $tcaRegistry = null,
-        Context $context = null,
         ContentStorage $contentStorage = null
     ) {
-        parent::__construct($database, $tcaRegistry, $context);
-        $this->contentStorage = $contentStorage ?? GeneralUtility::makeInstance(ContentStorage::class);
+        parent::__construct($database, $tcaRegistry);
+        if ($contentStorage === null) {
+            $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        }
+        $this->contentStorage = $contentStorage;
     }
 }

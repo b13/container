@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Tca;
 
 /*
@@ -43,9 +41,19 @@ class ItemProcFunc
      */
     public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, BackendLayoutView $backendLayoutView = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->backendLayoutView = $backendLayoutView ?? GeneralUtility::makeInstance(BackendLayoutView::class);
+
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        if ($backendLayoutView === null) {
+            $backendLayoutView = GeneralUtility::makeInstance(BackendLayoutView::class);;
+        }
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->backendLayoutView = $backendLayoutView;
     }
 
     /**
@@ -55,7 +63,7 @@ class ItemProcFunc
      *
      * @param array $parameters
      */
-    public function colPos(array $parameters): void
+    public function colPos(array $parameters)
     {
         $row = $parameters['row'];
         if ($row['tx_container_parent'] > 0) {
@@ -89,7 +97,7 @@ class ItemProcFunc
     /**
      * @param array $parameters
      */
-    public function txContainerParent(array $parameters): void
+    public function txContainerParent(array $parameters)
     {
         $row = $parameters['row'];
         $items = [];

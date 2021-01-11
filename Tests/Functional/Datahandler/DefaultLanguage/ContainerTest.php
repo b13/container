@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -15,12 +15,7 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
 class ContainerTest extends DatahandlerTest
 {
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
@@ -31,7 +26,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function deleteContainerDeleteChildren(): void
+    public function deleteContainerDeleteChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -51,7 +46,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerAjaxToBottomMovesChildren(): void
+    public function moveContainerAjaxToBottomMovesChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -82,7 +77,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerByClipboardToOtherPageAtTopMovesChildren(): void
+    public function moveContainerByClipboardToOtherPageAtTopMovesChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -111,7 +106,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyContainerToOtherPageAtTopCopiesChildren(): void
+    public function copyContainerToOtherPageAtTopCopiesChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -139,7 +134,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyContainerToOtherPageAfterElementCopiesChildren(): void
+    public function copyContainerToOtherPageAfterElementCopiesChildren()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_other_page.xml');
         $cmdmap = [
@@ -167,7 +162,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerByClipboardToOtherPageAfterElementMovesChildren(): void
+    public function moveContainerByClipboardToOtherPageAfterElementMovesChildren()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_other_page.xml');
         $cmdmap = [
@@ -196,7 +191,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyClipboardKeepsSortingOfChildren(): void
+    public function copyClipboardKeepsSortingOfChildren()
     {
         $cmdmap = [
             'tt_content' => [

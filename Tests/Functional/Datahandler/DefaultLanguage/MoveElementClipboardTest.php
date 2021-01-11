@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -16,11 +15,7 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 class MoveElementClipboardTest extends DatahandlerTest
 {
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
@@ -30,7 +25,7 @@ class MoveElementClipboardTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveChildElementOutsideContainerAtTop(): void
+    public function moveChildElementOutsideContainerAtTop()
     {
         $cmdmap = [
             'tt_content' => [
@@ -60,7 +55,7 @@ class MoveElementClipboardTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveChildElementOutsideContainerAfterElement(): void
+    public function moveChildElementOutsideContainerAfterElement()
     {
         $cmdmap = [
             'tt_content' => [
@@ -91,7 +86,7 @@ class MoveElementClipboardTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveChildElementToOtherColumnTop(): void
+    public function moveChildElementToOtherColumnTop()
     {
         $cmdmap = [
             'tt_content' => [
@@ -122,7 +117,7 @@ class MoveElementClipboardTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveChildElementToOtherColumnAfterElement(): void
+    public function moveChildElementToOtherColumnAfterElement()
     {
         $cmdmap = [
             'tt_content' => [
@@ -152,7 +147,7 @@ class MoveElementClipboardTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAtTop(): void
+    public function moveElementIntoContainerAtTop()
     {
         $cmdmap = [
             'tt_content' => [
@@ -183,7 +178,7 @@ class MoveElementClipboardTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveElementIntoContainerAfterElement(): void
+    public function moveElementIntoContainerAfterElement()
     {
         $cmdmap = [
             'tt_content' => [

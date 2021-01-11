@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Tca;
 
 /*
@@ -24,7 +22,7 @@ class Registry implements SingletonInterface
     /**
      * @param ContainerConfiguration $containerConfiguration
      */
-    public function configureContainer(ContainerConfiguration $containerConfiguration): void
+    public function configureContainer(ContainerConfiguration $containerConfiguration)
     {
         ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
@@ -48,22 +46,15 @@ class Registry implements SingletonInterface
 
         $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$containerConfiguration->getCType()] = $containerConfiguration->getCType();
         $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['showitem'] = '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                    header;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header.ALT.div_formlabel,
-                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
-                    --palette--;;frames,
-                    --palette--;;appearanceLinks,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
-                    --palette--;;hidden,
-                    --palette--;;access,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
-                    categories,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
-                    rowDescription,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+                --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
+					--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.headers;headers,rowDescription,
+				--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
+					layout;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:layout_formlabel,
+					--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.appearanceLinks;appearanceLinks,
+				--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
+					hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden,
+					--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
+				--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.extended
 ';
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerConfiguration->getCType()] = $containerConfiguration->toArray();
@@ -71,82 +62,19 @@ class Registry implements SingletonInterface
 
     /**
      * @param string $cType
-     * @param string $label
-     * @param string $description
-     * @param array $grid
-     * @param string $icon
-     * @param string $backendTemplate
-     * @param string $gridTemplate
-     * @param bool $saveAndCloseInNewContentElementWizard
-     * @param bool $registerInNewContentElementWizard
-     * @deprecated
-     */
-    public function addContainer(
-        string $cType,
-        string $label,
-        string $description,
-        array $grid,
-        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
-        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
-        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
-        bool $saveAndCloseInNewContentElementWizard = true,
-        bool $registerInNewContentElementWizard = true
-    ): void {
-        trigger_error('use "configureContainer" with a ContainerConfiguration Object!', E_USER_DEPRECATED);
-        $configuration = (new ContainerConfiguration($cType, $label, $description, $grid))
-            ->setIcon($icon)
-            ->setBackendTemplate($backendTemplate)
-            ->setGridTemplate($gridTemplate)
-            ->setSaveAndCloseInNewContentElementWizard($saveAndCloseInNewContentElementWizard)
-            ->setRegisterInNewContentElementWizard($registerInNewContentElementWizard);
-        $this->configureContainer($configuration);
-    }
-
-    /**
-     * @param string $cType
-     * @param string $label
-     * @param string $description
-     * @param string $icon
-     * @param array $grid
-     * @param string $backendTemplate
-     * @param string $gridTemplate
-     * @param bool $registerInNewContentElementWizard
-     * @deprecated
-     */
-    public function registerContainer(
-        string $cType,
-        string $label,
-        string $description,
-        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
-        array $grid = [],
-        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
-        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
-        bool $registerInNewContentElementWizard = true
-    ): void {
-        trigger_error('use "configureContainer" instead of "registerContainer"', E_USER_DEPRECATED);
-        $configuration = (new ContainerConfiguration($cType, $label, $description, $grid))
-            ->setIcon($icon)
-            ->setBackendTemplate($backendTemplate)
-            ->setGridTemplate($gridTemplate)
-            ->setRegisterInNewContentElementWizard($registerInNewContentElementWizard);
-        $this->configureContainer($configuration);
-    }
-
-    /**
-     * @param string $cType
      * @param int $colPos
      * @return array
      */
-    public function getContentDefenderConfiguration(string $cType, int $colPos): array
+    public function getContentDefenderConfiguration($cType, $colPos)
     {
         $contentDefenderConfiguration = [];
         $rows = $this->getGrid($cType);
         foreach ($rows as $columns) {
             foreach ($columns as $column) {
                 if ((int)$column['colPos'] === $colPos) {
-                    $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
-                    $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
-                    $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                    $contentDefenderConfiguration['allowed.'] = (array)$column['allowed'];
+                    $contentDefenderConfiguration['disallowed.'] = (array)$column['disallowed'];
+                    $contentDefenderConfiguration['maxitems'] = (array)$column['maxitems'];
                 }
             }
         }
@@ -159,9 +87,8 @@ class Registry implements SingletonInterface
      * @return array
      * @deprecated
      */
-    public function getAllowedConfiguration(string $cType, int $colPos): array
+    public function getAllowedConfiguration($cType, $colPos)
     {
-        trigger_error('should not be required, update EXT:content_defender to 3.1', E_USER_DEPRECATED);
         $allowed = [];
         $rows = $this->getGrid($cType);
         foreach ($rows as $columns) {
@@ -174,7 +101,7 @@ class Registry implements SingletonInterface
         return $allowed;
     }
 
-    public function registerIcons(): void
+    public function registerIcons()
     {
         if (is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
@@ -208,7 +135,7 @@ class Registry implements SingletonInterface
      * @param string $cType
      * @return bool
      */
-    public function isContainerElement(string $cType): bool
+    public function isContainerElement($cType)
     {
         return !empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]);
     }
@@ -216,7 +143,7 @@ class Registry implements SingletonInterface
     /**
      * @return array
      */
-    public function getRegisteredCTypes(): array
+    public function getRegisteredCTypes()
     {
         return array_keys((array)$GLOBALS['TCA']['tt_content']['containerConfiguration']);
     }
@@ -225,7 +152,7 @@ class Registry implements SingletonInterface
      * @param string $cType
      * @return array
      */
-    public function getGrid(string $cType): array
+    public function getGrid($cType)
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'])) {
             return [];
@@ -237,7 +164,7 @@ class Registry implements SingletonInterface
      * @param string $cType
      * @return string|null
      */
-    public function getGridTemplate(string $cType): ?string
+    public function getGridTemplate($cType)
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridTemplate'])) {
             return null;
@@ -247,21 +174,10 @@ class Registry implements SingletonInterface
 
     /**
      * @param string $cType
-     * @return array
-     * @deprecated
-     */
-    public function getAvaiableColumns(string $cType): array
-    {
-        trigger_error('use "getAvailableColumns" instead of "getAvaiableColumns"', E_USER_DEPRECATED);
-        return $this->getAvailableColumns($cType);
-    }
-
-    /**
-     * @param string $cType
      * @param int $colPos
      * @return string|null
      */
-    public function getColPosName(string $cType, int $colPos): ?string
+    public function getColPosName($cType, $colPos)
     {
         $grid = $this->getGrid($cType);
         foreach ($grid as $row) {
@@ -278,7 +194,7 @@ class Registry implements SingletonInterface
      * @param string $cType
      * @return array
      */
-    public function getAvailableColumns(string $cType): array
+    public function getAvailableColumns($cType)
     {
         $columns = [];
         $grid = $this->getGrid($cType);
@@ -293,7 +209,7 @@ class Registry implements SingletonInterface
     /**
      * @return array
      */
-    public function getAllAvailableColumns(): array
+    public function getAllAvailableColumns()
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             return [];
@@ -319,7 +235,7 @@ class Registry implements SingletonInterface
      * @param array $returnPartArray
      * @return array
      */
-    public function addPageTS($TSdataArray, $id, $rootLine, $returnPartArray): array
+    public function addPageTS($TSdataArray, $id, $rootLine, $returnPartArray)
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             return [$TSdataArray, $id, $rootLine, $returnPartArray];

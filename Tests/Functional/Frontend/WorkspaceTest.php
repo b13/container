@@ -21,7 +21,7 @@ class WorkspaceTest extends AbstractFrontendTest
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         FunctionalTestCase::setUp();
 
@@ -41,7 +41,7 @@ class WorkspaceTest extends AbstractFrontendTest
      * @test
      * @group frontend
      */
-    public function childInLiveIsRendered(): void
+    public function childInLiveIsRendered()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child.xml');
         $response = $this->executeFrontendRequest(new InternalRequest());
@@ -55,7 +55,7 @@ class WorkspaceTest extends AbstractFrontendTest
      * @test
      * @group frontend
      */
-    public function childInWorkspaceIsRendered(): void
+    public function childInWorkspaceIsRendered()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
@@ -70,7 +70,7 @@ class WorkspaceTest extends AbstractFrontendTest
      * @test
      * @group frontend
      */
-    public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer(): void
+    public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child_moved_from_outside.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
@@ -85,7 +85,7 @@ class WorkspaceTest extends AbstractFrontendTest
      * @test
      * @group frontend
      */
-    public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
+    public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
@@ -100,7 +100,7 @@ class WorkspaceTest extends AbstractFrontendTest
      * @test
      * @group frontend
      */
-    public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
+    public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_pages.xml');

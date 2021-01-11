@@ -10,7 +10,7 @@
 
     composer install
     # prepare functional tests
-    cp Build/env/.env.local .env
+    cp Build/envs/.env.local .env
     # prepare acceptance tests
     mkdir config && cd config && ln -s ../Build/sites && cd -
     cp Build/LocalConfiguration.php .Build/Web/typo3conf/
@@ -26,7 +26,5 @@
 
  ## Run tests
 
-
-    .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit/
-    .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional
-    .Build/bin/codecept run Backend --env=local -c Tests/codeception.yml
+    .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
+    .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/FunctionalTests.xml Tests/Functional

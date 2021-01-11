@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Domain\Factory\PageView;
 
 /*
@@ -19,24 +17,18 @@ class ContainerFactory extends \B13\Container\Domain\Factory\ContainerFactory
      */
     protected $contentStorage;
 
-    protected function children(array $containerRecord, int $language): array
+    protected function children(array $containerRecord, $language)
     {
         return $this->contentStorage->getContainerChildren($containerRecord, $language);
     }
 
-    protected function localizedRecordsByDefaultRecords(array $defaultRecords, int $language): array
+
+    protected function containerByUid($uid)
     {
-        $childRecords = parent::localizedRecordsByDefaultRecords($defaultRecords, $language);
-        return $this->contentStorage->workspaceOverlay($childRecords);
+        return $this->database->fetchOneRecord($uid);
     }
 
-    protected function containerByUid(int $uid): ?array
-    {
-        $record =  $this->database->fetchOneRecord($uid);
-        return $this->contentStorage->containerRecordWorkspaceOverlay($record);
-    }
-
-    protected function defaultContainer(array $localizedContainer): ?array
+    protected function defaultContainer(array $localizedContainer)
     {
         if (isset($localizedContainer['_ORIG_uid'])) {
             $localizedContainer = $this->database->fetchOneRecord($localizedContainer['uid']);
@@ -45,6 +37,6 @@ class ContainerFactory extends \B13\Container\Domain\Factory\ContainerFactory
         if ($defaultRecord === null) {
             return null;
         }
-        return $this->contentStorage->containerRecordWorkspaceOverlay($defaultRecord);
+        return $defaultRecord;
     }
 }

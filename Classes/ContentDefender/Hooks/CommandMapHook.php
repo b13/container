@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\ContentDefender\Hooks;
 
 /*
@@ -21,9 +19,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @deprecated
- */
 class CommandMapHook
 {
     /**
@@ -48,15 +43,24 @@ class CommandMapHook
      */
     public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, Database $database = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        if ($database === null) {
+            $database = GeneralUtility::makeInstance(Database::class);;
+        }
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->database = $database;
     }
 
     /**
      * @param DataHandler $dataHandler
      */
-    public function processCmdmap_beforeStart(DataHandler $dataHandler): void
+    public function processCmdmap_beforeStart(DataHandler $dataHandler)
     {
         if (!empty($dataHandler->cmdmap['tt_content'])) {
             foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {

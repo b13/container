@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 namespace B13\Container\Tests\Unit\Hooks\Datahandler;
 
 /*
@@ -13,7 +12,7 @@ namespace B13\Container\Tests\Unit\Hooks\Datahandler;
 
 use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 class DatamapBeforeStartHookTest extends UnitTestCase
 {
@@ -22,7 +21,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
     /**
      * @test
      */
-    public function datamapForLocalizationsExtendsDatamapWithLocalizations(): void
+    public function datamapForLocalizationsExtendsDatamapWithLocalizations()
     {
         $database = $this->prophesize(Database::class);
         $defaultRecord = [
@@ -49,13 +48,13 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             ]
         ];
         $modDatamap = $dataHandlerHook->_call('datamapForChildLocalizations', $datamap);
-        self::assertIsArray($modDatamap['tt_content'][3]);
+        self::assertTrue(is_array($modDatamap['tt_content'][3]));
         self::assertSame(1, $modDatamap['tt_content'][3]['tx_container_parent']);
     }
     /**
      * @test
      */
-    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
+    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue()
     {
         $dataHandlerHook = $this->getAccessibleMock(DatamapBeforeStartHook::class, ['foo']);
         $datamap = [
@@ -74,7 +73,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
     /**
      * @test
      */
-    public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
+    public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue()
     {
         $dataHandlerHook = $this->getAccessibleMock(DatamapBeforeStartHook::class, ['foo']);
         $datamap = [

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks;
 
 /*
@@ -29,7 +27,10 @@ class TableConfigurationPostProcessing implements TableConfigurationPostProcessi
      */
     public function __construct(Registry $tcaRegistry = null)
     {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function processData()

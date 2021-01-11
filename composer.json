@@ -5,8 +5,8 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^9.5 || ^10.4",
-        "typo3/cms-fluid-styled-content": "^9.5 || ^10.4"
+        "typo3/cms-backend": "^7.6 || ^8.7",
+        "typo3/cms-fluid-styled-content": "^7.6 || ^8.7"
     },
     "autoload": {
         "psr-4": {
@@ -16,37 +16,35 @@
     "autoload-dev": {
         "psr-4": {
             "B13\\Container\\Tests\\": "Tests",
-            "TYPO3\\JsonResponse\\": ".Build/Web/typo3conf/ext/json_response/Classes"
+            "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests"
         }
     },
     "config": {
         "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin"
+        "bin-dir": ".Build/bin",
+        "platform": {
+          "php": "5.6"
+        },
+        "preferred-install": {
+            "typo3/cms": "source",
+            "*": "dist"
+        }
     },
     "require-dev": {
         "b13/container-example": "dev-master",
-        "ichhabrecht/content-defender": "dev-master",
-        "typo3/cms-install": "^10.4",
-        "typo3/cms-about": "^10.4",
-        "typo3/testing-framework": "^6",
-        "codeception/codeception": "^4.1",
-        "codeception/module-webdriver": "^1.0",
-        "codeception/module-asserts": "^1.0",
-        "codeception/module-db": "^1.0",
-        "typo3/cms-workspaces": "^10.4",
-        "phpstan/phpstan": "^0.12.11",
-        "typo3/coding-standards": "^0.2.0",
-        "helhum/typo3-console": "^6.3",
-        "helhum/dotenv-connector": "^2.3"
+        "ichhabrecht/content-defender": "^2.2",
+        "typo3/cms-install": "^7.6",
+        "typo3/cms-about": "^7.6",
+        "helhum/typo3-console": "4.9.6",
+        "helhum/dotenv-connector": "^1.1",
+        "phpunit/phpunit": "^4.8"
     },
     "replace": {
         "typo3-ter/container": "self.version"
     },
     "scripts": {
         "post-autoload-dump": [
-            "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare",
             "if [ ! -e .Build/Web/vendor ]; then cd .Build/Web  && ln -s ../vendor && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/ext/json_response ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/typo3/testing-framework/Resources/Core/Functional/Extensions/json_response && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/ext/container_example ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/b13/container-example container_example && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/ext/content_defender ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/ichhabrecht/content-defender content_defender && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"

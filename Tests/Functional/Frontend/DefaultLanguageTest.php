@@ -19,7 +19,7 @@ class DefaultLanguageTest extends AbstractFrontendTest
      * @test
      * @group frontend
      */
-    public function childrenAreRendered(): void
+    public function childrenAreRendered()
     {
         $response = $this->executeFrontendRequest(new InternalRequest());
         $body = (string)$response->getBody();

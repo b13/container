@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks\Datahandler;
 
 /*
@@ -12,43 +10,40 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 class Database implements SingletonInterface
 {
 
     /**
-     * @return QueryBuilder
+     * @return DatabaseConnection
      */
-    protected function getQueryBuilder(): QueryBuilder
+    protected function getDatabase()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
-        return $queryBuilder;
+        return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAdditionalWhereClause()
+    {
+        return ' AND deleted=0';
     }
 
     /**
      * @param int $uid
      * @return array|null
      */
-    public function fetchOneRecord(int $uid): ?array
+    public function fetchOneRecord($uid)
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
+        $record = $this->getDatabase()
+            ->exec_SELECTgetSingleRow(
+                '*',
+                'tt_content',
+                'uid=' . (int)$uid . $this->getAdditionalWhereClause()
+            );
         if ($record === false) {
             return null;
         }
@@ -59,19 +54,14 @@ class Database implements SingletonInterface
      * @param int $uid
      * @return array|null
      */
-    public function fetchOneMovedRecord(int $uid): ?array
+    public function fetchOneMovedRecord($uid)
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3ver_move_id',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
+        $record = $this->getDatabase()
+            ->exec_SELECTgetSingleRow(
+                '*',
+                'tt_content',
+                't3ver_move_id=' . (int)$uid . $this->getAdditionalWhereClause()
+            );
         if ($record === false) {
             return null;
         }
@@ -82,20 +72,14 @@ class Database implements SingletonInterface
      * @param array $record
      * @return array
      */
-    public function fetchOverlayRecords(array $record): array
+    public function fetchOverlayRecords(array $record)
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $records = (array)$queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'l18n_parent',
-                    $queryBuilder->createNamedParameter($record['uid'], Connection::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        return $records;
+        return (array)$this->getDatabase()
+            ->exec_SELECTgetRows(
+                '*',
+                'tt_content',
+                'l18n_parent=' . $record['uid'] . $this->getAdditionalWhereClause()
+            );
     }
 
     /**
@@ -103,23 +87,14 @@ class Database implements SingletonInterface
      * @param int $language
      * @return array
      */
-    public function fetchOneTranslatedRecord(int $uid, int $language): ?array
+    public function fetchOneTranslatedRecord($uid, $language)
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'l10n_source',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
+        $record = $this->getDatabase()
+            ->exec_SELECTgetSingleRow(
+                '*',
+                'tt_content',
+                'l10n_source=' . (int)$uid . ' AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
+            );
         if ($record === false) {
             return null;
         }
@@ -131,29 +106,17 @@ class Database implements SingletonInterface
      * @param int $language
      * @return array
      */
-    public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
+    public function fetchRecordsByParentAndLanguage($parent, $language)
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $records = (array)$queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'tx_container_parent',
-                    $queryBuilder->createNamedParameter($parent, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
-                )
-            )
-            ->orderBy('sorting', 'ASC')
-            ->execute()
-            ->fetchAll();
-        return $records;
+
+        return (array)$this->getDatabase()
+            ->exec_SELECTgetRows(
+                '*',
+                'tt_content',
+                'tx_container_parent=' . (int)$parent . ' AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause(),
+                '',
+                'sorting ASC'
+            );
     }
 
     /**
@@ -161,31 +124,14 @@ class Database implements SingletonInterface
      * @param int $language
      * @return array|null
      */
-    public function fetchContainerRecordLocalizedFreeMode(int $defaultUid, int $language): ?array
+    public function fetchContainerRecordLocalizedFreeMode($defaultUid, $language)
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'l10n_source',
-                    $queryBuilder->createNamedParameter($defaultUid, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'l18n_parent',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
+        $record = $this->getDatabase()
+            ->exec_SELECTgetSingleRow(
+                '*',
+                'tt_content',
+                'l10n_source=' . (int)$defaultUid . ' AND l18n_parent=0 AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
+            );
         if ($record === false) {
             return null;
         }

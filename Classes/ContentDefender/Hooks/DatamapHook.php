@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\ContentDefender\Hooks;
 
 /*
@@ -22,9 +20,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/**
- * @deprecated
- */
+
 class DatamapHook
 {
     /**
@@ -49,15 +45,24 @@ class DatamapHook
      */
     public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, Database $database = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        if ($database === null) {
+            $database = GeneralUtility::makeInstance(Database::class);;
+        }
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->database = $database;
     }
 
     /**
      * @param DataHandler $dataHandler
      */
-    public function processDatamap_beforeStart(DataHandler $dataHandler): void
+    public function processDatamap_beforeStart(DataHandler $dataHandler)
     {
         if (is_array($dataHandler->datamap['tt_content'])) {
             foreach ($dataHandler->datamap['tt_content'] as $id => $values) {

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks\Datahandler;
 
 /*
@@ -36,14 +34,22 @@ class DatamapBeforeStartHook
      */
     public function __construct(ContainerFactory $containerFactory = null, Database $database = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+
+        if ($database === null) {
+            $database = GeneralUtility::makeInstance(Database::class);;
+        }
+        $this->containerFactory = $containerFactory;
+        $this->database = $database;
     }
 
     /**
      * @param DataHandler $dataHandler
      */
-    public function processDatamap_beforeStart(DataHandler $dataHandler): void
+    public function processDatamap_beforeStart(DataHandler $dataHandler)
     {
         // ajax move (drag & drop)
         $dataHandler->datamap = $this->extractContainerIdFromColPosInDatamap($dataHandler->datamap);
@@ -55,14 +61,16 @@ class DatamapBeforeStartHook
      * @param array $datamap
      * @return array
      */
-    protected function extractContainerIdFromColPosInDatamap(array $datamap): array
+    protected function extractContainerIdFromColPosInDatamap(array $datamap)
     {
         if (!empty($datamap['tt_content'])) {
             foreach ($datamap['tt_content'] as $id => &$data) {
                 if (isset($data['colPos'])) {
                     $colPos = $data['colPos'];
                     if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-                        [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
+                        $arr = GeneralUtility::intExplode('-', $colPos);
+                        $containerId = $arr[0];
+                        $newColPos = $arr[1];
                         $data['colPos'] = $newColPos;
                         $data['tx_container_parent'] = $containerId;
                     } elseif (!isset($data['tx_container_parent'])) {
@@ -79,7 +87,7 @@ class DatamapBeforeStartHook
      * @param array $datamap
      * @return array
      */
-    protected function datamapForChildLocalizations(array $datamap): array
+    protected function datamapForChildLocalizations(array $datamap)
     {
         $datamapForLocalizations = ['tt_content' => []];
         if (!empty($datamap['tt_content'])) {
@@ -116,7 +124,7 @@ class DatamapBeforeStartHook
      * @param array $datamap
      * @return array
      */
-    protected function datamapForChildrenChangeContainerLanguage(array $datamap): array
+    protected function datamapForChildrenChangeContainerLanguage(array $datamap)
     {
         $datamapForLocalizations = ['tt_content' => []];
         if (!empty($datamap['tt_content'])) {

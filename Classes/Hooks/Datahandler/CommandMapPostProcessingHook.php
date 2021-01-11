@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks\Datahandler;
 
 /*
@@ -30,7 +28,10 @@ class CommandMapPostProcessingHook
      */
     public function __construct(ContainerFactory $containerFactory = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        $this->containerFactory = $containerFactory;
     }
 
     /**
@@ -42,10 +43,11 @@ class CommandMapPostProcessingHook
      * @param mixed $pasteUpdate
      * @param mixed $pasteDatamap
      */
-    public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
+    public function processCmdmap_postProcess($command, $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap)
     {
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
-            $this->copyOrMoveChildren($id, (int)$value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
+            $arrKeys = array_keys($pasteDatamap['tt_content']);
+            $this->copyOrMoveChildren($id, (int)$value, (int)$arrKeys[0], 'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
             $this->copyOrMoveChildren($id, (int)$value, $id, 'move', $dataHandler);
         } elseif ($table === 'tt_content' && ($command === 'localize' || $command === 'copyToLanguage')) {
@@ -59,7 +61,7 @@ class CommandMapPostProcessingHook
      * @param string $command
      * @param DataHandler $dataHandler
      */
-    protected function localizeOrCopyToLanguage(int $uid, int $language, string $command, DataHandler $dataHandler): void
+    protected function localizeOrCopyToLanguage($uid, $language, $command, DataHandler $dataHandler)
     {
         try {
             $container = $this->containerFactory->buildContainer($uid);
@@ -85,7 +87,7 @@ class CommandMapPostProcessingHook
      * @param string $command
      * @param DataHandler $dataHandler
      */
-    protected function copyOrMoveChildren(int $origUid, int $newId, int $containerId, string $command, DataHandler $dataHandler): void
+    protected function copyOrMoveChildren($origUid, $newId, $containerId, $command, DataHandler $dataHandler)
     {
         try {
             // when moving or copy a container into other language the other language is returned

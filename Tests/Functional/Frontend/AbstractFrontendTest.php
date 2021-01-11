@@ -38,7 +38,7 @@ abstract class AbstractFrontendTest extends FunctionalTestCase
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace B13\Container\Tests\Functional\Xclasses;
 
@@ -28,7 +28,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getContainerUidsReturnsAllUids(): void
+    public function getContainerUidsReturnsAllUids()
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Xclasses/Fixtures/two_container_elements.xml');
         $recordLocalizeSummeryModifier = $this->getAccessibleMock(

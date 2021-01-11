@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks\Datahandler;
 
 /*
@@ -48,20 +46,30 @@ class CommandMapBeforeStartHook
         Registry $tcaRegistry = null,
         Database $database = null
     ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        if ($database === null) {
+            $database = GeneralUtility::makeInstance(Database::class);;
+        }
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->database = $database;
     }
     /**
      * @param DataHandler $dataHandler
      */
-    public function processCmdmap_beforeStart(DataHandler $dataHandler): void
+    public function processCmdmap_beforeStart(DataHandler $dataHandler)
     {
         $this->unsetInconsistentLocalizeCommands($dataHandler);
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
     }
 
-    protected function unsetInconsistentLocalizeCommands(DataHandler $dataHandler): void
+    protected function unsetInconsistentLocalizeCommands(DataHandler $dataHandler)
     {
         if (!empty($dataHandler->cmdmap['tt_content'])) {
             foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {
@@ -101,7 +109,7 @@ class CommandMapBeforeStartHook
     /**
      * @param array $cmdmap
      */
-    protected function extractContainerIdFromColPosOnUpdate(array $cmdmap): array
+    protected function extractContainerIdFromColPosOnUpdate(array $cmdmap)
     {
         if (!empty($cmdmap['tt_content'])) {
             foreach ($cmdmap['tt_content'] as $id => &$cmds) {
@@ -122,11 +130,13 @@ class CommandMapBeforeStartHook
      * @param array $data
      * @return array
      */
-    protected function dataFromContainerIdColPos(array $data): array
+    protected function dataFromContainerIdColPos(array $data)
     {
         $colPos = $data['colPos'];
         if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-            [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
+            $arr = GeneralUtility::intExplode('-', $colPos);
+            $containerId = $arr[0];
+            $newColPos = $arr[1];
             $data['colPos'] = $newColPos;
             $data['tx_container_parent'] = $containerId;
         } elseif (!isset($data['tx_container_parent'])) {

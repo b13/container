@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Xclasses;
 
 /*
@@ -27,14 +25,18 @@ class LocalizationController extends \TYPO3\CMS\Backend\Controller\Page\Localiza
     public function __construct(RecordLocalizeSummaryModifier $recordLocalizeSummaryModifier = null)
     {
         parent::__construct();
-        $this->recordLocalizeSummaryModifier = $recordLocalizeSummaryModifier ?? GeneralUtility::makeInstance(RecordLocalizeSummaryModifier::class);
+        if ($recordLocalizeSummaryModifier === null) {
+            $recordLocalizeSummaryModifier = GeneralUtility::makeInstance(RecordLocalizeSummaryModifier::class);
+        }
+        $this->recordLocalizeSummaryModifier = $recordLocalizeSummaryModifier;
     }
 
-    public function getRecordLocalizeSummary(ServerRequestInterface $request): ResponseInterface
+    public function getRecordLocalizeSummary(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $response = parent::getRecordLocalizeSummary($request);
+        $response = parent::getRecordLocalizeSummary($request, $response);
         $payload = json_decode($response->getBody()->getContents(), true);
         $payload = $this->recordLocalizeSummaryModifier->rebuildPayload($payload);
-        return new JsonResponse($payload);
+        $response->getBody()->write(json_encode($payload));
+        return $response;
     }
 }

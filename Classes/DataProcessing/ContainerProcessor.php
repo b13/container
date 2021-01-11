@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\DataProcessing;
 
 /*
@@ -30,7 +28,10 @@ class ContainerProcessor implements DataProcessorInterface
 
     public function __construct(ContainerFactory $containerFactory = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(\B13\Container\Domain\Factory\ContainerFactory::class);
+        }
+        $this->containerFactory = $containerFactory;
     }
 
     /**
@@ -99,10 +100,10 @@ class ContainerProcessor implements DataProcessorInterface
     protected function processColPos(
         ContentObjectRenderer $cObj,
         Container $container,
-        int $colPos,
-        string $as,
+        $colPos,
+        $as,
         array $processedData
-    ): array {
+    ) {
         $children = $container->getChildrenByColPos($colPos);
 
         $contentRecordRenderer = new RecordsContentObject($cObj);

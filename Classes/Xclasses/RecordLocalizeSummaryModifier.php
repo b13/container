@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Xclasses;
 
 /*
@@ -13,8 +11,7 @@ namespace B13\Container\Xclasses;
  */
 
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,10 +24,13 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
 
     public function __construct(Registry $containerRegistry = null)
     {
-        $this->containerRegistry = $containerRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        if ($containerRegistry === null) {
+            $containerRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->containerRegistry = $containerRegistry;
     }
 
-    public function rebuildPayload(array $payload): array
+    public function rebuildPayload(array $payload)
     {
         return [
             'records' => $this->filterRecords($payload['records']),
@@ -38,7 +38,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
         ];
     }
 
-    protected function filterRecords(array $recordsPerColPos): array
+    protected function filterRecords(array $recordsPerColPos)
     {
         // cannot be done by event in v10
         $uids = [];
@@ -80,7 +80,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
         return $filtered;
     }
 
-    protected function rebuildColumns(array $columns): array
+    protected function rebuildColumns(array $columns)
     {
         // this can be done with AfterPageColumnsSelectedForLocalizationEvent event in v10
         $containerColumns = $this->containerRegistry->getAllAvailableColumns();
@@ -95,49 +95,51 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
 
     // database helper
 
-    protected function getContainerUids(array $uids): array
+    protected function getContainerUids(array $uids)
     {
         $containerCTypes = $this->containerRegistry->getRegisteredCTypes();
         if (empty($containerCTypes)) {
             return [];
         }
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        return (array)$queryBuilder->select('uid')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->in(
-                    'uid',
-                    $queryBuilder->createNamedParameter($uids, Connection::PARAM_INT_ARRAY)
-                ),
-                $queryBuilder->expr()->in(
-                    'CType',
-                    $queryBuilder->createNamedParameter($containerCTypes, Connection::PARAM_STR_ARRAY)
-                )
-            )
-            ->execute()
-            ->fetchAll(\PDO::FETCH_COLUMN);
+        $cTypes = [];
+        foreach ($containerCTypes as $containerCType) {
+            $cTypes[] = '"' . $containerCType . '"';
+        }
+
+        $rows =  (array)$this->getDatabase()
+            ->exec_SELECTgetRows(
+                'uid',
+                'tt_content',
+                'uid IN (' . implode(',', $uids) . ') AND CType IN (' . $cTypes . ') AND deleted=0'
+            );
+        $containerUids = [];
+        foreach ($rows as $row) {
+            $containerUids[] = (int)$row['uid'];
+        }
     }
 
-    protected function getContainerChildren(array $uids): array
+    protected function getContainerChildren(array $uids)
     {
         $containerChildren = [];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $stm = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->in(
-                    'uid',
-                    $queryBuilder->createNamedParameter($uids, Connection::PARAM_INT_ARRAY)
-                ),
-                $queryBuilder->expr()->neq(
-                    'tx_container_parent',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
-                )
-            )
-            ->execute();
-        while ($row = $stm->fetch()) {
+
+        $rows =  (array)$this->getDatabase()
+            ->exec_SELECTgetRows(
+                '*',
+                'tt_content',
+                'uid IN (' . implode(',', $uids) . ') AND tx_container_parent>0 AND deleted=0'
+            );
+
+        foreach ($rows as $row) {
             $containerChildren[$row['uid']] = $row;
         }
         return $containerChildren;
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    protected function getDatabase()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

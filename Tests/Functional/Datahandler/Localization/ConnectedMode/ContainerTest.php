@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
 
 /*
@@ -20,7 +20,7 @@ class ContainerTest extends DatahandlerTest
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
@@ -32,7 +32,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function deleteContainerDeleteTranslatedChildren(): void
+    public function deleteContainerDeleteTranslatedChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -52,7 +52,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerAjaxToBottomMovesChildren(): void
+    public function moveContainerAjaxToBottomMovesChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -83,7 +83,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerClipboardToOtherPageMovesChildren(): void
+    public function moveContainerClipboardToOtherPageMovesChildren()
     {
         $cmdmap = [
             'tt_content' => [

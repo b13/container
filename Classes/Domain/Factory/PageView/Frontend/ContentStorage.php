@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Domain\Factory\PageView\Frontend;
 
 /*
@@ -12,48 +10,8 @@ namespace B13\Container\Domain\Factory\PageView\Frontend;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\Database;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStorage
 {
 
-    /**
-     * @var PageRepository
-     */
-    protected $pageRepository;
-
-    public function __construct(Database $database = null, Context $context = null, PageRepository $pageRepository = null)
-    {
-        parent::__construct($database, $context);
-        $this->pageRepository = $pageRepository ?? GeneralUtility::makeInstance(PageRepository::class);
-    }
-
-    public function containerRecordWorkspaceOverlay(array $record): ?array
-    {
-        $this->pageRepository->versionOL('tt_content', $record, false);
-        if (is_array($record)) {
-            return $record;
-        }
-        return null;
-    }
-
-    public function workspaceOverlay(array $records): array
-    {
-        $filtered = [];
-        foreach ($records as $row) {
-            $this->pageRepository->versionOL('tt_content', $row, true);
-            // Language overlay:
-            if (is_array($row)) {
-                //$row = $this->pageRepository->getLanguageOverlay('table', $row);
-            }
-            // Might be unset in the language overlay
-            if (is_array($row)) {
-                $filtered[] = $row;
-            }
-        }
-        return $filtered;
-    }
 }

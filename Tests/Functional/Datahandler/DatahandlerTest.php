@@ -12,11 +12,10 @@ namespace B13\Container\Tests\Functional\Datahandler;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Tests\FunctionalTestCase;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class DatahandlerTest extends FunctionalTestCase
 {
@@ -38,16 +37,8 @@ abstract class DatahandlerTest extends FunctionalTestCase
         'typo3conf/ext/container_example'
     ];
 
-    /**
-     * @var array
-     */
-    protected $coreExtensionsToLoad = ['workspaces'];
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         Bootstrap::initializeLanguageObject();
@@ -56,13 +47,11 @@ abstract class DatahandlerTest extends FunctionalTestCase
     }
 
     /**
-     * @return QueryBuilder
+     * @return DatabaseConnection
      */
-    protected function getQueryBuilder(): QueryBuilder
+    protected function getDatabase()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder;
+        return $GLOBALS['TYPO3_DB'];
     }
 
     /**
@@ -70,20 +59,19 @@ abstract class DatahandlerTest extends FunctionalTestCase
      * @param int $id
      * @return array
      */
-    protected function fetchOneRecord(string $field, int $id): array
+    protected function fetchOneRecord($field, $id)
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    $field,
-                    $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-        self::assertIsArray($row);
+        $row = $this->getDatabase()
+            ->exec_SELECTgetSingleRow(
+                '*',
+                'tt_content',
+                $field . '=' . (int)$id
+            );
+        self::assertTrue(is_array($row));
+        $integerKeys = ['deleted', 'hidden', 'pid', 'uid', 'tx_container_parent', 'colPos', 'sys_language_uid'];
+        foreach ($integerKeys as $key) {
+            $row[$key] = (int)$row[$key];
+        }
         return $row;
     }
 }

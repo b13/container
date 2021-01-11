@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks;
 
 /*
@@ -16,6 +14,7 @@ use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class DrawItem implements PageLayoutViewDrawItemHookInterface
@@ -31,7 +30,10 @@ class DrawItem implements PageLayoutViewDrawItemHookInterface
      */
     public function __construct(Registry $tcaRegistry = null)
     {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     /**
@@ -47,7 +49,8 @@ class DrawItem implements PageLayoutViewDrawItemHookInterface
         if ($this->tcaRegistry->isContainerElement($cType)) {
             $gridTemplate = $this->tcaRegistry->getGridTemplate($cType);
             $view = GeneralUtility::makeInstance(StandaloneView::class);
-            $view->setTemplatePathAndFilename($gridTemplate);
+            $view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($gridTemplate));
+            #DebuggerUtility::var_dump($view);
             $view->assign('grid', $this->tcaRegistry->getGrid($cType));
             $view->assign('uid', $row['uid']);
             $row['tx_container_grid'] = $view->render();

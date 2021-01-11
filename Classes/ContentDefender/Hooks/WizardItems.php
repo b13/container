@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\ContentDefender\Hooks;
 
 /*
@@ -18,9 +16,6 @@ use B13\Container\Tca\Registry;
 use IchHabRecht\ContentDefender\Hooks\WizardItemsHook;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @deprecated
- */
 class WizardItems extends WizardItemsHook
 {
 
@@ -41,8 +36,14 @@ class WizardItems extends WizardItemsHook
      */
     public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     /**
@@ -71,9 +72,35 @@ class WizardItems extends WizardItemsHook
 
     /**
      * @param array $wizardItems
+     * @param string $field
+     * @param array $values
+     * @param bool $allowed
      * @return array
      */
-    protected function removeEmptyTabs(array $wizardItems): array
+    protected function removeDisallowedValues(array $wizardItems, $field, array $values, $allowed = true)
+    {
+        foreach ($wizardItems as $key => $configuration) {
+            $keyParts = explode('_', $key, 2);
+            if (count($keyParts) === 1 || !isset($configuration['tt_content_defValues'][$field])) {
+                continue;
+            }
+
+            if (($allowed && !in_array($configuration['tt_content_defValues'][$field], $values))
+                || (!$allowed && in_array($configuration['tt_content_defValues'][$field], $values))
+            ) {
+                unset($wizardItems[$key]);
+                continue;
+            }
+        }
+
+        return $wizardItems;
+    }
+
+    /**
+     * @param array $wizardItems
+     * @return array
+     */
+    protected function removeEmptyTabs(array $wizardItems)
     {
         $availableWizardItems = [];
         foreach ($wizardItems as $key => $def) {

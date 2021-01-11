@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Hooks\Datahandler;
 
 /*
@@ -27,13 +25,16 @@ class CommandMapAfterFinishHook
      */
     public function __construct(Database $database = null)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        if ($database === null) {
+            $database = GeneralUtility::makeInstance(Database::class);
+        }
+        $this->database = $database;
     }
 
     /**
      * @param DataHandler $dataHandler
      */
-    public function processCmdmap_afterFinish(DataHandler $dataHandler): void
+    public function processCmdmap_afterFinish(DataHandler $dataHandler)
     {
         $cmdmap = $dataHandler->cmdmap;
         $copyMappingArray_merged = $dataHandler->copyMappingArray_merged;

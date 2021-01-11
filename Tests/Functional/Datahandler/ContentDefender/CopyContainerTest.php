@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
@@ -28,7 +28,7 @@ class CopyContainerTest extends DatahandlerTest
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/copy_container.xml');
@@ -37,7 +37,7 @@ class CopyContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyContainerAfterElementCopiesChildEvenChildIsNotAllowedByContentDefenderInBackendLayout(): void
+    public function copyContainerAfterElementCopiesChildEvenChildIsNotAllowedByContentDefenderInBackendLayout()
     {
         $cmdmap = [
             'tt_content' => [

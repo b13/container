@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Domain\Factory\PageView;
 
 /*
@@ -13,7 +11,6 @@ namespace B13\Container\Domain\Factory\PageView;
  */
 
 use B13\Container\Domain\Factory\Database;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class ContentStorage
@@ -28,33 +25,23 @@ abstract class ContentStorage
      */
     protected $database;
 
-    /**
-     * @var int
-     */
-    protected $workspaceId = 0;
 
-    public function __construct(Database $database = null, Context $context = null)
+    public function __construct(Database $database = null)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
+        if ($database === null) {
+            $database = GeneralUtility::makeInstance(Database::class);
         }
-        $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
+        $this->database = $database;
     }
 
-    protected function buildRecords(int $pid, int $language): array
+    protected function buildRecords($pid, $language)
     {
         $records = $this->database->fetchRecordsByPidAndLanguage($pid, $language);
-        $records = $this->workspaceOverlay($records);
         $records = $this->recordsByContainer($records);
         return $records;
     }
 
-    abstract public function workspaceOverlay(array $records): array;
-
-    abstract public function containerRecordWorkspaceOverlay(array $record): ?array;
-
-    protected function recordsByContainer(array $records): array
+    protected function recordsByContainer(array $records)
     {
         $recordsByContainer = [];
         foreach ($records as $record) {
@@ -68,7 +55,7 @@ abstract class ContentStorage
         return  $recordsByContainer;
     }
 
-    public function getContainerChildren(array $containerRecord, int $language): array
+    public function getContainerChildren(array $containerRecord, $language)
     {
         $pid = $containerRecord['pid'];
         if (!empty($containerRecord['_ORIG_pid'])) {

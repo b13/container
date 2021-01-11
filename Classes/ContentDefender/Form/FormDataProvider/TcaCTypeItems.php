@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\ContentDefender\Form\FormDataProvider;
 
 /*
@@ -18,9 +16,6 @@ use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @deprecated
- */
 class TcaCTypeItems implements FormDataProviderInterface
 {
 
@@ -41,8 +36,14 @@ class TcaCTypeItems implements FormDataProviderInterface
      */
     public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        if ($containerFactory === null) {
+            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        }
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     /**

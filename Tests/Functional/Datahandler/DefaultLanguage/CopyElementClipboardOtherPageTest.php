@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -16,11 +16,7 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 class CopyElementClipboardOtherPageTest extends DatahandlerTest
 {
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
@@ -31,7 +27,7 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyChildElementOutsideContainerAtTop(): void
+    public function copyChildElementOutsideContainerAtTop()
     {
         $cmdmap = [
             'tt_content' => [
@@ -61,7 +57,7 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyChildElementOutsideContainerAfterElement(): void
+    public function copyChildElementOutsideContainerAfterElement()
     {
         $cmdmap = [
             'tt_content' => [
@@ -92,7 +88,7 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyChildElementToOtherColumnTop(): void
+    public function copyChildElementToOtherColumnTop()
     {
         $cmdmap = [
             'tt_content' => [
@@ -123,7 +119,7 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyChildElementToOtherColumnAfterElement(): void
+    public function copyChildElementToOtherColumnAfterElement()
     {
         $cmdmap = [
             'tt_content' => [
@@ -153,7 +149,7 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyElementIntoContainerAtTop(): void
+    public function copyElementIntoContainerAtTop()
     {
         $cmdmap = [
             'tt_content' => [
@@ -184,7 +180,7 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyElementIntoContainerAfterElement(): void
+    public function copyElementIntoContainerAfterElement()
     {
         $cmdmap = [
             'tt_content' => [

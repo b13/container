@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Domain\Model;
 
 /*
@@ -44,7 +42,7 @@ class Container
     /**
      * @return int
      */
-    public function getUid(): int
+    public function getUid()
     {
         return (int)$this->containerRecord['uid'];
     }
@@ -52,7 +50,7 @@ class Container
     /**
      * @return int
      */
-    public function getPid(): int
+    public function getPid()
     {
         if (!empty($this->containerRecord['_ORIG_pid'])) {
             return (int)$this->containerRecord['_ORIG_pid'];
@@ -63,7 +61,7 @@ class Container
     /**
      * @return bool
      */
-    public function isConnectedMode(): bool
+    public function isConnectedMode()
     {
         return (int)$this->containerRecord['sys_language_uid'] === 0;
     }
@@ -71,7 +69,7 @@ class Container
     /**
      * @return int
      */
-    public function getLanguage(): int
+    public function getLanguage()
     {
         return $this->language;
     }
@@ -79,7 +77,7 @@ class Container
     /**
      * @return string
      */
-    public function getCType(): string
+    public function getCType()
     {
         return $this->containerRecord['CType'];
     }
@@ -87,7 +85,7 @@ class Container
     /**
      * @return array
      */
-    public function getContainerRecord(): array
+    public function getContainerRecord()
     {
         return $this->containerRecord;
     }
@@ -95,7 +93,7 @@ class Container
     /**
      * @return array
      */
-    public function getChildRecords(): array
+    public function getChildRecords()
     {
         $childRecords = [];
         foreach ($this->childRecords as $colPos => $records) {
@@ -108,7 +106,7 @@ class Container
      * @param int $colPos
      * @return array
      */
-    public function getChildrenByColPos(int $colPos): array
+    public function getChildrenByColPos($colPos)
     {
         if (empty($this->childRecords[$colPos])) {
             return [];
@@ -119,7 +117,7 @@ class Container
     /**
      * @return array
      */
-    public function getChildrenColPos(): array
+    public function getChildrenColPos()
     {
         return array_keys($this->childRecords);
     }

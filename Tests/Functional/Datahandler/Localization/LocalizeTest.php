@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\Localization;
 
 /*
@@ -20,7 +20,7 @@ class LocalizeTest extends DatahandlerTest
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
@@ -34,7 +34,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyChildToLanguageFixContainerParent(): void
+    public function copyChildToLanguageFixContainerParent()
     {
         $cmdmap = [
             'tt_content' => [
@@ -53,7 +53,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function copyContainerToLanguageCopiesChildren(): void
+    public function copyContainerToLanguageCopiesChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -76,7 +76,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function localizeContainerLocalizeChildren(): void
+    public function localizeContainerLocalizeChildren()
     {
         $cmdmap = [
             'tt_content' => [
@@ -97,7 +97,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function localizeChildFailedIfContainerIsInFreeMode(): void
+    public function localizeChildFailedIfContainerIsInFreeMode()
     {
         $cmdmap = [
             'tt_content' => [
@@ -125,7 +125,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function localizeChildFailedIfContainerIsNotTranslated(): void
+    public function localizeChildFailedIfContainerIsNotTranslated()
     {
         $cmdmap = [
             'tt_content' => [
@@ -153,7 +153,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
-    public function localizeChildKeepsRelationsIfContainerIsInConnectedMode(): void
+    public function localizeChildKeepsRelationsIfContainerIsInConnectedMode()
     {
         $cmdmap = [
             'tt_content' => [
@@ -196,7 +196,7 @@ class LocalizeTest extends DatahandlerTest
      * @test
      * @dataProvider localizeTwoContainerKeepsParentIndependedOnOrderDataProvider
      */
-    public function localizeTwoContainerKeepsParentIndependedOnOrder(array $cmdmap): void
+    public function localizeTwoContainerKeepsParentIndependedOnOrder(array $cmdmap)
     {
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -231,7 +231,7 @@ class LocalizeTest extends DatahandlerTest
      * @test
      * @dataProvider localizeWithCopyTwoContainerChangeParentIndependedOnOrderDataProvider
      */
-    public function localizeWithCopyTwoContainerChangeParentIndependedOnOrder(array $cmdmap): void
+    public function localizeWithCopyTwoContainerChangeParentIndependedOnOrder(array $cmdmap)
     {
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();

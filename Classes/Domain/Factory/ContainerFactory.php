@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Domain\Factory;
 
 /*
@@ -14,7 +12,6 @@ namespace B13\Container\Domain\Factory;
 
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,27 +27,26 @@ class ContainerFactory implements SingletonInterface
      */
     protected $tcaRegistry;
 
-    /**
-     * @var int
-     */
-    protected $workspaceId = 0;
 
-    public function __construct(Database $database = null, Registry $tcaRegistry = null, Context $context = null)
+
+    public function __construct(Database $database = null, Registry $tcaRegistry = null)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
+        if ($database === null) {
+            $database = GeneralUtility::makeInstance(Database::class);
         }
-        $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
+        $this->database = $database;
+        if ($tcaRegistry === null) {
+            $tcaRegistry = GeneralUtility::makeInstance(Registry::class);
+        }
+        $this->tcaRegistry = $tcaRegistry;
     }
 
-    protected function containerByUid(int $uid): ?array
+    protected function containerByUid($uid)
     {
         return $this->database->fetchOneRecord($uid);
     }
 
-    protected function defaultContainer(array $localizedContainer): ?array
+    protected function defaultContainer(array $localizedContainer)
     {
         return $this->database->fetchOneDefaultRecord($localizedContainer);
     }
@@ -59,7 +55,7 @@ class ContainerFactory implements SingletonInterface
      * @param int $uid
      * @return Container
      */
-    public function buildContainer(int $uid): Container
+    public function buildContainer($uid)
     {
         $record = $this->containerByUid($uid);
         if ($record === null) {
@@ -93,14 +89,14 @@ class ContainerFactory implements SingletonInterface
         return $container;
     }
 
-    protected function localizedRecordsByDefaultRecords(array $defaultRecords, int $language): array
+    protected function localizedRecordsByDefaultRecords(array $defaultRecords, $language)
     {
         $localizedRecords = $this->database->fetchOverlayRecords($defaultRecords, $language);
         $childRecords = $this->sortLocalizedRecordsByDefaultRecords($defaultRecords, $localizedRecords);
         return $childRecords;
     }
 
-    protected function children(array $containerRecord, int $language): array
+    protected function children(array $containerRecord, $language)
     {
         return $this->database->fetchRecordsByParentAndLanguage($containerRecord['uid'], $language);
     }
@@ -110,7 +106,7 @@ class ContainerFactory implements SingletonInterface
      * @param array $localizedRecords
      * @return array
      */
-    protected function sortLocalizedRecordsByDefaultRecords(array $defaultRecords, array $localizedRecords): array
+    protected function sortLocalizedRecordsByDefaultRecords(array $defaultRecords, array $localizedRecords)
     {
         $sorted = [];
         foreach ($defaultRecords as $defaultRecord) {
@@ -129,7 +125,7 @@ class ContainerFactory implements SingletonInterface
      * @param array $records
      * @return array
      */
-    protected function recordsByColPosKey(array $records): array
+    protected function recordsByColPosKey(array $records)
     {
         $recordsByColPosKey = [];
         foreach ($records as $record) {

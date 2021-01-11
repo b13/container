@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Tca;
 
 /*
@@ -65,9 +63,9 @@ class ContainerConfiguration
     protected $group = 'container';
 
     public function __construct(
-        string $cType,
-        string $label,
-        string $description,
+        $cType,
+        $label,
+        $description,
         array $grid
     ) {
         $this->cType = $cType;
@@ -80,7 +78,7 @@ class ContainerConfiguration
      * @param string $icon
      * @return ContainerConfiguration
      */
-    public function setIcon(string $icon): ContainerConfiguration
+    public function setIcon($icon)
     {
         $this->icon = $icon;
         return $this;
@@ -90,7 +88,7 @@ class ContainerConfiguration
      * @param string $backendTemplate
      * @return ContainerConfiguration
      */
-    public function setBackendTemplate(string $backendTemplate): ContainerConfiguration
+    public function setBackendTemplate($backendTemplate)
     {
         $this->backendTemplate = $backendTemplate;
         return $this;
@@ -100,7 +98,7 @@ class ContainerConfiguration
      * @param string $gridTemplate
      * @return ContainerConfiguration
      */
-    public function setGridTemplate(string $gridTemplate): ContainerConfiguration
+    public function setGridTemplate($gridTemplate)
     {
         $this->gridTemplate = $gridTemplate;
         return $this;
@@ -110,7 +108,7 @@ class ContainerConfiguration
      * @param bool $saveAndCloseInNewContentElementWizard
      * @return ContainerConfiguration
      */
-    public function setSaveAndCloseInNewContentElementWizard(bool $saveAndCloseInNewContentElementWizard): ContainerConfiguration
+    public function setSaveAndCloseInNewContentElementWizard($saveAndCloseInNewContentElementWizard)
     {
         $this->saveAndCloseInNewContentElementWizard = $saveAndCloseInNewContentElementWizard;
         return $this;
@@ -120,7 +118,7 @@ class ContainerConfiguration
      * @param bool $registerInNewContentElementWizard
      * @return ContainerConfiguration
      */
-    public function setRegisterInNewContentElementWizard(bool $registerInNewContentElementWizard): ContainerConfiguration
+    public function setRegisterInNewContentElementWizard($registerInNewContentElementWizard)
     {
         $this->registerInNewContentElementWizard = $registerInNewContentElementWizard;
         return $this;
@@ -130,7 +128,7 @@ class ContainerConfiguration
      * @param string $group
      * @return ContainerConfiguration
      */
-    public function setGroup(string $group): ContainerConfiguration
+    public function setGroup($group)
     {
         $this->group = $group;
         return $this;
@@ -139,7 +137,7 @@ class ContainerConfiguration
     /**
      * @return string
      */
-    public function getCType(): string
+    public function getCType()
     {
         return $this->cType;
     }
@@ -147,7 +145,7 @@ class ContainerConfiguration
     /**
      * @return string
      */
-    public function getLabel(): string
+    public function getLabel()
     {
         return $this->label;
     }
@@ -155,7 +153,7 @@ class ContainerConfiguration
     /**
      * @return mixed[]
      */
-    public function getGrid(): array
+    public function getGrid()
     {
         return $this->grid;
     }
@@ -163,7 +161,7 @@ class ContainerConfiguration
     /**
      * @return string
      */
-    public function getGroup(): string
+    public function getGroup()
     {
         return $this->group;
     }
@@ -171,7 +169,7 @@ class ContainerConfiguration
     /**
      * @return mixed[]
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'cType' => $this->cType,
