@@ -91,7 +91,12 @@ jobs:
       - name: Codeception Acceptance Tests
         run: |
           .Build/bin/codecept run Backend --env=github -c Tests/codeception.yml
-
+      - name: Acceptance Tests for Fluid based page module
+        run: |
+          echo "fluidBasedPageModule=1" >> .env
+          .Build/bin/typo3cms cache:flush
+          .Build/bin/codecept run Backend --env=github -c Tests/codeception.yml
+          
       - name: Upload Codeception output
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2

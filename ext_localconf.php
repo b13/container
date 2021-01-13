@@ -37,9 +37,12 @@ call_user_func(static function () {
         'className' => \B13\Container\Xclasses\LocalizationController::class
     ];
 
-    // draw container grid
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
-        \B13\Container\Hooks\DrawItem::class;
+    if (false === \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule')) {
+        // draw container grid
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
+            \B13\Container\Hooks\DrawItem::class;
+    }
+    // else, if enabled we register container previewRenderer in registry foreach container CType
 
     // register icons
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =

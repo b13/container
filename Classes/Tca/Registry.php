@@ -12,6 +12,7 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\Configuration\Features;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -36,6 +37,9 @@ class Registry implements SingletonInterface
                 $containerConfiguration->getGroup()
             ]
         );
+        if (GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('fluidBasedPageModule')) {
+            $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['previewRenderer'] = \B13\Container\Backend\Preview\ContainerPreviewRenderer::class;
+        }
 
         foreach ($containerConfiguration->getGrid() as $row) {
             foreach ($row as $column) {
