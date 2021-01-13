@@ -5,41 +5,41 @@
 - No default containers, everything will be built the way its needed for a project
 - Supports multilanguage (connected or free mode (mixed mode not supported))
 - Supports workspaces
-- supports EXT:content_defender ColPos-Restrictions for EXT:content_defender:^3.1.0 is installed
-- Frontend Rendering via DataProcessor and Fluid Templates
+- Supports colPos-restrictions if EXT:content_defender >= 3.1.0 is installed
+- Frontend Rendering via DataProcessor and Fluid templates
 
 ## Why did we create another "Grid" extension?
 
 At b13 we've been long supporters and fans of gridelements, which we are thankful for and we used it in the past with great pleasure.
 
-However, we've had our pains in the past with any common solutions we've evaluted and worked with, which, and these are our reasons:
+However, we had our pain points in the past with all solutions we've evaluted and worked with. These are our reasons:
 
 - We wanted an extension that works with multiple versions of TYPO3 Core with the same extension, to support our company's [TYPO3 upgrade strategy](https://b13.com/solutions/typo3-upgrades).
 - We wanted to overcome issues when dealing with `colPos` field and dislike any fixed value which isn't fully compatible with TYPO3 Core.
 - We wanted an extension that is fully tested with multilingual and workspaces functionality.
 - We wanted an extension that only does one thing: EXT:container ONLY adds tools to create and render container elements, and nothing else. No FlexForms, no permission handling or custom rendering.
-- We wanted an extension where every grid has its own Content Type (CType) making it as close to Core functionality as possible.
+- We wanted an extension where every grid has its own Content Type (CType) making it as close to TYPO3 Core functionality as possible.
 - We wanted an extension where the configuration of a grid container element is located at one single place to make creation of custom containers easy.
-- We wanted an extension that has a progressive development workflow: We were working with new projects in TYPO3 v10 sprint releases, and needed custom container elements, and did not want to wait until TYPO3 v10 LTS.
+- We wanted an extension that has a progressive development workflow: We were working with new projects in TYPO3 v10 sprint releases and needed custom container elements and did not want to wait until TYPO3 v10 LTS.
 
 ## Installation
 
-Install this extension via `composer req b13/container` or download it from the TYPO3 Extension Repository (extension name "container"), and activate
+Install this extension via `composer req b13/container` or download it from the [TYPO3 Extension Repository](https://extensions.typo3.org/extension/container/) and activate
 the extension in the Extension Manager of your TYPO3 installation.
 
-Once installed, add a custom content element to your site extension (see "Adding your own container element").
+Once installed, add a custom content element to your sitepackage or theme extension (see "Adding your own container element").
 
 ## Adding your own container element
 
-- Register your custom container in your Extension in Configuration/TCA/Overrides/tt_content.php as new Content Type
-- Add TypoScript and your Fluid Template for Frontend-Rendering
-- Add an Icon in Resources/Public/Icons/<CType>.svg
+1. Register your custom container in your sitepackage or theme extension in `Configuration/TCA/Overrides/tt_content.php` as new Content Type
+2. Add TypoScript and your Fluid Template for frontend rendering
+3. Add an icon in Resources/Public/Icons/`<CType>`.svg
 
-see `EXT:container_example` for a simple usage of a custom container.
+See [EXT:container_example](https://github.com/b13/container-example) for a simple example of a custom container.
 
 ### Registration of Container Elements
 
-This is an example for create a 2 column container
+This is an example to create a 2 column container. The code snippet goes into a file in your sitepackage or theme extension in the folder `Configuration/TCA/Overrides/`. The file can have any name but it is good practice to name it according to the database table it relates to. In this case this would be `tt_content.php`.
 
 ```php
 \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->configureContainer(
@@ -59,7 +59,7 @@ This is an example for create a 2 column container
             ] // grid configuration
         )
     )
-    // set and optional icon configuration
+    // set an optional icon configuration
     ->setIcon('EXT:container_example/Resources/Public/Icons/b13-2cols-with-header-container.svg')
 );
 ```
@@ -69,19 +69,20 @@ This is an example for create a 2 column container
 | Method name | Description | Parameters | Default |
 | ----------- | ----------- | ---------- | ---------- |
 | `setIcon` | icon file, or existing icon identifier | `string $icon` | `'EXT:container/Resources/Public/Icons/Extension.svg'` |
-| `setBackendTemplate` | Template for Backend View| `string $backendTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
-| `setGridTemplate` | Template for Grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
+| `setBackendTemplate` | Template for backend view| `string $backendTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
+| `setGridTemplate` | Template for grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard (v10 only) | `bool $saveAndCloseInNewContentElementWizard` | `true` |
 | `setRegisterInNewContentElementWizard` |register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
-| `setGroup` | Custom Group (used as optgroup for CType Select (v10 only), and as Tab in New Content Element Wiazrd) (if empty "container" is used as Tab and no optgroup in CType is used) | `string $group` | `'container'` |
-__Notes__
-- if EXT:content_defender:^3.1.0 is installed you can use allowed, disallowed and maxitems in the Column Configuration
-- The Container Registry does multiple things:
-  - Adds CType to TCA Select Items
-  - Registers your Icon
-  - Adds PageTSconfig for newContentElement.wizardItems
-  - Sets ``showitem`` for this CType (to: `sys_language_uid,CType,tx_container_parent,colPos,hidden`)
-  - Saves the Configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
+| `setGroup` | Custom Group (used as optgroup for CType select (v10 only), and as tab in New Content Element Wiazrd). If empty "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
+
+__Notes:__
+- If EXT:content_defender >= 3.1.0 is installed you can use `allowed`, `disallowed` and `maxitems` in the column configuration
+- The container registry does multiple things:
+  - Adds CType to TCA select items
+  - Registers your icon
+  - Adds PageTSconfig for `newContentElement.wizardItems`
+  - Sets ``showitem`` for this CType (`sys_language_uid,CType,tx_container_parent,colPos,hidden`)
+  - Saves the configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
 - We provide some default icons you can use, see `Resources/Public/Icons`
   - container-1col
   - container-2col
@@ -91,6 +92,9 @@ __Notes__
   - container-4col
 
 ### TypoScript
+
+The TypoScript is necessary to define the rendering of the container in the frontend. Normally you will place it in your sitepackage or theme extension near the place where you define other stuff regarding your content elements.
+`templateRootPaths` must be adapted to reflect the path of the html files in your sitepackage or theme extension.
 
     // default/general configuration (will add 'children_<colPos>' variable to processedData for each colPos in container
     tt_content.b13-2cols-with-header-container < lib.contentElement
@@ -104,7 +108,7 @@ __Notes__
         }
     }
 
-    // if need be you can use ContainerProcessor with explicitly set colPos/variable values
+    // if needed you can use ContainerProcessor with explicitly set colPos/variable values
     tt_content.b13-2cols-with-header-container < lib.contentElement
     tt_content.b13-2cols-with-header-container {
         templateName = 2ColsWithHeader
@@ -128,6 +132,8 @@ __Notes__
 
 ### Template
 
+The html template file goes in the folder that you have defined in your TypoScript above (see `templateRootPaths`). It's important to name it exacly as defined in `templateName` in TypoScript, in this case `2ColsWithHeader.html`. The file name is case-sensitive!
+
 ```html
 <f:for each="{children_200}" as="record">
     {record.header} <br>
@@ -143,16 +149,17 @@ __Notes__
     </f:format.raw>
 </f:for>
 ```
-with explicit colPos defined use `{children_200]201>}` as set in the example above
+
+With explicit colPos defined use `{children_200]201>}` as set in the example above
 
 ## Concepts
-- Complete Registration is done with one PHP call to TCA Registry
-- A container in the BE Page-Module is rendered like a page itself (s. View/ContainerLayoutView)
-- for BE Clipboard and Drag & Drop <tx_container_parent>_<colPos> used in the data-colpos Attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
-- The <tx_container_parent>_<colPos> parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler Hooks
-- When translating a container all child elements gets also translated (the child elements are not explicit listed during the translation dialog)
+- Complete registration is done with one PHP call to TCA Registry
+- A container in the TYPO3 backend Page module is rendered like a page itself (see View/ContainerLayoutView)
+- For backend clipboard and drag & drop `<tx_container_parent>_<colPos>` used in the data-colpos attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
+- The `<tx_container_parent>_<colPos>` parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler hooks
+- When translating a container, all child elements get also translated (the child elements are not explicit listed during the translation dialog)
 - Copying or moving children of a container copies or moves translations as well
-- Custom definitions make use of custom `colPos` values so Site Owners build their own elements, no fixed `colPos` given, so no interference with existing solutions
+- Custom definitions make use of custom `colPos` values so site owners build their own elements, no fixed `colPos` given, so no interference with existing solutions
 - Each container type is just a definition for its own `CType`
 
 ## TODOs / Proofments
@@ -168,9 +175,9 @@ You can run our test suite for this extension yourself:
 - run `Build/Scripts/runTests.sh -s functional`
 - run `Build/Scripts/runTests.sh -s acceptance`
 
-s. Tests/README.md for run the tests local (like github-actions runs the tests)
+See Tests/README.md how to run the tests local (like github-actions runs the tests).
 
-and assure Coding Guidelines are fullfilled:
+To assure coding guidelines are fullfilled:
 
 - run ``.Build/bin/phpstan analyse -c Resources/Private/Configuration/phpstan.neon``
 - run ``.Build/bin/php-cs-fixer fix --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist --dry-run --stop-on-violation --using-cache=no .``
@@ -179,6 +186,6 @@ and assure Coding Guidelines are fullfilled:
 
 This extension was created by Achim Fritz in 2020 for [b13 GmbH, Stuttgart](https://b13.com).
 
-Find examples and use cases and best practices for this extension in our [Container blog series on b13.com](https://b13.com/blog/flexible-containers-and-grids-for-typo3).
+Find examples, use cases and best practices for this extension in our [container blog series on b13.com](https://b13.com/blog/flexible-containers-and-grids-for-typo3).
 
 [Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code.
