@@ -15,7 +15,7 @@ use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class UsedRecordsTest extends UnitTestCase
+class RegistryTest extends UnitTestCase
 {
     protected $resetSingletonInstances = true;
 

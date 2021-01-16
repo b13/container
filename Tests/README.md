@@ -10,7 +10,7 @@
 
     composer install
     # prepare functional tests
-    cp Build/env/.env.local .env
+    cp Build/envs/.env.local .env
     # prepare acceptance tests
     mkdir config && cd config && ln -s ../Build/sites && cd -
     cp Build/LocalConfiguration.php .Build/Web/typo3conf/
