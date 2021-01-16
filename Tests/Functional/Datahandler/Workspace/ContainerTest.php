@@ -74,7 +74,7 @@ class ContainerTest extends DatahandlerTest
                 2 => [
                     'move' => [
                         'action' => 'paste',
-                        'target' => 3,
+                        'target' => 1,
                         'update' => [
                             'colPos' => '1-201',
                             'sys_language_uid' => 0
@@ -110,6 +110,7 @@ class ContainerTest extends DatahandlerTest
             ->fetchAll();
         self::assertSame(2, count($rows));
         foreach ($rows as $row) {
+            self::assertSame(1, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(1, $row['tx_container_parent']);
             self::assertSame(201, $row['colPos']);
@@ -166,6 +167,7 @@ class ContainerTest extends DatahandlerTest
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(0, $row['tx_container_parent']);
             self::assertSame(0, $row['colPos']);
+            self::assertSame(3, $row['pid']);
         }
     }
 
@@ -179,7 +181,7 @@ class ContainerTest extends DatahandlerTest
                 2 => [
                     'copy' => [
                         'action' => 'paste',
-                        'target' => 3,
+                        'target' => 1,
                         'update' => [
                             'colPos' => '1-201',
                             'sys_language_uid' => 0
@@ -210,6 +212,7 @@ class ContainerTest extends DatahandlerTest
             ->fetchAll();
         self::assertSame(2, count($rows));
         foreach ($rows as $row) {
+            self::assertSame(1, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(1, $row['tx_container_parent']);
             self::assertSame(201, $row['colPos']);
@@ -261,6 +264,7 @@ class ContainerTest extends DatahandlerTest
             ->fetchAll();
         self::assertSame(1, count($rows));
         foreach ($rows as $row) {
+            self::assertSame(3, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(0, $row['tx_container_parent']);
             self::assertSame(0, $row['colPos']);
@@ -299,7 +303,7 @@ class ContainerTest extends DatahandlerTest
                 2 => [
                     'copy' => [
                         'action' => 'paste',
-                        'target' => 3,
+                        'target' => 1,
                         'update' => [
                             'colPos' => '91-201',
                             'sys_language_uid' => 0
@@ -330,6 +334,7 @@ class ContainerTest extends DatahandlerTest
             ->fetchAll();
         self::assertSame(2, count($rows));
         foreach ($rows as $row) {
+            self::assertSame(1, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(91, $row['tx_container_parent']);
             self::assertSame(201, $row['colPos']);
@@ -346,7 +351,7 @@ class ContainerTest extends DatahandlerTest
                 2 => [
                     'move' => [
                         'action' => 'paste',
-                        'target' => 3,
+                        'target' => 1,
                         'update' => [
                             'colPos' => '91-201',
                             'sys_language_uid' => 0
@@ -383,6 +388,7 @@ class ContainerTest extends DatahandlerTest
             ->fetchAll();
         self::assertSame(2, count($rows));
         foreach ($rows as $row) {
+            self::assertSame(1, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(91, $row['tx_container_parent']);
             self::assertSame(201, $row['colPos']);
@@ -444,6 +450,7 @@ class ContainerTest extends DatahandlerTest
             ->fetchAll();
         self::assertSame(2, count($rows));
         foreach ($rows as $row) {
+            self::assertSame(3, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame($containerRow['uid'], $row['tx_container_parent']);
             self::assertSame(200, $row['colPos']);
