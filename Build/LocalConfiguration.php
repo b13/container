@@ -41,6 +41,7 @@ return [
     'SYS' => [
         'encryptionKey' => 'ce65db146ca7894aa19d832a8435ae2cc7db13259d7424c3efeb428e2eae6566d97712bb79a9272c6b32569882356c22',
         'sitename' => 'container-tests',
-        'trustedHostsPattern' => '.*.*'
+        'trustedHostsPattern' => '.*.*',
+        'features' => ['fluidBasedPageModule' => (bool)getenv('fluidBasedPageModule')]
     ],
 ];

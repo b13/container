@@ -79,9 +79,11 @@ class LayoutCest
         $I->switchToContentFrame();
         $I->selectOption('select[name="languageMenu"]', 'german');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        $I->dontSee('Content', '#element-tt_content-102');
+        // we have a "Content" Button for new elements with Fluid based page module
+        $I->dontSee('Content', '#element-tt_content-102 .t3-page-ce-body');
         $I->selectOption('select[name="actionMenu"]', 'Languages');
         $I->waitForElementNotVisible('#t3js-ui-block');
+        // but not in Language View
         $I->dontSee('Content', '#element-tt_content-102');
     }
 
@@ -122,7 +124,8 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
-        $I->click('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
+        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
+        // "[data-colpos="1-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForElement('#NewContentElementController');
         $I->click('Header Only');
@@ -145,7 +148,7 @@ class LayoutCest
         $I->switchToContentFrame();
         $selecor = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
         $I->dontSee('english', $selecor);
-        $I->click('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
+        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
         $I->switchToIFrame();
         $I->waitForElement('#NewContentElementController');
         $I->click('Header Only');
@@ -177,7 +180,7 @@ class LayoutCest
 
         $selecor = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
         $I->dontSee('german', $selecor);
-        $I->click('Content', '#element-tt_content-' . $uid . ' div[data-colpos="' . $uid . '-200"]');
+        $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $uid . '-200"]');
         $I->switchToIFrame();
         $I->waitForElement('#NewContentElementController');
         $I->click('Header Only');

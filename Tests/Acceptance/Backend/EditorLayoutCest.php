@@ -37,6 +37,6 @@ class EditorLayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
-        $I->see('Content', '#element-tt_content-1 div[data-colpos="1-200"]');
+        $I->see('Content', '#element-tt_content-1 [data-colpos="1-200"]');
     }
 }
