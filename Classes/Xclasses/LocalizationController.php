@@ -12,7 +12,7 @@ namespace B13\Container\Xclasses;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LocalizationController extends \TYPO3\CMS\Backend\Controller\Page\LocalizationController
@@ -33,12 +33,25 @@ class LocalizationController extends \TYPO3\CMS\Backend\Controller\Page\Localiza
 
     public function getRecordLocalizeSummary(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $response = parent::getRecordLocalizeSummary($request, $response);
-        $payload = json_decode($response->getBody()->getContents(), true);
-        #var_dump($payload);
-        #die();
-        $payload = $this->recordLocalizeSummaryModifier->rebuildPayload($payload);
-        $response->getBody()->write(json_encode($payload));
+        $params = $request->getQueryParams();
+        if (!isset($params['pageId'], $params['colPos'], $params['destLanguageId'], $params['languageId'])) {
+            $response = $response->withStatus(500);
+            return $response;
+        }
+
+        $records = [];
+        $databaseConnection = $this->getDatabaseConnection();
+        $res = $this->localizationRepository->getRecordsToCopyDatabaseResult($params['pageId'], $params['colPos'], $params['destLanguageId'], $params['languageId'], '*');
+        while ($row = $databaseConnection->sql_fetch_assoc($res)) {
+            $records[] = [
+                'icon' => $this->iconFactory->getIconForRecord('tt_content', $row, Icon::SIZE_SMALL)->render(),
+                'title' => $row[$GLOBALS['TCA']['tt_content']['ctrl']['label']],
+                'uid' => $row['uid']
+            ];
+        }
+        $databaseConnection->sql_free_result($res);
+        $records = $this->recordLocalizeSummaryModifier->rebuildPayload($records);
+        $response->getBody()->write(json_encode($records));
         return $response;
     }
 }

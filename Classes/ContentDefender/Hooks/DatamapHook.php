@@ -99,6 +99,7 @@ class DatamapHook
                                 $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
                                 $defaultFlashMessageQueue->enqueue($flashMessage);
                                 unset($dataHandler->datamap['tt_content'][$id]);
+                                unset($dataHandler->cmdmap['tt_content'][$id]);
                                 continue;
                             }
                         }

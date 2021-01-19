@@ -4,7 +4,7 @@ name: CI
 # and blog https://www.derhansen.de/2020/05/typo3-extension-testing-with-github-actions.html
 
 
-on: []
+on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: nanasess/setup-php@master
         with:
-          php-version: '7.2'
+          php-version: '5.6'
 
       # composer
       - name: Update Composer
@@ -44,15 +44,10 @@ jobs:
       - name: Install composer dependencies
         run: composer install --no-progress
 
-      # code analysis
-      - name: Phpstan
-        run: .Build/bin/phpstan analyse -c Resources/Private/Configuration/phpstan.neon
-      - name: Phpcsfix
-        run: .Build/bin/php-cs-fixer fix --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist --dry-run --stop-on-violation --using-cache=no .
 
         # unit tests
       - name: Unit Tests
-        run: .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit/
+        run: .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
 
         # start db
       - name: Start MySQL
@@ -63,44 +58,5 @@ jobs:
 
       # functional tests
       - name: Functional Tests
-        run: .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional
+        run: .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/FunctionalTests.xml Tests/Functional
 
-      # acceptance
-      - name: Setup Runner Database
-        run: |
-          mysql -uroot -h127.0.0.1 -proot -e 'CREATE DATABASE IF NOT EXISTS containertest_at;'
-      - name: Initialize TYPO3 environment
-        run: |
-          mkdir config && cd config && ln -s ../Build/sites && cd -
-          cp Build/LocalConfiguration.php .Build/Web/typo3conf/
-          .Build/bin/typo3cms install:generatepackagestates
-          .Build/bin/typo3cms database:update
-      - name: Run PHP webserver
-        run: |
-          export APP_IP=`ip addr show eth0 | grep -Po 'inet \K[\d.]+'`
-          sed -i -e "s/GITHUB_DOMAIN/$APP_IP:8888/" Tests/Acceptance/_envs/github.yml
-          php -S 0.0.0.0:8888 -t .Build/Web/ &> php.log.txt &
-          sleep 2;
-      - name: Test PHP webserver and initialize TYPO3 cache
-        run: |
-          export APP_IP=`ip addr show eth0 | grep -Po 'inet \K[\d.]+'`
-          curl "$APP_IP:8888"
-
-      - name: Run chromedriver
-        run: nohup $CHROMEWEBDRIVER/chromedriver --url-base=/wd/hub /dev/null 2>&1 &
-      - name: Codeception Acceptance Tests
-        run: |
-          .Build/bin/codecept run Backend --env=github -c Tests/codeception.yml
-
-      - name: Upload Codeception output
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: codeception-results
-          path: .Build/Web/typo3temp/var/tests/AcceptanceReports
-      - name: Upload PHP log
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: php-log
-          path: php.log.txt

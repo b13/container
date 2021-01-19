@@ -300,6 +300,17 @@ class ContainerLayoutView extends PageLayoutView
             }
         }
         $content .= '</div>';
+
+        if ($this->container->getLanguage() > 0 && $this->container->isConnectedMode()) {
+            try {
+                $defaultConteiner = $this->containerFactory->buildContainer($containerRecord['uid']);
+                if (count($defaultConteiner->getChildrenByColPos($colPos)) > count($records)) {
+                    $content .= $this->tranlationButtonInContainer($this->container->getLanguage(), $colPos);
+                }
+            } catch (\B13\Container\Domain\Factory\Exception $e) {
+
+            }
+        }
         $colTitle = $this->getLanguageService()->sL($this->registry->getColPosName($this->container->getCType(), (int)$colPos));
         $head .= $this->tt_content_drawColHeader($colTitle, '', '');
 
@@ -309,5 +320,27 @@ class ContainerLayoutView extends PageLayoutView
     protected function isContentEditable()
     {
         return $this->getPageLayoutController()->contentIsNotLockedForEditors();
+    }
+
+    protected function tranlationButtonInContainer($lang, $colPos)
+    {
+            $theNewButton =
+                '<input'
+                . ' class="btn btn-default t3js-localize"'
+                . ' type="button"'
+                . ' disabled'
+                . ' value="' . htmlspecialchars($this->getLanguageService()->getLL('newPageContent_translate')) . '"'
+                . ' data-has-elements="1"'
+                . ' data-allow-copy="0"'
+                . ' data-allow-translate="1"'
+                . ' data-table="tt_content"'
+                . ' data-page-id="' . (int)GeneralUtility::_GP('id') . '"'
+                . ' data-language-id="' . $lang . '"'
+                . ' data-language-name="' . htmlspecialchars($this->tt_contentConfig['languageCols'][$lang]) . '"'
+                . ' data-colpos-id="' . $colPos . '"'
+                . ' data-colpos-name="' . BackendUtility::getProcessedValue('tt_content', 'colPos', $colPos) . '"'
+                . '/>';
+
+        return '<div class="t3-page-lang-copyce">' . $theNewButton . '</div>';
     }
 }

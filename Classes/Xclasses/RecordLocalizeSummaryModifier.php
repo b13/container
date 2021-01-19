@@ -32,10 +32,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
 
     public function rebuildPayload(array $payload)
     {
-        return [
-            'records' => $this->filterRecords($payload['records']),
-            'columns' => $this->rebuildColumns($payload['columns'])
-        ];
+        return $this->filterRecords($payload);
     }
 
     protected function filterRecords(array $recordsPerColPos)

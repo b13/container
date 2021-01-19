@@ -14,7 +14,6 @@ use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class DrawItem implements PageLayoutViewDrawItemHookInterface
@@ -50,7 +49,6 @@ class DrawItem implements PageLayoutViewDrawItemHookInterface
             $gridTemplate = $this->tcaRegistry->getGridTemplate($cType);
             $view = GeneralUtility::makeInstance(StandaloneView::class);
             $view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($gridTemplate));
-            #DebuggerUtility::var_dump($view);
             $view->assign('grid', $this->tcaRegistry->getGrid($cType));
             $view->assign('uid', $row['uid']);
             $row['tx_container_grid'] = $view->render();

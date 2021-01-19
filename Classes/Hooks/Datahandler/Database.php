@@ -149,7 +149,7 @@ class Database implements SingletonInterface
             ->exec_SELECTgetSingleRow(
                 '*',
                 'tt_content',
-                'l10n_source=' . (int)$defaultUid . ' AND l18n_parent=0 AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
+                't3_origuid=' . (int)$defaultUid . ' AND l18n_parent=0 AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
             );
         if (!$record) {
             return null;

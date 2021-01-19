@@ -58,7 +58,6 @@ class ContainerFactory implements SingletonInterface
     public function buildContainer($uid)
     {
         $record = $this->containerByUid($uid);
-        #var_dump($record['CType']);
         if ($record === null) {
             throw new Exception('cannot fetch record with uid ' . $uid, 1576572850);
         }
