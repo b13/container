@@ -68,7 +68,12 @@ abstract class DatahandlerTest extends FunctionalTestCase
                 $field . '=' . (int)$id
             );
         self::assertTrue(is_array($row));
-        $integerKeys = ['deleted', 'hidden', 'pid', 'uid', 'tx_container_parent', 'colPos', 'sys_language_uid'];
+        return $this->parseDatabaseResultToInt($row);
+    }
+
+    protected function parseDatabaseResultToInt(array $row)
+    {
+        $integerKeys = ['deleted', 'hidden', 'pid', 'uid', 'tx_container_parent', 'colPos', 'sys_language_uid', 'l18n_parent'];
         foreach ($integerKeys as $key) {
             $row[$key] = (int)$row[$key];
         }

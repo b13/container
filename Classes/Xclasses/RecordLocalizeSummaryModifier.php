@@ -110,12 +110,13 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
             ->exec_SELECTgetRows(
                 'uid',
                 'tt_content',
-                'uid IN (' . implode(',', $uids) . ') AND CType IN (' . $cTypes . ') AND deleted=0'
+                'uid IN (' . implode(',', $uids) . ') AND CType IN (' . implode(',', $cTypes) . ') AND deleted=0'
             );
         $containerUids = [];
         foreach ($rows as $row) {
             $containerUids[] = (int)$row['uid'];
         }
+        return $containerUids;
     }
 
     protected function getContainerChildren(array $uids)

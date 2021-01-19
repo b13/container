@@ -24,7 +24,7 @@
         <CType>b13-2cols-with-header-container</CType>
         <header>container-language-1</header>
         <sorting>256</sorting>
-        <l10n_source>71</l10n_source>
+        <l18n_parent>0</l18n_parent>
         <sys_language_uid>1</sys_language_uid>
     </tt_content>
 </dataset>

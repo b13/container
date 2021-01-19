@@ -32,6 +32,15 @@ class Database implements SingletonInterface
         return ' AND deleted=0';
     }
 
+    protected function parseDatabaseResultToInt(array $row)
+    {
+        $integerKeys = ['deleted', 'hidden', 'pid', 'uid', 'tx_container_parent', 'colPos', 'sys_language_uid', 'l18n_parent'];
+        foreach ($integerKeys as $key) {
+            $row[$key] = (int)$row[$key];
+        }
+        return $row;
+    }
+
     /**
      * @param int $uid
      * @return array|null
@@ -44,10 +53,10 @@ class Database implements SingletonInterface
                 'tt_content',
                 'uid=' . (int)$uid . $this->getAdditionalWhereClause()
             );
-        if ($record === false) {
+        if (!$record) {
             return null;
         }
-        return $record;
+        return $this->parseDatabaseResultToInt($record);
     }
 
     /**
@@ -62,10 +71,10 @@ class Database implements SingletonInterface
                 'tt_content',
                 't3ver_move_id=' . (int)$uid . $this->getAdditionalWhereClause()
             );
-        if ($record === false) {
+        if (!$record) {
             return null;
         }
-        return $record;
+        return $this->parseDatabaseResultToInt($record);
     }
 
     /**
@@ -74,12 +83,17 @@ class Database implements SingletonInterface
      */
     public function fetchOverlayRecords(array $record)
     {
-        return (array)$this->getDatabase()
+        $rows = (array)$this->getDatabase()
             ->exec_SELECTgetRows(
                 '*',
                 'tt_content',
                 'l18n_parent=' . $record['uid'] . $this->getAdditionalWhereClause()
             );
+        $records = [];
+        foreach ($rows as $row) {
+            $records[] = $this->parseDatabaseResultToInt($row);
+        }
+        return $records;
     }
 
     /**
@@ -93,12 +107,12 @@ class Database implements SingletonInterface
             ->exec_SELECTgetSingleRow(
                 '*',
                 'tt_content',
-                'l10n_source=' . (int)$uid . ' AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
+                'l18n_parent=' . (int)$uid . ' AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
             );
-        if ($record === false) {
+        if (!$record) {
             return null;
         }
-        return $record;
+        return $this->parseDatabaseResultToInt($record);
     }
 
     /**
@@ -109,7 +123,7 @@ class Database implements SingletonInterface
     public function fetchRecordsByParentAndLanguage($parent, $language)
     {
 
-        return (array)$this->getDatabase()
+        $rows = (array)$this->getDatabase()
             ->exec_SELECTgetRows(
                 '*',
                 'tt_content',
@@ -117,6 +131,11 @@ class Database implements SingletonInterface
                 '',
                 'sorting ASC'
             );
+        $records = [];
+        foreach ($rows as $row) {
+            $records[] = $this->parseDatabaseResultToInt($row);
+        }
+        return $records;
     }
 
     /**
@@ -132,9 +151,9 @@ class Database implements SingletonInterface
                 'tt_content',
                 'l10n_source=' . (int)$defaultUid . ' AND l18n_parent=0 AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
             );
-        if ($record === false) {
+        if (!$record) {
             return null;
         }
-        return $record;
+        return $this->parseDatabaseResultToInt($record);
     }
 }

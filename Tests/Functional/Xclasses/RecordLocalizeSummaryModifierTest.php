@@ -13,7 +13,7 @@ namespace B13\Container\Tests\Functional\Xclasses;
  */
 
 use B13\Container\Xclasses\RecordLocalizeSummaryModifier;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+use TYPO3\CMS\Core\Tests\FunctionalTestCase;
 
 class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
 {

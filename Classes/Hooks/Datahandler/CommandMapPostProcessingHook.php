@@ -90,8 +90,10 @@ class CommandMapPostProcessingHook
     protected function copyOrMoveChildren($origUid, $newId, $containerId, $command, DataHandler $dataHandler)
     {
         try {
+            #var_dump($origUid);
             // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
+            #var_dump('abc');
             $children = array_reverse($container->getChildRecords());
             if ($newId < 0) {
                 $previousRecord = BackendUtility::getRecord('tt_content', abs($newId), 'pid');

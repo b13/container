@@ -27,6 +27,15 @@ class Database implements SingletonInterface
          $this->backendUserId = 0;
     }
 
+    protected function parseDatabaseResultToInt(array $row)
+    {
+        $integerKeys = ['deleted', 'hidden', 'pid', 'uid', 'tx_container_parent', 'colPos', 'sys_language_uid', 'l18n_parent'];
+        foreach ($integerKeys as $key) {
+            $row[$key] = (int)$row[$key];
+        }
+        return $row;
+    }
+
 
     /**
      * @return DatabaseConnection
@@ -43,10 +52,8 @@ class Database implements SingletonInterface
     {
 
         if (TYPO3_MODE === 'BE') {
-            // todo use irgendwas
             return ' AND deleted=0';
         } elseif (TYPO3_MODE === 'FE') {
-            // todo use irgendwas
             return ' AND deleted=0 AND hidden=0';
         }
     }
@@ -54,7 +61,7 @@ class Database implements SingletonInterface
     public function fetchRecordsByPidAndLanguage($pid, $language)
     {
         $additionalWhereClause = $this->getAdditionalWhereClause();
-        return (array)$this->getDatabase()
+        $rows = (array)$this->getDatabase()
             ->exec_SELECTgetRows(
                 '*',
                 'tt_content',
@@ -62,6 +69,11 @@ class Database implements SingletonInterface
                 '',
                 'sorting ASC'
             );
+        $records = [];
+        foreach ($rows as $row) {
+            $records[] = $this->parseDatabaseResultToInt($row);
+        }
+        return $records;
     }
 
     /**
@@ -76,10 +88,10 @@ class Database implements SingletonInterface
                 'tt_content',
                 'uid=' . (int)$uid . $this->getAdditionalWhereClause()
             );
-        if ($record === false) {
+        if (!$record) {
             return null;
         }
-        return $record;
+        return $this->parseDatabaseResultToInt($record);
     }
 
     /**
@@ -95,10 +107,10 @@ class Database implements SingletonInterface
                 'tt_content',
                 'uid=' . $record['l18n_parent'] . ' AND sys_language_uid=0' . $this->getAdditionalWhereClause()
             );
-        if ($record === false) {
+        if (!$record) {
             return null;
         }
-        return $record;
+        return $this->parseDatabaseResultToInt($record);
     }
 
     /**
@@ -108,7 +120,7 @@ class Database implements SingletonInterface
      */
     public function fetchRecordsByParentAndLanguage($parent, $language)
     {
-        return (array)$this->getDatabase()
+        $rows = (array)$this->getDatabase()
             ->exec_SELECTgetRows(
                 '*',
                 'tt_content',
@@ -116,6 +128,11 @@ class Database implements SingletonInterface
                 '',
                 'sorting ASC'
             );
+        $records = [];
+        foreach ($rows as $row) {
+            $records[] = $this->parseDatabaseResultToInt($row);
+        }
+        return $records;
     }
 
     /**
@@ -133,12 +150,17 @@ class Database implements SingletonInterface
             }
         }
 
-        return (array)$this->getDatabase()
+        $rows = (array)$this->getDatabase()
             ->exec_SELECTgetRows(
                 '*',
                 'tt_content',
                 'sys_language_uid=' . (int)$language . ' AND l18n_parent in (' . implode(',', $uids) . ')' . $this->getAdditionalWhereClause()
             );
+        $records = [];
+        foreach ($rows as $row) {
+            $records[] = $this->parseDatabaseResultToInt($row);
+        }
+        return $records;
     }
 
     /**
@@ -154,9 +176,9 @@ class Database implements SingletonInterface
                 'tt_content',
                 'l18n_parent=' . (int)$uid . ' AND sys_language_uid=' . (int)$language . $this->getAdditionalWhereClause()
             );
-        if ($record === false) {
+        if (!$record) {
             return null;
         }
-        return $record;
+        return $this->parseDatabaseResultToInt($record);
     }
 }

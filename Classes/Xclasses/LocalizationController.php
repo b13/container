@@ -35,6 +35,8 @@ class LocalizationController extends \TYPO3\CMS\Backend\Controller\Page\Localiza
     {
         $response = parent::getRecordLocalizeSummary($request, $response);
         $payload = json_decode($response->getBody()->getContents(), true);
+        #var_dump($payload);
+        #die();
         $payload = $this->recordLocalizeSummaryModifier->rebuildPayload($payload);
         $response->getBody()->write(json_encode($payload));
         return $response;

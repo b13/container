@@ -108,17 +108,7 @@ class LocalizeTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(72, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
+        $row = $this->getDatabase()->exec_SELECTgetSingleRow('*', 'tt_content', 't3_origuid=72');
         self::assertFalse($row);
     }
 
@@ -136,17 +126,7 @@ class LocalizeTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
+        $row = $this->getDatabase()->exec_SELECTgetSingleRow('*', 'tt_content', 't3_origuid=2');
         self::assertFalse($row);
     }
 
@@ -174,7 +154,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @return array
      */
-    public function localizeTwoContainerKeepsParentIndependedOnOrderDataProvider(): array
+    public function localizeTwoContainerKeepsParentIndependedOnOrderDataProvider()
     {
         return [
             ['cmdmap' => [
@@ -209,7 +189,7 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @return array
      */
-    public function localizeWithCopyTwoContainerChangeParentIndependedOnOrderDataProvider(): array
+    public function localizeWithCopyTwoContainerChangeParentIndependedOnOrderDataProvider()
     {
         return [
             ['cmdmap' => [
