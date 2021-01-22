@@ -204,4 +204,27 @@ class CopyElementClipboardTest extends DatahandlerTest
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
     }
+
+    /**
+     * @test
+     */
+    public function copyElementIntoContainerAfterElementWithSimpleCommandMap()
+    {
+        // see test above what should be done
+        $cmdmap = [
+            'tt_content' => [
+                4 => [
+                    'copy' => -3
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('t3_origuid', 4);
+        self::assertSame(1, (int)$row['tx_container_parent']);
+        self::assertSame(201, (int)$row['colPos']);
+        self::assertSame(1, (int)$row['pid']);
+        self::assertSame(0, (int)$row['sys_language_uid']);
+    }
 }
