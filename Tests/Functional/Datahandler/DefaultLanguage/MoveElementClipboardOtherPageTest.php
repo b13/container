@@ -210,4 +210,27 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
         self::assertSame(3, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
     }
+
+    /**
+     * @test
+     */
+    public function moveElementIntoContainerAfterElementWithSimpleCommandMap(): void
+    {
+        // see test above what should be done
+        $cmdmap = [
+            'tt_content' => [
+                4 => [
+                    'move' => -13
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 4);
+        self::assertSame(11, (int)$row['tx_container_parent']);
+        self::assertSame(201, (int)$row['colPos']);
+        self::assertSame(3, (int)$row['pid']);
+        self::assertSame(0, (int)$row['sys_language_uid']);
+    }
 }

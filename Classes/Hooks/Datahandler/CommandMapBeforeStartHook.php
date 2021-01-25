@@ -58,7 +58,46 @@ class CommandMapBeforeStartHook
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
         $this->unsetInconsistentLocalizeCommands($dataHandler);
+        $dataHandler->cmdmap = $this->rewriteSimpleCommandMap($dataHandler->cmdmap);
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
+    }
+
+    protected function rewriteSimpleCommandMap(array $cmdmap): array
+    {
+        if (!empty($cmdmap['tt_content'])) {
+            foreach ($cmdmap['tt_content'] as $id => &$cmd) {
+                if (empty($cmd['copy']) && empty($cmd['move'])) {
+                    continue;
+                }
+                foreach ($cmd as $operation => $value) {
+                    if (in_array($operation, ['copy', 'move'], true) === false) {
+                        continue;
+                    }
+                    if (is_array($cmd[$operation])) {
+                        continue;
+                    }
+                    if ((int)$cmd[$operation] < 0) {
+                        $target = $cmd[$operation];
+                        $recordToCopy = $this->database->fetchOneRecord((int)abs($target));
+                        if ($recordToCopy === null || $recordToCopy['tx_container_parent'] === 0) {
+                            continue;
+                        }
+                        $cmd = [
+                                $operation => [
+                                    'action' => 'paste',
+                                    'target' => $target,
+                                    'update' => [
+                                        'colPos' => $recordToCopy['tx_container_parent'] . '-' . $recordToCopy['colPos'],
+                                        'sys_language_uid' => $recordToCopy['sys_language_uid']
+
+                                    ]
+                                ]
+                            ];
+                    }
+                }
+            }
+        }
+        return $cmdmap;
     }
 
     protected function unsetInconsistentLocalizeCommands(DataHandler $dataHandler): void
