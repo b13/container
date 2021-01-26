@@ -89,6 +89,7 @@ class ContainerLayoutView extends PageLayoutView
         $this->id = $container->getPid();
         $this->pageinfo = BackendUtility::readPageAccess($this->id, '');
         $this->container = $container;
+        $this->initializeClipboard();
         $content = $this->renderRecords($colPos);
         return $content;
     }
@@ -105,6 +106,9 @@ class ContainerLayoutView extends PageLayoutView
             $this->itemLabels[$name] = $this->getLanguageService()->sL($val['label']);
         }
     }
+
+
+
 
     /**
      * @param int $colPos
@@ -187,6 +191,27 @@ class ContainerLayoutView extends PageLayoutView
         return $this->container->getLanguage() === 0 || !$this->container->isConnectedMode();
     }
 
+
+    protected function renderPasteButton($id, $colPos, $language)
+    {
+        $content = '';
+        if ($this->clipboard->hasElements()) {
+            $update = [
+                'colPos' => $this->container->getUid() . '-' . $colPos,
+                'sys_language_uid' => $language
+            ];
+            $url = $this->clipboard->pasteUrl('tt_content', $id, true, $update);
+            $title = htmlspecialchars($this->getLanguageService()->getLL('pasteIntoColumn'));
+            $content =  '<a href="' . htmlspecialchars($url) . '" '
+                . 'title="' . $title . '"'
+                . 'data-title="' . $title . '"'
+                . 'class="btn btn-default btn-sm">'
+                . $this->iconFactory->getIcon('actions-document-paste', Icon::SIZE_SMALL)->render()
+                . '</a>';
+        }
+        return $content;
+    }
+
     /**
      * @param int $colPos
      * @return string
@@ -207,6 +232,9 @@ class ContainerLayoutView extends PageLayoutView
                 . $this->iconFactory->getIcon('actions-add', Icon::SIZE_SMALL)->render()
                 . ' '
                 . htmlspecialchars($this->getLanguageService()->getLL('content')) . '</a>';
+
+            $link .= $this->renderPasteButton($this->container->getPid(), $colPos, $this->container->getLanguage());
+
         }
 
         if ($this->getBackendUser()->checkLanguageAccess($this->container->getLanguage())) {
@@ -221,6 +249,7 @@ class ContainerLayoutView extends PageLayoutView
         }
         return $content;
     }
+
 
     /**
      * @param array $row
@@ -294,6 +323,7 @@ class ContainerLayoutView extends PageLayoutView
                     && $this->getBackendUser()->checkLanguageAccess($currentLanguage)
                 ) {
                     $singleElementHTML .= $this->renderNewContentButtonAfterContentElement($row);
+                    $singleElementHTML .= $this->renderPasteButton((-1)*$row['uid'], $colPos, $this->container->getLanguage());
                 }
                 $singleElementHTML .= '</div></div><div class="t3-page-ce-dropzone-available t3js-page-ce-dropzone-available"></div></div>';
                 $content .= $singleElementHTML;
