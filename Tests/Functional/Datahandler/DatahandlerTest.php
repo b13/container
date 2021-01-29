@@ -15,11 +15,14 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class DatahandlerTest extends FunctionalTestCase
 {
+    protected $typo3MajorVersion;
+
     /**
      * @var DataHandler
      */
@@ -42,6 +45,13 @@ abstract class DatahandlerTest extends FunctionalTestCase
      * @var array
      */
     protected $coreExtensionsToLoad = ['workspaces'];
+
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        $this->typo3MajorVersion = $typo3Version->getMajorVersion();
+    }
 
     /**
      * @throws \Doctrine\DBAL\DBALException

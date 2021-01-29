@@ -30,6 +30,55 @@ class ContainerTest extends DatahandlerTest
         $this->backendUser->setWorkspace(1);
     }
 
+    protected function getMovedWorkspaceRows(int $movedUid): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $stm = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter($movedUid, \PDO::PARAM_INT)
+                )
+            );
+        if ($this->typo3MajorVersion < 11) {
+            $stm->orWhere(
+                $queryBuilder->expr()->eq(
+                    't3ver_move_id',
+                    $queryBuilder->createNamedParameter($movedUid, \PDO::PARAM_INT)
+                )
+            );
+        }
+        $rows = $stm->execute()->fetchAll();
+        if ($this->typo3MajorVersion < 11) {
+            self::assertSame(2, count($rows));
+        } else {
+            self::assertSame(1, count($rows));
+        }
+        return $rows;
+    }
+
+    protected function getCopiedWorkspaceRows(int $copiedUid): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $rows = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter($copiedUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+        if ($this->typo3MajorVersion < 11) {
+            self::assertSame(2, count($rows));
+        } else {
+            self::assertSame(1, count($rows));
+        }
+        return $rows;
+    }
+
     /**
      * @test
      */
@@ -91,24 +140,7 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(1, $row['tx_container_parent']);
         self::assertSame(200, $row['colPos']);
 
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->orWhere(
-                $queryBuilder->expr()->eq(
-                    't3ver_move_id',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(2, count($rows));
+        $rows = $this->getMovedWorkspaceRows(2);
         foreach ($rows as $row) {
             self::assertSame(1, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
@@ -145,29 +177,49 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(1, $row['tx_container_parent']);
         self::assertSame(200, $row['colPos']);
 
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->orWhere(
-                $queryBuilder->expr()->eq(
-                    't3ver_move_id',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(2, count($rows));
+        $rows = $this->getMovedWorkspaceRows(2);
         foreach ($rows as $row) {
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(0, $row['tx_container_parent']);
             self::assertSame(0, $row['colPos']);
             self::assertSame(3, $row['pid']);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function moveChildsColPosInOtherContainer(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                2 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'colPos' => '91-201',
+                            'sys_language_uid' => 0
+
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+
+        // copied record is not modified
+        $row = $this->fetchOneRecord('uid', 2);
+        self::assertSame(1, $row['tx_container_parent']);
+        self::assertSame(200, $row['colPos']);
+
+        $rows = $this->getMovedWorkspaceRows(2);
+        foreach ($rows as $row) {
+            self::assertSame(1, $row['pid']);
+            self::assertSame(1, $row['t3ver_wsid']);
+            self::assertSame(91, $row['tx_container_parent']);
+            self::assertSame(201, $row['colPos']);
         }
     }
 
@@ -199,18 +251,7 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(1, $row['tx_container_parent']);
         self::assertSame(200, $row['colPos']);
 
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(2, count($rows));
+        $rows = $this->getCopiedWorkspaceRows(2);
         foreach ($rows as $row) {
             self::assertSame(1, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
@@ -247,46 +288,9 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(1, $row['tx_container_parent']);
         self::assertSame(200, $row['colPos']);
 
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(1, count($rows));
+        $rows = $this->getCopiedWorkspaceRows(2);
         foreach ($rows as $row) {
             self::assertSame(3, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(0, $row['tx_container_parent']);
-            self::assertSame(0, $row['colPos']);
-        }
-
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->neq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(1, count($rows));
-        foreach ($rows as $row) {
             self::assertSame(1, $row['t3ver_wsid']);
             self::assertSame(0, $row['tx_container_parent']);
             self::assertSame(0, $row['colPos']);
@@ -321,72 +325,7 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(1, $row['tx_container_parent']);
         self::assertSame(200, $row['colPos']);
 
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(2, count($rows));
-        foreach ($rows as $row) {
-            self::assertSame(1, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(91, $row['tx_container_parent']);
-            self::assertSame(201, $row['colPos']);
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function moveChildsColPosInOtherContainer(): void
-    {
-        $cmdmap = [
-            'tt_content' => [
-                2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 1,
-                        'update' => [
-                            'colPos' => '91-201',
-                            'sys_language_uid' => 0
-
-                        ]
-                    ]
-                ]
-            ]
-        ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_cmdmap();
-
-        // copied record is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->orWhere(
-                $queryBuilder->expr()->eq(
-                    't3ver_move_id',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(2, count($rows));
+        $rows = $this->getCopiedWorkspaceRows(2);
         foreach ($rows as $row) {
             self::assertSame(1, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
@@ -437,18 +376,7 @@ class ContainerTest extends DatahandlerTest
             ->execute()
             ->fetch();
         self::assertIsArray($containerRow);
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetchAll();
-        self::assertSame(2, count($rows));
+        $rows = $this->getCopiedWorkspaceRows(2);
         foreach ($rows as $row) {
             self::assertSame(3, $row['pid']);
             self::assertSame(1, $row['t3ver_wsid']);
@@ -460,7 +388,7 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveRecordInColPosCreatesPlaceholderInContainer()
+    public function moveRecordInColPosCreatesWorkspaceElementInContainer()
     {
         $cmdmap = [
             'tt_content' => [
@@ -480,9 +408,14 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $origFirstElement = $this->fetchOneRecord('uid', 2);
-        // moved placeholder
-        $placeHolderElement = $this->fetchOneRecord('t3ver_move_id', 5);
-        self::assertSame(1, $placeHolderElement['tx_container_parent']);
-        self::assertTrue($placeHolderElement['sorting'] < $origFirstElement['sorting']);
+        if ($this->typo3MajorVersion < 11) {
+            // we have to consider the moved placeholder
+            $workspaceElement = $this->fetchOneRecord('t3ver_move_id', 5);
+        } else {
+            // will not work in v10
+            $workspaceElement = $this->fetchOneRecord('t3ver_oid', 5);
+        }
+        self::assertSame(1, $workspaceElement['tx_container_parent']);
+        self::assertTrue($workspaceElement['sorting'] < $origFirstElement['sorting']);
     }
 }

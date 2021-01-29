@@ -3,12 +3,20 @@
 defined('TYPO3_MODE') || die('Access denied.');
 
 call_user_func(static function () {
-    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
-        \TYPO3\CMS\Backend\Utility\BackendUtility::class,
-        'getPagesTSconfigPreInclude',
-        B13\Container\Tca\Registry::class,
-        'addPageTS'
-    );
+    $typo3Version = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
+    if ($typo3Version->getMajorVersion() === 9) {
+        // else PageTsConfig Listener is used for ModifyLoadedPageTsConfigEvent
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
+            \TYPO3\CMS\Backend\Utility\BackendUtility::class,
+            'getPagesTSconfigPreInclude',
+            B13\Container\Tca\Registry::class,
+            'addPageTS'
+        );
+        // XClass due to \TYPO3\CMS\Core\Domain\Repository\PageRepository not exists in v9
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\B13\Container\Domain\Factory\PageView\Frontend\ContentStorage::class] = [
+            'className' => \B13\Container\Domain\Factory\PageView\Frontend\LegacyContentStorage::class
+        ];
+    }
 
     // register default icons
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(

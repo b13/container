@@ -7,3 +7,15 @@ services:
   B13\Container\View\ContainerLayoutView:
     shared: false
     public: true
+
+  B13\Container\Listener\PageTsConfig:
+    tags:
+      - name: event.listener
+        identifier: 'tx-container-page-ts-config'
+        event: TYPO3\CMS\Core\Configuration\Event\ModifyLoadedPageTsConfigEvent
+
+  B13\Container\Command\IntegrityCommand:
+    tags:
+      - name: 'console.command'
+        command: 'container:integrity'
+        schedulable: true

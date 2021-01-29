@@ -8,10 +8,14 @@ parameters:
     - %currentWorkingDirectory%/Classes
     - %currentWorkingDirectory%/Tests
 
+  excludes_analyse:
+    - %currentWorkingDirectory%/Classes/ContentDefender/*
+    - %currentWorkingDirectory%/Classes/Hooks/ContentDefender/*
   ignoreErrors:
     -
       message: '#Unreachable statement - code above always terminates.#'
       path: %currentWorkingDirectory%/Tests/Functional/Datahandler/ContentDefender
+    - '#.*TYPO3\\CMS\\Frontend\\Page\\PageRepository.*#'
     -
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 0 parameters, 1 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php

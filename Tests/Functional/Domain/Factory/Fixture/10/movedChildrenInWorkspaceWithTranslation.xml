@@ -66,4 +66,32 @@
         <sys_language_uid>1</sys_language_uid>
     </tt_content>
 
+    <!-- ws default placeholder -->
+    <tt_content>
+        <uid>111</uid>
+        <pid>1</pid>
+        <colPos>202</colPos>
+        <tx_container_parent>101</tx_container_parent>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_move_id>103</t3ver_move_id>
+        <t3ver_state>3</t3ver_state>
+        <t3ver_oid>0</t3ver_oid>
+        <header>[MOVE-TO PLACEHOLDER for #103, WS#1]</header>
+    </tt_content>
+
+    <!-- ws translation placeholder -->
+    <tt_content>
+        <uid>112</uid>
+        <pid>1</pid>
+        <colPos>202</colPos>
+        <tx_container_parent>101</tx_container_parent>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_move_id>105</t3ver_move_id>
+        <t3ver_state>3</t3ver_state>
+        <l18n_parent>103</l18n_parent>
+        <sys_language_uid>1</sys_language_uid>
+        <t3ver_oid>0</t3ver_oid>
+        <header>[MOVE-TO PLACEHOLDER for #105, WS#1]</header>
+    </tt_content>
+
 </dataset>

@@ -328,6 +328,13 @@ class Registry implements SingletonInterface
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             return [$TSdataArray, $id, $rootLine, $returnPartArray];
         }
+        $TSdataArray['default'] = $this->getPageTsString();
+        return [$TSdataArray, $id, $rootLine, $returnPartArray];
+    }
+
+    public function getPageTsString(): string
+    {
+        $pageTs = '';
         // group containers by group
         $groupedByGroup = [];
         $defaultGroup = 'container';
@@ -363,8 +370,8 @@ mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 }
 ';
             }
-            $TSdataArray['default'] .= LF . $content;
+            $pageTs .= LF . $content;
         }
-        return [$TSdataArray, $id, $rootLine, $returnPartArray];
+        return $pageTs;
     }
 }
