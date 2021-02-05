@@ -334,6 +334,9 @@ class Registry implements SingletonInterface
 
     public function getPageTsString(): string
     {
+        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
+            return '';
+        }
         $pageTs = '';
         // group containers by group
         $groupedByGroup = [];
