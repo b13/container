@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendWorkspaceRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -56,6 +57,10 @@ class Database implements SingletonInterface
                 ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
         } elseif (TYPO3_MODE === 'FE') {
             $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+            // do not use FrontendWorkspaceRestriction
+            $queryBuilder->getRestrictions()
+                ->removeByType(FrontendWorkspaceRestriction::class)
+                ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
         }
         return $queryBuilder;
     }

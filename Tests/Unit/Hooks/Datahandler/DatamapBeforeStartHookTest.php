@@ -11,6 +11,7 @@ namespace B13\Container\Tests\Unit\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -25,6 +26,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
     public function datamapForLocalizationsExtendsDatamapWithLocalizations(): void
     {
         $database = $this->prophesize(Database::class);
+        $containerFactory = $this->prophesize(ContainerFactory::class);
         $defaultRecord = [
             'uid' => 2,
             'tx_container_parent' => 0,
@@ -36,7 +38,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
         $dataHandlerHook = $this->getAccessibleMock(
             DatamapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => null, 'database' => $database->reveal()]
+            ['containerFactory' => $containerFactory->reveal(), 'database' => $database->reveal()]
         );
         $datamap = [
             'tt_content' => [
@@ -57,7 +59,13 @@ class DatamapBeforeStartHookTest extends UnitTestCase
      */
     public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
     {
-        $dataHandlerHook = $this->getAccessibleMock(DatamapBeforeStartHook::class, ['foo']);
+        $database = $this->prophesize(Database::class);
+        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $dataHandlerHook = $this->getAccessibleMock(
+            DatamapBeforeStartHook::class,
+            ['foo'],
+            ['containerFactory' => $containerFactory->reveal(), 'database' => $database->reveal()]
+        );
         $datamap = [
             'tt_content' => [
                 39 => [
@@ -76,7 +84,13 @@ class DatamapBeforeStartHookTest extends UnitTestCase
      */
     public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
     {
-        $dataHandlerHook = $this->getAccessibleMock(DatamapBeforeStartHook::class, ['foo']);
+        $database = $this->prophesize(Database::class);
+        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $dataHandlerHook = $this->getAccessibleMock(
+            DatamapBeforeStartHook::class,
+            ['foo'],
+            ['containerFactory' => $containerFactory->reveal(), 'database' => $database->reveal()]
+        );
         $datamap = [
             'tt_content' => [
                 39 => [

@@ -5,8 +5,8 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^9.5 || ^10.4",
-        "typo3/cms-fluid-styled-content": "^9.5 || ^10.4"
+        "typo3/cms-backend": "^9.5 || ^10.4 || ^11.0",
+        "typo3/cms-fluid-styled-content": "^9.5 || ^10.4 || ^11.0"
     },
     "autoload": {
         "psr-4": {
@@ -37,7 +37,8 @@
         "phpstan/phpstan": "^0.12.11",
         "typo3/coding-standards": "^0.2.0",
         "helhum/typo3-console": "^6.3",
-        "helhum/dotenv-connector": "^2.3"
+        "helhum/dotenv-connector": "^2.3",
+        "phpunit/phpunit": "^8.4"
     },
     "replace": {
         "typo3-ter/container": "self.version"
@@ -48,7 +49,7 @@
             "if [ ! -e .Build/Web/vendor ]; then cd .Build/Web  && ln -s ../vendor && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/ext/json_response ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/typo3/testing-framework/Resources/Core/Functional/Extensions/json_response && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/ext/container_example ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/b13/container-example container_example && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/ext/content_defender ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/ichhabrecht/content-defender content_defender && cd -; fi",
+            "if [ ! -e .Build/Web/typo3conf/ext/content_defender -a -e .Build/vendor/ichhabrecht/content-defender ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/ichhabrecht/content-defender content_defender && cd -; fi",
             "if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
         ]
     },

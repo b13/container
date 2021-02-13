@@ -36,6 +36,20 @@
         <sys_language_uid>1</sys_language_uid>
         <l18n_parent>203</l18n_parent>
     </tt_content>
+    <tt_content>
+        <uid>214</uid>
+        <pid>1</pid>
+        <colPos>0</colPos>
+        <CType>b13-2cols-with-header-container</CType>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>0</t3ver_oid>
+        <t3ver_state>3</t3ver_state>
+        <t3ver_move_id>210</t3ver_move_id>
+        <header>[MOVE-TO PLACEHOLDER for #210, WS#1]</header>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>200</l18n_parent>
+    </tt_content>
+
 
     <tt_content>
         <uid>215</uid>
@@ -49,7 +63,21 @@
         <t3ver_state>4</t3ver_state>
         <t3_origuid>211</t3_origuid>
         <sys_language_uid>1</sys_language_uid>
-        <l18n_parent>205</l18n_parent>
     </tt_content>
+    <tt_content>
+        <uid>216</uid>
+        <pid>1</pid>
+        <colPos>201</colPos>
+        <CType>header</CType>
+        <tx_container_parent>200</tx_container_parent>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>0</t3ver_oid>
+        <t3ver_state>3</t3ver_state>
+        <t3ver_move_id>211</t3ver_move_id>
+        <header>[MOVE-TO PLACEHOLDER for #211, WS#1]</header>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>201</l18n_parent>
+    </tt_content>
+
 
 </dataset>

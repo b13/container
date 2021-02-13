@@ -30,6 +30,10 @@ class LocalizationTest extends DatahandlerTest
      */
     protected function setUp(): void
     {
+        if ($this->typo3MajorVersion === 11) {
+            self::markTestSkipped('todo');
+            return;
+        }
         parent::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
