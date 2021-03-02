@@ -120,10 +120,13 @@ class ContainerProcessor implements DataProcessorInterface
             'tables' => 'tt_content'
         ];
         foreach ($children as &$child) {
-            if ($child['t3ver_oid'] > 0) {
-                $conf['source'] = $child['t3ver_oid'];
+            if ($child['l18n_parent'] > 0) {
+                $conf['source'] = $child['l18n_parent'];
             } else {
                 $conf['source'] = $child['uid'];
+            }
+            if ($child['t3ver_oid'] > 0) {
+                $conf['source'] = $child['t3ver_oid'];
             }
             $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
             /** @var ContentObjectRenderer $recordContentObjectRenderer */
