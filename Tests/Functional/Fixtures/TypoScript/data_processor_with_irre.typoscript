@@ -1,0 +1,9 @@
+tt_content.image.templateRootPaths.20 = EXT:container/Tests/Functional/Fixtures/Templates
+tt_content.image {
+	dataProcessing.14218848011= TYPO3\CMS\Frontend\DataProcessing\DatabaseQueryProcessor
+	dataProcessing.14218848011 {
+		table = sys_file_reference
+		where.data = field:uid
+		where.wrap = uid_foreign = |
+	}
+}
