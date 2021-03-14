@@ -7,9 +7,6 @@ parameters:
 
   ignoreErrors:
     -
-      message: '#Unreachable statement - code above always terminates.#'
-      path: %currentWorkingDirectory%/Tests/Functional/Datahandler/ContentDefender
-    -
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 0 parameters, 1 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
     -
