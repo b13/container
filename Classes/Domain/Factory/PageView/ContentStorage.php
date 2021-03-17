@@ -71,7 +71,7 @@ abstract class ContentStorage
 
     public function getContainerChildren(array $containerRecord, int $language): array
     {
-        $pid = $containerRecord['pid'];
+        $pid = (int)$containerRecord['pid'];
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 11 && !empty($containerRecord['_ORIG_pid'])) {
             $pid = $containerRecord['_ORIG_pid'];
         }
