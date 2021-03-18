@@ -102,7 +102,7 @@ class ContainerFactory implements SingletonInterface
 
     protected function children(array $containerRecord, int $language): array
     {
-        return $this->database->fetchRecordsByParentAndLanguage($containerRecord['uid'], $language);
+        return $this->database->fetchRecordsByParentAndLanguage((int)$containerRecord['uid'], $language);
     }
 
     /**
