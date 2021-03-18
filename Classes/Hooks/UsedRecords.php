@@ -55,7 +55,7 @@ class UsedRecords
                 $container = $this->containerFactory->buildContainer((int)$record['tx_container_parent']);
                 $columns = $this->tcaRegistry->getAvailableColumns($container->getCType());
                 foreach ($columns as $column) {
-                    if ($column['colPos'] === $record['colPos']) {
+                    if ($column['colPos'] === (int)$record['colPos']) {
                         return true;
                     }
                 }
