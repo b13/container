@@ -74,5 +74,9 @@
         <l10n_source>14</l10n_source>
         <title>pageWithTranslatedContainer-1</title>
     </pages>
-
+    <pages>
+        <uid>16</uid>
+        <pid>1</pid>
+        <title>pageWithDifferentContainers</title>
+    </pages>
 </dataset>
