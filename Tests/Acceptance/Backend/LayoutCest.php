@@ -234,4 +234,23 @@ class LayoutCest
         $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
         $I->see('[Translate to language-1:] headerOfChild');
     }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     */
+    public function canSeeContainerColumnTitleForDifferentContainers(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->click('Page');
+        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        // b13-2cols-with-header-container container
+        $I->see('header');
+        $I->see('left side');
+        $I->see('right side');
+        // b13-2cols container
+        $I->see('2-cols-left');
+        $I->see('2-cols-right');
+    }
 }

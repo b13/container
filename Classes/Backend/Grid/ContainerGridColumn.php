@@ -33,6 +33,11 @@ class ContainerGridColumn extends GridColumn
         return $this->container->getUid();
     }
 
+    public function getTitle(): string
+    {
+        return (string)$this->getLanguageService()->sL($this->getColumnName());
+    }
+
     public function getAllowNewContent(): bool
     {
         if ($this->container->getLanguage() > 0 && $this->container->isConnectedMode()) {
