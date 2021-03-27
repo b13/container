@@ -132,7 +132,8 @@ class ContainerProcessor implements DataProcessorInterface
             /** @var ContentObjectRenderer $recordContentObjectRenderer */
             $recordContentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $recordContentObjectRenderer->start($child, 'tt_content');
-            $child = $this->contentDataProcessor->process($recordContentObjectRenderer, $processorConfiguration, $child);
+            $processed = $this->contentDataProcessor->process($recordContentObjectRenderer, $processorConfiguration, ['data' => $child]);
+            $child = $processed['data'];
         }
         $processedData[$as] = $children;
         return $processedData;
