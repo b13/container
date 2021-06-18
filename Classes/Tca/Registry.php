@@ -349,6 +349,10 @@ class Registry implements SingletonInterface
                 }
                 $groupedByGroup[$group][$cType] = $containerConfiguration;
             }
+            $pageTs .= LF . 'mod.web_layout.tt_content.preview {
+' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
+}
+';
         }
         foreach ($groupedByGroup as $group => $containerConfigurations) {
             $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ? $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] : $group;
@@ -366,10 +370,6 @@ mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
     tt_content_defValues.CType = ' . $cType . '
     saveAndClose = ' . $containerConfiguration['saveAndCloseInNewContentElementWizard'] . '
 }
-}
-';
-                $content .= 'mod.web_layout.tt_content.preview {
-' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
 ';
             }
