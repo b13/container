@@ -115,6 +115,17 @@ class ContainerProcessor implements DataProcessorInterface
     ): array {
         $children = $container->getChildrenByColPos($colPos);
 
+        $skipRenderingChildContent = false;
+        if (isset($processorConfiguration['skipRenderingChildContent']) || isset($processorConfiguration['skipRenderingChildContent.'])) {
+            $currentVal = $cObj->getCurrentVal();
+            $cObj->setCurrentVal($colPos);
+            $skipRenderingChildContent = $cObj->stdWrap(
+                $processorConfiguration['skipRenderingChildContent'] ?? false,
+                $processorConfiguration['skipRenderingChildContent.'] ?? []
+            );
+            $cObj->setCurrentVal($currentVal);
+        }
+
         $contentRecordRenderer = new RecordsContentObject($cObj);
         $conf = [
             'tables' => 'tt_content'
@@ -128,7 +139,9 @@ class ContainerProcessor implements DataProcessorInterface
             if ($child['t3ver_oid'] > 0) {
                 $conf['source'] = $child['t3ver_oid'];
             }
-            $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
+            if (!$skipRenderingChildContent) {
+                $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
+            }
             /** @var ContentObjectRenderer $recordContentObjectRenderer */
             $recordContentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $recordContentObjectRenderer->start($child, 'tt_content');
