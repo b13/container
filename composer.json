@@ -38,7 +38,8 @@
         "typo3/coding-standards": "^0.2.0",
         "helhum/typo3-console": "^6.3",
         "helhum/dotenv-connector": "^2.3",
-        "phpunit/phpunit": "^8.4"
+        "phpunit/phpunit": "^8.4",
+        "cweagans/composer-patches": "^1.7"
     },
     "replace": {
         "typo3-ter/container": "self.version"
@@ -58,6 +59,11 @@
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/Web",
             "extension-key": "container"
+        },
+        "patches": {
+            "codeception/codeception": {
+                "realpath of filenames for failed test files": "Build/patches/Codeception_GroupManager.diff"
+            }
         }
     }
 }
