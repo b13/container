@@ -28,7 +28,8 @@ class BackendContainerEnvironment extends BackendEnvironment
             'install',
             'frontend',
             'recordlist',
-            'workspaces'
+            'workspaces',
+            'info'
         ],
         'pathsToLinkInTestInstance' => [
             'typo3conf/ext/container/Build/sites' => 'typo3conf/sites'

@@ -118,7 +118,7 @@ services:
         if [ ${TYPO3} -eq 10 ]; then
           composer install --no-progress --no-interaction;
         else
-          composer require typo3/cms-install:^11.0 typo3/cms-about:^11.0 typo3/cms-workspaces:^11.0 helhum/dotenv-connector:^3 symfony/dotenv:5.1.11 --dev -W --no-progress --no-interaction
+          composer require typo3/cms-install:^11.0 typo3/cms-about:^11.0 typo3/cms-info:^11.0 typo3/cms-workspaces:^11.0 helhum/dotenv-connector:^3 symfony/dotenv:5.1.11 --dev -W --no-progress --no-interaction
         fi
       "
 

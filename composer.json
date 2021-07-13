@@ -28,6 +28,7 @@
         "ichhabrecht/content-defender": "dev-master",
         "typo3/cms-install": "^10.4",
         "typo3/cms-about": "^10.4",
+        "typo3/cms-info": "^10.4",
         "typo3/testing-framework": "^6",
         "codeception/codeception": "^4.1",
         "codeception/module-webdriver": "^1.0",
