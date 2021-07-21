@@ -22,6 +22,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridRow;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -82,9 +83,31 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('newContentTitleShort', $this->getLanguageService()->getLL('content'));
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
-
+        $view->assign('defaultRecordDirectory', $this->hasDefaultDirectory() ? 'RecordDefault' : 'Record');
         $rendered = $view->render();
 
         return $content . $rendered;
+    }
+
+    /**
+     * Check TYPO3 version to see whether the default record templates
+     * are located in RecordDefault/ instead of Record/.
+     * See: https://review.typo3.org/c/Packages/TYPO3.CMS/+/69769
+     *
+     * @return bool
+     */
+    protected function hasDefaultDirectory(): bool
+    {
+        $typo3Version = new Typo3Version();
+
+        if ($typo3Version->getMajorVersion() === 10) {
+            return version_compare((new Typo3Version())->getVersion(), '10.4.17', '>');
+        }
+
+        if ($typo3Version->getMajorVersion() === 11) {
+            return version_compare((new Typo3Version())->getVersion(), '11.3.0', '>');
+        }
+
+        return false;
     }
 }
