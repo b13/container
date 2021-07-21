@@ -105,7 +105,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         }
 
         if ($typo3Version->getMajorVersion() === 11) {
-            return version_compare((new Typo3Version())->getVersion(), '11.3.0', '>');
+            return version_compare((new Typo3Version())->getVersion(), '11.2.0', '>');
         }
 
         return false;
