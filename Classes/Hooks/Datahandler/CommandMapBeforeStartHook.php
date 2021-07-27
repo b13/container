@@ -77,7 +77,7 @@ class CommandMapBeforeStartHook
                         continue;
                     }
                     if ((int)$cmd[$operation] < 0) {
-                        $target = $cmd[$operation];
+                        $target = (int)$cmd[$operation];
                         $recordToCopy = $this->database->fetchOneRecord((int)abs($target));
                         if ($recordToCopy === null || $recordToCopy['tx_container_parent'] === 0) {
                             continue;
