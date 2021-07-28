@@ -35,7 +35,12 @@ call_user_func(static function () {
     // copyAfterDuplFields colPos,sys_language_uid
     // useColumnsForDefaultValues colPos,sys_language_uid,CType
     // new element
-    $GLOBALS['TCA']['tt_content']['ctrl']['useColumnsForDefaultValues'] .= ',tx_container_parent';
-    // workspace placeholder
-    $GLOBALS['TCA']['tt_content']['ctrl']['shadowColumnsForNewPlaceholders'] .= ',tx_container_parent';
+    if (isset($GLOBALS['TCA']['tt_content']['ctrl']['useColumnsForDefaultValues'])) {
+        $GLOBALS['TCA']['tt_content']['ctrl']['useColumnsForDefaultValues'] .= ',tx_container_parent';
+    }
+
+    // workspace placeholder for container parent
+    if (isset($GLOBALS['TCA']['tt_content']['ctrl']['shadowColumnsForNewPlaceholders'])) {
+        $GLOBALS['TCA']['tt_content']['ctrl']['shadowColumnsForNewPlaceholders'] .= ',tx_container_parent';
+    }
 });
