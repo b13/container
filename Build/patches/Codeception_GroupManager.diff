@@ -1,0 +1,12 @@
+diff --git a/src/Codeception/Lib/GroupManager.php b/src/Codeception/Lib/GroupManager.php
+index 3910544c..c73e5611 100644
+--- a/src/Codeception/Lib/GroupManager.php
++++ b/src/Codeception/Lib/GroupManager.php
+@@ -145,6 +145,7 @@ public function groupsForTest(\PHPUnit\Framework\Test $test)
+                 $groups = array_merge($groups, \PHPUnit\Util\Test::getGroups($info['class'], $info['name']));
+             }
+             $filename = str_replace(['\\\\', '//', '/./'], ['\\', '/', '/'], $info['file']);
++            $filename = realpath($filename);
+         }
+         if ($test instanceof \PHPUnit\Framework\TestCase) {
+             $groups = array_merge($groups, \PHPUnit\Util\Test::getGroups(get_class($test), $test->getName(false)));
