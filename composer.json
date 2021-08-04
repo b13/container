@@ -5,8 +5,8 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^9.5 || ^10.4 || ^11.0",
-        "typo3/cms-fluid-styled-content": "^9.5 || ^10.4 || ^11.0"
+        "typo3/cms-backend": "^8.7",
+        "typo3/cms-fluid-styled-content": "^8.7"
     },
     "autoload": {
         "psr-4": {
