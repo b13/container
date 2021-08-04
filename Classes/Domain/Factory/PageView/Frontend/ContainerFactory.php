@@ -16,8 +16,6 @@ use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerFactory
@@ -30,10 +28,9 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
     public function __construct(
         Database $database = null,
         Registry $tcaRegistry = null,
-        Context $context = null,
         ContentStorage $contentStorage = null
     ) {
-        parent::__construct($database, $tcaRegistry, $context);
+        parent::__construct($database, $tcaRegistry);
         $this->contentStorage = $contentStorage ?? GeneralUtility::makeInstance(ContentStorage::class);
     }
 
@@ -43,11 +40,11 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
      */
     public function buildContainer(int $uid): Container
     {
-        $languageAspect =  GeneralUtility::makeInstance(Context::class)->getAspect('language');
-        $language = $languageAspect->get('id');
-        if ($language > 0 && $languageAspect->doOverlays()) {
-            return $this->buildContainerWithOverlay($uid, $languageAspect);
-        }
+        #$languageAspect =  GeneralUtility::makeInstance(Context::class)->getAspect('language');
+        #$language = $languageAspect->get('id');
+        #if ($language > 0 && $languageAspect->doOverlays()) {
+        #    return $this->buildContainerWithOverlay($uid, $languageAspect);
+        #}
         return parent::buildContainer($uid);
     }
 

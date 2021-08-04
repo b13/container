@@ -25,9 +25,9 @@ class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStora
      */
     protected $pageRepository;
 
-    public function __construct(Database $database = null, Context $context = null, PageRepository $pageRepository = null)
+    public function __construct(Database $database = null, PageRepository $pageRepository = null)
     {
-        parent::__construct($database, $context);
+        parent::__construct($database);
         $this->pageRepository = $pageRepository ?? GeneralUtility::makeInstance(PageRepository::class);
     }
 

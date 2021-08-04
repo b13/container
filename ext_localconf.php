@@ -3,8 +3,7 @@
 defined('TYPO3_MODE') || die('Access denied.');
 
 call_user_func(static function () {
-    $typo3Version = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
-    if ($typo3Version->getMajorVersion() === 9) {
+
         // else PageTsConfig Listener is used for ModifyLoadedPageTsConfigEvent
         \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
             \TYPO3\CMS\Backend\Utility\BackendUtility::class,
@@ -16,7 +15,6 @@ call_user_func(static function () {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\B13\Container\Domain\Factory\PageView\Frontend\ContentStorage::class] = [
             'className' => \B13\Container\Domain\Factory\PageView\Frontend\LegacyContentStorage::class
         ];
-    }
 
     // register default icons
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
@@ -45,12 +43,10 @@ call_user_func(static function () {
         'className' => \B13\Container\Xclasses\LocalizationController::class
     ];
 
-    if (false === \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule')) {
-        // draw container grid
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
-            \B13\Container\Hooks\DrawItem::class;
-    }
-    // else, if enabled we register container previewRenderer in registry foreach container CType
+
+    // draw container grid
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
+        \B13\Container\Hooks\DrawItem::class;
 
     // register icons
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =

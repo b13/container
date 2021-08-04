@@ -13,12 +13,10 @@ namespace B13\Container\View;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
@@ -56,21 +54,14 @@ class ContainerLayoutView extends PageLayoutView
 
     /**
      * ContainerLayoutView constructor.
-     * @param EventDispatcherInterface|null $eventDispatcher
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $registry
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher = null, ContainerFactory $containerFactory = null, Registry $registry = null)
+    public function __construct(ContainerFactory $containerFactory = null, Registry $registry = null)
     {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
-
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() === 9) {
-            parent::__construct();
-        } else {
-            parent::__construct($eventDispatcher);
-        }
+        parent::__construct();
     }
 
     /**
@@ -125,7 +116,7 @@ class ContainerLayoutView extends PageLayoutView
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element', $urlParameters);
         return $url;
     }
 
@@ -149,7 +140,7 @@ class ContainerLayoutView extends PageLayoutView
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        $url = (string)$uriBuilder->buildUriFromRoute('new_content_element', $urlParameters);
         return $url;
     }
 
@@ -251,7 +242,6 @@ class ContainerLayoutView extends PageLayoutView
     protected function renderRecords(int $colPos): string
     {
         $containerRecord = $this->container->getContainerRecord();
-        $this->resolveSiteLanguages($containerRecord['pid']);
         $records = $this->container->getChildrenByColPos($colPos);
         $this->nextThree = 1;
         $this->generateTtContentDataArray($records);
@@ -308,5 +298,10 @@ class ContainerLayoutView extends PageLayoutView
         $head .= $this->tt_content_drawColHeader($colTitle);
 
         return $head . $content;
+    }
+
+    protected function isContentEditable()
+    {
+        return $this->getPageLayoutController()->contentIsNotLockedForEditors();
     }
 }

@@ -13,7 +13,6 @@ namespace B13\Container\Domain\Factory\PageView\Frontend;
  */
 
 use B13\Container\Domain\Factory\Database;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -25,9 +24,9 @@ class LegacyContentStorage extends \B13\Container\Domain\Factory\PageView\Fronte
      */
     protected $pageRepository;
 
-    public function __construct(Database $database = null, Context $context = null, PageRepository $pageRepository = null)
+    public function __construct(Database $database = null, PageRepository $pageRepository = null)
     {
-        \B13\Container\Domain\Factory\PageView\ContentStorage::__construct($database, $context);
+        \B13\Container\Domain\Factory\PageView\ContentStorage::__construct($database);
         $this->pageRepository = $pageRepository ?? GeneralUtility::makeInstance(PageRepository::class);
     }
 }

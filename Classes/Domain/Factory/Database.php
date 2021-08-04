@@ -25,24 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Database implements SingletonInterface
 {
-    /**
-     * @var int
-     */
-    protected $backendUserId = 0;
-
-    /**
-     * @var int
-     */
-    protected $workspaceId = 0;
-
-    public function __construct(Context $context = null)
-    {
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-        }
-        $this->backendUserId = (int)$context->getPropertyFromAspect('backend.user', 'id', 0);
-        $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
-    }
 
     /**
      * @return QueryBuilder
@@ -53,14 +35,12 @@ class Database implements SingletonInterface
         if (TYPO3_MODE === 'BE') {
             $queryBuilder->getRestrictions()
                 ->removeAll()
-                ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-                ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
+                ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
         } elseif (TYPO3_MODE === 'FE') {
             $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
             // do not use FrontendWorkspaceRestriction
             $queryBuilder->getRestrictions()
-                ->removeByType(FrontendWorkspaceRestriction::class)
-                ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
+                ->removeByType(FrontendWorkspaceRestriction::class);
         }
         return $queryBuilder;
     }

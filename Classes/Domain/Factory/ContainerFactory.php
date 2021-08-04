@@ -14,7 +14,6 @@ namespace B13\Container\Domain\Factory;
 
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,19 +29,11 @@ class ContainerFactory implements SingletonInterface
      */
     protected $tcaRegistry;
 
-    /**
-     * @var int
-     */
-    protected $workspaceId = 0;
 
-    public function __construct(Database $database = null, Registry $tcaRegistry = null, Context $context = null)
+    public function __construct(Database $database = null, Registry $tcaRegistry = null)
     {
         $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-        }
-        $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
     protected function containerByUid(int $uid): ?array
