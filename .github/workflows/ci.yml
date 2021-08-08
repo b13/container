@@ -44,7 +44,8 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s functional
 
       - name: Acceptance Tests With Fluid Base Page Module on TYPO 10
-        run: if [ ${{ matrix.TYPO3 }} -eq 10 ]; then Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -f -s acceptance; fi
+        if: startsWith(matrix.TYPO3, '10')
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -f -s acceptance
 
       - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance
