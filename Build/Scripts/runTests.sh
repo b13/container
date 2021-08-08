@@ -76,7 +76,7 @@ Options:
         named "canRetrieveValueWithGP"
 
     -x
-        Only with -s functional|unit
+        Only with -s functional|unit|acceptance
         Send information to host instance for test or system under test break points. This is especially
         useful if a local PhpStorm instance is listening on default xdebug port 9000. A different port
         can be selected with -y
@@ -301,10 +301,10 @@ case ${TEST_SUITE} in
         docker-compose down
         ;;
     update)
-        # pull typo3gmbh/phpXY:latest versions of those ones that exist locally
-        docker images typo3gmbh/php*:latest --format "{{.Repository}}:latest" | xargs -I {} docker pull {}
-        # remove "dangling" typo3gmbh/phpXY images (those tagged as <none>)
-        docker images typo3gmbh/php* --filter "dangling=true" --format "{{.ID}}" | xargs -I {} docker rmi {}
+        # pull typo3/core-testing-*:latest versions of those ones that exist locally
+        docker images typo3/core-testing-*:latest --format "{{.Repository}}:latest" | xargs -I {} docker pull {}
+        # remove "dangling" typo3/core-testing-* images (those tagged as <none>)
+        docker images typo3/core-testing-* --filter "dangling=true" --format "{{.ID}}" | xargs -I {} docker rmi {}
         ;;
     *)
         echo "Invalid -s option argument ${TEST_SUITE}" >&2
