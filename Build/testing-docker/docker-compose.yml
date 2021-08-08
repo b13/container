@@ -38,7 +38,19 @@ services:
     environment:
       TYPO3_PATH_ROOT: ${ROOT_DIR}/.Build/Web/typo3temp/var/tests/acceptance
       TYPO3_PATH_APP: ${ROOT_DIR}/.Build/Web/typo3temp/var/tests/acceptance
-    command: php -n -c /etc/php/cli-no-xdebug/php.ini -S web:8000 -t ${ROOT_DIR}/.Build/Web
+    command: >
+      /bin/sh -c "
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          XDEBUG_MODE=\"off\" \
+          php -S web:8000 -t ${ROOT_DIR}/.Build/Web
+        else
+          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          php -S web:8000 -t ${ROOT_DIR}/.Build/Web
+        fi
+      "
 
   acceptance_backend_mariadb10:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
@@ -70,11 +82,23 @@ services:
         done;
         echo Database is up;
         php -v | grep '^PHP';
-        mkdir -p Web/typo3temp/var/tests/ \
-          && vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
-        || vendor/codeception/codeception/codecept run Backend --group=failed -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
-        || vendor/codeception/codeception/codecept run Backend --group=failed -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS}
+        mkdir -p Web/typo3temp/var/tests/
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          XDEBUG_MODE=\"off\" \
+          vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          || vendor/codeception/codeception/codecept run Backend --group=failed -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          || vendor/codeception/codeception/codecept run Backend --group=failed -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS}
+        else
+          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          || vendor/codeception/codeception/codecept run Backend --group=failed -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          || vendor/codeception/codeception/codecept run Backend --group=failed -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS}
+        fi
       "
+
   cgl:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
@@ -90,12 +114,25 @@ services:
           set -x
         fi
         php -v | grep '^PHP';
-        php -n -c /etc/php/cli-no-xdebug/php.ini \
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          php -dxdebug.mode=off \
+            .Build/bin/php-cs-fixer fix \
+              -v \
+              ${CGLCHECK_DRY_RUN} \
+              --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist \
+              --using-cache=no .
+        else
+          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          PHP_CS_FIXER_ALLOW_XDEBUG=1 \
           .Build/bin/php-cs-fixer fix \
             -v \
             ${CGLCHECK_DRY_RUN} \
             --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist \
             --using-cache=no .
+        fi
       "
 
   composer_install:
@@ -166,12 +203,14 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -n -c /etc/php/cli-no-xdebug/php.ini \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          XDEBUG_MODE=\"off\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_CONFIG=\"remote_port=${PHP_XDEBUG_PORT} remote_enable=1 remote_host=$${DOCKER_HOST}\" \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "
 
@@ -207,12 +246,14 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -n -c /etc/php/cli-no-xdebug/php.ini \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
+          XDEBUG_MODE=\"off\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_CONFIG=\"remote_port=${PHP_XDEBUG_PORT} remote_enable=1 remote_host=$${DOCKER_HOST}\" \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
         fi
       "
 
@@ -245,12 +286,14 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -n -c /etc/php/cli-no-xdebug/php.ini \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
+          XDEBUG_MODE=\"off\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_CONFIG=\"remote_port=${PHP_XDEBUG_PORT} remote_enable=1 remote_host=$${DOCKER_HOST}\" \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
         fi
       "
 
@@ -262,10 +305,6 @@ services:
     - ${HOST_HOME}:${HOST_HOME}
     - /etc/passwd:/etc/passwd:ro
     - /etc/group:/etc/group:ro
-    # @todo: sqlite DB is currently written to functional-doc-root (typo3temp/var/test-functional-xy/) /test.sqlite
-    # This directory is mapped to the local dir, so it is hard disk and not a tmpfs. sqlite functionals would speed
-    # up significantly if typo3/testing-framework would accept an environment variable to locate test.sqlite file on
-    # some tmpfs mount. Note this is not an issue within bamboo since in bamboo the entire core checkout is a tmpfs already.
     environment:
       typo3DatabaseDriver: pdo_sqlite
     working_dir: ${ROOT_DIR}/.Build
@@ -276,12 +315,14 @@ services:
         fi
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -n -c /etc/php/cli-no-xdebug/php.ini \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
+          XDEBUG_MODE=\"off\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_CONFIG=\"remote_port=${PHP_XDEBUG_PORT} remote_enable=1 remote_host=$${DOCKER_HOST}\" \
-            vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          vendor/phpunit/phpunit/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
         fi
       "
 
@@ -299,7 +340,7 @@ services:
           set -x
         fi
         php -v | grep '^PHP';
-        find . -name \\*.php ! -path "./.Build/\\*" -print0 | xargs -0 -n1 -P4 php -n -c /etc/php/cli-no-xdebug/php.ini -l >/dev/null
+        find . -name \\*.php ! -path "./.Build/\\*" -print0 | xargs -0 -n1 -P4 php -dxdebug.mode=off -l >/dev/null
       "
 
   phpstan:
@@ -317,8 +358,7 @@ services:
           set -x
         fi
         php -v | grep '^PHP';
-        php -n -c /etc/php/cli-no-xdebug/php.ini \
-          .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction --memory-limit 4G
+        php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction
       "
 
   unit:
@@ -337,11 +377,13 @@ services:
         fi
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -n -c /etc/php/cli-no-xdebug/php.ini \
-            bin/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          XDEBUG_MODE=\"off\" \
+          bin/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_CONFIG=\"remote_port=${PHP_XDEBUG_PORT} remote_enable=1 remote_host=$${DOCKER_HOST}\" \
-            bin/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          bin/phpunit -c vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "

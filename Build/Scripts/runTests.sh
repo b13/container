@@ -76,7 +76,7 @@ Options:
         named "canRetrieveValueWithGP"
 
     -x
-        Only with -s functional|unit
+        Only with -s functional|unit|acceptance
         Send information to host instance for test or system under test break points. This is especially
         useful if a local PhpStorm instance is listening on default xdebug port 9000. A different port
         can be selected with -y
