@@ -318,7 +318,7 @@ services:
         fi
         php -v | grep '^PHP';
         php -n -c /etc/php/cli-no-xdebug/php.ini \
-          .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon
+          .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction --memory-limit 4G
       "
 
   unit:
