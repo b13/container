@@ -13,13 +13,11 @@ services:
     - /var/lib/mysql/:rw,noexec,nosuid
 
   mssql2019latest:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: typo3/core-testing-mssql2019:latest
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: "Test1234!"
       MSSQL_PID: Developer
-    # No tmpfs setup here since mssql fails on tmpfs o_direct.
-    # This makes mssql sloooow for functionals.
 
   postgres10:
     image: postgres:10
