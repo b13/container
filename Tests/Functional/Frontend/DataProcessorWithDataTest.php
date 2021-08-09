@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace B13\Container\Tests\Functional\Frontend;
 
 /*
@@ -17,7 +15,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class DataProcessorWithDataTest extends AbstractFrontendTest
 {
-    protected function setUp(): void
+    public function setUp(): void
     {
         FunctionalTestCase::setUp();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/data_processor_with_data.xml');
