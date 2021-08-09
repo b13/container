@@ -1,3 +1,5 @@
+![CI](https://github.com/b13/container/actions/workflows/ci.yml/badge.svg)
+
 # EXT:container - A TYPO3 Extension for creating nested content elements
 
 ## Features
