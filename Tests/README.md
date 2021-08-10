@@ -11,6 +11,7 @@
     composer install
     # prepare functional tests
     cp Build/envs/.env.local .env
+    composer require helhum/typo3-console helhum/dotenv-connector
     # prepare acceptance tests
     mkdir config && cd config && ln -s ../Build/sites && cd -
     cp Build/LocalConfiguration.php .Build/Web/typo3conf/

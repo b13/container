@@ -9,9 +9,6 @@ paths:
 settings:
   colors: true
   memory_limit: 1024M
-groups:
-  failed: ../.Build/Web/typo3temp/var/tests/_output/failed
 extensions:
   enabled:
-    - Codeception\Extension\RunFailed
     - Codeception\Extension\Recorder
