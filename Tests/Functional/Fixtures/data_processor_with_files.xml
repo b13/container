@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<pages>
+		<uid>1</uid>
+		<pid>0</pid>
+		<title>page-1</title>
+		<slug>/</slug>
+	</pages>
+	<!-- container with one child -->
+	<tt_content>
+		<uid>1</uid>
+		<pid>1</pid>
+		<CType>b13-2cols</CType>
+	</tt_content>
+	<tt_content>
+		<uid>2</uid>
+		<pid>1</pid>
+		<colPos>200</colPos>
+		<tx_container_parent>1</tx_container_parent>
+		<CType>uploads</CType>
+		<media>1</media>
+	</tt_content>
+	<sys_file_reference>
+		<uid>1</uid>
+		<tablenames>tt_content</tablenames>
+		<fieldname>media</fieldname>
+		<uid_local>1</uid_local>
+		<uid_foreign>2</uid_foreign>
+		<table_local>sys_file</table_local>
+	</sys_file_reference>
+	<sys_file_storage>
+		<uid>1</uid>
+		<is_online>1</is_online>
+		<driver>Local</driver>
+		<configuration><![CDATA[<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+			<T3FlexForms>
+				<data>
+					<sheet index="sDEF">
+						<language index="lDEF">
+							<field index="basePath">
+								<value index="vDEF">typo3conf/ext/container</value>
+							</field>
+							<field index="pathType">
+								<value index="vDEF">relative</value>
+							</field>
+							<field index="baseUri">
+								<value index="vDEF"></value>
+							</field>
+							<field index="caseSensitive">
+								<value index="vDEF">1</value>
+							</field>
+						</language>
+					</sheet>
+				</data>
+			</T3FlexForms>]]>
+		</configuration>
+	</sys_file_storage>
+	<sys_file>
+		<uid>1</uid>
+		<name>README.md</name>
+		<identifier>README.md</identifier>
+		<storage>1</storage>
+	</sys_file>
+</dataset>
