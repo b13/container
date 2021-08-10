@@ -54,6 +54,10 @@ Options:
             - lint: PHP linting
             - unit (default): PHP unit tests
 
+    -t <10|11>
+        Only with -s composerInstall|phpstan|acceptance
+        TYPO3 core major version the extension is embedded in for testing.
+
     -d <mariadb|mssql|postgres|sqlite>
         Only with -s functional
         Specifies on which DBMS tests are performed
@@ -207,18 +211,6 @@ DOCKER_PHP_IMAGE=`echo "php${PHP_VERSION}" | sed -e 's/\.//'`
 shift $((OPTIND - 1))
 if [ -n "${1}" ]; then
     TEST_FILE="Web/typo3conf/ext/container/${1}"
-else
-    case ${TEST_SUITE} in
-        acceptance)
-            TEST_FILE="Web/typo3conf/ext/container/Tests/Acceptance"
-            ;;
-        functional)
-            TEST_FILE="Web/typo3conf/ext/container/Tests/Functional"
-            ;;
-        unit)
-            TEST_FILE="Web/typo3conf/ext/container/Tests/Unit"
-            ;;
-    esac
 fi
 
 if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
