@@ -45,7 +45,14 @@ jobs:
 
       - name: Acceptance Tests With Fluid Base Page Module on TYPO 10
         if: startsWith(matrix.TYPO3, '10')
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -f -s acceptance
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -f -s acceptance -e --fail-fast
 
       - name: Acceptance Tests
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e --fail-fast
+
+      - name: Archive acceptance tests results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: acceptance-test-reports-${{ matrix.php }}-${{ matrix.TYPO3 }}
+          path: .Build/Web/typo3temp/var/tests/_output
