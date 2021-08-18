@@ -114,6 +114,22 @@ class WorkspaceTest extends AbstractFrontendTest
      * @test
      * @group frontend
      */
+    public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.xml');
+        $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
+        $response = $this->executeFrontendRequest(new InternalRequest(), $context);
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('ws-container-header', $body);
+        self::assertStringContainsString('live-child-header', $body);
+        self::assertStringNotContainsString('live-container-header', $body);
+    }
+
+    /**
+     * @test
+     * @group frontend
+     */
     public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
     {
         if ($this->typo3MajorVersion === 11) {
