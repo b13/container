@@ -74,8 +74,9 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         }
 
         $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
+        $partialRootPaths = $this->tcaRegistry->getGridPartialPaths($record['CType']);
         $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setPartialRootPaths(['EXT:backend/Resources/Private/Partials/', 'EXT:container/Resources/Private/Partials/']);
+        $view->setPartialRootPaths($partialRootPaths);
         $view->setTemplatePathAndFilename($gridTemplate);
 
         $view->assign('hideRestrictedColumns', (bool)(BackendUtility::getPagesTSconfig($context->getPageId())['mod.']['web_layout.']['hideRestrictedCols'] ?? false));
