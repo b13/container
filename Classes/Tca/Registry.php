@@ -252,6 +252,18 @@ class Registry implements SingletonInterface
     /**
      * @param string $cType
      * @return array
+     */
+    public function getGridPartialPaths(string $cType): array
+    {
+        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridPartialPaths'])) {
+            return [];
+        }
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridPartialPaths'];
+    }
+
+    /**
+     * @param string $cType
+     * @return array
      * @deprecated
      */
     public function getAvaiableColumns(string $cType): array

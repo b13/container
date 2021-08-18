@@ -50,6 +50,14 @@ class ContainerConfiguration
     protected $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html';
 
     /**
+     * @var array
+     */
+    protected $gridPartialPaths = [
+        'EXT:backend/Resources/Private/Partials/',
+        'EXT:container/Resources/Private/Partials/',
+    ];
+
+    /**
      * @var bool
      */
     protected $saveAndCloseInNewContentElementWizard = true;
@@ -103,6 +111,26 @@ class ContainerConfiguration
     public function setGridTemplate(string $gridTemplate): ContainerConfiguration
     {
         $this->gridTemplate = $gridTemplate;
+        return $this;
+    }
+
+    /**
+     * @param array $gridPartialPaths
+     * @return ContainerConfiguration
+     */
+    public function setGridPartialPaths(array $gridPartialPaths): ContainerConfiguration
+    {
+        $this->gridPartialPaths = $gridPartialPaths;
+        return $this;
+    }
+
+    /**
+     * @param string $gridPartialPath
+     * @return ContainerConfiguration
+     */
+    public function addGridPartialPath(string $gridPartialPath): ContainerConfiguration
+    {
+        $this->gridPartialPaths[] = $gridPartialPath;
         return $this;
     }
 
@@ -161,6 +189,14 @@ class ContainerConfiguration
     }
 
     /**
+     * @return string[]
+     */
+    public function getGridPartialPaths(): array
+    {
+        return $this->gridPartialPaths;
+    }
+
+    /**
      * @return string
      */
     public function getGroup(): string
@@ -181,6 +217,7 @@ class ContainerConfiguration
             'backendTemplate' => $this->backendTemplate,
             'grid' => $this->grid,
             'gridTemplate' => $this->gridTemplate,
+            'gridPartialPaths' => $this->gridPartialPaths,
             'saveAndCloseInNewContentElementWizard' => $this->saveAndCloseInNewContentElementWizard,
             'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard,
             'group' => $this->group
