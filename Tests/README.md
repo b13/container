@@ -28,6 +28,6 @@
  ## Run tests
 
 
-    .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit/
-    .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional
+    .Build/bin/phpunit -c Build/phpunit/UnitTests.xml Tests/Unit/
+    .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml Tests/Functional
     .Build/bin/codecept run Backend --env=local -c Tests/codeception.yml
