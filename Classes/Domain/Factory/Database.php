@@ -91,7 +91,8 @@ class Database implements SingletonInterface
      */
     public function fetchOneRecord(int $uid): ?array
     {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()->removeAll();
         $record = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(

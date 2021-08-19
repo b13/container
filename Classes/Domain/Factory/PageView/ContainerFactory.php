@@ -33,6 +33,9 @@ class ContainerFactory extends \B13\Container\Domain\Factory\ContainerFactory
     protected function containerByUid(int $uid): ?array
     {
         $record =  $this->database->fetchOneRecord($uid);
+        if ($record === null) {
+            return null;
+        }
         return $this->contentStorage->containerRecordWorkspaceOverlay($record);
     }
 
