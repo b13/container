@@ -23,7 +23,11 @@ class WizardItems implements NewContentElementWizardHookInterface
         if ($parent > 0) {
             foreach ($wizardItems as $key => $wizardItem) {
                 $wizardItems[$key]['tt_content_defValues']['tx_container_parent'] = $parent;
-                $wizardItems[$key]['params'] .= '&defVals[tt_content][tx_container_parent]=' . $parent;
+                if (!isset($wizardItems[$key]['params'])) {
+                    $wizardItems[$key]['params'] = '?defVals[tt_content][tx_container_parent]=' . $parent;
+                } else {
+                    $wizardItems[$key]['params'] .= '&defVals[tt_content][tx_container_parent]=' . $parent;
+                }
             }
         }
     }

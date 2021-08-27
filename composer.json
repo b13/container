@@ -26,7 +26,6 @@
         "b13/container-example": "dev-master",
         "ichhabrecht/content-defender": "dev-master",
         "typo3/cms-install": "^10.4",
-        "typo3/cms-about": "^10.4",
         "typo3/cms-fluid-styled-content": "^10.4",
         "typo3/cms-info": "^10.4",
         "typo3/testing-framework": "^6",

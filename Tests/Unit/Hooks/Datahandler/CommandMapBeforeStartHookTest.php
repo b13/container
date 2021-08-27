@@ -36,7 +36,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => null, 'registry' => null, 'database' => $database->reveal()]
+            ['containerFactory' => null, 'tcaRegistry' => null, 'database' => $database->reveal()]
         );
         $commandMap = [
             'tt_content' => [

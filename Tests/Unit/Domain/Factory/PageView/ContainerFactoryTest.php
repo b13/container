@@ -29,7 +29,7 @@ class ContainerFactoryTest extends UnitTestCase
         $containerFactory = $this->getAccessibleMock(
             ContainerFactory::class,
             ['foo'],
-            ['database' => $database->reveal(), 'registry' => null, 'context' => null]
+            ['database' => $database->reveal(), 'tcaRegistry' => null, 'context' => null]
         );
         self::assertNull($containerFactory->_call('containerByUid', 1));
     }

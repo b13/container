@@ -36,6 +36,7 @@ class CopyContainerTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function copyContainerAfterElementCopiesChildEvenChildIsNotAllowedByContentDefenderInBackendLayout(): void
     {

@@ -39,6 +39,7 @@ class LocalizationTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function moveElementIntoContainerAtTopClipboard(): void
     {
@@ -68,7 +69,7 @@ class LocalizationTest extends DatahandlerTest
 
     /**
      * @test
-     * @group foo
+     * @group content_defender
      */
     public function moveElementIntoContainerAtTopAjax(): void
     {
@@ -98,6 +99,7 @@ class LocalizationTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function copyElementIntoContainerAtTop(): void
     {
