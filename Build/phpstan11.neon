@@ -20,9 +20,6 @@ parameters:
       message: '#PHPDoc tag @.*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/_generated/BackendTesterActions.php
     -
-      message: '#Method TYPO3\\TestingFramework\\Core\\AccessibleObjectInterface::_call\(\).*#'
-      path: %currentWorkingDirectory%/Tests
-    -
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
     -

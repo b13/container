@@ -53,6 +53,21 @@ abstract class DatahandlerTest extends FunctionalTestCase
         $this->typo3MajorVersion = $typo3Version->getMajorVersion();
     }
 
+    protected function linkSiteConfigurationIntoTestInstance(): void
+    {
+        $from = ORIGINAL_ROOT . '/typo3conf/sites';
+        $to = $this->getInstancePath() . '/typo3conf/sites';
+        if (!is_dir($from)) {
+            throw new \Exception('site config directory not found', 1630425034);
+        }
+        if (!file_exists($to)) {
+            $success = symlink(realpath($from), $to);
+            if ($success === false) {
+                throw new \Exception('cannot link site config', 1630425035);
+            }
+        }
+    }
+
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \TYPO3\TestingFramework\Core\Exception

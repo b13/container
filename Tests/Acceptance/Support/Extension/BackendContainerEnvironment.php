@@ -24,7 +24,6 @@ class BackendContainerEnvironment extends BackendEnvironment
             'extbase',
             'fluid',
             'backend',
-            'about',
             'install',
             'frontend',
             'recordlist',

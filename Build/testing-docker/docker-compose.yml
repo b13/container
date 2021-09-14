@@ -85,16 +85,16 @@ services:
         mkdir -p Web/typo3temp/var/tests/
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
           XDEBUG_MODE=\"off\" \
-          vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
-          || vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          vendor/codeception/codeception/codecept run Backend -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          || vendor/codeception/codeception/codecept run Backend -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
           || vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS}
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
           XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
           XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
-          vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
-          || vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          vendor/codeception/codeception/codecept run Backend -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
+          || vendor/codeception/codeception/codecept run Backend -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS} \
           || vendor/codeception/codeception/codecept run Backend -d -c Web/typo3conf/ext/container/Tests/codeception.yml ${TEST_FILE} ${EXTRA_TEST_OPTIONS}
         fi
       "
@@ -153,7 +153,11 @@ services:
         if [ ${TYPO3} -eq 10 ]; then
           composer install --no-progress --no-interaction;
         else
-          composer require typo3/cms-install:^11.0 typo3/cms-fluid-styled-content:^11.0 typo3/cms-about:^11.0 typo3/cms-info:^11.0 typo3/cms-workspaces:^11.0 helhum/dotenv-connector:^3 symfony/dotenv:5.1.11 guzzlehttp/psr7:^1.8.2 --dev -W --no-progress --no-interaction
+          if [ ${PHP_VERSION} != "8.0" ]; then
+            composer require typo3/cms-install:^11.0 typo3/cms-fluid-styled-content:^11.0 typo3/cms-info:^11.0 typo3/cms-workspaces:^11.0 guzzlehttp/psr7:^1.8.2 --dev -W --no-progress --no-interaction
+          else
+            composer remove typo3/coding-standards ichhabrecht/content-defender typo3/cms* --dev --no-progress --no-interaction && composer require typo3/coding-standards:^0.3 typo3/cms-install:^11.0 typo3/cms-fluid-styled-content:^11.0 typo3/cms-info:^11.0 typo3/cms-workspaces:^11.0 --dev -W --no-progress --no-interaction
+          fi
         fi
       "
 
@@ -203,14 +207,22 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          export XDEBUG_MODE=\"off\"
+          if [ ${PHP_VERSION} != "8.0" ]; then
+            bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          else
+            bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml --exclude-group=content_defender ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          fi
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
+          export XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
+          if [ ${PHP_VERSION} != "8.0" ]; then
+            bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          else
+            bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ---exclude-group=content_defender ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          fi
         fi
       "
 
@@ -358,7 +370,11 @@ services:
           set -x
         fi
         php -v | grep '^PHP';
-        php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction
+        if [ ${PHP_VERSION} != "8.0" ]; then
+          php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction
+        else
+          php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan11-8.neon --no-progress --no-interaction
+        fi
       "
 
   unit:

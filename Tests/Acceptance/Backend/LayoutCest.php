@@ -13,6 +13,8 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use Codeception\Scenario;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 class LayoutCest
 {
@@ -162,11 +164,15 @@ class LayoutCest
 
     /**
      * @param BackendTester $I
+     * @param Scenario $scenario
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree)
+    public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree, Scenario $scenario)
     {
+        if (version_compare(phpversion(), '8', '>=')) {
+            $scenario->skip('todo seems bug in core #95160');
+        }
         //@depends canCreateContainer
         $I->click('Page');
         $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
@@ -206,6 +212,9 @@ class LayoutCest
         $I->switchToContentFrame();
 
         $I->selectOption('select[name="actionMenu"]', 'Languages');
+        if (version_compare((new Typo3Version())->getVersion(), '11.3.0', '>')) {
+            $I->selectOption('select[name="languageMenu"]', 'All languages');
+        }
         $I->waitForElementVisible('a.t3js-localize');
         $I->click('a.t3js-localize');
 
@@ -232,7 +241,12 @@ class LayoutCest
         $I->click('headerOfChild', '#element-tt_content-212');
 
         $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
-        $I->see('[Translate to language-1:] headerOfChild');
+        $typo3Version = new Typo3Version();
+        if ($typo3Version->getMajorVersion() === 10 || $typo3Version->getBranch() === '11.2') {
+            $I->see('[Translate to language-1:] headerOfChild');
+        } else {
+            $I->see('[Translate to german:] headerOfChild');
+        }
     }
 
     /**

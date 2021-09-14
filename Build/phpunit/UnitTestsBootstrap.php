@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
+
 call_user_func(function () {
     $testbase = new \TYPO3\TestingFramework\Core\Testbase();
 
@@ -52,8 +54,17 @@ call_user_func(function () {
         new \TYPO3\CMS\Core\Cache\Backend\NullBackend('production', [])
     );
     // Set all packages to active
-    $packageManager = \TYPO3\CMS\Core\Core\Bootstrap::createPackageManager(\TYPO3\CMS\Core\Package\UnitTestPackageManager::class, $cache);
-
+    if (version_compare((new Typo3Version())->getVersion(), '11.3.0', '>')) {
+        $packageManager = \TYPO3\CMS\Core\Core\Bootstrap::createPackageManager(
+            \TYPO3\CMS\Core\Package\UnitTestPackageManager::class,
+            \TYPO3\CMS\Core\Core\Bootstrap::createPackageCache($cache)
+        );
+    } else {
+        $packageManager = \TYPO3\CMS\Core\Core\Bootstrap::createPackageManager(
+            \TYPO3\CMS\Core\Package\UnitTestPackageManager::class,
+            $cache
+        );
+    }
     \TYPO3\CMS\Core\Utility\GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Package\PackageManager::class, $packageManager);
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::setPackageManager($packageManager);
 

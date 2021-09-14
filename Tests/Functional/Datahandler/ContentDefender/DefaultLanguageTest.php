@@ -38,6 +38,7 @@ class DefaultLanguageTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function moveElementIntoContainerAtTopWithClipboard(): void
     {
@@ -67,6 +68,7 @@ class DefaultLanguageTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function moveElementIntoContainerAfterOtherElementWithClipboard(): void
     {
@@ -96,6 +98,7 @@ class DefaultLanguageTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function moveElementIntoContainerAtTopWithAjax(): void
     {
@@ -125,6 +128,7 @@ class DefaultLanguageTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function moveElementIntoContainerAfterOtherElementWithAjax(): void
     {
@@ -154,6 +158,7 @@ class DefaultLanguageTest extends DatahandlerTest
 
     /**
      * @test
+     * @group content_defender
      */
     public function copyElementIntoContainerAtTop(): void
     {

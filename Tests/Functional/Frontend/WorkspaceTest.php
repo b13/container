@@ -133,7 +133,7 @@ class WorkspaceTest extends AbstractFrontendTest
     public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
     {
         if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo seems bug in core');
+            self::markTestSkipped('todo seems bug in core #93445');
         }
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_pages.xml');

@@ -27,6 +27,7 @@ setUpDockerComposeDotEnv() {
     echo "PHP_XDEBUG_PORT=${PHP_XDEBUG_PORT}" >> .env
     echo "DOCKER_PHP_IMAGE=${DOCKER_PHP_IMAGE}" >> .env
     echo "TYPO3=${TYPO3}" >> .env
+    echo "PHP_VERSION=${PHP_VERSION}" >> .env
     echo "FLUID_BASED_PAGE_MODULE=${FLUID_BASED_PAGE_MODULE}" >> .env
     echo "EXTRA_TEST_OPTIONS=${EXTRA_TEST_OPTIONS}" >> .env
     echo "SCRIPT_VERBOSE=${SCRIPT_VERBOSE}" >> .env
@@ -66,11 +67,9 @@ Options:
             - postgres: use postgres
             - sqlite: use sqlite
 
-    -p <7.2|7.3|7.4>
+    -p <7.2|7.3|7.4|8.0>
         Specifies the PHP minor version to be used
             - 7.4 (default): use PHP 7.4
-            - 7.3: use PHP 7.3
-            - 7.2: use PHP 7.2
 
     -e "<phpunit or codeception options>"
         Only with -s acceptance|functional|unit

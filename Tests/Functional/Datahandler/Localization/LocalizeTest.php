@@ -23,6 +23,7 @@ class LocalizeTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
+        $this->linkSiteConfigurationIntoTestInstance();
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
