@@ -56,9 +56,9 @@ class ContainerProcessor implements DataProcessorInterface
         if (isset($processorConfiguration['if.']) && !$cObj->checkIf($processorConfiguration['if.'])) {
             return $processedData;
         }
-        if ($processorConfiguration['contentId.']) {
+        if ($processorConfiguration['contentId.'] ?? false) {
             $contentId = (int)$cObj->stdWrap($processorConfiguration['contentId'], $processorConfiguration['contentId.']);
-        } elseif ($processorConfiguration['contentId']) {
+        } elseif ($processorConfiguration['contentId'] ?? false) {
             $contentId = (int)$processorConfiguration['contentId'];
         } else {
             $contentId = (int)$cObj->data['uid'];

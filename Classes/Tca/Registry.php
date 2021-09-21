@@ -180,7 +180,7 @@ class Registry implements SingletonInterface
 
     public function registerIcons(): void
     {
-        if (is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
+        if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration']) && is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
                 if (file_exists(GeneralUtility::getFileAbsFileName($containerConfiguration['icon']))) {
