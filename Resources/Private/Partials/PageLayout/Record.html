@@ -21,9 +21,9 @@
     <f:comment>use column.allowNewContent instead of pageContext</f:comment>
     <f:if condition="{allowEditContent} && {item.column.contentEditable} && {item.column.allowNewContent}">
         <div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-{item.column.columnNumber}-page-{item.context.pageId}-{item.column.uniqueId}">
-            <a href="{item.newContentAfterUrl}" title="{item.newContentAfterLinkTitle}" data-title="{item.newContentAfterLinkTitle}" class="btn btn-default btn-sm t3js-toggle-new-content-element-wizard disabled">
+            <a href="{item.newContentAfterUrl}" title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}" data-title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}" class="btn btn-default btn-sm t3js-toggle-new-content-element-wizard disabled">
                 <core:icon identifier="actions-add" />
-                {item.newContentAfterTitle}
+                <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:content" />
             </a>
         </div>
     </f:if>
