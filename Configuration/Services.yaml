@@ -19,3 +19,4 @@ services:
       - name: 'console.command'
         command: 'container:integrity'
         schedulable: true
+        description: Checks integrity of containers
