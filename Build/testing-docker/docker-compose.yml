@@ -153,11 +153,7 @@ services:
         if [ ${TYPO3} -eq 10 ]; then
           composer install --no-progress --no-interaction;
         else
-          if [ ${PHP_VERSION} != "8.0" ]; then
-            composer require typo3/cms-install:^11.0 typo3/cms-fluid-styled-content:^11.0 typo3/cms-info:^11.0 typo3/cms-workspaces:^11.0 guzzlehttp/psr7:^1.8.2 --dev -W --no-progress --no-interaction
-          else
-            composer remove typo3/coding-standards ichhabrecht/content-defender typo3/cms* --dev --no-progress --no-interaction && composer require typo3/coding-standards:^0.3 typo3/cms-install:^11.0 typo3/cms-fluid-styled-content:^11.0 typo3/cms-info:^11.0 typo3/cms-workspaces:^11.0 --dev -W --no-progress --no-interaction
-          fi
+          composer remove typo3/coding-standards ichhabrecht/content-defender typo3/cms* --dev --no-progress --no-interaction && composer require typo3/coding-standards:^0.3 typo3/cms-install:^11.5 typo3/cms-fluid-styled-content:^11.5 typo3/cms-info:^11.5 typo3/cms-workspaces:^11.5 --dev -W --no-progress --no-interaction
         fi
       "
 
@@ -208,7 +204,7 @@ services:
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
           export XDEBUG_MODE=\"off\"
-          if [ ${PHP_VERSION} != "8.0" ]; then
+          if [ ${TYPO3} -eq 10 ]; then
             bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
           else
             bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml --exclude-group=content_defender ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
@@ -218,126 +214,13 @@ services:
           export XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
           XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
-          if [ ${PHP_VERSION} != "8.0" ]; then
+          if [ ${TYPO3} -eq 10 ]; then
             bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
           else
             bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ---exclude-group=content_defender ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
           fi
         fi
       "
-
-  functional_mssql2019latest:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
-    user: ${HOST_UID}
-    links:
-    - mssql2019latest
-    volumes:
-    - ${ROOT_DIR}:${ROOT_DIR}
-    - ${HOST_HOME}:${HOST_HOME}
-    - /etc/passwd:/etc/passwd:ro
-    - /etc/group:/etc/group:ro
-    environment:
-      typo3DatabaseDriver: sqlsrv
-      typo3DatabaseName: func
-      typo3DatabasePassword: "Test1234!"
-      typo3DatabaseUsername: SA
-      typo3DatabasePort: 1433
-      typo3DatabaseCharset: utf-8
-      typo3DatabaseHost: mssql2019latest
-    working_dir: ${ROOT_DIR}/.Build
-    command: >
-      /bin/sh -c "
-        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
-          set -x
-        fi
-        echo Waiting for database start...;
-        while ! nc -z mssql2019latest 1433; do
-          sleep 1;
-        done;
-        sleep 5;
-        echo Database is up;
-        php -v | grep '^PHP';
-        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
-        else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
-        fi
-      "
-
-  functional_postgres10:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
-    user: ${HOST_UID}
-    links:
-    - postgres10
-    volumes:
-    - ${ROOT_DIR}:${ROOT_DIR}
-    - ${HOST_HOME}:${HOST_HOME}
-    - /etc/passwd:/etc/passwd:ro
-    - /etc/group:/etc/group:ro
-    environment:
-      typo3DatabaseDriver: pdo_pgsql
-      typo3DatabaseName: bamboo
-      typo3DatabaseUsername: ${HOST_USER}
-      typo3DatabaseHost: postgres10
-      typo3DatabasePassword: funcp
-    working_dir: ${ROOT_DIR}/.Build
-    command: >
-      /bin/sh -c "
-        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
-          set -x
-        fi
-        echo Waiting for database start...;
-        while ! nc -z postgres10 5432; do
-          sleep 1;
-        done;
-        echo Database is up;
-        php -v | grep '^PHP';
-        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
-        else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
-        fi
-      "
-
-  functional_sqlite:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
-    user: ${HOST_UID}
-    volumes:
-    - ${ROOT_DIR}:${ROOT_DIR}
-    - ${HOST_HOME}:${HOST_HOME}
-    - /etc/passwd:/etc/passwd:ro
-    - /etc/group:/etc/group:ro
-    environment:
-      typo3DatabaseDriver: pdo_sqlite
-    working_dir: ${ROOT_DIR}/.Build
-    command: >
-      /bin/sh -c "
-        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
-          set -x
-        fi
-        php -v | grep '^PHP';
-        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
-        else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
-          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
-        fi
-      "
-
   lint:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
@@ -370,11 +253,7 @@ services:
           set -x
         fi
         php -v | grep '^PHP';
-        if [ ${PHP_VERSION} != "8.0" ]; then
-          php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction
-        else
-          php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan11-8.neon --no-progress --no-interaction
-        fi
+        php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction
       "
 
   unit:

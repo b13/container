@@ -5,10 +5,14 @@ parameters:
     - %currentWorkingDirectory%/Classes
     - %currentWorkingDirectory%/Tests
 
+  excludePaths:
+    - %currentWorkingDirectory%/Classes/ContentDefender/Hooks/WizardItems.php
+    - %currentWorkingDirectory%/Classes/Hooks/ContentDefender/ColumnConfigurationManipulationHook.php
+
   ignoreErrors:
     - '#.*TYPO3\\CMS\\Frontend\\Page\\PageRepository.*#'
     -
-      message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 0 parameters, 1 required.#'
+      message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 1 parameter, 0 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
     -
       message: '#Constant ORIGINAL_ROOT not found.#'

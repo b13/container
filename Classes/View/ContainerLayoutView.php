@@ -66,10 +66,10 @@ class ContainerLayoutView extends PageLayoutView
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
 
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() === 9) {
-            parent::__construct();
-        } else {
+        if ($typo3Version->getMajorVersion() === 10) {
             parent::__construct($eventDispatcher);
+        } else {
+            parent::__construct();
         }
     }
 

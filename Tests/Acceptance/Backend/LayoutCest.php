@@ -102,7 +102,7 @@ class LayoutCest
         $I->switchToContentFrame();
         $I->click('Content');
         $I->switchToIFrame();
-        $I->waitForElement('#NewContentElementController');
+        $I->waitForElement('.modal-dialog');
         $I->click('Container');
         $I->click('2 Column Container With Header');
         $I->switchToContentFrame();
@@ -129,7 +129,7 @@ class LayoutCest
         $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
         // "[data-colpos="1-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
-        $I->waitForElement('#NewContentElementController');
+        $I->waitForElement('.modal-dialog');
         $I->click('Header Only');
         $I->switchToContentFrame();
         $I->see('header [200]');
@@ -149,17 +149,25 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         $selecor = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
-        $I->dontSee('english', $selecor);
+        if ((new Typo3Version())->getMajorVersion() === 10) {
+            $I->dontSee('english', $selecor);
+        } else {
+            $I->dontSeeElement($selecor . ' .t3js-flag[title="english"]');
+        }
         $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
         $I->switchToIFrame();
-        $I->waitForElement('#NewContentElementController');
+        $I->waitForElement('.modal-dialog');
         $I->click('Header Only');
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        $I->see('english', $selecor);
+        if ((new Typo3Version())->getMajorVersion() === 10) {
+            $I->see('english', $selecor);
+        } else {
+            $I->canSeeElement($selecor . ' .t3js-flag[title="english"]');
+        }
     }
 
     /**
@@ -188,14 +196,18 @@ class LayoutCest
         $I->dontSee('german', $selecor);
         $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $uid . '-200"]');
         $I->switchToIFrame();
-        $I->waitForElement('#NewContentElementController');
+        $I->waitForElement('.modal-dialog');
         $I->click('Header Only');
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        $I->see('german', $selecor);
+        if ((new Typo3Version())->getMajorVersion() === 10) {
+            $I->see('german', $selecor);
+        } else {
+            $I->canSeeElement($selecor . ' .t3js-flag[title="german"]');
+        }
     }
 
     /**
@@ -212,7 +224,7 @@ class LayoutCest
         $I->switchToContentFrame();
 
         $I->selectOption('select[name="actionMenu"]', 'Languages');
-        if (version_compare((new Typo3Version())->getVersion(), '11.3.0', '>')) {
+        if ((new Typo3Version())->getMajorVersion() > 10) {
             $I->selectOption('select[name="languageMenu"]', 'All languages');
         }
         $I->waitForElementVisible('a.t3js-localize');
@@ -242,11 +254,12 @@ class LayoutCest
 
         $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
         $typo3Version = new Typo3Version();
-        if ($typo3Version->getMajorVersion() === 10 || $typo3Version->getBranch() === '11.2') {
+        if ($typo3Version->getMajorVersion() === 10) {
             $I->see('[Translate to language-1:] headerOfChild');
         } else {
             $I->see('[Translate to german:] headerOfChild');
         }
+
     }
 
     /**
