@@ -148,11 +148,11 @@ class LayoutCest
         $pageTree->openPath(['home', 'pageWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        §selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
+        $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
         if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->dontSee('english', §selector);
+            $I->dontSee('english', $selector);
         } else {
-            $I->dontSeeElement(§selector . ' .t3js-flag[title="english"]');
+            $I->dontSeeElement($selector . ' .t3js-flag[title="english"]');
         }
         $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
         $I->switchToIFrame();
@@ -164,9 +164,9 @@ class LayoutCest
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
         if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->see('english', §selector);
+            $I->see('english', $selector);
         } else {
-            $I->canSeeElement(§selector . ' .t3js-flag[title="english"]');
+            $I->canSeeElement($selector . ' .t3js-flag[title="english"]');
         }
     }
 
@@ -192,8 +192,8 @@ class LayoutCest
 
         $uid = 104;
 
-        §selector = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
-        $I->dontSee('german', §selector);
+        $selector = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
+        $I->dontSee('german', $selector);
         $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $uid . '-200"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
@@ -204,9 +204,9 @@ class LayoutCest
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
         if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->see('german', §selector);
+            $I->see('german', $selector);
         } else {
-            $I->canSeeElement(§selector . ' .t3js-flag[title="german"]');
+            $I->canSeeElement($selector . ' .t3js-flag[title="german"]');
         }
     }
 
