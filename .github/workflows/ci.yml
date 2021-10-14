@@ -43,7 +43,7 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
 
       - name: Functional Tests with mariadb
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s functional
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
 
       - name: Acceptance Tests With Fluid Base Page Module on TYPO 10
         if: startsWith(matrix.TYPO3, '10')
