@@ -254,7 +254,6 @@ class LayoutCest
         } else {
             $I->see('[Translate to german:] headerOfChild');
         }
-
     }
 
     /**
