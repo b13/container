@@ -13,7 +13,6 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
-use Codeception\Scenario;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
 class LayoutCest
@@ -172,15 +171,11 @@ class LayoutCest
 
     /**
      * @param BackendTester $I
-     * @param Scenario $scenario
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree, Scenario $scenario)
+    public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree)
     {
-        if (version_compare(phpversion(), '8', '>=')) {
-            $scenario->skip('todo seems bug in core #95160');
-        }
         //@depends canCreateContainer
         $I->click('Page');
         $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
