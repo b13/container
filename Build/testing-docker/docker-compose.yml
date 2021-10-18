@@ -119,8 +119,8 @@ services:
             .Build/bin/php-cs-fixer fix \
               -v \
               ${CGLCHECK_DRY_RUN} \
-              --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist \
-              --using-cache=no .
+              --config=Build/php_cs.php \
+              --using-cache=no
         else
           DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
           XDEBUG_MODE=\"debug,develop\" \
@@ -130,8 +130,8 @@ services:
           .Build/bin/php-cs-fixer fix \
             -v \
             ${CGLCHECK_DRY_RUN} \
-            --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist \
-            --using-cache=no .
+            --config=Build/php_cs.php \
+            --using-cache=no
         fi
       "
 
