@@ -57,15 +57,15 @@ class LayoutCest
         $languageCol = 'td.t3-grid-cell:nth-child(1)';
         $I->see('2cols-header-0', $languageCol);
         $I->see('header-header-0', $languageCol);
-        $I->dontSee('2cols-header-1', $languageCol);
-        $I->dontSee('header-header-1', $languageCol);
+        $I->dontSee('2cols-header-1', $languageCol . ' td.t3-grid-cell');
+        $I->dontSee('header-header-1', $languageCol . ' td.t3-grid-cell');
         //td.t3-grid-cell:nth-child(2)
         // german language
         $languageCol = 'td.t3-grid-cell:nth-child(2)';
         $I->see('2cols-header-1', $languageCol);
         $I->see('header-header-1', $languageCol);
-        $I->dontSee('2cols-header-0', $languageCol);
-        $I->dontSee('header-header-0', $languageCol);
+        $I->dontSee('2cols-header-0', $languageCol . ' td.t3-grid-cell');
+        $I->dontSee('header-header-0', $languageCol . ' td.t3-grid-cell');
     }
 
     /**
