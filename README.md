@@ -183,7 +183,7 @@ See Tests/README.md how to run the tests local (like github-actions runs the tes
 To assure coding guidelines are fullfilled:
 
 - run ``.Build/bin/phpstan analyse -c Build/phpstan10.neon``
-- run ``.Build/bin/php-cs-fixer fix --config=.Build/vendor/typo3/coding-standards/templates/extension_php_cs.dist --dry-run --stop-on-violation --using-cache=no .``
+- run ``.Build/bin/php-cs-fixer fix --config=Build/php_cs.php --dry-run --stop-on-violation --using-cache=no``
 
 ## Credits
 
