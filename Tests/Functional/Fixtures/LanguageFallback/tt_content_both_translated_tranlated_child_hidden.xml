@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<tt_content>
+		<uid>71</uid>
+		<pid>1</pid>
+        <CType>b13-2cols-with-header-container</CType>
+        <header>container-fr</header>
+        <sorting>256</sorting>
+        <sys_language_uid>2</sys_language_uid>
+        <l18n_parent>1</l18n_parent>
+	</tt_content>
+    <tt_content>
+        <uid>72</uid>
+        <pid>1</pid>
+        <colPos>200</colPos>
+        <tx_container_parent>1</tx_container_parent>
+        <CType>header</CType>
+        <sorting>128</sorting>
+        <hidden>1</hidden>
+        <header>header-fr</header>
+        <sys_language_uid>2</sys_language_uid>
+        <l18n_parent>2</l18n_parent>
+    </tt_content>
+</dataset>

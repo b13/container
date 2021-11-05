@@ -53,25 +53,22 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
 
     /**
      * @param array $defaultRecords
-     * @param array $localizedRecords
+     * @param LanguageAspect $languageAspect
      * @return array
      */
-    protected function doOverlay(array $defaultRecords, array $localizedRecords): array
+    protected function doOverlay(array $defaultRecords, LanguageAspect $languageAspect): array
     {
         $overlayed = [];
+        $pageRepository = $this->contentStorage->getPageRepository();
         foreach ($defaultRecords as $defaultRecord) {
-            $foundOverlay = null;
-            foreach ($localizedRecords as $localizedRecord) {
-                if ($localizedRecord['l18n_parent'] === $defaultRecord['uid'] ||
-                    $localizedRecord['l18n_parent'] === $defaultRecord['t3ver_oid']
-                ) {
-                    $foundOverlay = $localizedRecord;
-                }
-            }
-            if ($foundOverlay !== null) {
-                $overlayed[] = $foundOverlay;
-            } else {
-                $overlayed[] = $defaultRecord;
+            $overlay = $pageRepository->getRecordOverlay(
+                'tt_content',
+                $defaultRecord,
+                $languageAspect->getContentId(),
+                $languageAspect->getOverlayType() === $languageAspect::OVERLAYS_MIXED ? '1' : 'hideNonTranslated'
+            );
+            if ($overlay !== null) {
+                $overlayed[] = $overlay;
             }
         }
         return $overlayed;
@@ -90,9 +87,7 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
         $language = $languageAspect->get('id');
         $record = $this->database->fetchOneOverlayRecord($uid, $language);
         if ($record === null) {
-            if ($languageAspect->doOverlays()) {
-                $record = $this->database->fetchOneRecord($uid);
-            }
+            $record = $this->database->fetchOneRecord($uid);
         }
 
         if ($record === null) {
@@ -111,18 +106,12 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
             } else {
                 // connected mode
                 $childRecords = $this->children($defaultRecord, 0);
-                if ($languageAspect->doOverlays()) {
-                    $childRecordsOverlays = $this->localizedRecordsByDefaultRecords($childRecords, $language);
-                    $childRecords = $this->doOverlay($childRecords, $childRecordsOverlays);
-                }
+                $childRecords = $this->doOverlay($childRecords, $languageAspect);
             }
         } else {
             // container record with sys_language_uid=0
             $childRecords = $this->children($record, 0);
-            if ($languageAspect->doOverlays()) {
-                $childRecordsOverlays = $this->localizedRecordsByDefaultRecords($childRecords, $language);
-                $childRecords = $this->doOverlay($childRecords, $childRecordsOverlays);
-            }
+            $childRecords = $this->doOverlay($childRecords, $languageAspect);
         }
         $childRecordByColPosKey = $this->recordsByColPosKey($childRecords);
         if ($defaultRecord === null) {

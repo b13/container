@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tt_content>
+        <uid>72</uid>
+        <pid>1</pid>
+        <colPos>200</colPos>
+        <tx_container_parent>1</tx_container_parent>
+        <CType>header</CType>
+        <sorting>128</sorting>
+        <header>header-de</header>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>2</l18n_parent>
+    </tt_content>
+</dataset>

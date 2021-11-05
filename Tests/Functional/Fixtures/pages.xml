@@ -12,7 +12,7 @@
         <sys_language_uid>1</sys_language_uid>
         <l10n_parent>1</l10n_parent>
         <l10n_source>1</l10n_source>
-        <slug>/de</slug>
+        <slug>/</slug>
         <title>page-1-language-1</title>
     </pages>
 
@@ -23,7 +23,7 @@
         <l10n_parent>1</l10n_parent>
         <l10n_source>1</l10n_source>
         <title>page-1-language-2</title>
-        <slug>/fr</slug>
+        <slug>/</slug>
     </pages>
 
     <pages>
@@ -39,7 +39,7 @@
         <l10n_parent>3</l10n_parent>
         <l10n_source>3</l10n_source>
         <title>page-2-language-1</title>
-        <slug>/de/page-2</slug>
+        <slug>/page-2</slug>
     </pages>
 
 </dataset>
