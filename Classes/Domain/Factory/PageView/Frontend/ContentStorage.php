@@ -31,6 +31,14 @@ class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStora
         $this->pageRepository = $pageRepository ?? GeneralUtility::makeInstance(PageRepository::class);
     }
 
+    /**
+     * @return PageRepository|\TYPO3\CMS\Frontend\Page\PageRepository
+     */
+    public function getPageRepository()
+    {
+        return $this->pageRepository;
+    }
+
     public function containerRecordWorkspaceOverlay(array $record): ?array
     {
         $this->pageRepository->versionOL('tt_content', $record, false);

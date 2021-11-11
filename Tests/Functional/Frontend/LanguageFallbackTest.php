@@ -53,6 +53,24 @@ class LanguageFallbackTest extends AbstractFrontendTest
     /**
      * @test
      */
+    public function bothTranslatedTranslatedChildHidden(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.xml');
+        $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h1 class="container">container-fr</h1>', $body);
+        self::assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
+        self::assertStringNotContainsString('<h6 class="header-children">header-fr</h6>', $body);
+        self::assertStringContainsString('<h6 class="header-children">header-default</h6>', $body);
+        // rendered content
+        self::assertStringNotContainsString('<h2 class="">header-fr</h2>', $body);
+        self::assertStringContainsString('<h2 class="">header-default</h2>', $body);
+    }
+
+    /**
+     * @test
+     */
     public function childTranslated(): void
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_child_translated.xml');
