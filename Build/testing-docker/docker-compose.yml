@@ -210,11 +210,7 @@ services:
           export XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
           XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
-          if [ ${TYPO3} -eq 10 ]; then
-            bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
-          else
-            bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ---exclude-group=content_defender ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
-          fi
+          bin/phpunit -c Web/typo3conf/ext/container/Build/phpunit/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "
   lint:
