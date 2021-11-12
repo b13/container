@@ -53,8 +53,10 @@ call_user_func(static function () {
     // else, if enabled we register container previewRenderer in registry foreach container CType
 
     // register icons
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =
-        \B13\Container\Hooks\TableConfigurationPostProcessing::class;
+    if ($typo3Version->getMajorVersion() < 11) {
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =
+            \B13\Container\Hooks\TableConfigurationPostProcessing::class;
+    }
 
     // remove container colPos from "unused" page-elements
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
