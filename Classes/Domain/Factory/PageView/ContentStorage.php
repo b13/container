@@ -75,7 +75,7 @@ abstract class ContentStorage
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 11 && !empty($containerRecord['_ORIG_pid'])) {
             $pid = $containerRecord['_ORIG_pid'];
         }
-        if ($containerRecord['t3ver_oid'] > 0) {
+        if (isset($containerRecord['t3ver_oid']) && $containerRecord['t3ver_oid'] > 0) {
             $defaultContainerRecord = $this->database->fetchOneRecord($containerRecord['t3ver_oid']);
             $uid = $defaultContainerRecord['uid'];
         } else {

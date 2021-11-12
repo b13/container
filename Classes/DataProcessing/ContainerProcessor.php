@@ -84,7 +84,7 @@ class ContainerProcessor implements DataProcessorInterface
                 );
             }
         } else {
-            if ($processorConfiguration['colPos.']) {
+            if ($processorConfiguration['colPos.'] ?? null) {
                 $colPos = (int)$cObj->stdWrap($processorConfiguration['colPos'], $processorConfiguration['colPos.']);
             } else {
                 $colPos = (int)$processorConfiguration['colPos'];
