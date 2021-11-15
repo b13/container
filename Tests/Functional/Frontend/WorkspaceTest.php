@@ -104,7 +104,8 @@ class WorkspaceTest extends AbstractFrontendTest
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
         if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo WorkspacePreview Notice error is triggered');
+            // todo WorkspacePreview Notice error is triggered
+            $GLOBALS['LANG'] = null;
         }
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
         if ($this->typo3MajorVersion < 11) {
@@ -125,9 +126,6 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo WorkspacePreview Notice error is triggered');
-        }
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
