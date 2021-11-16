@@ -94,6 +94,9 @@ call_user_func(static function () {
                 \B13\Container\Hooks\ContentDefender\ColumnConfigurationManipulationHook::class;
             $commandMapHooks['tx_container-content-defender'] = \B13\Container\Hooks\ContentDefender\CommandMapHook::class;
             $datamapHooks['tx_container-content-defender'] = \B13\Container\Hooks\ContentDefender\DatamapHook::class;
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\B13\Container\Backend\Grid\ContainerGridColumn::class] = [
+                'className' => \B13\Container\Backend\Grid\DefendedContainerGridColumn::class
+            ];
         }
     }
 
