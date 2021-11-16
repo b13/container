@@ -75,8 +75,9 @@ abstract class DatahandlerTest extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Bootstrap::initializeLanguageObject();
         $this->backendUser = $this->setUpBackendUserFromFixture(1);
+        $GLOBALS['BE_USER'] = $this->backendUser;
+        Bootstrap::initializeLanguageObject();
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
     }
 
