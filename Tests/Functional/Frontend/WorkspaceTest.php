@@ -67,9 +67,6 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function childInWorkspaceIsRendered(): void
     {
-        if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo WorkspacePreview Notice error is triggered');
-        }
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
@@ -85,9 +82,6 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer(): void
     {
-        if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo WorkspacePreview Notice error is triggered');
-        }
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child_moved_from_outside.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
@@ -103,9 +97,6 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
-        if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo WorkspacePreview Notice error is triggered');
-        }
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
         if ($this->typo3MajorVersion < 11) {
             $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/container_moved_to_other_page.xml');
@@ -125,9 +116,6 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo WorkspacePreview Notice error is triggered');
-        }
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
