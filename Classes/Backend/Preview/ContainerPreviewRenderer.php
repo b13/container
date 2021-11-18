@@ -14,6 +14,7 @@ namespace B13\Container\Backend\Preview;
 
 use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Backend\Grid\ContainerGridColumnItem;
+use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Tca\Registry;
@@ -38,10 +39,16 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
      */
     protected $containerFactory;
 
-    public function __construct(Registry $tcaRegistry = null, ContainerFactory $containerFactory = null)
+    /**
+     * @var ContainerColumnConfigurationService
+     */
+    protected $containerColumnConfigurationService;
+
+    public function __construct(Registry $tcaRegistry = null, ContainerFactory $containerFactory = null, ContainerColumnConfigurationService $containerColumnConfigurationService = null)
     {
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
     }
 
     public function renderPageModulePreviewContent(GridColumnItem $item): string
@@ -60,7 +67,11 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         foreach ($containerGrid as $row => $cols) {
             $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
             foreach ($cols as $col) {
-                $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container);
+                if ($this->containerColumnConfigurationService->isMaxitemsReached($container, $col['colPos'])) {
+                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, false);
+                } else {
+                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container);
+                }
                 $rowObject->addColumn($columnObject);
                 if (isset($col['colPos'])) {
                     $records = $container->getChildrenByColPos($col['colPos']);

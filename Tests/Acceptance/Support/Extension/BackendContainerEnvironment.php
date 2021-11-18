@@ -35,7 +35,8 @@ class BackendContainerEnvironment extends BackendEnvironment
         ],
         'testExtensionsToLoad' => [
             'typo3conf/ext/container',
-            'typo3conf/ext/container_example'
+            'typo3conf/ext/container_example',
+            'typo3conf/ext/content_defender'
         ],
         'configurationToUseInTestInstance' => [
             'SYS' => ['features' => ['fluidBasedPageModule' => false]]

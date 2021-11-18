@@ -10,6 +10,7 @@ namespace B13\Container\View;
  * of the License, or any later version.
  */
 
+use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
@@ -43,6 +44,11 @@ class ContainerLayoutView extends PageLayoutView
     protected $container;
 
     /**
+     * @var ContainerColumnConfigurationService
+     */
+    protected $containerColumnConfigurationService;
+
+    /**
      * variable and calls can be dropped on v10
      * @var int
      */
@@ -60,10 +66,15 @@ class ContainerLayoutView extends PageLayoutView
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $registry
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher = null, ContainerFactory $containerFactory = null, Registry $registry = null)
-    {
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher = null,
+        ContainerFactory $containerFactory = null,
+        Registry $registry = null,
+        ContainerColumnConfigurationService $containerColumnConfigurationService = null
+    ) {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
 
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() === 10) {
@@ -255,7 +266,10 @@ class ContainerLayoutView extends PageLayoutView
         $records = $this->container->getChildrenByColPos($colPos);
         $this->nextThree = 1;
         $this->generateTtContentDataArray($records);
-
+        $allowNewContentElements = true;
+        if ($this->containerColumnConfigurationService->isMaxitemsReached($this->container, $colPos)) {
+            $allowNewContentElements = false;
+        }
         $content = '';
         $head = '';
         $currentLanguage = $containerRecord['sys_language_uid'];
@@ -263,7 +277,9 @@ class ContainerLayoutView extends PageLayoutView
 
         // Start wrapping div
         $content .= '<div data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '" data-language-uid="' . $currentLanguage . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $currentLanguage . ' t3-page-ce-wrapper">';
-        $content .= $this->renderNewContentButtonAtTop($colPos);
+        if ($allowNewContentElements) {
+            $content .= $this->renderNewContentButtonAtTop($colPos);
+        }
 
         foreach ($records as $row) {
             if (is_array($row) && !VersionState::cast($row['t3ver_state'])->equals(VersionState::DELETE_PLACEHOLDER)) {
@@ -295,11 +311,14 @@ class ContainerLayoutView extends PageLayoutView
                 // Add icon "new content element below"
                 if (!$disableMoveAndNewButtons
                     && $this->isContentEditable()
+                    && $allowNewContentElements
                     && $this->getBackendUser()->checkLanguageAccess($currentLanguage)
                 ) {
                     $singleElementHTML .= $this->renderNewContentButtonAfterContentElement($row);
                 }
-                $singleElementHTML .= '</div></div><div class="t3-page-ce-dropzone-available t3js-page-ce-dropzone-available"></div></div>';
+                if ($allowNewContentElements) {
+                    $singleElementHTML .= '</div></div><div class="t3-page-ce-dropzone-available t3js-page-ce-dropzone-available"></div></div>';
+                }
                 $content .= $singleElementHTML;
             }
         }
