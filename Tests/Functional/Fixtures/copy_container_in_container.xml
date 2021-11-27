@@ -6,6 +6,8 @@
     <pages>
         <uid>2</uid>
     </pages>
+
+
     <tt_content>
         <uid>1</uid>
         <pid>1</pid>
@@ -40,7 +42,7 @@
         <pid>1</pid>
         <colPos>200</colPos>
         <tx_container_parent>4</tx_container_parent>
-        <header>content-in-child-container-1</header>
+        <header>content-in-child-container-2</header>
     </tt_content>
 
 </dataset>

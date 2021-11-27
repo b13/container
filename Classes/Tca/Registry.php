@@ -157,6 +157,16 @@ class Registry implements SingletonInterface
         return $contentDefenderConfiguration;
     }
 
+    public function getAllAvailableColumnsColPos(string $cType): array
+    {
+        $columns = $this->getAvailableColumns($cType);
+        $availableColumnsColPos = [];
+        foreach ($columns as $column) {
+            $availableColumnsColPos[] = $column['colPos'];
+        }
+        return $availableColumnsColPos;
+    }
+
     /**
      * @param string $cType
      * @param int $colPos

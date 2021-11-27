@@ -42,3 +42,9 @@ services:
         command: 'container:integrity'
         schedulable: true
         description: Checks integrity of containers
+  B13\Container\Command\SortingCommand:
+    tags:
+      - name: 'console.command'
+        command: 'container:sorting'
+        schedulable: false
+        description: Resort Content Elements

@@ -106,6 +106,8 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(51, $child['tx_container_parent']);
         self::assertSame(200, $child['colPos']);
         self::assertSame(1, $child['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 51);
+        self::assertTrue($child['sorting'] > $container['sorting'], 'moved child is sorted before container');
     }
 
     /**
@@ -134,6 +136,8 @@ class ContainerTest extends DatahandlerTest
         self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
         self::assertSame(200, $child['colPos']);
         self::assertSame(1, $child['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 51);
+        self::assertTrue($child['sorting'] > $container['sorting'], 'copied child is sorted before container');
     }
 
     /**
@@ -163,6 +167,7 @@ class ContainerTest extends DatahandlerTest
         self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
         self::assertSame(200, $child['colPos']);
         self::assertSame(0, $child['sys_language_uid']);
+        self::assertTrue($child['sorting'] > $copiedRecord['sorting'], 'copied child is sorted before container');
     }
 
     /**
@@ -220,6 +225,8 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(51, $child['tx_container_parent']);
         self::assertSame(200, $child['colPos']);
         self::assertSame(0, $child['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 51);
+        self::assertTrue($child['sorting'] > $container['sorting'], 'moved child is sorted before container');
     }
 
     /**

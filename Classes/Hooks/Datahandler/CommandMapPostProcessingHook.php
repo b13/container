@@ -64,6 +64,7 @@ class CommandMapPostProcessingHook
         try {
             $container = $this->containerFactory->buildContainer($uid);
             $children = $container->getChildRecords();
+            $children = array_reverse($children);
             $cmd = ['tt_content' => []];
             foreach ($children as $colPos => $record) {
                 $cmd['tt_content'][$record['uid']] = [$command => $language];

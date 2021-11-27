@@ -64,7 +64,7 @@ class CommandMapAfterFinishHook
                     // copied from non default language (connectecd mode) children
                     if ($copiedFromChild['sys_language_uid'] > 0 && $copiedFromChild['l18n_parent'] > 0) {
                         // fetch orig container
-                        $origContainer = $this->database->fetchOneTranslatedRecord($copiedFromChild['tx_container_parent'], $copiedFromChild['sys_language_uid']);
+                        $origContainer = $this->database->fetchOneTranslatedRecordByl18nParent($copiedFromChild['tx_container_parent'], $copiedFromChild['sys_language_uid']);
                         // should never be null
                         if ($origContainer !== null) {
                             $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$origContainer['uid'], $copyToLanguage);

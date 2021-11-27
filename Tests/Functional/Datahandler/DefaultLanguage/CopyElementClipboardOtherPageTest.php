@@ -118,6 +118,8 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
         self::assertSame(201, (int)$row['colPos']);
         self::assertSame(3, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 11);
+        self::assertTrue($row['sorting'] > $container['sorting'], 'copied element is not sorted after container');
     }
 
     /**
@@ -179,6 +181,9 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
         self::assertSame(201, (int)$row['colPos']);
         self::assertSame(3, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
+
+        $container = $this->fetchOneRecord('uid', 11);
+        self::assertTrue($row['sorting'] > $container['sorting'], 'copied element is not sorted after container');
     }
 
     /**
@@ -232,5 +237,58 @@ class CopyElementClipboardOtherPageTest extends DatahandlerTest
         self::assertSame(201, (int)$row['colPos']);
         self::assertSame(3, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyElementAfterContainerSortElementAfterLastContainerChild(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                4 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -11,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('t3_origuid', 4);
+        $lastChild = $this->fetchOneRecord('uid', 13);
+        $nextElement = $this->fetchOneRecord('uid', 14);
+        self::assertTrue($row['sorting'] > $lastChild['sorting'], 'copied element is not sorted after last child container');
+        self::assertTrue($row['sorting'] < $nextElement['sorting'], 'copied element is not sorted before containers next element');
+    }
+
+    /**
+     * @test
+     */
+    public function copyElementAfterContainerSortElementAfterLastContainerChildSimpleCommand(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                4 => [
+                    'copy' => -11,
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('t3_origuid', 4);
+        $lastChild = $this->fetchOneRecord('uid', 13);
+        $nextElement = $this->fetchOneRecord('uid', 14);
+        self::assertTrue($row['sorting'] > $lastChild['sorting'], 'copied element is not sorted after last child container');
+        self::assertTrue($row['sorting'] < $nextElement['sorting'], 'copied element is not sorted before containers next element');
     }
 }

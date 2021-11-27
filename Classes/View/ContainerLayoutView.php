@@ -13,6 +13,7 @@ namespace B13\Container\View;
 use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -49,6 +50,11 @@ class ContainerLayoutView extends PageLayoutView
     protected $containerColumnConfigurationService;
 
     /**
+     * @var ContainerService
+     */
+    protected $containerService;
+
+    /**
      * variable and calls can be dropped on v10
      * @var int
      */
@@ -70,11 +76,13 @@ class ContainerLayoutView extends PageLayoutView
         EventDispatcherInterface $eventDispatcher = null,
         ContainerFactory $containerFactory = null,
         Registry $registry = null,
-        ContainerColumnConfigurationService $containerColumnConfigurationService = null
+        ContainerColumnConfigurationService $containerColumnConfigurationService = null,
+        ContainerService $containerService = null
     ) {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
         $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
+        $this->containerService = $containerService ?? GeneralUtility::makeInstance(ContainerService::class);
 
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() === 10) {
@@ -126,13 +134,13 @@ class ContainerLayoutView extends PageLayoutView
      */
     protected function buildNewContentElementWizardLinkTop(int $colPos): string
     {
-        $containerRecord = $this->container->getContainerRecord();
+        $target = $this->containerService->getNewContentElementAtTopTargetInColumn($this->container, $colPos);
         $urlParameters = [
-            'id' => $containerRecord['pid'],
+            'id' => $this->container->getPid(),
             'sys_language_uid' => $this->container->getLanguage(),
             'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
             'colPos' => $colPos,
-            'uid_pid' => $containerRecord['pid'],
+            'uid_pid' => $target,
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);

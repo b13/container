@@ -416,6 +416,7 @@ class ContainerTest extends DatahandlerTest
             $workspaceElement = $this->fetchOneRecord('t3ver_oid', 5);
         }
         self::assertSame(1, $workspaceElement['tx_container_parent']);
-        self::assertTrue($workspaceElement['sorting'] < $origFirstElement['sorting']);
+        self::assertSame(200, $workspaceElement['colPos']);
+        self::assertTrue($workspaceElement['sorting'] > $origFirstElement['sorting']);
     }
 }

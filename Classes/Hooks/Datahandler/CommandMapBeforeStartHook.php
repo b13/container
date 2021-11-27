@@ -13,6 +13,8 @@ namespace B13\Container\Hooks\Datahandler;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -36,19 +38,27 @@ class CommandMapBeforeStartHook
     protected $database;
 
     /**
+     * @var ContainerService
+     */
+    protected $containerService;
+
+    /**
      * UsedRecords constructor.
      * @param ContainerFactory|null $containerFactory
      * @param Registry|null $tcaRegistry
      * @param Database|null $database
+     * @param ContainerService|null $containerService
      */
     public function __construct(
         ContainerFactory $containerFactory = null,
         Registry $tcaRegistry = null,
-        Database $database = null
+        Database $database = null,
+        ContainerService $containerService = null
     ) {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
         $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        $this->containerService = $containerService ?? GeneralUtility::makeInstance(ContainerService::class);
     }
     /**
      * @param DataHandler $dataHandler
@@ -58,6 +68,86 @@ class CommandMapBeforeStartHook
         $this->unsetInconsistentLocalizeCommands($dataHandler);
         $dataHandler->cmdmap = $this->rewriteSimpleCommandMap($dataHandler->cmdmap);
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
+        // previously page id is used for copy/moving element at top of a container colum
+        // but this leeds to wrong sorting in page context (e.g. List-Module)
+        $dataHandler->cmdmap = $this->rewriteCommandMapTargetForTopAtContainer($dataHandler->cmdmap);
+        $dataHandler->cmdmap = $this->rewriteCommandMapTargetForAfterContainer($dataHandler->cmdmap);
+    }
+
+    protected function rewriteCommandMapTargetForAfterContainer(array $cmdmap): array
+    {
+        if (!empty($cmdmap['tt_content'])) {
+            foreach ($cmdmap['tt_content'] as $id => &$cmd) {
+                foreach ($cmd as $operation => $value) {
+                    if (in_array($operation, ['copy', 'move'], true) === false) {
+                        continue;
+                    }
+                    if (
+                        (!isset($value['update']['tx_container_parent']) || (int)$value['update']['tx_container_parent'] === 0) &&
+                        ((is_array($value) && $value['target'] < 0) || (int)$value < 0)
+                    ) {
+                        if (is_array($value)) {
+                            $target = -(int)$value['target'];
+                        } else {
+                            // simple command
+                            $target = -(int)$value;
+                        }
+                        $record = $this->database->fetchOneRecord($target);
+                        if ($record['tx_container_parent'] > 0) {
+                            // elements in container have already correct target
+                            continue;
+                        }
+                        if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
+                            continue;
+                        }
+                        try {
+                            $container = $this->containerFactory->buildContainer($record['uid']);
+                            $target = $this->containerService->getAfterContainerElementTarget($container);
+                            if (is_array($value)) {
+                                $cmd[$operation]['target'] = $target;
+                            } else {
+                                // simple command
+                                $cmd[$operation] = $target;
+                            }
+                        } catch (Exception $e) {
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        return $cmdmap;
+    }
+
+    protected function rewriteCommandMapTargetForTopAtContainer(array $cmdmap): array
+    {
+        if (!empty($cmdmap['tt_content'])) {
+            foreach ($cmdmap['tt_content'] as $id => &$cmd) {
+                foreach ($cmd as $operation => $value) {
+                    if (in_array($operation, ['copy', 'move'], true) === false) {
+                        continue;
+                    }
+
+                    if (
+                        isset($value['update']) &&
+                        isset($value['update']['tx_container_parent']) &&
+                        $value['update']['tx_container_parent'] > 0 &&
+                        isset($value['update']['colPos']) &&
+                        $value['update']['colPos'] > 0 &&
+                        $value['target'] > 0
+                    ) {
+                        try {
+                            $container = $this->containerFactory->buildContainer((int)$value['update']['tx_container_parent']);
+                            $target = $this->containerService->getNewContentElementAtTopTargetInColumn($container, (int)$value['update']['colPos']);
+                            $cmd[$operation]['target'] = $target;
+                        } catch (Exception $e) {
+                            // not a container
+                        }
+                    }
+                }
+            }
+        }
+        return $cmdmap;
     }
 
     protected function rewriteSimpleCommandMap(array $cmdmap): array
@@ -111,7 +201,7 @@ class CommandMapBeforeStartHook
                                 // should not happen
                                 continue;
                             }
-                            $translatedContainer = $this->database->fetchOneTranslatedRecord($container['uid'], (int)$data);
+                            $translatedContainer = $this->database->fetchOneTranslatedRecordByl18nParent($container['uid'], (int)$data);
                             if ($translatedContainer === null || (int)$translatedContainer['l18n_parent'] === 0) {
                                 $dataHandler->log(
                                     'tt_content',

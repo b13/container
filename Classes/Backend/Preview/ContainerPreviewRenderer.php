@@ -17,6 +17,7 @@ use B13\Container\Backend\Grid\ContainerGridColumnItem;
 use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -44,11 +45,21 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
      */
     protected $containerColumnConfigurationService;
 
-    public function __construct(Registry $tcaRegistry = null, ContainerFactory $containerFactory = null, ContainerColumnConfigurationService $containerColumnConfigurationService = null)
-    {
+    /**
+     * @var ContainerService
+     */
+    protected $containerService;
+
+    public function __construct(
+        Registry $tcaRegistry = null,
+        ContainerFactory $containerFactory = null,
+        ContainerColumnConfigurationService $containerColumnConfigurationService = null,
+        ContainerService $containerService = null
+    ) {
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
+        $this->containerService = $containerService ?? GeneralUtility::makeInstance(ContainerService::class);
     }
 
     public function renderPageModulePreviewContent(GridColumnItem $item): string
@@ -67,10 +78,11 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         foreach ($containerGrid as $row => $cols) {
             $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
             foreach ($cols as $col) {
+                $newContentElementAtTopTarget = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $col['colPos']);
                 if ($this->containerColumnConfigurationService->isMaxitemsReached($container, $col['colPos'])) {
-                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, false);
+                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $newContentElementAtTopTarget, false);
                 } else {
-                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container);
+                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $newContentElementAtTopTarget);
                 }
                 $rowObject->addColumn($columnObject);
                 if (isset($col['colPos'])) {

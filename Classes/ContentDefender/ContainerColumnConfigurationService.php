@@ -73,7 +73,6 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     public function getTargetColPosForNew(int $containerId, int $colPos): ?int
     {
-        //var_dump($containerId);
         if (isset($this->copyMapping[$containerId . '-' . $colPos])) {
             return $this->copyMapping[$containerId . '-' . $colPos]['targetColPos'];
         }

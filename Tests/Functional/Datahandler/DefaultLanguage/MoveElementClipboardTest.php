@@ -117,6 +117,8 @@ class MoveElementClipboardTest extends DatahandlerTest
         self::assertSame(201, (int)$row['colPos']);
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 1);
+        self::assertTrue($row['sorting'] > $container['sorting'], 'moved element is not sorted after container');
     }
 
     /**
@@ -178,6 +180,8 @@ class MoveElementClipboardTest extends DatahandlerTest
         self::assertSame(201, (int)$row['colPos']);
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 1);
+        self::assertTrue($row['sorting'] > $container['sorting'], 'moved element is not sorted after container');
     }
 
     /**

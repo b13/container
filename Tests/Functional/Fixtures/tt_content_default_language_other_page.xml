@@ -14,8 +14,8 @@
         <colPos>200</colPos>
         <tx_container_parent>11</tx_container_parent>
         <CType>header</CType>
-        <sorting>128</sorting>
         <header>header</header>
+        <sorting>257</sorting>
         <sys_language_uid>0</sys_language_uid>
     </tt_content>
     <tt_content>
@@ -25,7 +25,7 @@
         <tx_container_parent>11</tx_container_parent>
         <CType>header</CType>
         <header>left side</header>
-        <sorting>64</sorting>
+        <sorting>258</sorting>
         <sys_language_uid>0</sys_language_uid>
     </tt_content>
     <tt_content>

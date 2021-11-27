@@ -75,6 +75,7 @@ call_user_func(static function () {
 
     $datamapHooks = [
         'tx_container-before-start' => \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class,
+        'tx_container-pre-process-field-array' => \B13\Container\Hooks\Datahandler\DatamapPreProcessFieldArrayHook::class,
     ];
 
     // EXT:content_defender

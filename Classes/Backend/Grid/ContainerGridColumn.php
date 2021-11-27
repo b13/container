@@ -24,11 +24,19 @@ class ContainerGridColumn extends GridColumn
 
     protected $allowNewContentElements = true;
 
-    public function __construct(PageLayoutContext $context, array $columnDefinition, Container $container, bool $allowNewContentElements = true)
-    {
+    protected $newContentElementAtTopTarget;
+
+    public function __construct(
+        PageLayoutContext $context,
+        array $columnDefinition,
+        Container $container,
+        int $newContentElementAtTopTarget,
+        bool $allowNewContentElements = true
+    ) {
         parent::__construct($context, $columnDefinition);
         $this->container = $container;
         $this->allowNewContentElements = $allowNewContentElements;
+        $this->newContentElementAtTopTarget = $newContentElementAtTopTarget;
     }
 
     public function getContainerUid(): int
@@ -63,7 +71,7 @@ class ContainerGridColumn extends GridColumn
             'sys_language_uid' => $this->container->getLanguage(),
             'colPos' => $this->getColumnNumber(),
             'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
-            'uid_pid' => $pageId,
+            'uid_pid' => $this->newContentElementAtTopTarget,
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);

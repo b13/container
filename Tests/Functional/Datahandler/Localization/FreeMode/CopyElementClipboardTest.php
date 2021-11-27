@@ -118,6 +118,8 @@ class CopyElementClipboardTest extends DatahandlerTest
         self::assertSame(201, (int)$row['colPos']);
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(1, (int)$row['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 51);
+        self::assertTrue($row['sorting'] > $container['sorting'], 'copied element is not sorted after container');
     }
 
     /**
@@ -179,6 +181,8 @@ class CopyElementClipboardTest extends DatahandlerTest
         self::assertSame(201, (int)$row['colPos']);
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(1, (int)$row['sys_language_uid']);
+        $container = $this->fetchOneRecord('uid', 51);
+        self::assertTrue($row['sorting'] > $container['sorting'], 'copied element is not sorted after container');
     }
 
     /**

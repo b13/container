@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Database implements SingletonInterface
 {
-    private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 't3_origuid', 'colPos', 'tx_container_parent', 'l10n_source', 'hidden'];
+    private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 't3_origuid', 'colPos', 'tx_container_parent', 'l10n_source', 'hidden', 'sorting'];
 
     /**
      * @return QueryBuilder
@@ -134,6 +134,34 @@ class Database implements SingletonInterface
         return $rows;
     }
 
+    public function getContainerRecordsFreeMode(array $cTypes): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $stm = $queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->in(
+                    'CType',
+                    $queryBuilder->createNamedParameter($cTypes, Connection::PARAM_STR_ARRAY)
+                ),
+                $queryBuilder->expr()->neq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                )
+            )
+            ->execute();
+        $rows = [];
+        while ($result = $stm->fetch()) {
+            $rows[$result['uid']] = $result;
+        }
+        return $rows;
+    }
+
     /**
      * @return array
      */
@@ -159,5 +187,40 @@ class Database implements SingletonInterface
             $rows[$result['uid']] = $result;
         }
         return $rows;
+    }
+
+    public function getContentElementAfter(array $record): ?array
+    {
+        // todo not required
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->gt(
+                    'sorting',
+                    $queryBuilder->createNamedParameter($record['sorting'], Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($record['sys_language_uid'], Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($record['pid'], Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'colPos',
+                    $queryBuilder->createNamedParameter($record['colPos'], Connection::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting')
+            ->setMaxResults(1)
+            ->execute()
+            ->fetch();
+        if ($row === false) {
+            return null;
+        }
+        return $row;
     }
 }
