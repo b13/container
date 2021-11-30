@@ -16,6 +16,7 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -31,6 +32,53 @@ class ContainerColumnConfigurationService implements SingletonInterface
      * @var ContainerFactory
      */
     protected $containerFactory;
+
+    protected $copyMapping = [];
+
+    protected function getRecord(int $uid): ?array
+    {
+        return BackendUtility::getRecord('tt_content', $uid);
+    }
+
+    public function addCopyMapping(int $sourceContentId, int $containerId, int $targetColpos): array
+    {
+        $record = $this->getRecord($sourceContentId);
+        $sourceColPos = (int)$record['colPos'];
+        $sourceContainerId = (int)$record['tx_container_parent'];
+        $this->copyMapping[$sourceContainerId . '-' . $sourceColPos] = [
+            'containerId' => $containerId,
+            'sourceColPos' => $sourceColPos,
+            'targetColPos' => $targetColpos
+        ];
+        return $this->copyMapping[$sourceContainerId . '-' . $sourceColPos];
+    }
+
+    public function setContainerIsCopied($containerId): void
+    {
+        try {
+            $this->containerFactory->buildContainer($containerId);
+            $this->copyMapping[$containerId] = true;
+        } catch (Exception $e) {
+            // not a container, do not set mapping
+        }
+    }
+
+    public function getTargetColPosForNew(int $containerId, int $colPos): ?int
+    {
+        //var_dump($containerId);
+        if (isset($this->copyMapping[$containerId . '-' . $colPos])) {
+            return $this->copyMapping[$containerId . '-' . $colPos]['targetColPos'];
+        }
+        return null;
+    }
+
+    public function getContainerIdForNew(int $containerId, int $colPos): ?int
+    {
+        if (isset($this->copyMapping[$containerId . '-' . $colPos])) {
+            return $this->copyMapping[$containerId . '-' . $colPos]['containerId'];
+        }
+        return null;
+    }
 
     public function __construct(
         ContainerFactory $containerFactory = null,
@@ -58,24 +106,31 @@ class ContainerColumnConfigurationService implements SingletonInterface
         return $columnConfiguration;
     }
 
-    public function isMaxitemsReachedByContainenrId(int $containerId, int $colPos): bool
+    public function isMaxitemsReachedByContainenrId(int $containerId, int $colPos, int $childUid = null): bool
     {
         try {
             $container = $this->containerFactory->buildContainer($containerId);
-            return $this->isMaxitemsReached($container, $colPos);
+            return $this->isMaxitemsReached($container, $colPos, $childUid);
         } catch (Exception $e) {
             // not a container
         }
         return false;
     }
 
-    public function isMaxitemsReached(Container $container, int $colPos): bool
+    public function isMaxitemsReached(Container $container, int $colPos, int $childUid = null): bool
     {
+        if (isset($this->copyMapping[$container->getUid()])) {
+            return false;
+        }
         $columnConfiguration = $this->getColumnConfigurationForContainer($container, $colPos);
         if (!isset($columnConfiguration['maxitems']) || (int)$columnConfiguration['maxitems'] === 0) {
             return false;
         }
         $childrenOfColumn = $container->getChildrenByColPos($colPos);
-        return count($childrenOfColumn) >= $columnConfiguration['maxitems'];
+        $count = count($childrenOfColumn);
+        if ($childUid !== null && $container->hasChildInColPos($colPos, $childUid)) {
+            $count--;
+        }
+        return $count >= $columnConfiguration['maxitems'];
     }
 }

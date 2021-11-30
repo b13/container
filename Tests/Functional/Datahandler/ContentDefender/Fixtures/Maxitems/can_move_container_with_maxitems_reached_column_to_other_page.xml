@@ -4,6 +4,10 @@
         <uid>1</uid>
         <pid>0</pid>
     </pages>
+    <pages>
+        <uid>2</uid>
+        <pid>0</pid>
+    </pages>
     <tt_content>
         <uid>1</uid>
         <pid>1</pid>
@@ -14,6 +18,6 @@
         <uid>2</uid>
         <pid>1</pid>
         <tx_container_parent>1</tx_container_parent>
-        <colPos>200</colPos>
+        <colPos>202</colPos>
     </tt_content>
 </dataset>

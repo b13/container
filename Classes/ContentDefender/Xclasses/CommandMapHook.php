@@ -45,6 +45,9 @@ class CommandMapHook extends CmdmapDataHandlerHook
         if (!empty($dataHandler->cmdmap['tt_content'])) {
             foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {
                 foreach ($cmds as $cmd => $data) {
+                    if ($cmd === 'copy') {
+                        $this->containerColumnConfigurationService->setContainerIsCopied($id);
+                    }
                     if (
                         ($cmd === 'copy' || $cmd === 'move') &&
                         (!empty($data['update'])) &&
@@ -58,7 +61,17 @@ class CommandMapHook extends CmdmapDataHandlerHook
                             'containerId' => (int)$data['update']['tx_container_parent'],
                             'colPos' => (int)$data['update']['colPos']
                         ];
-                        if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId((int)$data['update']['tx_container_parent'], (int)$data['update']['colPos'])) {
+                        $this->containerColumnConfigurationService->addCopyMapping(
+                            (int)$id,
+                            (int)$data['update']['tx_container_parent'],
+                            (int)$data['update']['colPos']
+                        );
+                        $useChildId = null;
+                        if ($cmd === 'move') {
+                            $useChildId = $id;
+                        }
+
+                        if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId((int)$data['update']['tx_container_parent'], (int)$data['update']['colPos'], $useChildId)) {
                             unset($dataHandler->cmdmap['tt_content'][$id]);
                             $dataHandler->log(
                                 'tt_content',

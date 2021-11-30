@@ -50,14 +50,27 @@ class DatamapHook extends DatamapDataHandlerHook
                     isset($values['colPos']) &&
                     $values['colPos'] > 0
                 ) {
+                    $useChildId = null;
+                    $colPos = (int)$values['colPos'];
+                    $containerId = (int)$values['tx_container_parent'];
                     if (MathUtility::canBeInterpretedAsInteger($id)) {
-                        // proof me
                         $this->mapping[(int)$id] = [
                             'containerId' => (int)$values['tx_container_parent'],
                             'colPos' => (int)$values['colPos']
                         ];
+                        $useChildId = $id;
+                    } else {
+                        // new elements (first created in origin container/colPos, so we check the real target)
+                        $targetColPos = $this->containerColumnConfigurationService->getTargetColPosForNew((int)$values['tx_container_parent'], (int)$values['colPos']);
+                        if ($targetColPos !== null) {
+                            $colPos = $targetColPos;
+                        }
+                        $containerIdTarget = $this->containerColumnConfigurationService->getContainerIdForNew((int)$values['tx_container_parent'], (int)$values['colPos']);
+                        if ($containerIdTarget !== null) {
+                            $containerId = $containerIdTarget;
+                        }
                     }
-                    if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId((int)(int)$values['tx_container_parent'], (int)$values['colPos'])) {
+                    if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId($containerId, $colPos, $useChildId)) {
                         unset($dataHandler->datamap['tt_content'][$id]);
                         $dataHandler->log(
                             'tt_content',

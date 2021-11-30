@@ -11,9 +11,10 @@
         <CType>b13-2cols-with-header-container</CType>
     </tt_content>
     <tt_content>
-        <uid>2</uid>
+        <uid>3</uid>
         <pid>1</pid>
+        <colPos>202</colPos>
+        <header>foo</header>
         <tx_container_parent>1</tx_container_parent>
-        <colPos>200</colPos>
     </tt_content>
 </dataset>
