@@ -35,6 +35,14 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     protected $copyMapping = [];
 
+    public function __construct(
+        ContainerFactory $containerFactory = null,
+        Registry $tcaRegistry = null
+    ) {
+        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+    }
+
     protected function getRecord(int $uid): ?array
     {
         return BackendUtility::getRecord('tt_content', $uid);
@@ -78,14 +86,6 @@ class ContainerColumnConfigurationService implements SingletonInterface
             return $this->copyMapping[$containerId . '-' . $colPos]['containerId'];
         }
         return null;
-    }
-
-    public function __construct(
-        ContainerFactory $containerFactory = null,
-        Registry $tcaRegistry = null
-    ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
     public function override(array $columnConfiguration, int $containerId, int $colPos): array
