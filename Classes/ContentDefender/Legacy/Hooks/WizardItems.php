@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace B13\Container\ContentDefender\Form\FormDataProvider;
+namespace B13\Container\ContentDefender\Legacy\Hooks;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -15,13 +15,13 @@ namespace B13\Container\ContentDefender\Form\FormDataProvider;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
+use IchHabRecht\ContentDefender\Hooks\WizardItemsHook;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @deprecated
  */
-class TcaCTypeItems implements FormDataProviderInterface
+class WizardItems extends WizardItemsHook
 {
 
     /**
@@ -46,16 +46,13 @@ class TcaCTypeItems implements FormDataProviderInterface
     }
 
     /**
-     * @param array $result
-     * @return array
+     * @param array $wizardItems
+     * @param \TYPO3\CMS\Backend\Controller\ContentElement\NewContentElementController $parentObject
      */
-    public function addData(array $result)
+    public function manipulateWizardItems(&$wizardItems, &$parentObject)
     {
-        if ('tt_content' !== $result['tableName']) {
-            return $result;
-        }
-        $colPos = (int)$result['databaseRow']['colPos'][0];
-        $parent = (int)$result['databaseRow']['tx_container_parent'][0];
+        $parent = (int)GeneralUtility::_GP('tx_container_parent');
+        $colPos = (int)GeneralUtility::_GP('colPos');
         if ($parent > 0 && $colPos > 0) {
             try {
                 $container = $this->containerFactory->buildContainer($parent);
@@ -63,17 +60,31 @@ class TcaCTypeItems implements FormDataProviderInterface
                 $allowedConfiguration = $this->tcaRegistry->getAllowedConfiguration($cType, $colPos);
                 foreach ($allowedConfiguration as $field => $value) {
                     $allowedValues = GeneralUtility::trimExplode(',', $value);
-                    $result['processedTca']['columns'][$field]['config']['items'] = array_filter(
-                        $result['processedTca']['columns'][$field]['config']['items'],
-                        static function ($item) use ($allowedValues) {
-                            return in_array($item[1], $allowedValues);
-                        }
-                    );
+                    $wizardItems = $this->removeDisallowedValues($wizardItems, $field, $allowedValues);
                 }
+                $wizardItems = $this->removeEmptyTabs($wizardItems);
             } catch (Exception $e) {
                 // not a container
             }
         }
-        return $result;
+    }
+
+    /**
+     * @param array $wizardItems
+     * @return array
+     */
+    protected function removeEmptyTabs(array $wizardItems): array
+    {
+        $availableWizardItems = [];
+        foreach ($wizardItems as $key => $def) {
+            $keyParts = explode('_', $key, 2);
+            if (count($keyParts) === 1) {
+                continue;
+            }
+            $availableWizardItems[$keyParts[0]] = $key;
+            $availableWizardItems[$key] = $key;
+        }
+
+        return array_intersect_key($wizardItems, $availableWizardItems);
     }
 }

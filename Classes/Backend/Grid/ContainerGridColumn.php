@@ -22,10 +22,13 @@ class ContainerGridColumn extends GridColumn
 {
     protected $container;
 
-    public function __construct(PageLayoutContext $context, array $columnDefinition, Container $container)
+    protected $allowNewContentElements = true;
+
+    public function __construct(PageLayoutContext $context, array $columnDefinition, Container $container, bool $allowNewContentElements = true)
     {
         parent::__construct($context, $columnDefinition);
         $this->container = $container;
+        $this->allowNewContentElements = $allowNewContentElements;
     }
 
     public function getContainerUid(): int
@@ -43,7 +46,7 @@ class ContainerGridColumn extends GridColumn
         if ($this->container->getLanguage() > 0 && $this->container->isConnectedMode()) {
             return false;
         }
-        return true;
+        return $this->allowNewContentElements;
     }
 
     public function isActive(): bool

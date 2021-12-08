@@ -168,4 +168,40 @@
         <CType>b13-2cols-with-header-container</CType>
     </tt_content>
 
+    <tt_content>
+        <uid>401</uid>
+        <pid>17</pid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+
+    <tt_content>
+        <uid>402</uid>
+        <pid>17</pid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+
+    <tt_content>
+        <uid>403</uid>
+        <pid>17</pid>
+        <CType>header</CType>
+        <header>headerOfChild</header>
+        <colPos>202</colPos>
+        <tx_container_parent>401</tx_container_parent>
+    </tt_content>
+
+    <tt_content>
+        <uid>501</uid>
+        <pid>18</pid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+
+    <tt_content>
+        <uid>502</uid>
+        <pid>18</pid>
+        <CType>header</CType>
+        <header>headerOfChild</header>
+        <colPos>200</colPos>
+        <tx_container_parent>501</tx_container_parent>
+    </tt_content>
+
 </dataset>

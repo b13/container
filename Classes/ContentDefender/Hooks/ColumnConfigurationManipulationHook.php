@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace B13\Container\Hooks\ContentDefender;
+namespace B13\Container\ContentDefender\Hooks;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -18,7 +18,6 @@ use B13\Container\Tca\Registry;
 use IchHabRecht\ContentDefender\BackendLayout\ColumnConfigurationManipulationInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 class ColumnConfigurationManipulationHook implements ColumnConfigurationManipulationInterface
 {
@@ -32,19 +31,12 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
      */
     protected $containerFactory;
 
-    /**
-     * @var DatahandlerStorage
-     */
-    protected $datahandlerStorage;
-
     public function __construct(
         ContainerFactory $containerFactory = null,
-        Registry $tcaRegistry = null,
-        DatahandlerStorage $datahandlerStorage = null
+        Registry $tcaRegistry = null
     ) {
         $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
         $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->datahandlerStorage = $datahandlerStorage ?? GeneralUtility::makeInstance(DatahandlerStorage::class);
     }
 
     public function manipulateConfiguration(array $configuration, int $colPos, $recordUid): array
@@ -67,15 +59,6 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
     private function getParentUid($recordUid): int
     {
         $parent = 0;
-        if (!empty($recordUid) && MathUtility::canBeInterpretedAsInteger($recordUid)) {
-            if ($this->datahandlerStorage->hasMapping((int)$recordUid)) {
-                $parent = $this->datahandlerStorage->getMapping((int)$recordUid);
-            } else {
-                // TcaCTypeItems: edit record
-                $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
-                $parent = $record['tx_container_parent'] ?? 0;
-            }
-        }
         if (empty($parent)) {
             // new content elemment wizard
             $parent = GeneralUtility::_GP('tx_container_parent');
@@ -84,6 +67,14 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
             // TcaCTypeItems: new record
             $defVals = GeneralUtility::_GP('defVals');
             $parent = $defVals['tt_content']['tx_container_parent'] ?? 0;
+        }
+        if (empty($parent)) {
+            $edit = GeneralUtility::_GP('edit');
+            if (isset($edit['tt_content'][$recordUid])) {
+                // TcaCTypeItems: edit record
+                $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
+                $parent = $record['tx_container_parent'] ?? 0;
+            }
         }
         return (int)$parent;
     }

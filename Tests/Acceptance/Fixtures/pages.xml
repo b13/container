@@ -23,6 +23,7 @@
         <uid>20</uid>
         <pid>1</pid>
         <title>pageWithWorkspace</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
     <pages>
         <uid>21</uid>
@@ -31,12 +32,14 @@
         <l10n_parent>20</l10n_parent>
         <l10n_source>20</l10n_source>
         <title>pageWithWorkspace-1</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
 
     <pages>
         <uid>10</uid>
         <pid>1</pid>
         <title>pageWithLocalization</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
     <pages>
         <uid>11</uid>
@@ -45,12 +48,14 @@
         <l10n_parent>10</l10n_parent>
         <l10n_source>10</l10n_source>
         <title>pageWithLocalization-1</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
 
     <pages>
         <uid>12</uid>
         <pid>1</pid>
         <title>pageWithLocalizationFreeModeWithContainer</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
     <pages>
         <uid>13</uid>
@@ -59,12 +64,14 @@
         <l10n_parent>12</l10n_parent>
         <l10n_source>12</l10n_source>
         <title>pageWithLocalizationFreeModeWithContainer-1</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
 
     <pages>
         <uid>14</uid>
         <pid>1</pid>
         <title>pageWithTranslatedContainer</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
     <pages>
         <uid>15</uid>
@@ -73,10 +80,24 @@
         <l10n_parent>14</l10n_parent>
         <l10n_source>14</l10n_source>
         <title>pageWithTranslatedContainer-1</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
     <pages>
         <uid>16</uid>
         <pid>1</pid>
         <title>pageWithDifferentContainers</title>
+        <perms_everybody>17</perms_everybody>
+    </pages>
+    <pages>
+        <uid>17</uid>
+        <pid>1</pid>
+        <title>contentDefenderMaxitems</title>
+        <perms_everybody>17</perms_everybody>
+    </pages>
+    <pages>
+        <uid>18</uid>
+        <pid>1</pid>
+        <title>contentTCASelectCtype</title>
+        <perms_everybody>17</perms_everybody>
     </pages>
 </dataset>

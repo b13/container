@@ -60,4 +60,17 @@
         <colPos>9</colPos>
         <CType>bullets</CType>
     </tt_content>
+    <tt_content>
+        <uid>4</uid>
+        <pid>1</pid>
+        <colPos>10</colPos>
+        <CType>b13-2cols</CType>
+    </tt_content>
+    <tt_content>
+        <uid>5</uid>
+        <pid>1</pid>
+        <colPos>200</colPos>
+        <tx_container_parent>4</tx_container_parent>
+        <CType>bullets</CType>
+    </tt_content>
 </dataset>

@@ -23,7 +23,7 @@
         "bin-dir": ".Build/bin"
     },
     "require-dev": {
-        "b13/container-example": "dev-master",
+        "b13/container-example": "dev-feature/content_defender",
         "ichhabrecht/content-defender": "^3.2",
         "typo3/cms-install": "^10.4",
         "typo3/cms-fluid-styled-content": "^10.4",

@@ -104,6 +104,16 @@ class Container
         return $childRecords;
     }
 
+    public function getChildRecordsUids(): array
+    {
+        $uids = [];
+        $childRecords = $this->getChildRecords();
+        foreach ($childRecords as $childRecord) {
+            $uids[] = $childRecord['uid'];
+        }
+        return $uids;
+    }
+
     /**
      * @param int $colPos
      * @return array
@@ -114,6 +124,19 @@ class Container
             return [];
         }
         return $this->childRecords[$colPos];
+    }
+
+    public function hasChildInColPos(int $colPos, int $childUid): bool
+    {
+        if (!isset($this->childRecords[$colPos])) {
+            return false;
+        }
+        foreach ($this->childRecords[$colPos] as $childRecord) {
+            if ($childRecord['uid'] === $childUid) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

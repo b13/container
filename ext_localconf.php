@@ -83,20 +83,22 @@ call_user_func(static function () {
         if (version_compare($packageManager->getPackage('content_defender')->getPackageMetaData()->getVersion(), '3.1.0', '<')) {
             trigger_error('update EXT:content_defender to 3.1', E_USER_DEPRECATED);
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container-content-defender'] =
-                \B13\Container\ContentDefender\Hooks\WizardItems::class;
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][ \B13\Container\ContentDefender\Form\FormDataProvider\TcaCTypeItems::class] = [
+                \B13\Container\ContentDefender\Legacy\Hooks\WizardItems::class;
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][ \B13\Container\ContentDefender\Legacy\Form\FormDataProvider\TcaCTypeItems::class] = [
                 'depends' => [
                     \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class
                 ]
             ];
-            $commandMapHooks['tx_container-content-defender'] = \B13\Container\ContentDefender\Hooks\CommandMapHook::class;
-            $datamapHooks['tx_container-content-defender'] = \B13\Container\ContentDefender\Hooks\DatamapHook::class;
         } else {
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['content_defender']['ColumnConfigurationManipulationHook']['tx_container'] =
-                \B13\Container\Hooks\ContentDefender\ColumnConfigurationManipulationHook::class;
-            $commandMapHooks['tx_container-content-defender'] = \B13\Container\Hooks\ContentDefender\CommandMapHook::class;
-            $datamapHooks['tx_container-content-defender'] = \B13\Container\Hooks\ContentDefender\DatamapHook::class;
+                \B13\Container\ContentDefender\Hooks\ColumnConfigurationManipulationHook::class;
         }
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook::class] = [
+            'className' => \B13\Container\ContentDefender\Xclasses\DatamapHook::class
+        ];
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\CmdmapDataHandlerHook::class] = [
+            'className' => \B13\Container\ContentDefender\Xclasses\CommandMapHook::class
+        ];
     }
 
     // set our hooks at the beginning of Datamap Hooks

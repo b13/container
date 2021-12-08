@@ -274,16 +274,4 @@ class LayoutCest
         $I->see('2-cols-left');
         $I->see('2-cols-right');
     }
-
-    public function canCreateChildIn2ColsContainerWithNoContentDefenderRestrictionsDefined(BackendTester $I, PageTree $pageTree): void
-    {
-        $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
-        $I->wait(0.2);
-        $I->switchToContentFrame();
-        $I->click('Content', '#element-tt_content-300 [data-colpos="300-200"]');
-        $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
-        $I->see('Header Only');
-    }
 }

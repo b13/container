@@ -58,4 +58,34 @@ class CopyContainerTest extends DatahandlerTest
         $this->dataHandler->process_cmdmap();
         $this->fetchOneRecord('t3_origuid', 2);
     }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function copyContainerIntoOtherContainerWithSameColPosCopiesAlsoChildEvenChildIsDisallowedInTargetContainer(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                4 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -2,
+                        'update' => [
+                            'colPos' => '1-200'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('t3_origuid', 4);
+        self::assertSame(1, (int)$row['tx_container_parent'], 'element is not copied into container');
+        self::assertSame(200, (int)$row['colPos'], 'element is not copied into container colPos');
+        $child = $this->fetchOneRecord('t3_origuid', 5);
+        self::assertSame($row['uid'], (int)$child['tx_container_parent'], 'child is not copied into copied container');
+        self::assertSame(200, (int)$row['colPos'], 'child is not copied into container colPos');
+    }
 }
