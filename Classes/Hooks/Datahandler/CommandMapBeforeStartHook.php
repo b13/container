@@ -15,8 +15,6 @@ namespace B13\Container\Hooks\Datahandler;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -115,16 +113,15 @@ class CommandMapBeforeStartHook
                             }
                             $translatedContainer = $this->database->fetchOneTranslatedRecord($container['uid'], (int)$data);
                             if ($translatedContainer === null || (int)$translatedContainer['l18n_parent'] === 0) {
-                                $flashMessage = GeneralUtility::makeInstance(
-                                    FlashMessage::class,
+                                $dataHandler->log(
+                                    'tt_content',
+                                    $id,
+                                    1,
+                                    0,
+                                    1,
                                     'Localization failed: container is in free mode or not translated',
-                                    '',
-                                    FlashMessage::ERROR,
-                                    true
+                                    28
                                 );
-                                $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-                                $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
-                                $defaultFlashMessageQueue->enqueue($flashMessage);
                                 unset($dataHandler->cmdmap['tt_content'][$id][$cmd]);
                                 if (!empty($dataHandler->cmdmap['tt_content'][$id])) {
                                     unset($dataHandler->cmdmap['tt_content'][$id]);
