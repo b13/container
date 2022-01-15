@@ -227,7 +227,10 @@ class LayoutCest
 
         $I->switchToIFrame();
         $I->waitForElement('.t3js-localization-option');
-        $I->click('.t3js-localization-option');
+        if ((new Typo3Version())->getMajorVersion() < 11) {
+            $I->click('.t3js-localization-option');
+        }
+        $I->wait(1);
         $I->click('Next');
         $I->wait(1);
         $I->see('(212) headerOfChild');
