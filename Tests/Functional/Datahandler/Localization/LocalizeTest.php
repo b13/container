@@ -110,7 +110,7 @@ class LocalizeTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
+        $row = $queryBuilder->select('uid')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -121,6 +121,7 @@ class LocalizeTest extends DatahandlerTest
             ->execute()
             ->fetch();
         self::assertFalse($row);
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
 
     /**
@@ -138,7 +139,7 @@ class LocalizeTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
+        $row = $queryBuilder->select('uid')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -149,6 +150,7 @@ class LocalizeTest extends DatahandlerTest
             ->execute()
             ->fetch();
         self::assertFalse($row);
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
 
     /**
