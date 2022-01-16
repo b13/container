@@ -11,7 +11,7 @@ namespace B13\Container\Tests\Unit\Hooks;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Hooks\UsedRecords;
 use B13\Container\Tca\Registry;
@@ -29,52 +29,75 @@ class UsedRecordsTest extends UnitTestCase
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $userRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal());
         $params = [
             'used' => true,
             'record' => ['tx_container_parent' => 0]
         ];
-        self::assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
         $params['used'] = false;
-        self::assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 
     /**
      * @test
      */
-    public function addContainerChildrenReturnsTrueIfColPosIsInConfiguredGrid(): void
+    public function addContainerChildrenReturnsTrueIfChildrenInContainerColPos(): void
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
-        $container = new Container(['CType' => 'myCType'], []);
-        $containerFactory->buildContainer(1)->willReturn($container);
+        $container = $this->prophesize(Container::class);
+        $container->getCType()->willReturn('myCType');
+        $container->hasChildInColPos(2, 3)->willReturn(true);
+        $containerFactory->buildContainer(1)->willReturn($container->reveal());
         $tcaRegistry = $this->prophesize(Registry::class);
         $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 2]]);
-        $userRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
         $params = [
             'used' => false,
-            'record' => ['tx_container_parent' => 1, 'colPos' => 2]
+            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0]
         ];
-        self::assertTrue($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 
     /**
      * @test
      */
-    public function addContainerChildrenReturnsFalseIfColPosIsNotInConfiguredGrid(): void
+    public function addContainerChildrenReturnsFalseIfChildrenIsNotInContainerColPos(): void
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
-        $container = new Container(['CType' => 'myCType'], []);
-        $containerFactory->buildContainer(1)->willReturn($container);
+        $container = $this->prophesize(Container::class);
+        $container->getCType()->willReturn('myCType');
+        $container->hasChildInColPos(2, 3)->willReturn(false);
+        $containerFactory->buildContainer(1)->willReturn($container->reveal());
+        $tcaRegistry = $this->prophesize(Registry::class);
+        $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 2]]);
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
+        $params = [
+            'used' => false,
+            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0]
+        ];
+        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+    }
+
+    /**
+     * @test
+     */
+    public function addContainerChildrenReturnsFalseIfChildrenIsNotInRegisterdGrid(): void
+    {
+        $pageLayoutView = $this->prophesize(PageLayoutView::class);
+        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $container = $this->prophesize(Container::class);
+        $container->getCType()->willReturn('myCType');
+        $containerFactory->buildContainer(1)->willReturn($container->reveal());
         $tcaRegistry = $this->prophesize(Registry::class);
         $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 3]]);
-        $userRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
         $params = [
-            'used' => true,
-            'record' => ['tx_container_parent' => 1, 'colPos' => 2]
+            'used' => false,
+            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3]
         ];
-        self::assertFalse($userRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
 }

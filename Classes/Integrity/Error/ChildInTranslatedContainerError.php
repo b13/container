@@ -14,9 +14,9 @@ namespace B13\Container\Integrity\Error;
 
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
-class WrongPidError implements ErrorInterface
+class ChildInTranslatedContainerError implements ErrorInterface
 {
-    private const IDENTIFIER = 'WrongPidError';
+    private const IDENTIFIER = 'ChildInTranslatedContainerError';
 
     /**
      * @var array
@@ -41,10 +41,10 @@ class WrongPidError implements ErrorInterface
     {
         $this->childRecord = $childRecord;
         $this->containerRecord = $containerRecord;
-        $this->errorMessage = self::IDENTIFIER . ': container child with uid ' . $childRecord['uid'] .
+        $this->errorMessage = self::IDENTIFIER . ': translated container child with uid ' . $childRecord['uid'] .
             ' (page: ' . $childRecord['pid'] . ' language: ' . $childRecord['sys_language_uid'] . ')' .
-            ' but tx_container_parent ' . $childRecord['tx_container_parent'] .
-            ' has pid ' . $containerRecord['pid'] . ' language: ' . $containerRecord['sys_language_uid'] . ')';
+            ' has translated tx_container_parent ' . $containerRecord['uid']
+            . ' but should point to default language container record ' . $containerRecord['l18n_parent'];
     }
 
     /**
