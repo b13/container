@@ -229,9 +229,11 @@ class LayoutCest
         $I->waitForElement('.t3js-localization-option');
         if ((new Typo3Version())->getMajorVersion() < 11) {
             $I->click('.t3js-localization-option');
+            $I->click('Next');
+            $I->waitForElement('div[data-slide="localize-summary"]');
+        } else {
+            $I->waitForElement('div[data-bs-slide="localize-summary"]');
         }
-        $I->wait(1);
-        $I->click('Next');
         $I->wait(1);
         $I->see('(212) headerOfChild');
     }
