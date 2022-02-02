@@ -47,7 +47,7 @@ class ContentDefenderCest
         $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
-        $I->see('Header Only');
+        $I->waitForText('Header Only');
         $I->dontSee('Table');
     }
 
@@ -60,8 +60,10 @@ class ContentDefenderCest
         $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        $I->waitForText('Header Only');
         $I->click('Header Only');
         $I->switchToContentFrame();
+        $I->wait(0.2);
         $I->see('textmedia', 'select');
         $I->dontSee('Table', 'select');
     }

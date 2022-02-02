@@ -129,6 +129,7 @@ class LayoutCest
         // "[data-colpos="1-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        $I->waitForText('Header Only');
         $I->click('Header Only');
         $I->switchToContentFrame();
         $I->see('header [200]');
@@ -156,6 +157,7 @@ class LayoutCest
         $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        $I->waitForText('Header Only');
         $I->click('Header Only');
         $I->switchToContentFrame();
         $I->click('Save');
@@ -192,6 +194,7 @@ class LayoutCest
         $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $uid . '-200"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        $I->waitForText('Header Only');
         $I->click('Header Only');
         $I->switchToContentFrame();
         $I->click('Save');
@@ -234,8 +237,7 @@ class LayoutCest
         } else {
             $I->waitForElement('div[data-bs-slide="localize-summary"]');
         }
-        $I->wait(1);
-        $I->see('(212) headerOfChild');
+        $I->waitForText('(212) headerOfChild');
     }
 
     /**
