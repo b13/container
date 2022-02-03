@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tt_content>
+        <uid>1</uid>
+        <CType>header</CType>
+        <tx_container_parent>2</tx_container_parent>
+        <hidden>1</hidden>
+    </tt_content>
+</dataset>

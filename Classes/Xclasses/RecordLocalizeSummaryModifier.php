@@ -15,6 +15,8 @@ namespace B13\Container\Xclasses;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -101,7 +103,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
         if (empty($containerCTypes)) {
             return [];
         }
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder = $this->getQueryBuilder();
         return (array)$queryBuilder->select('uid')
             ->from('tt_content')
             ->where(
@@ -121,7 +123,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
     protected function getContainerChildren(array $uids): array
     {
         $containerChildren = [];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
@@ -139,5 +141,14 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
             $containerChildren[$row['uid']] = $row;
         }
         return $containerChildren;
+    }
+
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        return $queryBuilder;
     }
 }
