@@ -54,20 +54,29 @@ class CommandMapAfterFinishHook
                 }
                 $copyToLanguage = $incomingCmdArray['copyToLanguage'];
                 $newId = $copyMappingArray_merged['tt_content'][$id];
-                // container is copied
-                $childrenInCopiedLanguage = $this->database->fetchRecordsByParentAndLanguage($id, $copyToLanguage);
                 $data = [
                     'tt_content' => []
                 ];
-                foreach ($childrenInCopiedLanguage as $child) {
-                    $data['tt_content'][$child['uid']] = ['tx_container_parent' => $newId];
-                }
                 // child in free mode is copied
                 $child = $this->database->fetchOneRecord($newId);
                 if ($child['tx_container_parent'] > 0) {
-                    $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$child['tx_container_parent'], $copyToLanguage);
-                    if ($freeModeContainer !== null) {
-                        $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                    $copiedFromChild = $this->database->fetchOneRecord($id);
+                    // copied from non default language (connectecd mode) children
+                    if ($copiedFromChild['sys_language_uid'] > 0 && $copiedFromChild['l18n_parent'] > 0) {
+                        // fetch orig container
+                        $origContainer = $this->database->fetchOneTranslatedRecord($copiedFromChild['tx_container_parent'], $copiedFromChild['sys_language_uid']);
+                        // should never be null
+                        if ($origContainer !== null) {
+                            $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$origContainer['uid'], $copyToLanguage);
+                            if ($freeModeContainer !== null) {
+                                $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                            }
+                        }
+                    } else {
+                        $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$child['tx_container_parent'], $copyToLanguage);
+                        if ($freeModeContainer !== null) {
+                            $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                        }
                     }
                 }
                 if (empty($data['tt_content'])) {

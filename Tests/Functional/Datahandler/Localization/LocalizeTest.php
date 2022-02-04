@@ -98,6 +98,77 @@ class LocalizeTest extends DatahandlerTest
     /**
      * @test
      */
+    public function localizeContainerFromNonDefaultLanguageLocalizeChildren(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
+        $cmdmap = [
+            'tt_content' => [
+                21 => [
+                    'localize' => 2
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $translatedChildRow = $this->fetchOneRecord('t3_origuid', 22);
+        self::assertSame(1, $translatedChildRow['tx_container_parent']);
+        self::assertSame(200, $translatedChildRow['colPos']);
+        self::assertSame(1, $translatedChildRow['pid']);
+        self::assertSame(2, $translatedChildRow['l18n_parent']);
+        self::assertSame(22, $translatedChildRow['l10n_source']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildren(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
+        $cmdmap = [
+            'tt_content' => [
+                21 => [
+                    'copyToLanguage' => 2
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $translatedContainerRow = $this->fetchOneRecord('t3_origuid', 21);
+        $translatedChildRow = $this->fetchOneRecord('t3_origuid', 22);
+        self::assertSame($translatedContainerRow['uid'], $translatedChildRow['tx_container_parent']);
+        self::assertSame(200, $translatedChildRow['colPos']);
+        self::assertSame(1, $translatedChildRow['pid']);
+        self::assertSame(0, $translatedChildRow['l18n_parent']);
+        self::assertSame(22, $translatedChildRow['l10n_source']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenWhenCopiedFromFreeMode(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_free_mode.xml');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'copyToLanguage' => 2
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $translatedContainerRow = $this->fetchOneRecord('t3_origuid', 51);
+        $translatedChildRow = $this->fetchOneRecord('t3_origuid', 52);
+        self::assertSame($translatedContainerRow['uid'], $translatedChildRow['tx_container_parent']);
+        self::assertSame(200, $translatedChildRow['colPos']);
+        self::assertSame(1, $translatedChildRow['pid']);
+        self::assertSame(0, $translatedChildRow['l18n_parent']);
+        self::assertSame(52, $translatedChildRow['l10n_source']);
+    }
+
+    /**
+     * @test
+     */
     public function localizeChildFailedIfContainerIsInFreeMode(): void
     {
         $cmdmap = [

@@ -104,7 +104,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
             return [];
         }
         $queryBuilder = $this->getQueryBuilder();
-        return (array)$queryBuilder->select('uid')
+        $stm = $queryBuilder->select('uid', 'l18n_parent')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->in(
@@ -116,8 +116,15 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                     $queryBuilder->createNamedParameter($containerCTypes, Connection::PARAM_STR_ARRAY)
                 )
             )
-            ->execute()
-            ->fetchAll(\PDO::FETCH_COLUMN);
+            ->execute();
+        $containerUids = [];
+        while ($row = $stm->fetch()) {
+            $containerUids[] = $row['uid'];
+            if ($row['l18n_parent'] > 0) {
+                $containerUids[] = $row['l18n_parent'];
+            }
+        }
+        return $containerUids;
     }
 
     protected function getContainerChildren(array $uids): array

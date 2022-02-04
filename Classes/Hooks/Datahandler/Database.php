@@ -87,7 +87,7 @@ class Database implements SingletonInterface
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'l10n_source',
+                    'l18n_parent',
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
