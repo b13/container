@@ -11,8 +11,6 @@ parameters:
   ignoreErrors:
     - '#.*TYPO3\\CMS\\Frontend\\Page\\PageRepository.*#'
     - '#^Cannot call method fetch.*\(\) on Doctrine\\DBAL\\Result\|int\.$#'
-    - '#^Parameter \#.* ...\$predicates of method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder::where\(\) expects array\<int,.*mixed\>\|Doctrine\\DBAL\\Query\\Expression\\CompositeExpression, string given.$#'
-    - '#^Parameter \#.* ...\$where of method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder::orWhere\(\) expects array\<int,.*string\>\|Doctrine\\DBAL\\Query\\Expression\\CompositeExpression, string given.$#'
     -
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 1 parameter, 0 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
