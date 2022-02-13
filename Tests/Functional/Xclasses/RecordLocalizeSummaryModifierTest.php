@@ -67,4 +67,18 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
         $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [1]);
         self::assertSame([1], $containerUids);
     }
+
+    /**
+     * @test
+     */
+    public function getContainerUidsReturnsAlsoUidsOfL18nParents(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Xclasses/Fixtures/container_and_translated_container.xml');
+        $recordLocalizeSummeryModifier = $this->getAccessibleMock(
+            RecordLocalizeSummaryModifier::class,
+            ['foo']
+        );
+        $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [2]);
+        self::assertSame([2, 1], $containerUids);
+    }
 }
