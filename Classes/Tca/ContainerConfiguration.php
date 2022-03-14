@@ -72,6 +72,11 @@ class ContainerConfiguration
      */
     protected $group = 'container';
 
+    /**
+     * @var array
+     */
+    protected $ttContentDefValues = [];
+
     public function __construct(
         string $cType,
         string $label,
@@ -205,6 +210,15 @@ class ContainerConfiguration
     }
 
     /**
+     * @param array $ttContentDefValues
+     */
+    public function setTtContentDefValues(array $ttContentDefValues): ContainerConfiguration
+    {
+        $this->ttContentDefValues = $ttContentDefValues;
+        return $this;
+    }
+
+    /**
      * @return mixed[]
      */
     public function toArray(): array
@@ -220,7 +234,8 @@ class ContainerConfiguration
             'gridPartialPaths' => $this->gridPartialPaths,
             'saveAndCloseInNewContentElementWizard' => $this->saveAndCloseInNewContentElementWizard,
             'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard,
-            'group' => $this->group
+            'group' => $this->group,
+            'ttContentDefValues' => $this->ttContentDefValues
         ];
     }
 }
