@@ -1,0 +1,33 @@
+.. ----------
+.. text roles
+.. ----------
+
+.. role:: aspect(emphasis)
+.. role:: bash(code)
+.. role:: html(code)
+.. role:: js(code)
+.. role:: php(code)
+.. role:: rst(code)
+.. role:: sep(strong)
+.. role:: sql(code)
+.. role:: ts(code)
+   :class: typoscript
+
+.. role:: tsconfig(code)
+   :class: typoscript
+
+.. role:: typoscript(code)
+.. role:: xml(code)
+   :class: html
+
+.. role:: yaml(code)
+
+.. default-role:: code
+
+.. ---------
+.. highlight
+.. ---------
+
+.. By default, code blocks use PHP syntax highlighting
+
+.. highlight:: php
