@@ -4,8 +4,11 @@
 Container Content Elements
 ==========================
 
-:Key:
+:Extension key:
    container
+
+:Package name:
+   b13/container
 
 :Version:
    |release|
