@@ -57,16 +57,83 @@ this would be `tt_content.php`.
 Methods of the ContainerConfiguration Object
 --------------------------------------------
 
-| Method name | Description | Parameters | Default |
-| ----------- | ----------- | ---------- | ---------- |
-| `setIcon` | icon file, or existing icon identifier | `string $icon` | `'EXT:container/Resources/Public/Icons/Extension.svg'` |
-| `setBackendTemplate` | Template for backend view| `string $backendTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
-| `setGridTemplate` | Template for grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
-| `setGridPartialPaths` / `addGridPartialPath` | Partial root paths for grid, only affects the :doc:`Fluid-based page module <ext_core:Changelog/10.3/Feature-90348-NewFluid-basedReplacementForPageLayoutView>` | `array $gridPartialPaths` / `string $gridPartialPath` | `['EXT:backend/Resources/Private/Partials/', 'EXT:container/Resources/Private/Partials/']` |
-| `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard (v10 only) | `bool $saveAndCloseInNewContentElementWizard` | `true` |
-| `setRegisterInNewContentElementWizard` | register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
-| `setGroup` | Custom Group (used as optgroup for CType select (v10 only), and as tab in New Content Element Wizard). If empty "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
-| `setDefaultValues` | Default values for the newContentElement.wizardItems | `array $defaultValues` | `[]` |
+.. php:class:: ContainerConfiguration
+
+   .. php:method:: setIcon($icon)
+
+      Set icon file, or existing icon identifier.
+
+      Default: `EXT:container/Resources/Public/Icons/Extension.svg`
+
+      :param string $icon:
+
+   .. php:method:: setBackendTemplate($backendTemplate)
+
+      Set template for backend view.
+
+      Default: `EXT:container/Resources/Private/Templates/Container.html`
+
+      :param string $backendTemplate:
+
+   .. php:method:: setGridTemplate($gridTemplate)
+
+      Set template for grid.
+
+      Default: `EXT:container/Resources/Private/Templates/Container.html`
+
+      :param string $gridTemplate:
+
+   .. php:method:: setGridPartialPaths($gridPartialPaths)
+
+      Set partial root paths for grid. It only affects the
+      :doc:`Fluid-based page module <ext_core:Changelog/10.3/Feature-90348-NewFluid-basedReplacementForPageLayoutView>`.
+
+      Default: [`EXT:backend/Resources/Private/Partials/`, `EXT:container/Resources/Private/Partials/`]
+
+      :param array $gridPartialPaths:
+
+   .. php:method:: addGridPartialPath($gridPartialPath)
+
+      Add partial root path for grid. It only affects the
+      :doc:`Fluid-based page module <ext_core:Changelog/10.3/Feature-90348-NewFluid-basedReplacementForPageLayoutView>`.
+
+      Default: [`EXT:backend/Resources/Private/Partials/`, `EXT:container/Resources/Private/Partials/`]
+
+      :param string $gridPartialPath:
+
+   .. php:method:: setSaveAndCloseInNewContentElementWizard($saveAndCloseInNewContentElementWizard)
+
+      Enable "Save and close" in new content element wizard (v10 only).
+
+      Default: `true`
+
+      :param bool $saveAndCloseInNewContentElementWizard:
+
+   .. php:method:: setRegisterInNewContentElementWizard($registerInNewContentElementWizard)
+
+      Register in new content element wizard.
+
+      Default: `true`
+
+      :param bool $registerInNewContentElementWizard:
+
+   .. php:method:: setGroup($group)
+
+      Custom Group (used as optgroup for CType select (v10 only), and as tab in
+      new Content Element Wizard). If empty "container" is used as tab and no
+      optgroup in CType is used.
+
+      Default: `container`
+
+      :param string $group:
+
+   .. php:method:: setDefaultValues($defaultValues)
+
+      Default values for the newContentElement.wizardItems.
+
+      Default: `[]`
+
+      :param array $defaultValues:
 
 **Notes:**
 
