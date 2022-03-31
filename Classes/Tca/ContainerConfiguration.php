@@ -236,7 +236,7 @@ class ContainerConfiguration
             'saveAndCloseInNewContentElementWizard' => $this->saveAndCloseInNewContentElementWizard,
             'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard,
             'group' => $this->group,
-            'ttContentDefValues' => $this->defaultValues
+            'defaultValues' => $this->defaultValues
         ];
     }
 }
