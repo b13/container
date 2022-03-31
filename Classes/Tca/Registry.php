@@ -374,10 +374,10 @@ mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabe
 mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 ';
             foreach ($containerConfigurations as $cType => $containerConfiguration) {
-                array_walk($containerConfiguration['ttContentDefValues'], static function (&$item, $key) {
+                array_walk($containerConfiguration['defaultValues'], static function (&$item, $key) {
                     $item = $key . ' = ' . $item;
                 });
-                $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['ttContentDefValues']);
+                $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['defaultValues']);
 
                 $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
 ' . $cType . ' {
