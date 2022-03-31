@@ -77,7 +77,7 @@ This is an example to create a 2 column container. The code snippet goes into a 
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard (v10 only) | `bool $saveAndCloseInNewContentElementWizard` | `true` |
 | `setRegisterInNewContentElementWizard` |register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
 | `setGroup` | Custom Group (used as optgroup for CType select (v10 only), and as tab in New Content Element Wiazrd). If empty "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
-| `setTtContentDefValues` | Default values for the newContentElement.wizardItems | `array $ttContentDefValues` | `[]` |
+| `setDefaultValues` | Default values for the newContentElement.wizardItems | `array $defaultValues` | `[]` |
 
 __Notes:__
 - If EXT:content_defender >= 3.1.0 is installed you can use `allowed`, `disallowed` and `maxitems` in the column configuration
