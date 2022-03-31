@@ -75,7 +75,7 @@ class ContainerConfiguration
     /**
      * @var array
      */
-    protected $ttContentDefValues = [];
+    protected $defaultValues = [];
 
     public function __construct(
         string $cType,
@@ -210,11 +210,12 @@ class ContainerConfiguration
     }
 
     /**
-     * @param array $ttContentDefValues
+     * @param array $defaultValues
+     * @return ContainerConfiguration
      */
-    public function setTtContentDefValues(array $ttContentDefValues): ContainerConfiguration
+    public function setDefaultValues(array $defaultValues): ContainerConfiguration
     {
-        $this->ttContentDefValues = $ttContentDefValues;
+        $this->defaultValues = $defaultValues;
         return $this;
     }
 
@@ -235,7 +236,7 @@ class ContainerConfiguration
             'saveAndCloseInNewContentElementWizard' => $this->saveAndCloseInNewContentElementWizard,
             'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard,
             'group' => $this->group,
-            'ttContentDefValues' => $this->ttContentDefValues
+            'ttContentDefValues' => $this->defaultValues
         ];
     }
 }

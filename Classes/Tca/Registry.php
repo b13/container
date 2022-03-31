@@ -374,6 +374,9 @@ mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabe
 mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 ';
             foreach ($containerConfigurations as $cType => $containerConfiguration) {
+                array_walk($containerConfiguration['ttContentDefValues'], static function (&$item, $key) {
+                    $item = $key . ' = ' . $item;
+                });
                 $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['ttContentDefValues']);
 
                 $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
