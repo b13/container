@@ -45,7 +45,9 @@ class DatamapBeforeStartHook
      */
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
     {
-        // ajax move (drag & drop)
+        // ajax move (drag & drop) (mixed cmdmap and datamap, no longer used on TYPO3 > 10)
+        // s. https://forge.typo3.org/issues/92849
+        // s. https://forge.typo3.org/projects/typo3cms-core/repository/1749/revisions/c1be5540b20421fdfa295a1323b663f3189a41d7
         $dataHandler->datamap = $this->extractContainerIdFromColPosInDatamap($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildLocalizations($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildrenChangeContainerLanguage($dataHandler->datamap);

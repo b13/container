@@ -168,6 +168,34 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
+    public function copyClipboardToOtherLanguageCopiesNestedChildren(): void
+    {
+        $cmdmap = [
+            'tt_content' => [
+                55 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $child = $this->fetchOneRecord('t3_origuid', 56);
+        $nestedChild = $this->fetchOneRecord('t3_origuid', 57);
+        self::assertSame($child['uid'], $nestedChild['tx_container_parent']);
+        self::assertSame(200, $nestedChild['colPos']);
+        self::assertSame(0, $nestedChild['sys_language_uid']);
+    }
+
+    /**
+     * @test
+     */
     public function moveContainerClipboardToOtherLanguageMovesChildren(): void
     {
         $cmdmap = [
