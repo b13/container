@@ -374,12 +374,19 @@ mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabe
 mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 ';
             foreach ($containerConfigurations as $cType => $containerConfiguration) {
+                array_walk($containerConfiguration['defaultValues'], static function (&$item, $key) {
+                    $item = $key . ' = ' . $item;
+                });
+                $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['defaultValues']);
+
                 $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
 ' . $cType . ' {
     title = ' . $containerConfiguration['label'] . '
     description = ' . $containerConfiguration['description'] . '
     iconIdentifier = ' . $cType . '
-    tt_content_defValues.CType = ' . $cType . '
+    tt_content_defValues {
+    ' . $ttContentDefValues . '
+    }
     saveAndClose = ' . $containerConfiguration['saveAndCloseInNewContentElementWizard'] . '
 }
 }
