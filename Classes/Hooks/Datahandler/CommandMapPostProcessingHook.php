@@ -112,6 +112,10 @@ class CommandMapPostProcessingHook
                         ]
                     ]
                 ];
+                $origCmdMap = $dataHandler->cmdmap;
+                if (isset($origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'])) {
+                    $cmd['tt_content'][$record['uid']][$command]['update']['sys_language_uid'] = $origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'];
+                }
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();

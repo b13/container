@@ -38,4 +38,32 @@
         <sys_language_uid>1</sys_language_uid>
     </tt_content>
 
+
+    <tt_content>
+        <uid>55</uid>
+        <pid>1</pid>
+        <CType>b13-2cols-with-header-container</CType>
+        <sorting>64</sorting>
+        <sys_language_uid>1</sys_language_uid>
+    </tt_content>
+    <tt_content>
+        <uid>56</uid>
+        <pid>1</pid>
+        <colPos>201</colPos>
+        <tx_container_parent>55</tx_container_parent>
+        <CType>b13-2cols-with-header-container</CType>
+        <sorting>128</sorting>
+        <header>header</header>
+        <sys_language_uid>1</sys_language_uid>
+    </tt_content>
+    <tt_content>
+        <uid>57</uid>
+        <pid>1</pid>
+        <colPos>200</colPos>
+        <tx_container_parent>56</tx_container_parent>
+        <CType>header</CType>
+        <sorting>256</sorting>
+        <sys_language_uid>1</sys_language_uid>
+    </tt_content>
+
 </dataset>
