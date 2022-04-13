@@ -261,6 +261,11 @@ class Registry implements SingletonInterface
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridPartialPaths'];
     }
 
+    public function getGridLayoutPaths(string $cType): array
+    {
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridLayoutPaths'] ?? [];
+    }
+
     /**
      * @param string $cType
      * @return array

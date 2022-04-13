@@ -57,6 +57,8 @@ class ContainerConfiguration
         'EXT:container/Resources/Private/Partials/',
     ];
 
+    protected $gridLayoutPaths = [];
+
     /**
      * @var bool
      */
@@ -136,6 +138,23 @@ class ContainerConfiguration
     public function addGridPartialPath(string $gridPartialPath): ContainerConfiguration
     {
         $this->gridPartialPaths[] = $gridPartialPath;
+        return $this;
+    }
+
+    public function getGridLayoutPaths(): array
+    {
+        return $this->gridLayoutPaths;
+    }
+
+    public function setGridLayoutPaths(array $gridLayoutPaths): ContainerConfiguration
+    {
+        $this->gridLayoutPaths = $gridLayoutPaths;
+        return $this;
+    }
+
+    public function addGridLayoutPath(string $gridLayoutPath): ContainerConfiguration
+    {
+        $this->gridLayoutPaths[] = $gridLayoutPath;
         return $this;
     }
 
@@ -233,6 +252,7 @@ class ContainerConfiguration
             'grid' => $this->grid,
             'gridTemplate' => $this->gridTemplate,
             'gridPartialPaths' => $this->gridPartialPaths,
+            'gridLayoutPaths' => $this->gridLayoutPaths,
             'saveAndCloseInNewContentElementWizard' => $this->saveAndCloseInNewContentElementWizard,
             'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard,
             'group' => $this->group,

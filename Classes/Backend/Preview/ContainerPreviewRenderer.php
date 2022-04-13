@@ -86,8 +86,10 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
 
         $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
         $partialRootPaths = $this->tcaRegistry->getGridPartialPaths($record['CType']);
+        $layoutRootPaths = $this->tcaRegistry->getGridLayoutPaths($record['CType']);
         $view = GeneralUtility::makeInstance(StandaloneView::class);
         $view->setPartialRootPaths($partialRootPaths);
+        $view->setLayoutRootPaths($layoutRootPaths);
         $view->setTemplatePathAndFilename($gridTemplate);
 
         $view->assign('hideRestrictedColumns', (bool)(BackendUtility::getPagesTSconfig($context->getPageId())['mod.']['web_layout.']['hideRestrictedCols'] ?? false));
@@ -95,6 +97,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('newContentTitleShort', $this->getLanguageService()->getLL('content'));
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
+        $view->assign('containerRecord', $container->getContainerRecord());
         $view->assign('defaultRecordDirectory', $this->hasDefaultDirectory() ? 'RecordDefault' : 'Record');
         $rendered = $view->render();
 
