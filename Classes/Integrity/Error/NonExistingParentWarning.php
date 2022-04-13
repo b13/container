@@ -14,8 +14,10 @@ namespace B13\Container\Integrity\Error;
 
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
-class NonExistingParentError implements ErrorInterface
+class NonExistingParentWarning implements ErrorInterface
 {
+    private const IDENTIFIER = 'NonExistingParentWarning';
+
     /**
      * @var array
      */
@@ -32,7 +34,8 @@ class NonExistingParentError implements ErrorInterface
     public function __construct(array $childRecord)
     {
         $this->childRecord = $childRecord;
-        $this->errorMessage = 'container child with uid ' . $childRecord['uid'] .
+        $this->errorMessage = self::IDENTIFIER . ': container child with uid ' . $childRecord['uid'] .
+            ' (page: ' . $childRecord['pid'] . ' language: ' . $childRecord['sys_language_uid'] . ')' .
             ' has non existing tx_container_parent ' . $childRecord['tx_container_parent'];
     }
 

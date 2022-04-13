@@ -16,6 +16,8 @@ use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
 class WrongL18nParentError implements ErrorInterface
 {
+    private const IDENTIFIER = 'WrongL18nParentError';
+
     /**
      * @var array
      */
@@ -39,10 +41,12 @@ class WrongL18nParentError implements ErrorInterface
     {
         $this->childRecord = $childRecord;
         $this->containerRecord = $containerRecord;
-        $this->errorMessage = 'container child with uid ' . $childRecord['uid'] .
+        $this->errorMessage = self::IDENTIFIER . ': container child with uid ' . $childRecord['uid'] .
+            ' (page: ' . $childRecord['pid'] . ' language: ' . $childRecord['sys_language_uid'] . ')' .
             ' has l18n_parent ' . $childRecord['l18n_parent']
             . ' but tx_container_parent ' . $childRecord['tx_container_parent']
-            . ' has l18n_parent ' . $containerRecord['l18n_parent'];
+            . ' has l18n_parent ' . $containerRecord['l18n_parent'] .
+            ' (page: ' . $containerRecord['pid'] . ' language: ' . $containerRecord['sys_language_uid'] . ')';
     }
 
     /**

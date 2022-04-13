@@ -12,13 +12,16 @@ namespace B13\Container\Command;
  * of the License, or any later version.
  */
 
+use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
+use B13\Container\Integrity\IntegrityFix;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class IntegrityCommand extends Command
+class DeleteChildrenWithWrongPidCommand extends Command
 {
 
     /**
@@ -27,28 +30,15 @@ class IntegrityCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->getName() === 'integrity:run') {
-            trigger_error(
-                'use "container:integrity" instead of "integrity:run" as command name',
-                E_USER_DEPRECATED
-            );
-        }
+        Bootstrap::initializeBackendAuthentication();
+        Bootstrap::initializeLanguageObject();
         $integrity = GeneralUtility::makeInstance(Integrity::class);
+        $integrityFix = GeneralUtility::makeInstance(IntegrityFix::class);
         $res = $integrity->run();
-        if (count($res['errors']) > 0) {
-            $output->writeln('ERRORS');
-            foreach ($res['errors'] as $error) {
-                $output->writeln($error->getErrorMessage());
+        foreach ($res['errors'] as $error) {
+            if ($error instanceof WrongPidError) {
+                $integrityFix->deleteChildrenWithWrongPid($error);
             }
-        }
-        if (count($res['warnings']) > 0) {
-            $output->writeln('WARNINGS ("unused elements")');
-            foreach ($res['warnings'] as $error) {
-                $output->writeln($error->getErrorMessage());
-            }
-        }
-        if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
-            $output->writeln('Good Job, no ERRORS/WARNINGS');
         }
         return 0;
     }

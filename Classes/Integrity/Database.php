@@ -21,23 +21,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Database implements SingletonInterface
 {
-    private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 't3_origuid', 'colPos', 'tx_container_parent'];
+    private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 't3_origuid', 'colPos', 'tx_container_parent', 'l10n_source', 'hidden'];
 
     /**
      * @return QueryBuilder
      */
-    protected function getQueryBuilder(): QueryBuilder
+    public function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
         return $queryBuilder;
     }
 
-    /**
-     * @param array $cTypes
-     * @return array
-     */
-    public function getTranslatedContainerRecords(array $cTypes): array
+    public function getNonDefaultLanguageContainerRecords(array $cTypes): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
@@ -48,8 +44,8 @@ class Database implements SingletonInterface
                     'CType',
                     $queryBuilder->createNamedParameter($cTypes, Connection::PARAM_STR_ARRAY)
                 ),
-                $queryBuilder->expr()->neq(
-                    'l10n_source',
+                $queryBuilder->expr()->gt(
+                    'sys_language_uid',
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
@@ -61,10 +57,7 @@ class Database implements SingletonInterface
         return $rows;
     }
 
-    /**
-     * @return array
-     */
-    public function getTranslatedContainerChildRecords(): array
+    public function getNonDefaultLanguageContainerChildRecords(): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
@@ -75,8 +68,8 @@ class Database implements SingletonInterface
                     'tx_container_parent',
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
-                $queryBuilder->expr()->neq(
-                    'l10n_source',
+                $queryBuilder->expr()->gt(
+                    'sys_language_uid',
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
@@ -86,6 +79,31 @@ class Database implements SingletonInterface
             $rows[$result['uid']] = $result;
         }
         return $rows;
+    }
+
+    public function getChildrenByContainerAndColPos(int $containerId, int $colPos, int $languageId): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        return (array)$queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_container_parent',
+                    $queryBuilder->createNamedParameter($containerId, Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($languageId, Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'colPos',
+                    $queryBuilder->createNamedParameter($colPos, Connection::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting')
+            ->execute()
+            ->fetchAll();
     }
 
     /**

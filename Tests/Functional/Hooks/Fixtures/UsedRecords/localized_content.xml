@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>1</uid>
+        <pid>0</pid>
+    </pages>
+    <tt_content>
+        <uid>1</uid>
+        <pid>1</pid>
+        <colPos>0</colPos>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+    <tt_content>
+        <uid>2</uid>
+        <pid>1</pid>
+        <tx_container_parent>1</tx_container_parent>
+        <colPos>202</colPos>
+    </tt_content>
+
+    <tt_content>
+        <uid>3</uid>
+        <pid>1</pid>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>1</l18n_parent>
+        <l10n_source>1</l10n_source>
+        <colPos>0</colPos>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+    <tt_content>
+        <uid>4</uid>
+        <pid>1</pid>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>2</l18n_parent>
+        <l10n_source>2</l10n_source>
+        <tx_container_parent>1</tx_container_parent>
+        <colPos>202</colPos>
+    </tt_content>
+
+</dataset>

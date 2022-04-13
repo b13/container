@@ -18,6 +18,24 @@ services:
       - name: event.listener
         identifier: 'tx-container-boot-completed'
         event: TYPO3\CMS\Core\Core\Event\BootCompletedEvent
+  B13\Container\Command\FixLanguageModeCommand:
+    tags:
+      - name: 'console.command'
+        command: 'container:fixLanguageModeCommand'
+        schedulable: false
+        description: connect children of connected container if possible, else disconnect container
+  B13\Container\Command\FixContainerParentForConnectedModeCommand:
+    tags:
+      - name: 'console.command'
+        command: 'container:fixContainerParentForConnectedModeCommand'
+        schedulable: false
+        description: tx_container_parent of children in connected mode should point to default language container
+  B13\Container\Command\DeleteChildrenWithWrongPidCommand:
+    tags:
+      - name: 'console.command'
+        command: 'container:deleteChildrenWithWrongPid'
+        schedulable: false
+        description: delete all child records with pid neq containers pid
   B13\Container\Command\IntegrityCommand:
     tags:
       - name: 'console.command'

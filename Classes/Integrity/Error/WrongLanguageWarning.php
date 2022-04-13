@@ -14,9 +14,9 @@ namespace B13\Container\Integrity\Error;
 
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
-class WrongPidError implements ErrorInterface
+class WrongLanguageWarning implements ErrorInterface
 {
-    private const IDENTIFIER = 'WrongPidError';
+    private const IDENTIFIER = 'WrongLanguageWarning';
 
     /**
      * @var array
@@ -43,8 +43,9 @@ class WrongPidError implements ErrorInterface
         $this->containerRecord = $containerRecord;
         $this->errorMessage = self::IDENTIFIER . ': container child with uid ' . $childRecord['uid'] .
             ' (page: ' . $childRecord['pid'] . ' language: ' . $childRecord['sys_language_uid'] . ')' .
-            ' but tx_container_parent ' . $childRecord['tx_container_parent'] .
-            ' has pid ' . $containerRecord['pid'] . ' language: ' . $containerRecord['sys_language_uid'] . ')';
+            ' has sys_language_uid ' . $childRecord['sys_language_uid']
+            . ' but tx_container_parent ' . $childRecord['tx_container_parent']
+            . ' has sys_language_uid ' . $containerRecord['sys_language_uid'];
     }
 
     /**
@@ -60,7 +61,7 @@ class WrongPidError implements ErrorInterface
      */
     public function getSeverity(): int
     {
-        return AbstractMessage::ERROR;
+        return AbstractMessage::WARNING;
     }
 
     /**

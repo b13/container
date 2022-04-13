@@ -16,6 +16,8 @@ use TYPO3\CMS\Core\Messaging\AbstractMessage;
 
 class UnusedColPosWarning implements ErrorInterface
 {
+    private const IDENTIFIER = 'UnusedColPosWarning';
+
     /**
      * @var array
      */
@@ -39,8 +41,8 @@ class UnusedColPosWarning implements ErrorInterface
     {
         $this->childRecord = $childRecord;
         $this->containerRecord = $containerRecord;
-        $this->errorMessage = 'container child with uid ' . $childRecord['uid']
-            . ' on page ' . $childRecord['pid'] .
+        $this->errorMessage = self::IDENTIFIER . ': container child with uid ' . $childRecord['uid'] .
+            ' (page: ' . $childRecord['pid'] . ' language: ' . $childRecord['sys_language_uid'] . ')' .
             ' has invalid colPos ' . $childRecord['colPos']
             . ' in container ' . $childRecord['tx_container_parent']
             . ' with CType ' . $containerRecord['CType'];

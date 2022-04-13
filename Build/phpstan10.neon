@@ -10,6 +10,9 @@ parameters:
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 0 parameters, 1 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
     -
+      message: '#Class TYPO3\\CMS\\Backend\\View\\PageLayoutView constructor invoked with 0 parameters, 1 required.#'
+      path: %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
+    -
       message: '#Constant ORIGINAL_ROOT not found.#'
       path: %currentWorkingDirectory%/Tests
     -
