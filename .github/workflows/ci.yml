@@ -17,6 +17,8 @@ jobs:
         TYPO3: [ '10' ]
         include:
           - TYPO3: '11'
+            php: '8.1'
+          - TYPO3: '11'
             php: '8.0'
           - TYPO3: '11'
             php: '7.4'
