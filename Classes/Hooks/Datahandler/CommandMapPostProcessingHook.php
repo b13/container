@@ -106,11 +106,11 @@ class CommandMapPostProcessingHook
                                 'target' => $target,
                                 'update' => [
                                     'tx_container_parent' => $containerId,
-                                    'colPos' => $record['colPos']
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'colPos' => $record['colPos'],
+                                ],
+                            ],
+                        ],
+                    ],
                 ];
                 $origCmdMap = $dataHandler->cmdmap;
                 if (isset($origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'])) {

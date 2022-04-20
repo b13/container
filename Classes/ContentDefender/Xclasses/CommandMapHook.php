@@ -59,7 +59,7 @@ class CommandMapHook extends CmdmapDataHandlerHook
                     ) {
                         $this->mapping[(int)$id] = [
                             'containerId' => (int)$data['update']['tx_container_parent'],
-                            'colPos' => (int)$data['update']['colPos']
+                            'colPos' => (int)$data['update']['colPos'],
                         ];
                         $this->containerColumnConfigurationService->addCopyMapping(
                             (int)$id,

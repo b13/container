@@ -32,7 +32,7 @@ class UsedRecordsTest extends UnitTestCase
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal());
         $params = [
             'used' => true,
-            'record' => ['tx_container_parent' => 0]
+            'record' => ['tx_container_parent' => 0],
         ];
         self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
         $params['used'] = false;
@@ -55,7 +55,7 @@ class UsedRecordsTest extends UnitTestCase
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
         $params = [
             'used' => false,
-            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0]
+            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0],
         ];
         self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
@@ -76,7 +76,7 @@ class UsedRecordsTest extends UnitTestCase
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
         $params = [
             'used' => false,
-            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0]
+            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0],
         ];
         self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }
@@ -96,7 +96,7 @@ class UsedRecordsTest extends UnitTestCase
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
         $params = [
             'used' => false,
-            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3]
+            'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3],
         ];
         self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
     }

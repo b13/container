@@ -40,9 +40,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 72 => [
-                    'copyToLanguage' => 1
-                ]
-            ]
+                    'copyToLanguage' => 1,
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -59,9 +59,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 1 => [
-                    'copyToLanguage' => 1
-                ]
-            ]
+                    'copyToLanguage' => 1,
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -82,9 +82,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 1 => [
-                    'localize' => 1
-                ]
-            ]
+                    'localize' => 1,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -104,9 +104,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 21 => [
-                    'localize' => 2
-                ]
-            ]
+                    'localize' => 2,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -127,9 +127,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 21 => [
-                    'copyToLanguage' => 2
-                ]
-            ]
+                    'copyToLanguage' => 2,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -151,9 +151,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 51 => [
-                    'copyToLanguage' => 2
-                ]
-            ]
+                    'copyToLanguage' => 2,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -174,9 +174,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 72 => [
-                    'localize' => 1
-                ]
-            ]
+                    'localize' => 1,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -203,9 +203,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'localize' => 1
-                ]
-            ]
+                    'localize' => 1,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -232,9 +232,9 @@ class LocalizeTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 82 => [
-                    'localize' => 1
-                ]
-            ]
+                    'localize' => 1,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -254,15 +254,15 @@ class LocalizeTest extends DatahandlerTest
             ['cmdmap' => [
                 'tt_content' => [
                     91 => ['localize' => 1],
-                    1 => ['localize' => 1]
-                ]
+                    1 => ['localize' => 1],
+                ],
             ]],
             ['cmdmap' => [
                 'tt_content' => [
                     1 => ['localize' => 1],
-                    91 => ['localize' => 1]
-                ]
-            ]]
+                    91 => ['localize' => 1],
+                ],
+            ]],
         ];
     }
 
@@ -289,15 +289,15 @@ class LocalizeTest extends DatahandlerTest
             ['cmdmap' => [
                 'tt_content' => [
                     91 => ['copyToLanguage' => 1],
-                    1 => ['copyToLanguage' => 1]
-                ]
+                    1 => ['copyToLanguage' => 1],
+                ],
             ]],
             ['cmdmap' => [
                 'tt_content' => [
                     1 => ['copyToLanguage' => 1],
-                    91 => ['copyToLanguage' => 1]
-                ]
-            ]]
+                    91 => ['copyToLanguage' => 1],
+                ],
+            ]],
         ];
     }
 

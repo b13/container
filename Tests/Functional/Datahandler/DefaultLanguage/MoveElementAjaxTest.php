@@ -35,18 +35,18 @@ class MoveElementAjaxTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => 1
-                ]
-            ]
+                    'move' => 1,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 2 => [
                     'colPos' => 0,
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -66,18 +66,18 @@ class MoveElementAjaxTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => -4
-                ]
-            ]
+                    'move' => -4,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 2 => [
                     'colPos' => 0,
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -97,18 +97,18 @@ class MoveElementAjaxTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => 1
-                ]
-            ]
+                    'move' => 1,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 2 => [
                     'colPos' => '1-201',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -128,18 +128,18 @@ class MoveElementAjaxTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'move' => -3
-                ]
-            ]
+                    'move' => -3,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 2 => [
                     'colPos' => '1-201',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -159,18 +159,18 @@ class MoveElementAjaxTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 4 => [
-                    'move' => 1
-                ]
-            ]
+                    'move' => 1,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 4 => [
                     'colPos' => '1-201',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -190,18 +190,18 @@ class MoveElementAjaxTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 4 => [
-                    'move' => -3
-                ]
-            ]
+                    'move' => -3,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 4 => [
                     'colPos' => '1-201',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();

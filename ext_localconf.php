@@ -14,7 +14,7 @@ call_user_func(static function () {
         );
         // XClass due to \TYPO3\CMS\Core\Domain\Repository\PageRepository not exists in v9
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\B13\Container\Domain\Factory\PageView\Frontend\ContentStorage::class] = [
-            'className' => \B13\Container\Domain\Factory\PageView\Frontend\LegacyContentStorage::class
+            'className' => \B13\Container\Domain\Factory\PageView\Frontend\LegacyContentStorage::class,
         ];
     }
 
@@ -42,7 +42,7 @@ call_user_func(static function () {
 
     // LocalizationController Xclass
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
-        'className' => \B13\Container\Xclasses\LocalizationController::class
+        'className' => \B13\Container\Xclasses\LocalizationController::class,
     ];
 
     if (false === \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule')) {
@@ -70,11 +70,11 @@ call_user_func(static function () {
         'tx_container-post-process' => \B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook::class,
         'tx_container-before-start' => \B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook::class,
         'tx_container-delete' => \B13\Container\Hooks\Datahandler\DeleteHook::class,
-        'tx_container-after-finish' => \B13\Container\Hooks\Datahandler\CommandMapAfterFinishHook::class
+        'tx_container-after-finish' => \B13\Container\Hooks\Datahandler\CommandMapAfterFinishHook::class,
     ];
 
     $datamapHooks = [
-        'tx_container-before-start' => \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class
+        'tx_container-before-start' => \B13\Container\Hooks\Datahandler\DatamapBeforeStartHook::class,
     ];
 
     // EXT:content_defender
@@ -86,18 +86,18 @@ call_user_func(static function () {
                 \B13\Container\ContentDefender\Legacy\Hooks\WizardItems::class;
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][ \B13\Container\ContentDefender\Legacy\Form\FormDataProvider\TcaCTypeItems::class] = [
                 'depends' => [
-                    \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class
-                ]
+                    \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
+                ],
             ];
         } else {
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['content_defender']['ColumnConfigurationManipulationHook']['tx_container'] =
                 \B13\Container\ContentDefender\Hooks\ColumnConfigurationManipulationHook::class;
         }
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook::class] = [
-            'className' => \B13\Container\ContentDefender\Xclasses\DatamapHook::class
+            'className' => \B13\Container\ContentDefender\Xclasses\DatamapHook::class,
         ];
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\CmdmapDataHandlerHook::class] = [
-            'className' => \B13\Container\ContentDefender\Xclasses\CommandMapHook::class
+            'className' => \B13\Container\ContentDefender\Xclasses\CommandMapHook::class,
         ];
     }
 

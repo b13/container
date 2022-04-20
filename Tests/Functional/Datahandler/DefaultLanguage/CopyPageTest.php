@@ -34,9 +34,9 @@ class CopyPageTest extends DatahandlerTest
         $cmdmap = [
             'pages' => [
                 1 => [
-                    'copy' => 1
-                ]
-            ]
+                    'copy' => 1,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();

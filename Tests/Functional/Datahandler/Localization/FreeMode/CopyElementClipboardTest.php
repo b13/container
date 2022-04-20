@@ -41,12 +41,12 @@ class CopyElementClipboardTest extends DatahandlerTest
                         'target' => 1,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -71,12 +71,12 @@ class CopyElementClipboardTest extends DatahandlerTest
                         'target' => -54,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -102,12 +102,12 @@ class CopyElementClipboardTest extends DatahandlerTest
                         'target' => 1,
                         'update' => [
                             'colPos' => '51-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -133,12 +133,12 @@ class CopyElementClipboardTest extends DatahandlerTest
                         'target' => -53,
                         'update' => [
                             'colPos' => '51-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -163,12 +163,12 @@ class CopyElementClipboardTest extends DatahandlerTest
                         'target' => 1,
                         'update' => [
                             'colPos' => '51-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -194,12 +194,12 @@ class CopyElementClipboardTest extends DatahandlerTest
                         'target' => -53,
                         'update' => [
                             'colPos' => '51-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();

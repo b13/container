@@ -25,8 +25,8 @@ class DataProcessorWithIrreTest extends AbstractFrontendTest
                 'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
                     'EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript',
-                    'EXT:container/Tests/Functional/Fixtures/TypoScript/data_processor_with_irre.typoscript'
-                ]
+                    'EXT:container/Tests/Functional/Fixtures/TypoScript/data_processor_with_irre.typoscript',
+                ],
             ]
         );
     }

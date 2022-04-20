@@ -71,7 +71,7 @@ class ItemProcFunc
                             if ((int)$column['colPos'] === (int)$row['colPos']) {
                                 $items[] = [
                                     $column['name'],
-                                    $column['colPos']
+                                    $column['colPos'],
                                 ];
                             }
                         }
@@ -99,18 +99,18 @@ class ItemProcFunc
                 $cType = $container->getCType();
                 $items[] = [
                     $cType,
-                    $row['tx_container_parent']
+                    $row['tx_container_parent'],
                 ];
             } catch (Exception $e) {
                 $items[] = [
                     '-',
-                    0
+                    0,
                 ];
             }
         } else {
             $items[] = [
                 '-',
-                0
+                0,
             ];
         }
         $parameters['items'] = $items;

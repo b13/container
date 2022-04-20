@@ -133,7 +133,7 @@ class ContainerLayoutView extends PageLayoutView
             'tx_container_parent' => $containerRecord['uid'],
             'colPos' => $colPos,
             'uid_pid' => $containerRecord['pid'],
-            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
+            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
@@ -157,7 +157,7 @@ class ContainerLayoutView extends PageLayoutView
             'colPos' => $colPos,
             'tx_container_parent' => $containerRecord['uid'],
             'uid_pid' => $target,
-            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
+            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);

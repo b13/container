@@ -37,9 +37,9 @@ class ContainerTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 1 => [
-                    'delete' => 1
-                ]
-            ]
+                    'delete' => 1,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -57,18 +57,18 @@ class ContainerTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 1 => [
-                    'move' => -4
-                ]
-            ]
+                    'move' => -4,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 1 => [
                     'colPos' => '0',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -93,12 +93,12 @@ class ContainerTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();

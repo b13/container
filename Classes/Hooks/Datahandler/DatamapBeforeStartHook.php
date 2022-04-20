@@ -98,7 +98,7 @@ class DatamapBeforeStartHook
                         $translations = $this->database->fetchOverlayRecords($record);
                         foreach ($translations as $translation) {
                             $datamapForLocalizations['tt_content'][$translation['uid']] = [
-                                'colPos' => $data['colPos']
+                                'colPos' => $data['colPos'],
                             ];
                             if (isset($data['tx_container_parent'])) {
                                 $datamapForLocalizations['tt_content'][$translation['uid']]['tx_container_parent'] = $data['tx_container_parent'];
@@ -130,7 +130,7 @@ class DatamapBeforeStartHook
                         foreach ($children as $child) {
                             if ((int)$child['sys_language_uid'] !== (int)$data['sys_language_uid']) {
                                 $datamapForLocalizations['tt_content'][$child['uid']] = [
-                                    'sys_language_uid' => $data['sys_language_uid']
+                                    'sys_language_uid' => $data['sys_language_uid'],
                                 ];
                             }
                         }

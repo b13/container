@@ -35,7 +35,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
         $recordLocalizeSummeryModifier->expects(self::once())->method('getContainerChildren')->willReturn([2 => ['uid' => 2, 'tx_container_parent' => 1]]);
         $recordsToTranslate = [
             0 => [['uid' => 1]],
-            200 => [['uid' => 2]]
+            200 => [['uid' => 2]],
         ];
         $filtered = $recordLocalizeSummeryModifier->_call('filterRecords', $recordsToTranslate);
         self::assertTrue(1 === count($filtered[0]));
@@ -58,7 +58,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
         $recordLocalizeSummeryModifier->expects(self::once())->method('getContainerChildren')->willReturn([2 => ['uid' => 2, 'tx_container_parent' => 1]]);
         $recordsToTranslate = [
             0 => [['uid' => 3]],
-            200 => [['uid' => 2]]
+            200 => [['uid' => 2]],
         ];
         $filtered = $recordLocalizeSummeryModifier->_call('filterRecords', $recordsToTranslate);
         self::assertTrue(1 === count($filtered[0]));
@@ -75,7 +75,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
             [
                 ['colPos' => 2],
                 ['colPos' => 3],
-                ['colPos' => 2]
+                ['colPos' => 2],
             ]
         );
         $columns = ['columns' => [0 => 'main'], 'columnList' => [0]];

@@ -56,7 +56,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
         $this->copyMapping[$sourceContainerId . '-' . $sourceColPos] = [
             'containerId' => $containerId,
             'sourceColPos' => $sourceColPos,
-            'targetColPos' => $targetColpos
+            'targetColPos' => $targetColpos,
         ];
         return $this->copyMapping[$sourceContainerId . '-' . $sourceColPos];
     }

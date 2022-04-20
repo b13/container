@@ -56,7 +56,7 @@ class DatamapHook extends DatamapDataHandlerHook
                     if (MathUtility::canBeInterpretedAsInteger($id)) {
                         $this->mapping[(int)$id] = [
                             'containerId' => (int)$values['tx_container_parent'],
-                            'colPos' => (int)$values['colPos']
+                            'colPos' => (int)$values['colPos'],
                         ];
                         $useChildId = $id;
                     } else {

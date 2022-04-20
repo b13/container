@@ -21,7 +21,7 @@ class CopyContainerTest extends DatahandlerTest
     protected $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender'
+        'typo3conf/ext/content_defender',
     ];
 
     /**
@@ -47,11 +47,11 @@ class CopyContainerTest extends DatahandlerTest
                         'action' => 'paste',
                         'target' => -3,
                         'update' => [
-                            'colPos' => 9
-                        ]
-                    ]
-                ]
-            ]
+                            'colPos' => 9,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -72,11 +72,11 @@ class CopyContainerTest extends DatahandlerTest
                         'action' => 'paste',
                         'target' => -2,
                         'update' => [
-                            'colPos' => '1-200'
-                        ]
-                    ]
-                ]
-            ]
+                            'colPos' => '1-200',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);

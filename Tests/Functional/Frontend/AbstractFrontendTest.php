@@ -31,7 +31,7 @@ abstract class AbstractFrontendTest extends FunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/container',
-        'typo3conf/ext/container_example'
+        'typo3conf/ext/container_example',
     ];
 
     /**
@@ -48,7 +48,7 @@ abstract class AbstractFrontendTest extends FunctionalTestCase
             1,
             [
                 'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
-                'setup' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript']
+                'setup' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript'],
             ]
         );
     }

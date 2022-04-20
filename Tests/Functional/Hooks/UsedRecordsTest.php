@@ -27,7 +27,7 @@ class UsedRecordsTest extends FunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/container',
-        'typo3conf/ext/container_example'
+        'typo3conf/ext/container_example',
     ];
 
     protected function getPageLayoutView(): PageLayoutView
