@@ -101,38 +101,17 @@ services:
 
   cgl:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
-    user: ${HOST_UID}
+    user: "${HOST_UID}"
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
-      - ${HOST_HOME}:${HOST_HOME}
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
     working_dir: ${ROOT_DIR}
     command: >
       /bin/sh -c "
         if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
           set -x
         fi
-        php -v | grep '^PHP';
-        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -dxdebug.mode=off \
-            .Build/bin/php-cs-fixer fix \
-              -v \
-              ${CGLCHECK_DRY_RUN} \
-              --config=Build/php_cs.php \
-              --using-cache=no
-        else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
-          PHP_CS_FIXER_ALLOW_XDEBUG=1 \
-          .Build/bin/php-cs-fixer fix \
-            -v \
-            ${CGLCHECK_DRY_RUN} \
-            --config=Build/php_cs.php \
-            --using-cache=no
-        fi
+        php -dxdebug.mode=off .Build/vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix -v ${CGLCHECK_DRY_RUN} \
+          --config=Build/php-cs-fixer.php --using-cache=no
       "
 
   composer_install:
