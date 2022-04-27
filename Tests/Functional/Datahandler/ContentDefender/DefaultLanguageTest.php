@@ -21,7 +21,7 @@ class DefaultLanguageTest extends DatahandlerTest
     protected $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender'
+        'typo3conf/ext/content_defender',
     ];
 
     /**
@@ -50,12 +50,12 @@ class DefaultLanguageTest extends DatahandlerTest
                         'target' => 1,
                         'update' => [
                             'colPos' => '1-200',
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -80,12 +80,12 @@ class DefaultLanguageTest extends DatahandlerTest
                         'target' => -2,
                         'update' => [
                             'colPos' => '1-200',
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -105,18 +105,18 @@ class DefaultLanguageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 71 => [
-                    'move' => 1
-                ]
-            ]
+                    'move' => 1,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 71 => [
                     'colPos' => '1-200',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -135,18 +135,18 @@ class DefaultLanguageTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 71 => [
-                    'move' => -2
-                ]
-            ]
+                    'move' => -2,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 71 => [
                     'colPos' => '1-200',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -170,12 +170,12 @@ class DefaultLanguageTest extends DatahandlerTest
                         'target' => 1,
                         'update' => [
                             'colPos' => '1-200',
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);

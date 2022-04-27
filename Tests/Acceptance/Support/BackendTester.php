@@ -32,7 +32,7 @@ class BackendTester extends \Codeception\Actor
             $I->amOnPage('/typo3/index.php');
             $I->submitForm('#typo3-login-form', [
                 'username' => $username,
-                'p_field' => 'password'
+                'p_field' => 'password',
             ]);
             $I->saveSessionSnapshot($username . 'Login');
         }

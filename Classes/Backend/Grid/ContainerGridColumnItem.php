@@ -56,7 +56,7 @@ class ContainerGridColumnItem extends GridColumnItem
             'colPos' => $this->column->getColumnNumber(),
             'tx_container_parent' => $this->container->getUid(),
             'uid_pid' => -$this->record['uid'],
-            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI')
+            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         return (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);

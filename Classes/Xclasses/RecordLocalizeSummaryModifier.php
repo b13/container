@@ -36,7 +36,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
     {
         return [
             'records' => $this->filterRecords($payload['records']),
-            'columns' => $this->rebuildColumns($payload['columns'])
+            'columns' => $this->rebuildColumns($payload['columns']),
         ];
     }
 
@@ -89,7 +89,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
         foreach ($containerColumns as $containerColumn) {
             $columns = [
                 'columns' => array_replace([$containerColumn['colPos'] => 'Container Children (' . $containerColumn['colPos'] . ')'], $columns['columns']),
-                'columnList' => array_values(array_unique(array_merge([$containerColumn['colPos']], $columns['columnList'])))
+                'columnList' => array_values(array_unique(array_merge([$containerColumn['colPos']], $columns['columnList']))),
             ];
         }
         return $columns;

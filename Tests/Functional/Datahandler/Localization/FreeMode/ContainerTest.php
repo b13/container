@@ -36,9 +36,9 @@ class ContainerTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 51 => [
-                    'delete' => 1
-                ]
-            ]
+                    'delete' => 1,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -56,18 +56,18 @@ class ContainerTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 51 => [
-                    'move' => -54
-                ]
-            ]
+                    'move' => -54,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 51 => [
                     'colPos' => '0',
-                    'sys_language_uid' => 1
+                    'sys_language_uid' => 1,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -92,12 +92,12 @@ class ContainerTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -120,11 +120,11 @@ class ContainerTest extends DatahandlerTest
                         'action' => 'paste',
                         'target' => 3,
                         'update' => [
-                            'colPos' => 0
-                        ]
-                    ]
-                ]
-            ]
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -149,11 +149,11 @@ class ContainerTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 0
-                        ]
-                    ]
-                ]
-            ]
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -178,11 +178,11 @@ class ContainerTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 0
-                        ]
-                    ]
-                ]
-            ]
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -206,12 +206,12 @@ class ContainerTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
@@ -230,18 +230,18 @@ class ContainerTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 51 => [
-                    'move' => 1
-                ]
-            ]
+                    'move' => 1,
+                ],
+            ],
         ];
         $datamap = [
             'tt_content' => [
                 51 => [
                     'colPos' => '0',
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();

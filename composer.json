@@ -20,7 +20,11 @@
     },
     "config": {
         "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin"
+        "bin-dir": ".Build/bin",
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        }
     },
     "require-dev": {
         "b13/container-example": "dev-feature/content_defender",
@@ -35,8 +39,9 @@
         "codeception/module-db": "^1.0",
         "typo3/cms-workspaces": "^10.4",
         "phpstan/phpstan": "^0.12.11",
-        "typo3/coding-standards": "^0.2.0",
-        "phpunit/phpunit": "^8.4"
+        "typo3/coding-standards": "^0.5",
+        "phpunit/phpunit": "^8.4",
+        "friendsofphp/php-cs-fixer": "^3.4"
     },
     "replace": {
         "typo3-ter/container": "self.version"

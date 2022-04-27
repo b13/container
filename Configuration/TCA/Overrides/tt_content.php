@@ -12,9 +12,9 @@ call_user_func(static function () {
                 // only necessary for TYPO3 9
                 'foreign_table_where' => ' AND 1=2',
                 'itemsProcFunc' => \B13\Container\Tca\ItemProcFunc::class . '->txContainerParent',
-                'renderType' => 'selectSingle'
-            ]
-        ]
+                'renderType' => 'selectSingle',
+            ],
+        ],
     ];
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(

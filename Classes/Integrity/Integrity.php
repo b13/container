@@ -40,7 +40,7 @@ class Integrity implements SingletonInterface
      */
     protected $res = [
         'errors' => [],
-        'warnings' => []
+        'warnings' => [],
     ];
 
     /**

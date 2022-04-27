@@ -22,7 +22,7 @@ class MaxItemsTest extends DatahandlerTest
     protected $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender'
+        'typo3conf/ext/content_defender',
     ];
 
     /**
@@ -49,12 +49,12 @@ class MaxItemsTest extends DatahandlerTest
                         'target' => 1,
                         'update' => [
                             'colPos' => '1-202',
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -81,12 +81,12 @@ class MaxItemsTest extends DatahandlerTest
                         'target' => -3,
                         'update' => [
                             'colPos' => '1-202',
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -114,12 +114,12 @@ class MaxItemsTest extends DatahandlerTest
                         'target' => 1,
                         'update' => [
                             'colPos' => '1-202',
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         // into container
 
@@ -151,9 +151,9 @@ class MaxItemsTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 2 => [
-                    'copy' => -2
-                ]
-            ]
+                    'copy' => -2,
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -188,9 +188,9 @@ class MaxItemsTest extends DatahandlerTest
                     'tx_container_parent' => 1,
                     'pid' => 1,
                     'sys_language_uid' => 0,
-                    'header' => $newId
-                ]
-            ]
+                    'header' => $newId,
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -225,9 +225,9 @@ class MaxItemsTest extends DatahandlerTest
                     'tx_container_parent' => 1,
                     'pid' => 1,
                     'sys_language_uid' => 0,
-                    'header' => $newId
-                ]
-            ]
+                    'header' => $newId,
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -261,9 +261,9 @@ class MaxItemsTest extends DatahandlerTest
                     'tx_container_parent' => 1,
                     'pid' => 1,
                     'sys_language_uid' => 0,
-                    'header' => 'bar'
-                ]
-            ]
+                    'header' => 'bar',
+                ],
+            ],
         ];
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -289,10 +289,10 @@ class MaxItemsTest extends DatahandlerTest
                         'update' => [
                             'colPos' => 0,
                             'sys_language_uid' => 0,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -321,10 +321,10 @@ class MaxItemsTest extends DatahandlerTest
                         'update' => [
                             'colPos' => 0,
                             'sys_language_uid' => 0,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -353,10 +353,10 @@ class MaxItemsTest extends DatahandlerTest
                         'update' => [
                             'colPos' => '1-201',
                             'sys_language_uid' => 0,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -382,10 +382,10 @@ class MaxItemsTest extends DatahandlerTest
                         'update' => [
                             'colPos' => '3-201',
                             'sys_language_uid' => 0,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -411,10 +411,10 @@ class MaxItemsTest extends DatahandlerTest
                         'update' => [
                             'colPos' => '3-201',
                             'sys_language_uid' => 0,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -440,10 +440,10 @@ class MaxItemsTest extends DatahandlerTest
                         'update' => [
                             'colPos' => '1-202',
                             'sys_language_uid' => 0,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();

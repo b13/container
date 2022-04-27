@@ -86,10 +86,10 @@ class CommandMapBeforeStartHook
                                     'target' => $target,
                                     'update' => [
                                         'colPos' => $recordToCopy['tx_container_parent'] . '-' . $recordToCopy['colPos'],
-                                        'sys_language_uid' => $recordToCopy['sys_language_uid']
+                                        'sys_language_uid' => $recordToCopy['sys_language_uid'],
 
-                                    ]
-                                ]
+                                    ],
+                                ],
                             ];
                     }
                 }

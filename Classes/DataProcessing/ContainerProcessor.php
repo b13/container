@@ -117,7 +117,7 @@ class ContainerProcessor implements DataProcessorInterface
 
         $contentRecordRenderer = new RecordsContentObject($cObj);
         $conf = [
-            'tables' => 'tt_content'
+            'tables' => 'tt_content',
         ];
         foreach ($children as &$child) {
             if ($child['l18n_parent'] > 0) {

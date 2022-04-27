@@ -55,7 +55,7 @@ class CommandMapAfterFinishHook
                 $copyToLanguage = $incomingCmdArray['copyToLanguage'];
                 $newId = $copyMappingArray_merged['tt_content'][$id];
                 $data = [
-                    'tt_content' => []
+                    'tt_content' => [],
                 ];
                 // child in free mode is copied
                 $child = $this->database->fetchOneRecord($newId);

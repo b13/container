@@ -29,7 +29,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
             'uid' => 1,
             'tx_container_parent' => 2,
             'sys_language_uid' => 0,
-            'colPos' => 3
+            'colPos' => 3,
         ];
         $database->fetchOneRecord(1)->willReturn($copyAfterRecord);
 
@@ -41,9 +41,9 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $commandMap = [
             'tt_content' => [
                 4 => [
-                    'copy' => -1
-                ]
-            ]
+                    'copy' => -1,
+                ],
+            ],
         ];
         // should be
         $expected = [
@@ -54,12 +54,12 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
                         'target' => -1,
                         'update' => [
                             'colPos' => '2-3',
-                            'sys_language_uid' => 0
+                            'sys_language_uid' => 0,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $rewrittenCommandMap = $dataHandlerHook->_call('rewriteSimpleCommandMap', $commandMap);
         self::assertSame($expected, $rewrittenCommandMap);

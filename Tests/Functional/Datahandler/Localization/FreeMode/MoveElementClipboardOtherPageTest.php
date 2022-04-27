@@ -42,12 +42,12 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -72,12 +72,12 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
                         'target' => -64,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -103,12 +103,12 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => '61-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -134,12 +134,12 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
                         'target' => -63,
                         'update' => [
                             'colPos' => '61-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
@@ -164,12 +164,12 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
                         'target' => 3,
                         'update' => [
                             'colPos' => '61-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
@@ -195,12 +195,12 @@ class MoveElementClipboardOtherPageTest extends DatahandlerTest
                         'target' => -63,
                         'update' => [
                             'colPos' => '61-201',
-                            'sys_language_uid' => 1
+                            'sys_language_uid' => 1,
 
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();

@@ -34,7 +34,7 @@ class Registry implements SingletonInterface
                 $containerConfiguration->getLabel(),
                 $containerConfiguration->getCType(),
                 $containerConfiguration->getCType(),
-                $containerConfiguration->getGroup()
+                $containerConfiguration->getGroup(),
             ]
         );
         if (GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('fluidBasedPageModule')) {
@@ -45,7 +45,7 @@ class Registry implements SingletonInterface
             foreach ($row as $column) {
                 $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
                     $column['name'],
-                    $column['colPos']
+                    $column['colPos'],
                 ];
             }
         }

@@ -28,18 +28,18 @@ class BackendContainerEnvironment extends BackendEnvironment
             'frontend',
             'recordlist',
             'workspaces',
-            'info'
+            'info',
         ],
         'pathsToLinkInTestInstance' => [
-            'typo3conf/ext/container/Build/sites' => 'typo3conf/sites'
+            'typo3conf/ext/container/Build/sites' => 'typo3conf/sites',
         ],
         'testExtensionsToLoad' => [
             'typo3conf/ext/container',
             'typo3conf/ext/container_example',
-            'typo3conf/ext/content_defender'
+            'typo3conf/ext/content_defender',
         ],
         'configurationToUseInTestInstance' => [
-            'SYS' => ['features' => ['fluidBasedPageModule' => false]]
+            'SYS' => ['features' => ['fluidBasedPageModule' => false]],
         ],
         'xmlDatabaseFixtures' => [
             'PACKAGE:typo3/testing-framework/Resources/Core/Acceptance/Fixtures/be_users.xml',
@@ -47,7 +47,7 @@ class BackendContainerEnvironment extends BackendEnvironment
             'EXT:container/Tests/Acceptance/Fixtures/pages.xml',
             'EXT:container/Tests/Acceptance/Fixtures/sys_workspace.xml',
             'EXT:container/Tests/Acceptance/Fixtures/tt_content.xml',
-            'EXT:container/Tests/Acceptance/Fixtures/be_groups.xml'
+            'EXT:container/Tests/Acceptance/Fixtures/be_groups.xml',
         ],
     ];
 

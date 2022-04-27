@@ -38,11 +38,11 @@ class CopyContainerInContainerTest extends DatahandlerTest
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => 0
-                        ]
-                    ]
-                ]
-            ]
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();

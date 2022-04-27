@@ -3,7 +3,7 @@ Build/phpunit/.phpunit.result.cache
 Build/testing-docker/.env
 var/
 composer.lock
-.php_cs.cache
+.php-cs-fixer.cache
 .env
 config
 .idea

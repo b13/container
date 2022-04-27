@@ -30,7 +30,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
         $defaultRecord = [
             'uid' => 2,
             'tx_container_parent' => 0,
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
         $database->fetchOverlayRecords($defaultRecord)->willReturn([['uid' => 3]]);
         $database->fetchOneRecord(2)->willReturn($defaultRecord);
@@ -45,10 +45,10 @@ class DatamapBeforeStartHookTest extends UnitTestCase
                 2 => [
                     'colPos' => 200,
                     'tx_container_parent' => 1,
-                    'sys_language_uid' => 0
+                    'sys_language_uid' => 0,
 
-                ]
-            ]
+                ],
+            ],
         ];
         $modDatamap = $dataHandlerHook->_call('datamapForChildLocalizations', $datamap);
         self::assertIsArray($modDatamap['tt_content'][3]);
@@ -70,9 +70,9 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             'tt_content' => [
                 39 => [
                     'colPos' => '2-34',
-                    'sys_language_uid' => 0
-                ]
-            ]
+                    'sys_language_uid' => 0,
+                ],
+            ],
         ];
         $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
         self::assertSame(34, $datamap['tt_content'][39]['colPos']);
@@ -95,9 +95,9 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             'tt_content' => [
                 39 => [
                     'colPos' => '0',
-                    'sys_language_uid' => 0
-                ]
-            ]
+                    'sys_language_uid' => 0,
+                ],
+            ],
         ];
         $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
         self::assertSame(0, $datamap['tt_content'][39]['colPos']);
