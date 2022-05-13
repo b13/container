@@ -13,6 +13,7 @@ namespace B13\Container\Domain\Factory\PageView\Backend;
  */
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Versioning\VersionState;
 
 class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStorage
 {
@@ -21,7 +22,7 @@ class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStora
         $filtered = [];
         foreach ($records as $row) {
             BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
-            if (is_array($row)) {
+            if ($row && !VersionState::cast($row['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
                 $filtered[] = $row;
             }
         }
@@ -31,7 +32,7 @@ class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStora
     public function containerRecordWorkspaceOverlay(array $record): ?array
     {
         BackendUtility::workspaceOL('tt_content', $record, $this->workspaceId, false);
-        if (is_array($record)) {
+        if ($record && !VersionState::cast($record['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
             return $record;
         }
         return null;
