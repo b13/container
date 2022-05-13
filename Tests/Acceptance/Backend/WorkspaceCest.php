@@ -13,6 +13,8 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use Codeception\Scenario;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Acceptance\Helper\Topbar;
 
 class WorkspaceCest
@@ -101,6 +103,25 @@ class WorkspaceCest
 
         $I->dontSee('translation-live');
         $I->see('translation-ws');
+        $this->switchToLiveWs($I);
+    }
+
+    /**
+     * @group workspace
+     */
+    public function testWorkspaceShowsLiveContainerUidForContainerParentFieldWhenContainerIsAlreadyMoved(BackendTester $I, PageTree $pageTree, Scenario $scenario)
+    {
+        $typo3Version = new Typo3Version();
+        if ($typo3Version->getMajorVersion() < 11) {
+            $scenario->skip('test runs only on v11');
+        }
+        $this->switchToTestWs($I);
+        $I->click('Page');
+        $pageTree->openPath(['home', 'pageWithWorkspace-movedContainer']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        // 600 is live uid (603 is ws uid)
+        $I->waitForElement('td[data-colpos="600-200"]');
         $this->switchToLiveWs($I);
     }
 

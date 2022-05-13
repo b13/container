@@ -33,7 +33,7 @@ class ContainerGridColumn extends GridColumn
 
     public function getContainerUid(): int
     {
-        return $this->container->getUid();
+        return $this->container->getUidOfLiveWorkspace();
     }
 
     public function getTitle(): string
@@ -62,7 +62,7 @@ class ContainerGridColumn extends GridColumn
             'id' => $pageId,
             'sys_language_uid' => $this->container->getLanguage(),
             'colPos' => $this->getColumnNumber(),
-            'tx_container_parent' => $this->container->getUid(),
+            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
             'uid_pid' => $pageId,
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];

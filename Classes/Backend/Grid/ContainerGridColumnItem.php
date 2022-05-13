@@ -54,7 +54,7 @@ class ContainerGridColumnItem extends GridColumnItem
             'id' => $pageId,
             'sys_language_uid' => $this->container->getLanguage(),
             'colPos' => $this->column->getColumnNumber(),
-            'tx_container_parent' => $this->container->getUid(),
+            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
             'uid_pid' => -$this->record['uid'],
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];

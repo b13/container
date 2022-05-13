@@ -49,6 +49,14 @@ class Container
         return (int)$this->containerRecord['uid'];
     }
 
+    public function getUidOfLiveWorkspace(): int
+    {
+        if (isset($this->containerRecord['t3ver_oid']) && $this->containerRecord['t3ver_oid'] > 0) {
+            return (int)$this->containerRecord['t3ver_oid'];
+        }
+        return $this->getUid();
+    }
+
     /**
      * @return int
      */
