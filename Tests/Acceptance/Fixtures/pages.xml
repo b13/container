@@ -100,4 +100,11 @@
         <title>contentTCASelectCtype</title>
         <perms_everybody>17</perms_everybody>
     </pages>
+
+    <pages>
+        <uid>22</uid>
+        <pid>1</pid>
+        <title>pageWithWorkspace-movedContainer</title>
+        <perms_everybody>17</perms_everybody>
+    </pages>
 </dataset>

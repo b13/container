@@ -130,7 +130,7 @@ class ContainerLayoutView extends PageLayoutView
         $urlParameters = [
             'id' => $containerRecord['pid'],
             'sys_language_uid' => $this->container->getLanguage(),
-            'tx_container_parent' => $containerRecord['uid'],
+            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
             'colPos' => $colPos,
             'uid_pid' => $containerRecord['pid'],
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
@@ -155,7 +155,7 @@ class ContainerLayoutView extends PageLayoutView
             'id' => $containerRecord['pid'],
             'sys_language_uid' => $lang,
             'colPos' => $colPos,
-            'tx_container_parent' => $containerRecord['uid'],
+            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
             'uid_pid' => $target,
             'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
         ];

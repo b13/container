@@ -204,4 +204,43 @@
         <tx_container_parent>501</tx_container_parent>
     </tt_content>
 
+    <!-- pageWithWorkspace-movedContainer -->
+    <tt_content>
+        <uid>600</uid>
+        <pid>22</pid>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+    <tt_content>
+        <uid>601</uid>
+        <pid>22</pid>
+        <header>header-live</header>
+        <colPos>200</colPos>
+        <tx_container_parent>600</tx_container_parent>
+        <CType>header</CType>
+    </tt_content>
+    <tt_content>
+        <uid>602</uid>
+        <pid>22</pid>
+        <header>header-outside</header>
+        <CType>header</CType>
+    </tt_content>
+    <tt_content>
+        <uid>603</uid>
+        <pid>22</pid>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>600</t3ver_oid>
+        <t3ver_state>4</t3ver_state>
+        <CType>b13-2cols-with-header-container</CType>
+    </tt_content>
+    <tt_content>
+        <uid>604</uid>
+        <pid>22</pid>
+        <header>header-ws</header>
+        <colPos>200</colPos>
+        <tx_container_parent>600</tx_container_parent>
+        <CType>header</CType>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>601</t3ver_oid>
+        <t3ver_state>4</t3ver_state>
+    </tt_content>
 </dataset>
