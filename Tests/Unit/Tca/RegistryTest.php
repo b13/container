@@ -32,10 +32,10 @@ class RegistryTest extends UnitTestCase
     /**
      * @test
      */
-    public function addPageTSReturnsOriginalTSIfNoContainerConfigured(): void
+    public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
     {
         $registry = GeneralUtility::makeInstance(Registry::class);
-        $res = $registry->addPageTS(['foo'], 1, [], []);
-        self::assertSame([['foo'], 1, [], []], $res);
+        $res = $registry->getPageTsString('');
+        self::assertSame('', $res, 'empty string should be returned');
     }
 }

@@ -27,12 +27,6 @@ class IntegrityCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->getName() === 'integrity:run') {
-            trigger_error(
-                'use "container:integrity" instead of "integrity:run" as command name',
-                E_USER_DEPRECATED
-            );
-        }
         $integrity = GeneralUtility::makeInstance(Integrity::class);
         $res = $integrity->run();
         if (count($res['errors']) > 0) {

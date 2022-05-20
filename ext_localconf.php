@@ -4,46 +4,32 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 call_user_func(static function () {
     $typo3Version = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
-    if ($typo3Version->getMajorVersion() === 9) {
-        // else PageTsConfig Listener is used for ModifyLoadedPageTsConfigEvent
-        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
-            \TYPO3\CMS\Backend\Utility\BackendUtility::class,
-            'getPagesTSconfigPreInclude',
-            B13\Container\Tca\Registry::class,
-            'addPageTS'
+
+    if ($typo3Version->getMajorVersion() === 10) {
+        // register default icons
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Imaging\IconRegistry::class
         );
-        // XClass due to \TYPO3\CMS\Core\Domain\Repository\PageRepository not exists in v9
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\B13\Container\Domain\Factory\PageView\Frontend\ContentStorage::class] = [
-            'className' => \B13\Container\Domain\Factory\PageView\Frontend\LegacyContentStorage::class,
+        $iconsToRegister = [
+            'container-1col',
+            'container-2col',
+            'container-2col-left',
+            'container-2col-right',
+            'container-3col',
+            'container-4col',
         ];
+        foreach ($iconsToRegister as $icon) {
+            $iconRegistry->registerIcon(
+                $icon,
+                \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                [
+                    'source' => 'EXT:container/Resources/Public/Icons/' . $icon . '.svg',
+                ]
+            );
+        }
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =
+            \B13\Container\Hooks\TableConfigurationPostProcessing::class;
     }
-
-    // register default icons
-    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        \TYPO3\CMS\Core\Imaging\IconRegistry::class
-    );
-    $iconsToRegister = [
-        'container-1col',
-        'container-2col',
-        'container-2col-left',
-        'container-2col-right',
-        'container-3col',
-        'container-4col',
-    ];
-    foreach ($iconsToRegister as $icon) {
-        $iconRegistry->registerIcon(
-            $icon,
-            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-            [
-                'source' => 'EXT:container/Resources/Public/Icons/' . $icon . '.svg',
-            ]
-        );
-    }
-
-    // LocalizationController Xclass
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
-        'className' => \B13\Container\Xclasses\LocalizationController::class,
-    ];
 
     if (false === \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule')) {
         // draw container grid
@@ -52,11 +38,10 @@ call_user_func(static function () {
     }
     // else, if enabled we register container previewRenderer in registry foreach container CType
 
-    // register icons
-    if ($typo3Version->getMajorVersion() < 11) {
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing']['tx_container'] =
-            \B13\Container\Hooks\TableConfigurationPostProcessing::class;
-    }
+    // LocalizationController Xclass
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
+        'className' => \B13\Container\Xclasses\LocalizationController::class,
+    ];
 
     // remove container colPos from "unused" page-elements
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
@@ -81,25 +66,16 @@ call_user_func(static function () {
     // EXT:content_defender
     $packageManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Package\PackageManager::class);
     if ($packageManager->isPackageActive('content_defender')) {
-        if (version_compare($packageManager->getPackage('content_defender')->getPackageMetaData()->getVersion(), '3.1.0', '<')) {
-            trigger_error('update EXT:content_defender to 3.1', E_USER_DEPRECATED);
-            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container-content-defender'] =
-                \B13\Container\ContentDefender\Legacy\Hooks\WizardItems::class;
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][ \B13\Container\ContentDefender\Legacy\Form\FormDataProvider\TcaCTypeItems::class] = [
-                'depends' => [
-                    \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
-                ],
-            ];
-        } else {
+        if (version_compare($packageManager->getPackage('content_defender')->getPackageMetaData()->getVersion(), '3.1.0', '>=')) {
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['content_defender']['ColumnConfigurationManipulationHook']['tx_container'] =
                 \B13\Container\ContentDefender\Hooks\ColumnConfigurationManipulationHook::class;
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook::class] = [
+                'className' => \B13\Container\ContentDefender\Xclasses\DatamapHook::class,
+            ];
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\CmdmapDataHandlerHook::class] = [
+                'className' => \B13\Container\ContentDefender\Xclasses\CommandMapHook::class,
+            ];
         }
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook::class] = [
-            'className' => \B13\Container\ContentDefender\Xclasses\DatamapHook::class,
-        ];
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\CmdmapDataHandlerHook::class] = [
-            'className' => \B13\Container\ContentDefender\Xclasses\CommandMapHook::class,
-        ];
     }
 
     // set our hooks at the beginning of Datamap Hooks

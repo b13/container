@@ -75,69 +75,6 @@ class Registry implements SingletonInterface
 
     /**
      * @param string $cType
-     * @param string $label
-     * @param string $description
-     * @param array $grid
-     * @param string $icon
-     * @param string $backendTemplate
-     * @param string $gridTemplate
-     * @param bool $saveAndCloseInNewContentElementWizard
-     * @param bool $registerInNewContentElementWizard
-     * @deprecated
-     */
-    public function addContainer(
-        string $cType,
-        string $label,
-        string $description,
-        array $grid,
-        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
-        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
-        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
-        bool $saveAndCloseInNewContentElementWizard = true,
-        bool $registerInNewContentElementWizard = true
-    ): void {
-        trigger_error('use "configureContainer" with a ContainerConfiguration Object!', E_USER_DEPRECATED);
-        $configuration = (new ContainerConfiguration($cType, $label, $description, $grid))
-            ->setIcon($icon)
-            ->setBackendTemplate($backendTemplate)
-            ->setGridTemplate($gridTemplate)
-            ->setSaveAndCloseInNewContentElementWizard($saveAndCloseInNewContentElementWizard)
-            ->setRegisterInNewContentElementWizard($registerInNewContentElementWizard);
-        $this->configureContainer($configuration);
-    }
-
-    /**
-     * @param string $cType
-     * @param string $label
-     * @param string $description
-     * @param string $icon
-     * @param array $grid
-     * @param string $backendTemplate
-     * @param string $gridTemplate
-     * @param bool $registerInNewContentElementWizard
-     * @deprecated
-     */
-    public function registerContainer(
-        string $cType,
-        string $label,
-        string $description,
-        string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg',
-        array $grid = [],
-        string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html',
-        string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html',
-        bool $registerInNewContentElementWizard = true
-    ): void {
-        trigger_error('use "configureContainer" instead of "registerContainer"', E_USER_DEPRECATED);
-        $configuration = (new ContainerConfiguration($cType, $label, $description, $grid))
-            ->setIcon($icon)
-            ->setBackendTemplate($backendTemplate)
-            ->setGridTemplate($gridTemplate)
-            ->setRegisterInNewContentElementWizard($registerInNewContentElementWizard);
-        $this->configureContainer($configuration);
-    }
-
-    /**
-     * @param string $cType
      * @param int $colPos
      * @return array
      */
@@ -165,27 +102,6 @@ class Registry implements SingletonInterface
             $availableColumnsColPos[] = $column['colPos'];
         }
         return $availableColumnsColPos;
-    }
-
-    /**
-     * @param string $cType
-     * @param int $colPos
-     * @return array
-     * @deprecated
-     */
-    public function getAllowedConfiguration(string $cType, int $colPos): array
-    {
-        trigger_error('should not be required, update EXT:content_defender to 3.1', E_USER_DEPRECATED);
-        $allowed = [];
-        $rows = $this->getGrid($cType);
-        foreach ($rows as $columns) {
-            foreach ($columns as $column) {
-                if ((int)$column['colPos'] === $colPos && is_array($column['allowed'])) {
-                    $allowed = $column['allowed'];
-                }
-            }
-        }
-        return $allowed;
     }
 
     public function registerIcons(): void
@@ -278,17 +194,6 @@ class Registry implements SingletonInterface
 
     /**
      * @param string $cType
-     * @return array
-     * @deprecated
-     */
-    public function getAvaiableColumns(string $cType): array
-    {
-        trigger_error('use "getAvailableColumns" instead of "getAvaiableColumns"', E_USER_DEPRECATED);
-        return $this->getAvailableColumns($cType);
-    }
-
-    /**
-     * @param string $cType
      * @param int $colPos
      * @return string|null
      */
@@ -339,24 +244,6 @@ class Registry implements SingletonInterface
             }
         }
         return $columns;
-    }
-
-    /**
-     * Adds TSconfig
-     *
-     * @param array $TSdataArray
-     * @param int $id
-     * @param array $rootLine
-     * @param array $returnPartArray
-     * @return array
-     */
-    public function addPageTS($TSdataArray, $id, $rootLine, $returnPartArray): array
-    {
-        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
-            return [$TSdataArray, $id, $rootLine, $returnPartArray];
-        }
-        $TSdataArray['default'] = $this->getPageTsString();
-        return [$TSdataArray, $id, $rootLine, $returnPartArray];
     }
 
     public function getPageTsString(): string

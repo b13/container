@@ -32,7 +32,7 @@ class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStora
     }
 
     /**
-     * @return PageRepository|\TYPO3\CMS\Frontend\Page\PageRepository
+     * @return PageRepository
      */
     public function getPageRepository()
     {

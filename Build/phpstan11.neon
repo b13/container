@@ -9,7 +9,6 @@ parameters:
     - %currentWorkingDirectory%/Classes/ContentDefender/Hooks/WizardItems.php
 
   ignoreErrors:
-    - '#.*TYPO3\\CMS\\Frontend\\Page\\PageRepository.*#'
     - '#^Cannot call method fetch.*\(\) on Doctrine\\DBAL\\Result\|int\.$#'
     -
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 1 parameter, 0 required.#'
