@@ -18,7 +18,6 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DatamapBeforeStartHook
 {
@@ -63,36 +62,8 @@ class DatamapBeforeStartHook
      */
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
     {
-        // ajax move (drag & drop) (mixed cmdmap and datamap, no longer used on TYPO3 > 10)
-        // s. https://forge.typo3.org/issues/92849
-        // s. https://forge.typo3.org/projects/typo3cms-core/repository/1749/revisions/c1be5540b20421fdfa295a1323b663f3189a41d7
-        $dataHandler->datamap = $this->extractContainerIdFromColPosInDatamap($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildLocalizations($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildrenChangeContainerLanguage($dataHandler->datamap);
-    }
-
-    /**
-     * @param array $datamap
-     * @return array
-     */
-    protected function extractContainerIdFromColPosInDatamap(array $datamap): array
-    {
-        if (!empty($datamap['tt_content'])) {
-            foreach ($datamap['tt_content'] as $id => &$data) {
-                if (isset($data['colPos'])) {
-                    $colPos = $data['colPos'];
-                    if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-                        [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
-                        $data['colPos'] = $newColPos;
-                        $data['tx_container_parent'] = $containerId;
-                    } elseif (!isset($data['tx_container_parent'])) {
-                        $data['tx_container_parent'] = 0;
-                        $data['colPos'] = (int)$colPos;
-                    }
-                }
-            }
-        }
-        return $datamap;
     }
 
     /**

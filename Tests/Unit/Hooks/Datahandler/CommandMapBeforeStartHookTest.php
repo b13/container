@@ -16,6 +16,7 @@ use B13\Container\Domain\Model\Container;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook;
 use B13\Container\Hooks\Datahandler\Database;
+use B13\Container\Tca\Registry;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class CommandMapBeforeStartHookTest extends UnitTestCase
@@ -118,5 +119,91 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         ];
         $rewrittenCommandMap = $dataHandlerHook->_call('rewriteSimpleCommandMap', $commandMap);
         self::assertSame($expected, $rewrittenCommandMap);
+    }
+
+    /**
+     * @test
+     */
+    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
+    {
+        $database = $this->prophesize(Database::class);
+        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $tcaRegistry = $this->prophesize(Registry::class);
+        $dataHandlerHook = $this->getAccessibleMock(
+            CommandMapBeforeStartHook::class,
+            ['foo'],
+            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal()]
+        );
+        $commandMap = [
+            'tt_content' => [
+                39 => [
+                    'copy' => [
+                        'update' => [
+                            'colPos' => '2-34',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        // should be
+        $expected = [
+            'tt_content' => [
+                39 => [
+                    'copy' => [
+                        'update' => [
+                            'colPos' => 34,
+                            'tx_container_parent' => 2,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $commandMap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $commandMap);
+        self::assertSame(34, $commandMap['tt_content'][39]['copy']['update']['colPos']);
+        self::assertSame(2, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
+    }
+
+    /**
+     * @test
+     */
+    public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
+    {
+        $database = $this->prophesize(Database::class);
+        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $tcaRegistry = $this->prophesize(Registry::class);
+        $dataHandlerHook = $this->getAccessibleMock(
+            CommandMapBeforeStartHook::class,
+            ['foo'],
+            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal()]
+        );
+        $commandMap = [
+            'tt_content' => [
+                39 => [
+                    'copy' => [
+                        'update' => [
+                            'colPos' => '34',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        // should be
+        $expected = [
+            'tt_content' => [
+                39 => [
+                    'copy' => [
+                        'update' => [
+                            'colPos' => 34,
+                            'tx_container_parent' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $commandMap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $commandMap);
+        self::assertSame(34, $commandMap['tt_content'][39]['copy']['update']['colPos']);
+        self::assertSame(0, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
     }
 }
