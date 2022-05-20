@@ -35,25 +35,6 @@ abstract class AbstractFrontendTest extends FunctionalTestCase
     ];
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->setUpFrontendRootPage(
-            1,
-            [
-                'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
-                'setup' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript'],
-            ]
-        );
-    }
-
-    /**
      * @param string $string
      * @return string
      */

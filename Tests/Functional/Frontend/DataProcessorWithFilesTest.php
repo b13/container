@@ -13,20 +13,19 @@ namespace B13\Container\Tests\Functional\Frontend;
  */
 
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class DataProcessorWithFilesTest extends AbstractFrontendTest
 {
     protected function setUp(): void
     {
-        FunctionalTestCase::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/data_processor_with_files.xml');
+        parent::setUp();
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/data_processor_with_files.xml');
         $this->setUpFrontendRootPage(
             1,
             [
-                'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
-                    'EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
                     'EXT:container_example/Configuration/TypoScript/2cols.typoscript',
                 ],
             ]

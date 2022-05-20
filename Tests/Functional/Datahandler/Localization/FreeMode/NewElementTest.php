@@ -22,7 +22,7 @@ class NewElementTest extends DatahandlerTest
      */
     public function newElementAfterContainerSortElementAfterLastChild(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/new_element_after_container_free_mode.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/NewElement/setup.xml');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [

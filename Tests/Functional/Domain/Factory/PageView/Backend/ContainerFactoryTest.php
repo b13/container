@@ -55,7 +55,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function localizedContainerChildElementsHasSortingOfDefaultChildElements(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
         $container = $containerFactory->buildContainer(2);
         $children = $container->getChildrenByColPos(201);
@@ -67,12 +67,12 @@ class ContainerFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function containerHoldsMovedChildrenInWorkspaceClipboard(): void
+    public function movedElementIntoOtherContainerInWorkspace(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/10/movedChildrenInWorkspaceClipboard.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/movedElementIntoOtherContainerInWorkspace.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceClipboard.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.xml');
         }
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
@@ -91,9 +91,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function containerHoldsMovedChildrenInWorkspaceAjax(): void
+    public function movedElementIntoContainerInWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceAjax.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedElementIntoContainerInWorkspace.xml');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
@@ -111,9 +111,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerRespectSortingOfMovedChildrenInWorkspace(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/10/movedChildrenInWorkspaceSorting.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/movedChildrenInWorkspaceSorting.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceSorting.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.xml');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
@@ -133,9 +133,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsMovedChildrenInWorkspaceWithTranslation(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/10/movedChildrenInWorkspaceWithTranslation.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/movedChildrenInWorkspaceWithTranslation.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/movedChildrenInWorkspaceWithTranslation.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedChildrenInWorkspaceWithTranslation.xml');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         $languageAspect = GeneralUtility::makeInstance(LanguageAspect::class, 1);
@@ -158,9 +158,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsCopiedChildrenInWorkspace(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/10/copiedChildrenInWorkspace.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/copiedChildrenInWorkspace.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/copiedChildrenInWorkspace.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/copiedChildrenInWorkspace.xml');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
@@ -184,9 +184,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsChildrenWhenMovedToOtherPage(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/container_moved_to_other_page.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/container_moved_to_other_page.xml');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
@@ -210,11 +210,11 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsLocalizedChildrenWhenMovedToOtherPage(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/container_moved_to_other_page.xml');
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/localized_container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/localized_container_moved_to_other_page.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/localized_container_moved_to_other_page.xml');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);

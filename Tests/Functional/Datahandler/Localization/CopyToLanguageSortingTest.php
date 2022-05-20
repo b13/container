@@ -24,7 +24,6 @@ class CopyToLanguageSortingTest extends DatahandlerTest
     {
         parent::setUp();
         $this->linkSiteConfigurationIntoTestInstance();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
     }
 
     /**
@@ -54,7 +53,7 @@ class CopyToLanguageSortingTest extends DatahandlerTest
      */
     public function localizeKeepsSorting(array $cmdmap): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/CopyToLanguageSorting/localize_containers.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/CopyToLanguageSorting/localize_containers.xml');
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $translatedContainer1 = $this->fetchOneRecord('t3_origuid', 1);
@@ -73,7 +72,7 @@ class CopyToLanguageSortingTest extends DatahandlerTest
      */
     public function localizeChildAtTopOfContainer(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/CopyToLanguageSorting/localize_child_at_top.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/CopyToLanguageSorting/localize_child_at_top.xml');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -95,7 +94,7 @@ class CopyToLanguageSortingTest extends DatahandlerTest
      */
     public function localizeChildAfterContainerChild(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/CopyToLanguageSorting/localize_child_after_child.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/CopyToLanguageSorting/localize_child_after_child.xml');
         $cmdmap = [
             'tt_content' => [
                 3 => [

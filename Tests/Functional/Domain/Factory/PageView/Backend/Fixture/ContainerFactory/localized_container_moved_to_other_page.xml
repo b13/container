@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tt_content>
+        <uid>210</uid>
+        <pid>2</pid>
+        <CType>b13-2cols-with-header-container</CType>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>200</l18n_parent>
+
+        <header>loc container live</header>
+        <t3_origuid>200</t3_origuid>
+    </tt_content>
+
+    <tt_content>
+        <uid>211</uid>
+        <pid>2</pid>
+        <header>header-live</header>
+        <colPos>201</colPos>
+        <tx_container_parent>200</tx_container_parent>
+        <CType>header</CType>
+        <t3ver_wsid>0</t3ver_wsid>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>201</l18n_parent>
+    </tt_content>
+
+    <tt_content>
+        <uid>213</uid>
+        <pid>1</pid>
+        <colPos>0</colPos>
+        <CType>b13-2cols-with-header-container</CType>
+        <header>loc container ws</header>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>210</t3ver_oid>
+        <t3ver_state>4</t3ver_state>
+        <t3_origuid>210</t3_origuid>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>203</l18n_parent>
+    </tt_content>
+
+    <tt_content>
+        <uid>215</uid>
+        <pid>1</pid>
+        <colPos>201</colPos>
+        <CType>header</CType>
+        <header>header-ws loc</header>
+        <tx_container_parent>200</tx_container_parent>
+        <t3ver_wsid>1</t3ver_wsid>
+        <t3ver_oid>211</t3ver_oid>
+        <t3ver_state>4</t3ver_state>
+        <t3_origuid>211</t3_origuid>
+        <sys_language_uid>1</sys_language_uid>
+        <l18n_parent>205</l18n_parent>
+    </tt_content>
+
+</dataset>

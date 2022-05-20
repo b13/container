@@ -17,20 +17,11 @@ class CopyContainerInContainerTest extends DatahandlerTest
 {
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/copy_container_in_container.xml');
-    }
-
-    /**
      * @test
      */
     public function copyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyContainerInContainer/setup.xml');
         $cmdmap = [
             'tt_content' => [
                 1 => [

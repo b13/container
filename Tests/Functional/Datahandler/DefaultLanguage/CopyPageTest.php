@@ -15,22 +15,12 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
 class CopyPageTest extends DatahandlerTest
 {
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/copy_page.xml');
-    }
-
     /**
      * @test
      */
     public function copyPageCopiesChildrenOfContainer(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyPage/setup.xml');
         $cmdmap = [
             'pages' => [
                 1 => [

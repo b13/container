@@ -31,17 +31,14 @@ class LocalizationTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_content_defender.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Localization/setup.xml');
     }
 
     /**
      * @test
      * @group content_defender
      */
-    public function moveElementIntoContainerAtTopClipboard(): void
+    public function moveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCType(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -63,45 +60,15 @@ class LocalizationTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 72);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
+        self::assertSame(0, (int)$row['tx_container_parent'], 'translation of element should not be in container');
+        self::assertSame(0, (int)$row['colPos'], 'translation of element should not be in container colPos');
     }
 
     /**
      * @test
      * @group content_defender
      */
-    public function moveElementIntoContainerAtTopAjax(): void
-    {
-        $cmdmap = [
-            'tt_content' => [
-                71 => [
-                    'move' => 1,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                71 => [
-                    'colPos' => '1-200',
-                    'sys_language_uid' => 0,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 72);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function copyElementIntoContainerAtTop(): void
+    public function copyElementIntoContainerAtTopDoNotCopyTranslationIfDisallowedCType(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -133,6 +100,6 @@ class LocalizationTest extends DatahandlerTest
             )
             ->execute()
             ->fetchAssociative();
-        self::assertFalse($row);
+        self::assertFalse($row, 'translation should not be copied');
     }
 }

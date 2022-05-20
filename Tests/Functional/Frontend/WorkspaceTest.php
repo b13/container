@@ -14,7 +14,6 @@ use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class WorkspaceTest extends AbstractFrontendTest
 {
@@ -33,16 +32,14 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     protected function setUp(): void
     {
-        FunctionalTestCase::setUp();
+        parent::setUp();
 
-        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Acceptance/Fixtures/be_users.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/sys_workspace.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/root_page.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/setup.xml');
         $this->setUpFrontendRootPage(
             1,
             [
-                'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
-                'setup' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript'],
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript'],
             ]
         );
     }
@@ -53,7 +50,7 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function childInLiveIsRendered(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/container_with_ws_child.xml');
         $response = $this->executeFrontendRequest(new InternalRequest());
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -67,7 +64,7 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function childInWorkspaceIsRendered(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/container_with_ws_child.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -82,7 +79,7 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child_moved_from_outside.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/container_with_ws_child_moved_from_outside.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -97,11 +94,11 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/other_page.xml');
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/10/container_moved_to_other_page.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/container_moved_to_other_page.xml');
         }
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
@@ -116,7 +113,7 @@ class WorkspaceTest extends AbstractFrontendTest
      */
     public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.xml');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -135,14 +132,14 @@ class WorkspaceTest extends AbstractFrontendTest
         if ($this->typo3MajorVersion === 11) {
             self::markTestSkipped('todo seems bug in core #93445');
         }
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_pages.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/other_page.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/localized_pages.xml');
         if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/container_moved_to_other_page.xml');
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/localized_container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/10/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/10/localized_container_moved_to_other_page.xml');
         } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/container_moved_to_other_page.xml');
+            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/Workspace/localized_container_moved_to_other_page.xml');
         }
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequest(new InternalRequest('http://localhost/de/'), $context);

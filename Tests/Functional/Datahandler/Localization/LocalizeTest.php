@@ -24,12 +24,6 @@ class LocalizeTest extends DatahandlerTest
     {
         parent::setUp();
         $this->linkSiteConfigurationIntoTestInstance();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_container_free_mode.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_container_connected_mode.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_second_container.xml');
     }
 
     /**
@@ -37,6 +31,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function copyChildToLanguageFixContainerParent(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/copy_child_to_language.xml');
         $cmdmap = [
             'tt_content' => [
                 72 => [
@@ -48,7 +43,7 @@ class LocalizeTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $child = $this->fetchOneRecord('t3_origuid', 72);
-        self::assertSame(73, $child['tx_container_parent']);
+        self::assertSame(73, $child['tx_container_parent'], 'container parent should have uid of translated container');
     }
 
     /**
@@ -56,6 +51,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function copyContainerToLanguageCopiesChildren(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/copy_container_to_language.xml');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -79,6 +75,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function localizeContainerLocalizeChildren(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_container.xml');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -100,7 +97,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function localizeContainerFromNonDefaultLanguageLocalizeChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_container_from_non_default_language.xml');
         $cmdmap = [
             'tt_content' => [
                 21 => [
@@ -123,7 +120,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/copy_to_language_container_from_non_default_language.xml');
         $cmdmap = [
             'tt_content' => [
                 21 => [
@@ -147,7 +144,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenWhenCopiedFromFreeMode(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_free_mode.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/copy_to_language_container_from_non_default_language_free_mode.xml');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -171,6 +168,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function localizeChildFailedIfContainerIsInFreeMode(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_child_failed_if_container_is_in_free_mode.xml');
         $cmdmap = [
             'tt_content' => [
                 72 => [
@@ -200,9 +198,10 @@ class LocalizeTest extends DatahandlerTest
      */
     public function localizeChildFailedIfContainerIsNotTranslated(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_child_failed_if_container_is_not_translated.xml');
         $cmdmap = [
             'tt_content' => [
-                2 => [
+                72 => [
                     'localize' => 1,
                 ],
             ],
@@ -215,13 +214,13 @@ class LocalizeTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     't3_origuid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(72, \PDO::PARAM_INT)
                 )
             )
             ->execute()
             ->fetchAssociative();
-        self::assertFalse($row);
-        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+        self::assertFalse($row, 'child should not be translated');
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log should be empty');
     }
 
     /**
@@ -229,6 +228,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function localizeChildKeepsRelationsIfContainerIsInConnectedMode(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_child_keeps_relation_if_container_is_in_connected_mode.xml');
         $cmdmap = [
             'tt_content' => [
                 82 => [
@@ -272,6 +272,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function localizeTwoContainerKeepsParentIndependedOnOrder(array $cmdmap): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_container_keeps_parent_indepented_on_order.xml');
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);
@@ -307,6 +308,7 @@ class LocalizeTest extends DatahandlerTest
      */
     public function localizeWithCopyTwoContainerChangeParentIndependedOnOrder(array $cmdmap): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_container_keeps_parent_indepented_on_order.xml');
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $translatedChildRow = $this->fetchOneRecord('t3_origuid', 2);

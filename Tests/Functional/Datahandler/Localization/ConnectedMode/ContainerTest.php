@@ -17,23 +17,11 @@ class ContainerTest extends DatahandlerTest
 {
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
-    }
-
-    /**
      * @test
      */
     public function deleteContainerDeleteTranslatedChildren(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/ConnectedMode/Fixtures/Container/delete_container.xml');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -52,39 +40,9 @@ class ContainerTest extends DatahandlerTest
     /**
      * @test
      */
-    public function moveContainerAjaxToBottomMovesChildren(): void
+    public function moveContainerToOtherPageMovesChildren(): void
     {
-        $cmdmap = [
-            'tt_content' => [
-                1 => [
-                    'move' => -4,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                1 => [
-                    'colPos' => '0',
-                    'sys_language_uid' => 0,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 22);
-        self::assertSame(1, $child['pid']);
-        self::assertSame(1, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
-    }
-
-    /**
-     * @test
-     */
-    public function moveContainerClipboardToOtherPageMovesChildren(): void
-    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/ConnectedMode/Fixtures/Container/move_container_to_other_page.xml');
         $cmdmap = [
             'tt_content' => [
                 1 => [

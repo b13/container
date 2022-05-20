@@ -31,17 +31,16 @@ class DefaultLanguageTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_content_defender.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/setup.xml');
     }
 
     /**
      * @test
      * @group content_defender
      */
-    public function moveElementIntoContainerAtTopWithClipboard(): void
+    public function moveElementIntoContainerAtTopDoNotMoveDisallowedCTypeElement(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.xml');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -62,16 +61,17 @@ class DefaultLanguageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 71);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
+        self::assertSame(0, (int)$row['tx_container_parent'], 'element should not be inside container');
+        self::assertSame(0, (int)$row['colPos'], 'element should not be inside container colPos');
     }
 
     /**
      * @test
      * @group content_defender
      */
-    public function moveElementIntoContainerAfterOtherElementWithClipboard(): void
+    public function moveElementIntoContainerAfterOtherElemenDoNotMoveDisallowedCTypeElement(): void
     {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.xml');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -92,76 +92,17 @@ class DefaultLanguageTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         $row = $this->fetchOneRecord('uid', 71);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
+        self::assertSame(0, (int)$row['tx_container_parent'], 'element should not be inside container');
+        self::assertSame(0, (int)$row['colPos'], 'element should not be inside container colPos');
     }
 
     /**
      * @test
      * @group content_defender
      */
-    public function moveElementIntoContainerAtTopWithAjax(): void
+    public function copyElementIntoContainerAtTopDoNotCopyDisallowedCTypeElement(): void
     {
-        $cmdmap = [
-            'tt_content' => [
-                71 => [
-                    'move' => 1,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                71 => [
-                    'colPos' => '1-200',
-                    'sys_language_uid' => 0,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 71);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function moveElementIntoContainerAfterOtherElementWithAjax(): void
-    {
-        $cmdmap = [
-            'tt_content' => [
-                71 => [
-                    'move' => -2,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                71 => [
-                    'colPos' => '1-200',
-                    'sys_language_uid' => 0,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 71);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function copyElementIntoContainerAtTop(): void
-    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.xml');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -191,7 +132,100 @@ class DefaultLanguageTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetchAssociative();
-        self::assertFalse($row);
+            ->fetch();
+        self::assertFalse($row, 'element should not be copied');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function moveElementIntoContainerAtTopMoveAisallowedCTypeElement(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.xml');
+        $cmdmap = [
+            'tt_content' => [
+                71 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'colPos' => '1-200',
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 71);
+        self::assertSame(1, (int)$row['tx_container_parent'], 'element should be inside container');
+        self::assertSame(200, (int)$row['colPos'], 'element should be inside container colPos');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function moveElementIntoContainerAfterOtherElemenMoveAllowedCTypeElement(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.xml');
+        $cmdmap = [
+            'tt_content' => [
+                71 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -2,
+                        'update' => [
+                            'colPos' => '1-200',
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 71);
+        self::assertSame(1, (int)$row['tx_container_parent'], 'element should  be inside container');
+        self::assertSame(200, (int)$row['colPos'], 'element should  be inside container colPos');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function copyElementIntoContainerAtTopCopyAllowedCTypeElement(): void
+    {
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.xml');
+        $cmdmap = [
+            'tt_content' => [
+                71 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'colPos' => '1-200',
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('t3_origuid', 71);
+        self::assertSame(1, (int)$row['tx_container_parent'], 'element should  be inside container');
+        self::assertSame(200, (int)$row['colPos'], 'element should  be inside container colPos');
     }
 }

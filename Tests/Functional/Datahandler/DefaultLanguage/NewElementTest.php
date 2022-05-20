@@ -16,13 +16,12 @@ use TYPO3\CMS\Core\Utility\StringUtility;
 
 class NewElementTest extends DatahandlerTest
 {
-
     /**
      * @test
      */
     public function newElementAfterContainerSortElementAfterLastChild(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/new_element_after_container.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/NewElement/setup.xml');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [

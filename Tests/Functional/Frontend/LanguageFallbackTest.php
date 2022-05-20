@@ -16,6 +16,23 @@ class LanguageFallbackTest extends AbstractFrontendTest
 {
 
     /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \TYPO3\TestingFramework\Core\Exception
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/setup.xml');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript'],
+            ]
+        );
+    }
+
+    /**
      * @test
      */
     public function nothingTranslated(): void
@@ -37,7 +54,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function bothTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_both_translated.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_both_translated.xml');
         $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -55,7 +72,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function bothTranslatedTranslatedChildHidden(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.xml');
         $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -73,7 +90,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function childTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_child_translated.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_child_translated.xml');
         $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -91,7 +108,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function containerTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_container_translated.xml');
+        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_container_translated.xml');
         $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
