@@ -111,4 +111,7 @@ call_user_func(static function () {
         $datamapHooks,
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']
     );
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][B13\Container\Updates\ContainerMigrateSorting::IDENTIFIER]
+        = B13\Container\Updates\ContainerMigrateSorting::class;
 });
