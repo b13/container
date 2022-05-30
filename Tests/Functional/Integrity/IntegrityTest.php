@@ -77,7 +77,7 @@ class IntegrityTest extends FunctionalTestCase
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout);
         $contentFetcher = new ContentFetcher($pageLayoutContext);
         $unusedRecords = $contentFetcher->getUnusedRecords();
@@ -113,7 +113,7 @@ class IntegrityTest extends FunctionalTestCase
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertSame(1, $record['deleted']);
     }
 }

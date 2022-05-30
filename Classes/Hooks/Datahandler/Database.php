@@ -48,7 +48,7 @@ class Database implements SingletonInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }
@@ -71,7 +71,7 @@ class Database implements SingletonInterface
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         return $records;
     }
 
@@ -114,7 +114,7 @@ class Database implements SingletonInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }
@@ -147,7 +147,7 @@ class Database implements SingletonInterface
             )
             ->orderBy('sorting', 'ASC')
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
         return $records;
     }
 
@@ -180,7 +180,7 @@ class Database implements SingletonInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }

@@ -190,7 +190,7 @@ class LocalizeTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
@@ -219,7 +219,7 @@ class LocalizeTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }

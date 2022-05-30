@@ -136,7 +136,7 @@ class MaxItemsTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
@@ -168,7 +168,7 @@ class MaxItemsTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
@@ -205,7 +205,7 @@ class MaxItemsTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertIsArray($row);
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
@@ -242,7 +242,7 @@ class MaxItemsTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }

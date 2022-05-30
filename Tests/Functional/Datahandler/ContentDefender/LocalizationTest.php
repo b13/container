@@ -132,7 +132,7 @@ class LocalizationTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertFalse($row);
     }
 }

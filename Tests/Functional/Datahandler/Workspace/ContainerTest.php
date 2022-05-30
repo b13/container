@@ -109,7 +109,7 @@ class ContainerTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertFalse($row);
     }
 
@@ -374,7 +374,7 @@ class ContainerTest extends DatahandlerTest
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertIsArray($containerRow);
         $rows = $this->getCopiedWorkspaceRows(2);
         foreach ($rows as $row) {

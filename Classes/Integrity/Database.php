@@ -51,7 +51,7 @@ class Database implements SingletonInterface
             )
             ->execute();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        while ($result = $stm->fetchAssociative()) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -75,7 +75,7 @@ class Database implements SingletonInterface
             )
             ->execute();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        while ($result = $stm->fetchAssociative()) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -103,7 +103,7 @@ class Database implements SingletonInterface
             )
             ->orderBy('sorting')
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     /**
@@ -128,7 +128,7 @@ class Database implements SingletonInterface
             )
             ->execute();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        while ($result = $stm->fetchAssociative()) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -183,7 +183,7 @@ class Database implements SingletonInterface
             )
             ->execute();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        while ($result = $stm->fetchAssociative()) {
             $rows[$result['uid']] = $result;
         }
         return $rows;

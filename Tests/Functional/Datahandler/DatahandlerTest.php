@@ -108,7 +108,7 @@ abstract class DatahandlerTest extends FunctionalTestCase
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
         self::assertIsArray($row, 'cannot fetch row for field ' . $field . ' with id ' . $id);
         return $row;
     }

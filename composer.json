@@ -5,7 +5,8 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^10.4 || ^11.5"
+        "typo3/cms-backend": "^10.4 || ^11.5",
+        "doctrine/dbal": "~2.13.1"
     },
     "autoload": {
         "psr-4": {

@@ -118,7 +118,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
             )
             ->execute();
         $containerUids = [];
-        while ($row = $stm->fetch()) {
+        while ($row = $stm->fetchAssociative()) {
             $containerUids[] = $row['uid'];
             if ($row['l18n_parent'] > 0) {
                 $containerUids[] = $row['l18n_parent'];
@@ -144,7 +144,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                 )
             )
             ->execute();
-        while ($row = $stm->fetch()) {
+        while ($row = $stm->fetchAssociative()) {
             $containerChildren[$row['uid']] = $row;
         }
         return $containerChildren;
