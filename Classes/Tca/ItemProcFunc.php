@@ -46,7 +46,7 @@ class ItemProcFunc
      * This method is called as "itemsProcFunc" with the accordant context
      * for tt_content.colPos.
      */
-    public function colPos(array $parameters): void
+    public function colPos(array &$parameters): void
     {
         $row = $parameters['row'];
         if ($row['tx_container_parent'] > 0) {
@@ -77,7 +77,7 @@ class ItemProcFunc
         $this->backendLayoutView->colPosListItemProcFunc($parameters);
     }
 
-    public function txContainerParent(array $parameters): void
+    public function txContainerParent(array &$parameters): void
     {
         $row = $parameters['row'];
         $items = [];
