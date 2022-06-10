@@ -17,7 +17,7 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Tca\Registry;
 use IchHabRecht\ContentDefender\BackendLayout\ColumnConfigurationManipulationInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\ServerRequest;
 
 class ColumnConfigurationManipulationHook implements ColumnConfigurationManipulationInterface
 {
@@ -40,7 +40,7 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
     public function manipulateConfiguration(array $configuration, int $colPos, $recordUid): array
     {
         $parent = $this->getParentUid($recordUid);
-        if ($parent === 0) {
+        if ($parent === null) {
             return $configuration;
         }
         try {
@@ -54,26 +54,36 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
         return $configuration;
     }
 
-    private function getParentUid($recordUid): int
+    private function getParentUid($recordUid): ?int
     {
-        $parent = 0;
-        if (empty($parent)) {
+        $request = $this->getServerRequest();
+        if ($request === null) {
+            return null;
+        }
+        $queryParams = $request->getQueryParams();
+        if (isset($queryParams['tx_container_parent']) && $queryParams['tx_container_parent'] > 0) {
             // new content elemment wizard
-            $parent = GeneralUtility::_GP('tx_container_parent');
+            return (int)$queryParams['tx_container_parent'];
         }
-        if (empty($parent)) {
+        if (
+            isset($queryParams['defVals']['tt_content']['tx_container_parent']) &&
+            $queryParams['defVals']['tt_content']['tx_container_parent'] > 0
+        ) {
             // TcaCTypeItems: new record
-            $defVals = GeneralUtility::_GP('defVals');
-            $parent = $defVals['tt_content']['tx_container_parent'] ?? 0;
+            return (int)$queryParams['defVals']['tt_content']['tx_container_parent'];
         }
-        if (empty($parent)) {
-            $edit = GeneralUtility::_GP('edit');
-            if (isset($edit['tt_content'][$recordUid])) {
-                // TcaCTypeItems: edit record
-                $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
-                $parent = $record['tx_container_parent'] ?? 0;
+        if (isset($queryParams['edit']['tt_content'][$recordUid])) {
+            // TcaCTypeItems: edit record
+            $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
+            if (isset($record['tx_container_parent'])) {
+                return (int)$record['tx_container_parent'];
             }
         }
-        return (int)$parent;
+        return null;
+    }
+
+    protected function getServerRequest(): ?ServerRequest
+    {
+        return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 }
