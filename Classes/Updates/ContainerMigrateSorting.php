@@ -41,7 +41,7 @@ class ContainerMigrateSorting implements UpgradeWizardInterface
      */
     public function getTitle(): string
     {
-        return 'Migrate "container" sorting';
+        return 'EXT:container: Migrate "container" sorting';
     }
 
     /**
@@ -49,13 +49,13 @@ class ContainerMigrateSorting implements UpgradeWizardInterface
      */
     public function getDescription(): string
     {
-        return 'change sorting of container children';
+        return 'change sorting of container children (must be run multiple times for nested containers)';
     }
 
     public function updateNecessary(): bool
     {
         $errors = $this->sorting->run(true);
-        return empty($errors);
+        return !empty($errors);
     }
 
     public function executeUpdate(): bool
