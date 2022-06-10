@@ -35,18 +35,12 @@ class Database implements SingletonInterface
      */
     protected $workspaceId = 0;
 
-    public function __construct(Context $context = null)
+    public function __construct(Context $context)
     {
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-        }
         $this->backendUserId = (int)$context->getPropertyFromAspect('backend.user', 'id', 0);
         $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
-    /**
-     * @return QueryBuilder
-     */
     protected function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -85,10 +79,6 @@ class Database implements SingletonInterface
             ->fetchAllAssociative();
     }
 
-    /**
-     * @param int $uid
-     * @return array|null
-     */
     public function fetchOneRecord(int $uid): ?array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -109,10 +99,6 @@ class Database implements SingletonInterface
         return $record;
     }
 
-    /**
-     * @param array $record
-     * @return array|null
-     */
     public function fetchOneDefaultRecord(array $record): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -136,11 +122,6 @@ class Database implements SingletonInterface
         return $record;
     }
 
-    /**
-     * @param int $parent
-     * @param int $language
-     * @return array
-     */
     public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -162,11 +143,6 @@ class Database implements SingletonInterface
             ->fetchAllAssociative();
     }
 
-    /**
-     * @param array $records
-     * @param int $language
-     * @return array
-     */
     public function fetchOverlayRecords(array $records, int $language): array
     {
         $uids = [];
@@ -194,11 +170,6 @@ class Database implements SingletonInterface
         return $records;
     }
 
-    /**
-     * @param int $uid
-     * @param int $language
-     * @return array
-     */
     public function fetchOneOverlayRecord(int $uid, int $language): ?array
     {
         $queryBuilder = $this->getQueryBuilder();

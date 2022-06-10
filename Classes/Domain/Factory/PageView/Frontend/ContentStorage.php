@@ -15,7 +15,6 @@ namespace B13\Container\Domain\Factory\PageView\Frontend;
 use B13\Container\Domain\Factory\Database;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStorage
 {
@@ -25,16 +24,13 @@ class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStora
      */
     protected $pageRepository;
 
-    public function __construct(Database $database = null, Context $context = null, PageRepository $pageRepository = null)
+    public function __construct(Database $database, Context $context, PageRepository $pageRepository)
     {
         parent::__construct($database, $context);
-        $this->pageRepository = $pageRepository ?? GeneralUtility::makeInstance(PageRepository::class);
+        $this->pageRepository = $pageRepository;
     }
 
-    /**
-     * @return PageRepository
-     */
-    public function getPageRepository()
+    public function getPageRepository(): PageRepository
     {
         return $this->pageRepository;
     }

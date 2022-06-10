@@ -14,7 +14,6 @@ namespace B13\Container\Hooks;
 
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TableConfigurationPostProcessing implements TableConfigurationPostProcessingHookInterface
 {
@@ -24,12 +23,9 @@ class TableConfigurationPostProcessing implements TableConfigurationPostProcessi
      */
     protected $tcaRegistry;
 
-    /**
-     * @param Registry|null $tcaRegistry
-     */
-    public function __construct(Registry $tcaRegistry = null)
+    public function __construct(Registry $tcaRegistry)
     {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function processData()

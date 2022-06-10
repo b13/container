@@ -20,7 +20,6 @@ use B13\Container\Integrity\Error\WrongLanguageWarning;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Integrity implements SingletonInterface
 {
@@ -43,14 +42,10 @@ class Integrity implements SingletonInterface
         'warnings' => [],
     ];
 
-    /**
-     * @param Database|null $database
-     * @param Registry|null $tcaRegistry
-     */
-    public function __construct(Database $database = null, Registry $tcaRegistry = null)
+    public function __construct(Database $database, Registry $tcaRegistry)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->database = $database;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function run(): array
@@ -123,12 +118,6 @@ class Integrity implements SingletonInterface
         }
     }
 
-    // translated children tx_container_parent should point to translated container
-
-    /**
-     * @param array $cTypes
-     * @param array $colPosByCType
-     */
     private function defaultLanguageRecords(array $cTypes, array $colPosByCType): void
     {
         $containerRecords = $this->database->getContainerRecords($cTypes);

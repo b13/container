@@ -12,8 +12,10 @@ namespace B13\Container\Tests\Unit\Hooks\Datahandler;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
+use B13\Container\Tca\Registry;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DatamapBeforeStartHookTest extends UnitTestCase
@@ -35,10 +37,18 @@ class DatamapBeforeStartHookTest extends UnitTestCase
         $database->fetchOverlayRecords($defaultRecord)->willReturn([['uid' => 3]]);
         $database->fetchOneRecord(2)->willReturn($defaultRecord);
 
+        $containerRegistry = $this->prophesize(Registry::class);
+        $containerService = $this->prophesize(ContainerService::class);
+
         $dataHandlerHook = $this->getAccessibleMock(
             DatamapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'database' => $database->reveal()]
+            [
+                'containerFactory' => $containerFactory->reveal(),
+                'database' => $database->reveal(),
+                'tcaRegistry' => $containerRegistry->reveal(),
+                'containerService' => $containerService->reveal(),
+            ]
         );
         $datamap = [
             'tt_content' => [

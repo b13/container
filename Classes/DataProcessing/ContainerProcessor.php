@@ -23,7 +23,6 @@ use TYPO3\CMS\Frontend\ContentObject\RecordsContentObject;
 
 class ContainerProcessor implements DataProcessorInterface
 {
-
     /**
      * @var ContainerFactory
      */
@@ -34,25 +33,18 @@ class ContainerProcessor implements DataProcessorInterface
      */
     protected $contentDataProcessor;
 
-    public function __construct(ContainerFactory $containerFactory = null, ContentDataProcessor $contentDataProcessor = null)
+    public function __construct(ContainerFactory $containerFactory, ContentDataProcessor $contentDataProcessor)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->contentDataProcessor = $contentDataProcessor ?? GeneralUtility::makeInstance(ContentDataProcessor::class);
+        $this->containerFactory = $containerFactory;
+        $this->contentDataProcessor = $contentDataProcessor;
     }
 
-    /**
-     * @param ContentObjectRenderer $cObj
-     * @param array $contentObjectConfiguration
-     * @param array $processorConfiguration
-     * @param array $processedData
-     * @return array
-     */
     public function process(
         ContentObjectRenderer $cObj,
         array $contentObjectConfiguration,
         array $processorConfiguration,
         array $processedData
-    ) {
+    ): array {
         if (isset($processorConfiguration['if.']) && !$cObj->checkIf($processorConfiguration['if.'])) {
             return $processedData;
         }

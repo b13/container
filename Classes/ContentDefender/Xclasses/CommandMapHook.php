@@ -37,9 +37,6 @@ class CommandMapHook extends CmdmapDataHandlerHook
         parent::__construct($contentRepository);
     }
 
-    /**
-     * @param DataHandler $dataHandler
-     */
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
         if (!empty($dataHandler->cmdmap['tt_content'])) {
@@ -90,12 +87,7 @@ class CommandMapHook extends CmdmapDataHandlerHook
         parent::processCmdmap_beforeStart($dataHandler);
     }
 
-    /**
-     * @param array $columnConfiguration
-     * @param array $record
-     * @return bool
-     */
-    protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record)
+    protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record): bool
     {
         if (isset($this->mapping[$record['uid']])) {
             $columnConfiguration = $this->containerColumnConfigurationService->override(
@@ -107,12 +99,7 @@ class CommandMapHook extends CmdmapDataHandlerHook
         return parent::isRecordAllowedByRestriction($columnConfiguration, $record);
     }
 
-    /**
-     * @param array $columnConfiguration
-     * @param array $record
-     * @return bool
-     */
-    protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record)
+    protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record): bool
     {
         if (isset($this->mapping[$record['uid']])) {
             return true;

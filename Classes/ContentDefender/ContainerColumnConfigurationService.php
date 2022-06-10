@@ -18,7 +18,6 @@ use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerColumnConfigurationService implements SingletonInterface
 {
@@ -35,12 +34,10 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     protected $copyMapping = [];
 
-    public function __construct(
-        ContainerFactory $containerFactory = null,
-        Registry $tcaRegistry = null
-    ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    {
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     protected function getRecord(int $uid): ?array

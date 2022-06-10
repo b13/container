@@ -24,21 +24,11 @@ class DeleteHook
      */
     protected $containerFactory;
 
-    /**
-     * @param ContainerFactory|null $containerFactory
-     */
-    public function __construct(ContainerFactory $containerFactory = null)
+    public function __construct(ContainerFactory $containerFactory)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->containerFactory = $containerFactory;
     }
 
-    /**
-     * @param string $table
-     * @param int $id
-     * @param array $recordToDelete
-     * @param bool $recordWasDeleted
-     * @param DataHandler $dataHandler
-     */
     public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, DataHandler $dataHandler): void
     {
         if ($table === 'tt_content') {

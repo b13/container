@@ -73,11 +73,6 @@ class Registry implements SingletonInterface
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerConfiguration->getCType()] = $containerConfiguration->toArray();
     }
 
-    /**
-     * @param string $cType
-     * @param int $colPos
-     * @return array
-     */
     public function getContentDefenderConfiguration(string $cType, int $colPos): array
     {
         $contentDefenderConfiguration = [];
@@ -134,27 +129,16 @@ class Registry implements SingletonInterface
         }
     }
 
-    /**
-     * @param string $cType
-     * @return bool
-     */
     public function isContainerElement(string $cType): bool
     {
         return !empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]);
     }
 
-    /**
-     * @return array
-     */
     public function getRegisteredCTypes(): array
     {
         return array_keys((array)$GLOBALS['TCA']['tt_content']['containerConfiguration']);
     }
 
-    /**
-     * @param string $cType
-     * @return array
-     */
     public function getGrid(string $cType): array
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'])) {
@@ -163,10 +147,6 @@ class Registry implements SingletonInterface
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'];
     }
 
-    /**
-     * @param string $cType
-     * @return string|null
-     */
     public function getGridTemplate(string $cType): ?string
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridTemplate'])) {
@@ -175,10 +155,6 @@ class Registry implements SingletonInterface
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridTemplate'];
     }
 
-    /**
-     * @param string $cType
-     * @return array
-     */
     public function getGridPartialPaths(string $cType): array
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridPartialPaths'])) {
@@ -192,11 +168,6 @@ class Registry implements SingletonInterface
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridLayoutPaths'] ?? [];
     }
 
-    /**
-     * @param string $cType
-     * @param int $colPos
-     * @return string|null
-     */
     public function getColPosName(string $cType, int $colPos): ?string
     {
         $grid = $this->getGrid($cType);
@@ -210,10 +181,6 @@ class Registry implements SingletonInterface
         return null;
     }
 
-    /**
-     * @param string $cType
-     * @return array
-     */
     public function getAvailableColumns(string $cType): array
     {
         $columns = [];
@@ -226,9 +193,6 @@ class Registry implements SingletonInterface
         return $columns;
     }
 
-    /**
-     * @return array
-     */
     public function getAllAvailableColumns(): array
     {
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {

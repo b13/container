@@ -88,12 +88,7 @@ class DatamapHook extends DatamapDataHandlerHook
         parent::processDatamap_beforeStart($dataHandler);
     }
 
-    /**
-     * @param array $columnConfiguration
-     * @param array $record
-     * @return bool
-     */
-    protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record)
+    protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record): bool
     {
         if (isset($this->mapping[$record['uid']])) {
             $columnConfiguration = $this->containerColumnConfigurationService->override(
@@ -111,12 +106,7 @@ class DatamapHook extends DatamapDataHandlerHook
         return parent::isRecordAllowedByRestriction($columnConfiguration, $record);
     }
 
-    /**
-     * @param array $columnConfiguration
-     * @param array $record
-     * @return bool
-     */
-    protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record)
+    protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record): bool
     {
         if (isset($this->mapping[$record['uid']])) {
             return true;

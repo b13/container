@@ -40,11 +40,11 @@ class Sorting implements SingletonInterface
 
     protected $errors = [];
 
-    public function __construct(Database $database = null, Registry $tcaRegistry = null, ContainerFactory $containerFactory = null)
+    public function __construct(Database $database, Registry $tcaRegistry, ContainerFactory $containerFactory)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->database = $database;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->containerFactory = $containerFactory;
     }
 
     public function run(bool $dryRun = true): array

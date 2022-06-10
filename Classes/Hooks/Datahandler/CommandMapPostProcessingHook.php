@@ -25,23 +25,11 @@ class CommandMapPostProcessingHook
      */
     protected $containerFactory;
 
-    /**
-     * @param ContainerFactory|null $containerFactory
-     */
-    public function __construct(ContainerFactory $containerFactory = null)
+    public function __construct(ContainerFactory $containerFactory)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->containerFactory = $containerFactory;
     }
 
-    /**
-     * @param string $command
-     * @param string $table
-     * @param int $id
-     * @param mixed $value
-     * @param DataHandler $dataHandler
-     * @param mixed $pasteUpdate
-     * @param mixed $pasteDatamap
-     */
     public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
@@ -53,12 +41,6 @@ class CommandMapPostProcessingHook
         }
     }
 
-    /**
-     * @param int $uid
-     * @param int $language
-     * @param string $command
-     * @param DataHandler $dataHandler
-     */
     protected function localizeOrCopyToLanguage(int $uid, int $language, string $command, DataHandler $dataHandler): void
     {
         try {
@@ -79,13 +61,6 @@ class CommandMapPostProcessingHook
         }
     }
 
-    /**
-     * @param int $origUid
-     * @param int $newId
-     * @param int $containerId
-     * @param string $command
-     * @param DataHandler $dataHandler
-     */
     protected function copyOrMoveChildren(int $origUid, int $newId, int $containerId, string $command, DataHandler $dataHandler): void
     {
         try {

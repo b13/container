@@ -27,9 +27,6 @@ class DrawChildrenViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    /**
-     * Initialize arguments.
-     */
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -37,13 +34,7 @@ class DrawChildrenViewHelper extends AbstractViewHelper
         $this->registerArgument('colPos', 'int', 'colPos to fetch', true);
     }
 
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext): string
     {
         $containerLayoutView = GeneralUtility::makeInstance(ContainerLayoutView::class);
         $content = $containerLayoutView->renderContainerChildren((int)$arguments['uid'], (int)$arguments['colPos']);

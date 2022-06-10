@@ -29,7 +29,8 @@ class UsedRecordsTest extends UnitTestCase
     {
         $pageLayoutView = $this->prophesize(PageLayoutView::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
-        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal());
+        $registry = $this->prophesize(Registry::class);
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $registry->reveal());
         $params = [
             'used' => true,
             'record' => ['tx_container_parent' => 0],

@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SortingCommand extends Command
 {
@@ -33,16 +32,12 @@ class SortingCommand extends Command
         $this->addArgument('dryrun', InputArgument::OPTIONAL, 'do not execute queries', true);
     }
 
-    public function __construct(string $name = null, Sorting $sorting = null)
+    public function __construct(Sorting $sorting, string $name = null)
     {
         parent::__construct($name);
-        $this->sorting = $sorting ?? GeneralUtility::makeInstance(Sorting::class);
+        $this->sorting = $sorting;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryrun = (bool)$input->getArgument('dryrun');

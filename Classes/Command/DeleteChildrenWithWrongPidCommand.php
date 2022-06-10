@@ -19,25 +19,34 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DeleteChildrenWithWrongPidCommand extends Command
 {
+    /**
+     * @var Integrity
+     */
+    protected $integrity;
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @var IntegrityFix
      */
+    protected $integrityFix;
+
+    public function __construct(Integrity $integrity, IntegrityFix $integrityFix, string $name = null)
+    {
+        $this->integrity = $integrity;
+        $this->integrityFix = $integrityFix;
+        parent::__construct($name);
+    }
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         Bootstrap::initializeBackendAuthentication();
         Bootstrap::initializeLanguageObject();
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
-        $integrityFix = GeneralUtility::makeInstance(IntegrityFix::class);
-        $res = $integrity->run();
+        $res = $this->integrity->run();
         foreach ($res['errors'] as $error) {
             if ($error instanceof WrongPidError) {
-                $integrityFix->deleteChildrenWithWrongPid($error);
+                $this->integrityFix->deleteChildrenWithWrongPid($error);
             }
         }
         return 0;

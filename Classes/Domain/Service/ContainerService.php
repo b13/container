@@ -16,7 +16,6 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerService implements SingletonInterface
 {
@@ -30,10 +29,10 @@ class ContainerService implements SingletonInterface
      */
     protected $containerFactory;
 
-    public function __construct(Registry $tcaRegistry = null, ContainerFactory $containerFactory = null)
+    public function __construct(Registry $tcaRegistry, ContainerFactory $containerFactory)
     {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
+        $this->tcaRegistry = $tcaRegistry;
+        $this->containerFactory = $containerFactory;
     }
 
     public function getNewContentElementAtTopTargetInColumn(Container $container, int $targetColPos): int
@@ -57,7 +56,6 @@ class ContainerService implements SingletonInterface
     public function getAfterContainerElementTarget(Container $container): int
     {
         $target = -$container->getUid();
-        $containerRecord = $container->getContainerRecord();
         $childRecords = $container->getChildRecords();
         if (empty($childRecords)) {
             return $target;

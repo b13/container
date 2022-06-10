@@ -22,17 +22,11 @@ class CommandMapAfterFinishHook
      */
     protected $database;
 
-    /**
-     * @param Database|null $database
-     */
-    public function __construct(Database $database = null)
+    public function __construct(Database $database)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+        $this->database = $database;
     }
 
-    /**
-     * @param DataHandler $dataHandler
-     */
     public function processCmdmap_afterFinish(DataHandler $dataHandler): void
     {
         $cmdmap = $dataHandler->cmdmap;

@@ -28,19 +28,15 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
     protected $contentStorage;
 
     public function __construct(
-        Database $database = null,
-        Registry $tcaRegistry = null,
-        Context $context = null,
-        ContentStorage $contentStorage = null
+        Database $database,
+        Registry $tcaRegistry,
+        Context $context,
+        ContentStorage $contentStorage
     ) {
         parent::__construct($database, $tcaRegistry, $context);
-        $this->contentStorage = $contentStorage ?? GeneralUtility::makeInstance(ContentStorage::class);
+        $this->contentStorage = $contentStorage;
     }
 
-    /**
-     * @param int $uid
-     * @return Container
-     */
     public function buildContainer(int $uid): Container
     {
         $languageAspect =  GeneralUtility::makeInstance(Context::class)->getAspect('language');
@@ -51,11 +47,6 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
         return parent::buildContainer($uid);
     }
 
-    /**
-     * @param array $defaultRecords
-     * @param LanguageAspect $languageAspect
-     * @return array
-     */
     protected function doOverlay(array $defaultRecords, LanguageAspect $languageAspect): array
     {
         $overlayed = [];
@@ -74,14 +65,6 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
         return $overlayed;
     }
 
-    /**
-     * @param int $uid
-     * @param LanguageAspect $languageAspect
-     * @return Container
-     * @throws Exception
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException
-     */
     protected function buildContainerWithOverlay(int $uid, LanguageAspect $languageAspect): Container
     {
         $language = $languageAspect->get('id');
