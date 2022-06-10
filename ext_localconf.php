@@ -90,4 +90,6 @@ call_user_func(static function () {
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][B13\Container\Updates\ContainerMigrateSorting::IDENTIFIER]
         = B13\Container\Updates\ContainerMigrateSorting::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][B13\Container\Updates\ContainerDeleteChildrenWithWrongPid::IDENTIFIER]
+        = B13\Container\Updates\ContainerDeleteChildrenWithWrongPid::class;
 });
