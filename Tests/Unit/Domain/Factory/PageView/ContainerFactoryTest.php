@@ -13,6 +13,8 @@ namespace B13\Container\Tests\Unit\Domain\Factory\PageView;
 
 use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\PageView\ContainerFactory;
+use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ContainerFactoryTest extends UnitTestCase
@@ -26,10 +28,12 @@ class ContainerFactoryTest extends UnitTestCase
     {
         $database = $this->prophesize(Database::class);
         $database->fetchOneRecord(1)->willReturn(null);
+        $tcaRegistry = $this->prophesize(Registry::class);
+        $context = $this->prophesize(Context::class);
         $containerFactory = $this->getAccessibleMock(
             ContainerFactory::class,
             ['foo'],
-            ['database' => $database->reveal(), 'tcaRegistry' => null, 'context' => null]
+            ['database' => $database->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'context' => $context->reveal()]
         );
         self::assertNull($containerFactory->_call('containerByUid', 1));
     }

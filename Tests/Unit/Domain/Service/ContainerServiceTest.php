@@ -12,6 +12,7 @@ namespace B13\Container\Tests\Unit\Domain\Service;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
@@ -69,8 +70,9 @@ class ContainerServiceTest extends UnitTestCase
     {
         $tcaRegistry = $this->prophesize(Registry::class);
         $tcaRegistry->getAllAvailableColumnsColPos('myCType')->willReturn($this->allContainerColumns);
+        $containerFactory = $this->prophesize(ContainerFactory::class);
         $container = new Container($containerRecord, $childRecords, 0);
-        $service = GeneralUtility::makeInstance(ContainerService::class, $tcaRegistry->reveal());
+        $service = GeneralUtility::makeInstance(ContainerService::class, $tcaRegistry->reveal(), $containerFactory->reveal());
         $target = $service->getNewContentElementAtTopTargetInColumn($container, $targetColPos);
         self::assertSame($expectedTarget, $target);
     }

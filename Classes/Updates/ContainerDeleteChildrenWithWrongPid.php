@@ -15,7 +15,6 @@ namespace B13\Container\Updates;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
@@ -33,10 +32,10 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface
      */
     protected $integrityFix;
 
-    public function __construct(Integrity $integrity = null, IntegrityFix $integrityFix = null)
+    public function __construct(Integrity $integrity, IntegrityFix $integrityFix)
     {
-        $this->integrity = $integrity ?? GeneralUtility::makeInstance(Integrity::class);
-        $this->integrityFix = $integrityFix ?? GeneralUtility::makeInstance(IntegrityFix::class);
+        $this->integrity = $integrity;
+        $this->integrityFix = $integrityFix;
     }
 
     public function getIdentifier(): string

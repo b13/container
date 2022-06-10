@@ -16,19 +16,23 @@ use B13\Container\Integrity\Integrity;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class IntegrityCommand extends Command
 {
-
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @var Integrity
      */
+    protected $integrity;
+
+    public function __construct(Integrity $integrity, string $name = null)
+    {
+        $this->integrity = $integrity;
+        parent::__construct($name);
+    }
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
-        $res = $integrity->run();
+        $res = $this->integrity->run();
         if (count($res['errors']) > 0) {
             $output->writeln('ERRORS');
             foreach ($res['errors'] as $error) {

@@ -42,27 +42,18 @@ class CommandMapBeforeStartHook
      */
     protected $containerService;
 
-    /**
-     * UsedRecords constructor.
-     * @param ContainerFactory|null $containerFactory
-     * @param Registry|null $tcaRegistry
-     * @param Database|null $database
-     * @param ContainerService|null $containerService
-     */
     public function __construct(
-        ContainerFactory $containerFactory = null,
-        Registry $tcaRegistry = null,
-        Database $database = null,
-        ContainerService $containerService = null
+        ContainerFactory $containerFactory,
+        Registry $tcaRegistry,
+        Database $database,
+        ContainerService $containerService
     ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->containerService = $containerService ?? GeneralUtility::makeInstance(ContainerService::class);
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->database = $database;
+        $this->containerService = $containerService;
     }
-    /**
-     * @param DataHandler $dataHandler
-     */
+
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
         $this->unsetInconsistentLocalizeCommands($dataHandler);
@@ -224,9 +215,6 @@ class CommandMapBeforeStartHook
         }
     }
 
-    /**
-     * @param array $cmdmap
-     */
     protected function extractContainerIdFromColPosOnUpdate(array $cmdmap): array
     {
         if (!empty($cmdmap['tt_content'])) {
@@ -244,10 +232,6 @@ class CommandMapBeforeStartHook
         return $cmdmap;
     }
 
-    /**
-     * @param array $data
-     * @return array
-     */
     protected function dataFromContainerIdColPos(array $data): array
     {
         $colPos = $data['colPos'];

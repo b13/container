@@ -14,7 +14,6 @@ namespace B13\Container\Listener;
 
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Core\Event\BootCompletedEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class BootCompleted
 {
@@ -23,9 +22,9 @@ class BootCompleted
      */
     protected $tcaRegistry;
 
-    public function __construct(Registry $tcaRegistry = null)
+    public function __construct(Registry $tcaRegistry)
     {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function __invoke(BootCompletedEvent $event): void

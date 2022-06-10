@@ -35,13 +35,10 @@ class ContainerFactory implements SingletonInterface
      */
     protected $workspaceId = 0;
 
-    public function __construct(Database $database = null, Registry $tcaRegistry = null, Context $context = null)
+    public function __construct(Database $database, Registry $tcaRegistry, Context $context)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-        }
+        $this->database = $database;
+        $this->tcaRegistry = $tcaRegistry;
         $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
@@ -55,10 +52,6 @@ class ContainerFactory implements SingletonInterface
         return $this->database->fetchOneDefaultRecord($localizedContainer);
     }
 
-    /**
-     * @param int $uid
-     * @return Container
-     */
     public function buildContainer(int $uid): Container
     {
         $record = $this->containerByUid($uid);
@@ -105,11 +98,6 @@ class ContainerFactory implements SingletonInterface
         return $this->database->fetchRecordsByParentAndLanguage((int)$containerRecord['uid'], $language);
     }
 
-    /**
-     * @param array $defaultRecords
-     * @param array $localizedRecords
-     * @return array
-     */
     protected function sortLocalizedRecordsByDefaultRecords(array $defaultRecords, array $localizedRecords): array
     {
         $sorted = [];
@@ -125,10 +113,6 @@ class ContainerFactory implements SingletonInterface
         return $sorted;
     }
 
-    /**
-     * @param array $records
-     * @return array
-     */
     protected function recordsByColPosKey(array $records): array
     {
         $recordsByColPosKey = [];

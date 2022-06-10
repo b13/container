@@ -33,15 +33,10 @@ class IntegrityFix implements SingletonInterface
      */
     protected $tcaRegistry;
 
-    /**
-     * ContainerFactory constructor.
-     * @param Database|null $database
-     * @param Registry|null $tcaRegistry
-     */
-    public function __construct(Database $database = null, Registry $tcaRegistry = null)
+    public function __construct(Database $database, Registry $tcaRegistry)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->database = $database;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function deleteChildrenWithWrongPid(WrongPidError $wrongPidError): void

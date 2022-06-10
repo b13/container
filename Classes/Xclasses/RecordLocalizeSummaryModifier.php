@@ -27,9 +27,9 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
      */
     protected $containerRegistry;
 
-    public function __construct(Registry $containerRegistry = null)
+    public function __construct(Registry $containerRegistry)
     {
-        $this->containerRegistry = $containerRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->containerRegistry = $containerRegistry;
     }
 
     public function rebuildPayload(array $payload): array

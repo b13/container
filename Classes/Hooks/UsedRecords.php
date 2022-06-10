@@ -16,7 +16,6 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class UsedRecords
 {
@@ -31,22 +30,12 @@ class UsedRecords
      */
     protected $containerFactory;
 
-    /**
-     * UsedRecords constructor.
-     * @param ContainerFactory|null $containerFactory
-     * @param Registry|null $tcaRegistry
-     */
-    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null)
+    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
-    /**
-     * @param array $params
-     * @param PageLayoutView $pageLayoutView
-     * @return bool
-     */
     public function addContainerChildren(array $params, PageLayoutView $pageLayoutView): bool
     {
         $record = $params['record'];

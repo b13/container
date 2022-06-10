@@ -15,7 +15,6 @@ namespace B13\Container\Tca;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ItemProcFunc
 {
@@ -35,25 +34,17 @@ class ItemProcFunc
      */
     protected $tcaRegistry;
 
-    /**
-     * ItemProcFunc constructor.
-     * @param ContainerFactory|null $containerFactory
-     * @param Registry|null $tcaRegistry
-     * @param BackendLayoutView|null $backendLayoutView
-     */
-    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, BackendLayoutView $backendLayoutView = null)
+    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry, BackendLayoutView $backendLayoutView)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->backendLayoutView = $backendLayoutView ?? GeneralUtility::makeInstance(BackendLayoutView::class);
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->backendLayoutView = $backendLayoutView;
     }
 
     /**
      * Gets colPos items to be shown in the forms engine.
      * This method is called as "itemsProcFunc" with the accordant context
      * for tt_content.colPos.
-     *
-     * @param array $parameters
      */
     public function colPos(array $parameters): void
     {
@@ -86,9 +77,6 @@ class ItemProcFunc
         $this->backendLayoutView->colPosListItemProcFunc($parameters);
     }
 
-    /**
-     * @param array $parameters
-     */
     public function txContainerParent(array $parameters): void
     {
         $row = $parameters['row'];

@@ -15,10 +15,11 @@ namespace B13\Container\Hooks;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
-class DrawItem implements PageLayoutViewDrawItemHookInterface
+class DrawItem implements PageLayoutViewDrawItemHookInterface, SingletonInterface
 {
 
     /**
@@ -26,12 +27,9 @@ class DrawItem implements PageLayoutViewDrawItemHookInterface
      */
     protected $tcaRegistry;
 
-    /**
-     * @param Registry|null $tcaRegistry
-     */
-    public function __construct(Registry $tcaRegistry = null)
+    public function __construct(Registry $tcaRegistry)
     {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     /**

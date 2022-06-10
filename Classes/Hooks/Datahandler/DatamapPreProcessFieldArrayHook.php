@@ -17,7 +17,6 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DatamapPreProcessFieldArrayHook
@@ -42,20 +41,16 @@ class DatamapPreProcessFieldArrayHook
      */
     protected $tcaRegistry;
 
-    /**
-     * @param ContainerFactory|null $containerFactory
-     * @param Database|null $database
-     */
     public function __construct(
-        ContainerFactory $containerFactory = null,
-        Database $database = null,
-        Registry $tcaRegistry = null,
-        ContainerService $containerService = null
+        ContainerFactory $containerFactory,
+        Database $database,
+        Registry $tcaRegistry,
+        ContainerService $containerService
     ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->containerService = $containerService ?? GeneralUtility::makeInstance(ContainerService::class);
+        $this->containerFactory = $containerFactory;
+        $this->database = $database;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->containerService = $containerService;
     }
 
     protected function newElementAfterContainer(array $incomingFieldArray): array

@@ -23,9 +23,6 @@ class Database implements SingletonInterface
 {
     private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 't3_origuid', 'colPos', 'tx_container_parent', 'l10n_source', 'hidden', 'sorting'];
 
-    /**
-     * @return QueryBuilder
-     */
     public function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -106,10 +103,6 @@ class Database implements SingletonInterface
             ->fetchAllAssociative();
     }
 
-    /**
-     * @param array $cTypes
-     * @return array
-     */
     public function getContainerRecords(array $cTypes): array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -162,9 +155,6 @@ class Database implements SingletonInterface
         return $rows;
     }
 
-    /**
-     * @return array
-     */
     public function getContainerChildRecords(): array
     {
         $queryBuilder = $this->getQueryBuilder();

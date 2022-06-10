@@ -13,7 +13,6 @@ namespace B13\Container\Updates;
  */
 
 use B13\Container\Integrity\Sorting;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
@@ -26,9 +25,9 @@ class ContainerMigrateSorting implements UpgradeWizardInterface
      */
     protected $sorting;
 
-    public function __construct(Sorting $sorting = null)
+    public function __construct(Sorting $sorting)
     {
-        $this->sorting = $sorting ?? GeneralUtility::makeInstance(Sorting::class);
+        $this->sorting = $sorting;
     }
 
     public function getIdentifier(): string

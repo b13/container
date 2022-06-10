@@ -51,15 +51,15 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
     protected $containerService;
 
     public function __construct(
-        Registry $tcaRegistry = null,
-        ContainerFactory $containerFactory = null,
-        ContainerColumnConfigurationService $containerColumnConfigurationService = null,
-        ContainerService $containerService = null
+        Registry $tcaRegistry,
+        ContainerFactory $containerFactory,
+        ContainerColumnConfigurationService $containerColumnConfigurationService,
+        ContainerService $containerService
     ) {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
-        $this->containerService = $containerService ?? GeneralUtility::makeInstance(ContainerService::class);
+        $this->tcaRegistry = $tcaRegistry;
+        $this->containerFactory = $containerFactory;
+        $this->containerColumnConfigurationService = $containerColumnConfigurationService;
+        $this->containerService = $containerService;
     }
 
     public function renderPageModulePreviewContent(GridColumnItem $item): string

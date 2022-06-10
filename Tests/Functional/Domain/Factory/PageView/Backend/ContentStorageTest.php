@@ -10,6 +10,7 @@ namespace B13\Container\Tests\Functional\Domain\Factory\PageView\Backend;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\PageView\Backend\ContentStorage;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
@@ -40,8 +41,10 @@ class ContentStorageTest extends FunctionalTestCase
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = GeneralUtility::makeInstance(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(2, count($children));
@@ -54,8 +57,10 @@ class ContentStorageTest extends FunctionalTestCase
     {
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = GeneralUtility::makeInstance(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(2, count($children));
@@ -69,8 +74,10 @@ class ContentStorageTest extends FunctionalTestCase
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/deletedChildInWorkspace.xml');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = GeneralUtility::makeInstance(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(1, count($children));
@@ -84,8 +91,10 @@ class ContentStorageTest extends FunctionalTestCase
         $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/deletedChildInWorkspace.xml');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = GeneralUtility::makeInstance(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(0, count($children));

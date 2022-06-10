@@ -33,13 +33,15 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $containerFactory->buildContainer(3)->willReturn($container);
         $containerService = $this->prophesize(ContainerService::class);
         $containerService->getNewContentElementAtTopTargetInColumn($container, 2)->willReturn(-4);
+        $database = $this->prophesize(Database::class);
+        $tcaRegistry = $this->prophesize(Registry::class);
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
             [
                 'containerFactory' => $containerFactory->reveal(),
-                'tcaRegistry' => null,
-                'database' => null,
+                'tcaRegistry' => $tcaRegistry->reveal(),
+                'database' => $database->reveal(),
                 'containerService' => $containerService->reveal(), ]
         );
         $cmdmap = [
@@ -80,19 +82,22 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
      */
     public function rewriteSimpleCommandMapTest(): void
     {
-        $database = $this->prophesize(Database::class);
         $copyAfterRecord = [
             'uid' => 1,
             'tx_container_parent' => 2,
             'sys_language_uid' => 0,
             'colPos' => 3,
         ];
-        $database->fetchOneRecord(1)->willReturn($copyAfterRecord);
 
+        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $containerService = $this->prophesize(ContainerService::class);
+        $database = $this->prophesize(Database::class);
+        $tcaRegistry = $this->prophesize(Registry::class);
+        $database->fetchOneRecord(1)->willReturn($copyAfterRecord);
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => null, 'tcaRegistry' => null, 'database' => $database->reveal()]
+            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal(), 'containerService' => $containerService->reveal()]
         );
         $commandMap = [
             'tt_content' => [
@@ -129,10 +134,11 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $database = $this->prophesize(Database::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
         $tcaRegistry = $this->prophesize(Registry::class);
+        $containerService = $this->prophesize(ContainerService::class);
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal()]
+            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal(), 'containerService' => $containerService->reveal()]
         );
         $commandMap = [
             'tt_content' => [
@@ -172,10 +178,11 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $database = $this->prophesize(Database::class);
         $containerFactory = $this->prophesize(ContainerFactory::class);
         $tcaRegistry = $this->prophesize(Registry::class);
+        $containerService = $this->prophesize(ContainerService::class);
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal()]
+            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal(), 'containerService' => $containerService->reveal()]
         );
         $commandMap = [
             'tt_content' => [

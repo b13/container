@@ -21,10 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Database implements SingletonInterface
 {
-
-    /**
-     * @return QueryBuilder
-     */
     protected function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -32,10 +28,6 @@ class Database implements SingletonInterface
         return $queryBuilder;
     }
 
-    /**
-     * @param int $uid
-     * @return array|null
-     */
     public function fetchOneRecord(int $uid): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -55,10 +47,6 @@ class Database implements SingletonInterface
         return $record;
     }
 
-    /**
-     * @param array $record
-     * @return array
-     */
     public function fetchOverlayRecords(array $record): array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -121,11 +109,6 @@ class Database implements SingletonInterface
         return $record;
     }
 
-    /**
-     * @param int $parent
-     * @param int $language
-     * @return array
-     */
     public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -151,11 +134,6 @@ class Database implements SingletonInterface
         return $records;
     }
 
-    /**
-     * @param int $defaultUid
-     * @param int $language
-     * @return array|null
-     */
     public function fetchContainerRecordLocalizedFreeMode(int $defaultUid, int $language): ?array
     {
         $queryBuilder = $this->getQueryBuilder();

@@ -34,12 +34,9 @@ abstract class ContentStorage
      */
     protected $workspaceId = 0;
 
-    public function __construct(Database $database = null, Context $context = null)
+    public function __construct(Database $database, Context $context)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-        }
+        $this->database = $database;
         $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 

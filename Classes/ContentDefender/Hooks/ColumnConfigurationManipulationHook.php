@@ -31,12 +31,10 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
      */
     protected $containerFactory;
 
-    public function __construct(
-        ContainerFactory $containerFactory = null,
-        Registry $tcaRegistry = null
-    ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    {
+        $this->containerFactory = $containerFactory;
+        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function manipulateConfiguration(array $configuration, int $colPos, $recordUid): array

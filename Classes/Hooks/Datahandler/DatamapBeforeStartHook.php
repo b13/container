@@ -17,7 +17,6 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DatamapBeforeStartHook
 {
@@ -41,35 +40,24 @@ class DatamapBeforeStartHook
      */
     protected $tcaRegistry;
 
-    /**
-     * @param ContainerFactory|null $containerFactory
-     * @param Database|null $database
-     */
     public function __construct(
-        ContainerFactory $containerFactory = null,
-        Database $database = null,
-        Registry $tcaRegistry = null,
-        ContainerService $containerService = null
+        ContainerFactory $containerFactory,
+        Database $database,
+        Registry $tcaRegistry,
+        ContainerService $containerService
     ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->containerService = $containerService ?? GeneralUtility::makeInstance(ContainerService::class);
+        $this->containerFactory = $containerFactory;
+        $this->database = $database;
+        $this->tcaRegistry = $tcaRegistry;
+        $this->containerService = $containerService;
     }
 
-    /**
-     * @param DataHandler $dataHandler
-     */
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
     {
         $dataHandler->datamap = $this->datamapForChildLocalizations($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildrenChangeContainerLanguage($dataHandler->datamap);
     }
 
-    /**
-     * @param array $datamap
-     * @return array
-     */
     protected function datamapForChildLocalizations(array $datamap): array
     {
         $datamapForLocalizations = ['tt_content' => []];
@@ -103,10 +91,6 @@ class DatamapBeforeStartHook
         return $datamap;
     }
 
-    /**
-     * @param array $datamap
-     * @return array
-     */
     protected function datamapForChildrenChangeContainerLanguage(array $datamap): array
     {
         $datamapForLocalizations = ['tt_content' => []];

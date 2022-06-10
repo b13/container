@@ -4,6 +4,44 @@ services:
     autoconfigure: true
     public: false
 
+  B13\Container\:
+    resource: '../Classes/*'
+    exclude:
+      - '../Classes/Domain/Model/*'
+      - '../Classes/Backend/Grid/*'
+      - '../Classes/Integrity/Error/*'
+      - '../Classes/Tca/ContainerConfiguration.php'
+      - '../Classes/**/Exception.php'
+
+  B13\Container\Backend\Preview\ContainerPreviewRenderer:
+    public: true
+  B13\Container\Hooks\UsedRecords:
+    public: true
+  B13\Container\Hooks\Datahandler\CommandMapAfterFinishHook:
+    public: true
+  B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook:
+    public: true
+  B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook:
+    public: true
+  B13\Container\Hooks\Datahandler\DatamapBeforeStartHook:
+    public: true
+  B13\Container\Hooks\Datahandler\DatamapPreProcessFieldArrayHook:
+    public: true
+  B13\Container\Hooks\Datahandler\DeleteHook:
+    public: true
+  B13\Container\ContentDefender\Hooks\ColumnConfigurationManipulationHook:
+    public: true
+  B13\Container\DataProcessing\ContainerProcessor:
+    public: true
+  B13\Container\Updates\ContainerMigrateSorting:
+    public: true
+  B13\Container\Updates\ContainerDeleteChildrenWithWrongPid:
+    public: true
+  B13\Container\Hooks\TableConfigurationPostProcessing:
+    public: true
+  B13\Container\Tca\ItemProcFunc:
+    public: true
+    
   B13\Container\View\ContainerLayoutView:
     shared: false
     public: true
