@@ -96,7 +96,7 @@ class DatamapHook extends DatamapDataHandlerHook
                 $this->mapping[$record['uid']]['containerId'],
                 $this->mapping[$record['uid']]['colPos']
             );
-        } elseif ($record['tx_container_parent'] > 0) {
+        } elseif (isset($record['tx_container_parent']) && $record['tx_container_parent'] > 0) {
             $columnConfiguration = $this->containerColumnConfigurationService->override(
                 $columnConfiguration,
                 (int)$record['tx_container_parent'],
