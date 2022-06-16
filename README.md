@@ -153,9 +153,16 @@ The html template file goes in the folder that you have defined in your TypoScri
         {record.renderedContent}
     </f:format.raw>
 </f:for>
+
+<f:for each="{children_202}" as="record">
+    {record.header} <br>
+    <f:format.raw>
+        {record.renderedContent}
+    </f:format.raw>
+</f:for>
 ```
 
-With explicit colPos defined use `{children_200]201>}` as set in the example above
+With explicit colPos defined use `{children_(200|201|202)}` as set in the example above
 
 ## Concepts
 - Complete registration is done with one PHP call to TCA Registry
