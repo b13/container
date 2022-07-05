@@ -12,6 +12,11 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\TypoScript\TemplateService;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
+
 class ContainerConfiguration
 {
     /**
@@ -79,6 +84,11 @@ class ContainerConfiguration
      */
     protected $defaultValues = [];
 
+    /**
+     * @var ?array
+     */
+    static protected $typoScriptSetup;
+
     public function __construct(
         string $cType,
         string $label,
@@ -89,6 +99,25 @@ class ContainerConfiguration
         $this->label = $label;
         $this->description = $description;
         $this->grid = $grid;
+        $this->assignLayoutsAndPartialsFromTypoScript();
+    }
+
+    protected function assignLayoutsAndPartialsFromTypoScript(): void
+    {
+        if (self::$typoScriptSetup === null) {
+            $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, (int)($_REQUEST['id'] ?? 0))->get();
+            $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+            $templateService = GeneralUtility::makeInstance(TemplateService::class);
+            $templateService->runThroughTemplates($rootLine);
+            $templateService->generateConfig();
+            self::$typoScriptSetup = $typoScriptService->convertTypoScriptArrayToPlainArray($templateService->setup);
+        }
+        if (($layoutPaths = self::$typoScriptSetup['module']['tx_backend']['view']['layoutRootPaths'] ?? []) !== []) {
+            $this->gridLayoutPaths = array_merge($this->gridLayoutPaths, $layoutPaths);
+        }
+        if (($partialPaths = self::$typoScriptSetup['module']['tx_backend']['view']['partialRootPaths'] ?? []) !== []) {
+            $this->gridPartialPaths = array_merge($this->gridPartialPaths, $partialPaths);
+        }
     }
 
     /**
