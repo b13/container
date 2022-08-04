@@ -59,11 +59,25 @@ class Sorting implements SingletonInterface
             foreach ($columns as $column) {
                 $colPosByCType[$cType][] = $column['colPos'];
             }
+            $this->unsetContentDefenderConfiguration($cType);
         }
         $this->fixChildrenSorting($containerRecords, $colPosByCType, $dryRun);
         // todo not required ?
         //$this->fixElementAfterContainerSorting($containerRecords, $colPosByCType, $dryRun);
         return $this->errors;
+    }
+
+    protected function unsetContentDefenderConfiguration(string $cType): void
+    {
+        // unset content_defender configuration for migration because already unallowed children in container may exist
+        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? [] as $rowKey => $row) {
+            foreach ($row as $colKey => $column) {
+                $column['allowed'] = [];
+                $column['disallowed'] = [];
+                $column['maxitems'] = 0;
+                $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'][$rowKey][$colKey] = $column;
+            }
+        }
     }
 
     protected function fixElementAfterContainerSorting(array $containerRecords, array $colPosByCType, bool $dryRun): void
