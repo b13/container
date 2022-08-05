@@ -38,7 +38,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
             200 => [['uid' => 2]],
         ];
         $filtered = $recordLocalizeSummeryModifier->_call('filterRecords', $recordsToTranslate);
-        self::assertTrue(1 === count($filtered[0]));
+        self::assertTrue(count($filtered[0]) === 1);
         self::assertTrue(empty($filtered[200]));
     }
 
@@ -61,8 +61,8 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
             200 => [['uid' => 2]],
         ];
         $filtered = $recordLocalizeSummeryModifier->_call('filterRecords', $recordsToTranslate);
-        self::assertTrue(1 === count($filtered[0]));
-        self::assertTrue(1 === count($filtered[200]));
+        self::assertTrue(count($filtered[0]) === 1);
+        self::assertTrue(count($filtered[200]) === 1);
     }
 
     /**
