@@ -40,7 +40,7 @@
         "codeception/module-db": "^1.0",
         "typo3/cms-workspaces": "^10.4",
         "phpstan/phpstan": "^0.12.11",
-        "typo3/coding-standards": "0.5.2",
+        "typo3/coding-standards": "^0.5",
         "phpunit/phpunit": "^8.4",
         "friendsofphp/php-cs-fixer": "^3.4"
     },
