@@ -178,39 +178,4 @@ class Database implements SingletonInterface
         }
         return $rows;
     }
-
-    public function getContentElementAfter(array $record): ?array
-    {
-        // todo not required
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder
-            ->select(...$this->fields)
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->gt(
-                    'sorting',
-                    $queryBuilder->createNamedParameter($record['sorting'], Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'sys_language_uid',
-                    $queryBuilder->createNamedParameter($record['sys_language_uid'], Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'pid',
-                    $queryBuilder->createNamedParameter($record['pid'], Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'colPos',
-                    $queryBuilder->createNamedParameter($record['colPos'], Connection::PARAM_INT)
-                )
-            )
-            ->orderBy('sorting')
-            ->setMaxResults(1)
-            ->execute()
-            ->fetch();
-        if ($row === false) {
-            return null;
-        }
-        return $row;
-    }
 }

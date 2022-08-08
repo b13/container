@@ -62,8 +62,6 @@ class Sorting implements SingletonInterface
             $this->unsetContentDefenderConfiguration($cType);
         }
         $this->fixChildrenSorting($containerRecords, $colPosByCType, $dryRun);
-        // todo not required ?
-        //$this->fixElementAfterContainerSorting($containerRecords, $colPosByCType, $dryRun);
         return $this->errors;
     }
 
@@ -76,31 +74,6 @@ class Sorting implements SingletonInterface
                 $column['disallowed'] = [];
                 $column['maxitems'] = 0;
                 $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'][$rowKey][$colKey] = $column;
-            }
-        }
-    }
-
-    protected function fixElementAfterContainerSorting(array $containerRecords, array $colPosByCType, bool $dryRun): void
-    {
-        foreach ($containerRecords as $containerRecord) {
-            $nextElement = $this->database->getContentElementAfter($containerRecord);
-            if ($nextElement !== null) {
-                try {
-                    $container = $this->containerFactory->buildContainer($containerRecord['uid']);
-                } catch (Exception $e) {
-                    // should not happend
-                    continue;
-                }
-                $lastChild = null;
-                foreach ($colPosByCType[$containerRecord['CType']] as $colPos) {
-                    $children = $container->getChildrenByColPos($colPos);
-                    foreach ($children as $child) {
-                        $lastChild = $child;
-                    }
-                }
-                if ($lastChild !== null && $lastChild['sorting'] > $nextElement['sorting']) {
-                    $this->errors[] = 'container uid: ' . $containerRecord['uid'] . ', pid ' . $containerRecord['pid'] . ' must be fixed';
-                }
             }
         }
     }

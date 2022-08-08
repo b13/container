@@ -192,7 +192,7 @@ class CommandMapBeforeStartHook
                                 // should not happen
                                 continue;
                             }
-                            $translatedContainer = $this->database->fetchOneTranslatedRecordByl18nParent($container['uid'], (int)$data);
+                            $translatedContainer = $this->database->fetchOneTranslatedRecordByLocalizationParent($container['uid'], (int)$data);
                             if ($translatedContainer === null || (int)$translatedContainer['l18n_parent'] === 0) {
                                 $dataHandler->log(
                                     'tt_content',

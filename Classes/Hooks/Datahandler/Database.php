@@ -86,7 +86,7 @@ class Database implements SingletonInterface
         return $record;
     }
 
-    public function fetchOneTranslatedRecordByl18nParent(int $uid, int $language): ?array
+    public function fetchOneTranslatedRecordByLocalizationParent(int $uid, int $language): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
         $record = $queryBuilder->select('*')
