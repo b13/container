@@ -16,6 +16,7 @@ use B13\Container\Integrity\Sorting;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Bootstrap;
 
@@ -30,6 +31,7 @@ class SortingCommand extends Command
     protected function configure()
     {
         $this->addArgument('dryrun', InputArgument::OPTIONAL, 'do not execute queries', true);
+        $this->addOption('apply', null, InputOption::VALUE_NONE, 'apply migration');
     }
 
     public function __construct(Sorting $sorting, string $name = null)
@@ -41,6 +43,9 @@ class SortingCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryrun = (bool)$input->getArgument('dryrun');
+        if ($input->getOption('apply') === true) {
+            $dryrun = false;
+        }
         Bootstrap::initializeBackendAuthentication();
         Bootstrap::initializeLanguageObject();
         $errors = $this->sorting->run($dryrun);
