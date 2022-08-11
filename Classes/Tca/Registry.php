@@ -106,7 +106,7 @@ class Registry implements SingletonInterface
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
                 if (file_exists(GeneralUtility::getFileAbsFileName($containerConfiguration['icon']))) {
                     $provider = BitmapIconProvider::class;
-                    if (strpos($containerConfiguration['icon'], '.svg') !== false) {
+                    if (str_contains($containerConfiguration['icon'], '.svg')) {
                         $provider = SvgIconProvider::class;
                     }
                     $iconRegistry->registerIcon(
