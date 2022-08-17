@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -47,8 +48,13 @@ class Database implements SingletonInterface
                 )
             )
             ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $results = $stm->fetchAll();
+        } else {
+            $results = $stm->fetchAllAssociative();
+        }
         $rows = [];
-        while ($result = $stm->fetchAssociative()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -71,8 +77,13 @@ class Database implements SingletonInterface
                 )
             )
             ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $results = $stm->fetchAll();
+        } else {
+            $results = $stm->fetchAllAssociative();
+        }
         $rows = [];
-        while ($result = $stm->fetchAssociative()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -81,7 +92,7 @@ class Database implements SingletonInterface
     public function getChildrenByContainerAndColPos(int $containerId, int $colPos, int $languageId): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (array)$queryBuilder
+        $stm = $queryBuilder
             ->select(...$this->fields)
             ->from('tt_content')
             ->where(
@@ -99,8 +110,11 @@ class Database implements SingletonInterface
                 )
             )
             ->orderBy('sorting')
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            return (array)$stm->fetchAll();
+        }
+        return (array)$stm->fetchAllAssociative();
     }
 
     public function getContainerRecords(array $cTypes): array
@@ -120,8 +134,13 @@ class Database implements SingletonInterface
                 )
             )
             ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $results = $stm->fetchAll();
+        } else {
+            $results = $stm->fetchAllAssociative();
+        }
         $rows = [];
-        while ($result = $stm->fetchAssociative()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -148,8 +167,13 @@ class Database implements SingletonInterface
                 )
             )
             ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $results = $stm->fetchAll();
+        } else {
+            $results = $stm->fetchAllAssociative();
+        }
         $rows = [];
-        while ($result = $stm->fetch()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -172,8 +196,13 @@ class Database implements SingletonInterface
                 )
             )
             ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $results = $stm->fetchAll();
+        } else {
+            $results = $stm->fetchAllAssociative();
+        }
         $rows = [];
-        while ($result = $stm->fetchAssociative()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
