@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -117,8 +118,13 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                 )
             )
             ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $rows = $stm->fetchAll();
+        } else {
+            $rows = $stm->fetchAllAssociative();
+        }
         $containerUids = [];
-        while ($row = $stm->fetchAssociative()) {
+        foreach ($rows as $row) {
             $containerUids[] = $row['uid'];
             if ($row['l18n_parent'] > 0) {
                 $containerUids[] = $row['l18n_parent'];
@@ -144,7 +150,12 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                 )
             )
             ->execute();
-        while ($row = $stm->fetchAssociative()) {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $rows = $stm->fetchAll();
+        } else {
+            $rows = $stm->fetchAllAssociative();
+        }
+        foreach ($rows as $row) {
             $containerChildren[$row['uid']] = $row;
         }
         return $containerChildren;

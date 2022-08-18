@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendWorkspaceRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -62,7 +63,7 @@ class Database implements SingletonInterface
     public function fetchRecordsByPidAndLanguage(int $pid, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (array)$queryBuilder->select('*')
+        $stm = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -75,15 +76,18 @@ class Database implements SingletonInterface
                 )
             )
             ->orderBy('sorting', 'ASC')
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            return (array)$stm->fetchAll();
+        }
+        return (array)$stm->fetchAllAssociative();
     }
 
     public function fetchOneRecord(int $uid): ?array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll();
-        $record = $queryBuilder->select('*')
+        $stm = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -91,8 +95,12 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAssociative();
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $record = $stm->fetch();
+        } else {
+            $record = $stm->fetchAssociative();
+        }
         if ($record === false) {
             return null;
         }
@@ -102,7 +110,7 @@ class Database implements SingletonInterface
     public function fetchOneDefaultRecord(array $record): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
+        $stm = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -114,8 +122,12 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAssociative();
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $record = $stm->fetch();
+        } else {
+            $record = $stm->fetchAssociative();
+        }
         if ($record === false) {
             return null;
         }
@@ -126,7 +138,7 @@ class Database implements SingletonInterface
     {
         $queryBuilder = $this->getQueryBuilder();
 
-        return  (array)$queryBuilder->select('*')
+        $stm = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -139,8 +151,11 @@ class Database implements SingletonInterface
                 )
             )
             ->orderBy('sorting', 'ASC')
-            ->execute()
-            ->fetchAllAssociative();
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            return (array)$stm->fetchAll();
+        }
+        return (array)$stm->fetchAllAssociative();
     }
 
     public function fetchOverlayRecords(array $records, int $language): array
@@ -153,7 +168,7 @@ class Database implements SingletonInterface
             }
         }
         $queryBuilder = $this->getQueryBuilder();
-        $records = (array)$queryBuilder->select('*')
+        $stm = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->in(
@@ -165,15 +180,17 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAllAssociative();
-        return $records;
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            return (array)$stm->fetchAll();
+        }
+        return (array)$stm->fetchAllAssociative();
     }
 
     public function fetchOneOverlayRecord(int $uid, int $language): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
+        $stm = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -185,8 +202,12 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAssociative();
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $record = $stm->fetch();
+        } else {
+            $record = $stm->fetchAssociative();
+        }
         if ($record === false) {
             return null;
         }
