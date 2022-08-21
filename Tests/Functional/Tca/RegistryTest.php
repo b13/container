@@ -49,4 +49,26 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
 }';
         self::assertStringContainsString($expected, $pageTs);
     }
+
+    /**
+     * @test
+     */
+    public function getPageTsStringReturnsGroupAsGroupLabelWhenGroupIsNotAddetToItemGroups(): void
+    {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container', // CType
+                'foo', // label
+                'bar', // description
+                [] // grid configuration
+            )
+            )
+            ->setGroup('baz')
+        );
+        $registry = GeneralUtility::makeInstance(Registry::class);
+        $pageTs = $registry->getPageTsString();
+        $expected = 'mod.wizards.newContentElement.wizardItems.baz.header = baz';
+        self::assertStringContainsString($expected, $pageTs);
+    }
 }

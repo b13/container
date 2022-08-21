@@ -233,7 +233,7 @@ class Registry implements SingletonInterface
 ';
         }
         foreach ($groupedByGroup as $group => $containerConfigurations) {
-            $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ? $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] : $group;
+            $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ?? $group;
 
             $content = '
 mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabel . '
