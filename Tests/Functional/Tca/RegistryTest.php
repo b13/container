@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Functional\Tca;
 
 use B13\Container\Tca\ContainerConfiguration;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -48,5 +49,27 @@ class RegistryTest extends FunctionalTestCase
 b13-container = EXT:container/Resources/Private/Templates/Container.html
 }';
         self::assertStringContainsString($expected, $pageTs);
+    }
+
+    /**
+     * @test
+     */
+    public function originalPageTsIsNotOverriden(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Tca/Fixtures/original_page_ts_is_not_overridden.csv');
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container', // CType
+                'foo', // label
+                'bar', // description
+                [] // grid configuration
+            )
+            )->setGroup('special')
+        );
+        $pageTsConfig = BackendUtility::getPagesTSconfig(1);
+        $specialHeader = $pageTsConfig['mod.']['wizards.']['newContentElement.']['wizardItems.']['special.']['header'] ?? '';
+        $expected = 'LLL:EXT:backend/Resources/Private/Language/locallang_db_new_content_el.xlf:special';
+        self::assertSame($expected, $specialHeader);
     }
 }
