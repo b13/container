@@ -42,6 +42,7 @@
         "phpstan/phpstan": "^0.12.11",
         "typo3/coding-standards": "^0.5",
         "phpunit/phpunit": "^8.4",
+        "phpspec/prophecy": "^1.10.3",
         "friendsofphp/php-cs-fixer": "^3.4"
     },
     "replace": {
