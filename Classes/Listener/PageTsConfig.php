@@ -30,7 +30,7 @@ class PageTsConfig
     public function __invoke(ModifyLoadedPageTsConfigEvent $event): void
     {
         $tsConfig = $event->getTsConfig();
-        $tsConfig['default'] .= $this->tcaRegistry->getPageTsString();
+        $tsConfig['default'] = $this->tcaRegistry->getPageTsString() . "\n" . $tsConfig['default'];
         $event->setTsConfig($tsConfig);
     }
 }
