@@ -1,5 +1,7 @@
 <?php
 
+defined('TYPO3') || die('Access denied.');
+
 call_user_func(static function () {
     $additionalColumns = [
         'tx_container_parent' => [
@@ -8,9 +10,6 @@ call_user_func(static function () {
                 'default' => 0,
                 'type' => 'select',
                 'foreign_table' => 'tt_content',
-                // do not render standard tt_content elements, but only elements returned from itemsProcFunc
-                // only necessary for TYPO3 9
-                'foreign_table_where' => ' AND 1=2',
                 'itemsProcFunc' => \B13\Container\Tca\ItemProcFunc::class . '->txContainerParent',
                 'renderType' => 'selectSingle',
             ],

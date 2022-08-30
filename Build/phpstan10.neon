@@ -24,9 +24,6 @@ parameters:
     -
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
-    -
-      message: '#Constant TYPO3_MODE not found.#'
-      path: %currentWorkingDirectory%/Classes
     - '#Constant LF not found.#'
     - '#Parameter \$event of method B13\\Container\\Listener\\BootCompleted::__invoke\(\) has invalid typehint type TYPO3\\CMS\\Core\\Core\\Event\\BootCompletedEvent.#'
     - '#Cannot call method fetchAllAssociative\(\) on Doctrine\\DBAL\\Driver\\ResultStatement\|int.#'
