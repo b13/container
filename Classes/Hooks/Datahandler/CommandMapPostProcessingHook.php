@@ -66,14 +66,22 @@ class CommandMapPostProcessingHook
         try {
             // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
-            $children = array_reverse($container->getChildRecords());
+            $children = [];
+            $colPosVals = $container->getChildrenColPos();
+            foreach ($colPosVals as $colPos) {
+                $childrenByColPos = $container->getChildrenByColPos($colPos);
+                $childrenByColPos = array_reverse($childrenByColPos);
+                foreach ($childrenByColPos as $child) {
+                    $children[] = $child;
+                }
+            }
             if ($newId < 0) {
                 $previousRecord = BackendUtility::getRecord('tt_content', abs($newId), 'pid');
                 $target = (int)$previousRecord['pid'];
             } else {
                 $target = $newId;
             }
-            foreach ($children as $colPos => $record) {
+            foreach ($children as $record) {
                 $cmd = [
                     'tt_content' => [
                         $record['uid'] => [
