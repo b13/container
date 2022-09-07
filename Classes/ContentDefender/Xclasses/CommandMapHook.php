@@ -13,6 +13,7 @@ namespace B13\Container\ContentDefender\Xclasses;
  */
 
 use B13\Container\ContentDefender\ContainerColumnConfigurationService;
+use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use IchHabRecht\ContentDefender\Hooks\CmdmapDataHandlerHook;
 use IchHabRecht\ContentDefender\Repository\ContentRepository;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -89,6 +90,12 @@ class CommandMapHook extends CmdmapDataHandlerHook
 
     protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record): bool
     {
+        if (isset($record['tx_container_parent']) &&
+            $record['tx_container_parent'] > 0 &&
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess($record['tx_container_parent'])
+        ) {
+            return true;
+        }
         if (isset($this->mapping[$record['uid']])) {
             $columnConfiguration = $this->containerColumnConfigurationService->override(
                 $columnConfiguration,
@@ -101,6 +108,12 @@ class CommandMapHook extends CmdmapDataHandlerHook
 
     protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record): bool
     {
+        if (isset($record['tx_container_parent']) &&
+            $record['tx_container_parent'] > 0 &&
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess($record['tx_container_parent'])
+        ) {
+            return true;
+        }
         if (isset($this->mapping[$record['uid']])) {
             return true;
         }
