@@ -1,0 +1,8 @@
+"pages"
+,"uid","pid"
+,2,0
+"tt_content"
+,"uid","pid","colPos","sorting","CType","tx_container_parent"
+,11,2,0,128,"b13-2cols-with-header-container",0
+,12,2,200,256,"header",11
+,13,2,201,512,"bullets",11

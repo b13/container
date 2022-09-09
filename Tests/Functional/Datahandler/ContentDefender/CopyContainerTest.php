@@ -88,4 +88,33 @@ class CopyContainerTest extends DatahandlerTest
         self::assertSame($row['uid'], (int)$child['tx_container_parent'], 'child is not copied into copied container');
         self::assertSame(200, (int)$row['colPos'], 'child is not copied into container colPos');
     }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function copyContainerWithRestrictionsIgnoresContentDefender(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/copy_container_with_restrictions.csv');
+        $cmdmap = [
+            'tt_content' => [
+                11 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 2,
+                        'update' => [
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $container = $this->fetchOneRecord('t3_origuid', 11);
+        $row = $this->fetchOneRecord('t3_origuid', 13);
+        self::assertSame($container['uid'], (int)$row['tx_container_parent'], 'element is not copied into container');
+        self::assertSame(201, (int)$row['colPos'], 'element is not copied into container colPos');
+    }
 }
