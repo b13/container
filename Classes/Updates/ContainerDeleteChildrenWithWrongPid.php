@@ -16,6 +16,7 @@ use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
@@ -74,9 +75,11 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, Rep
 
     public function executeUpdate(): bool
     {
-        Bootstrap::initializeBackendUser();
-        Bootstrap::initializeBackendAuthentication();
-        Bootstrap::initializeLanguageObject();
+        if (Environment::isCli() === false) {
+            Bootstrap::initializeBackendUser();
+            Bootstrap::initializeBackendAuthentication();
+            Bootstrap::initializeLanguageObject();
+        }
         $res = $this->integrity->run();
         foreach ($res['errors'] as $error) {
             if ($error instanceof WrongPidError) {

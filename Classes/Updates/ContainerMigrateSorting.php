@@ -14,6 +14,7 @@ namespace B13\Container\Updates;
 
 use B13\Container\Integrity\Sorting;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
@@ -61,9 +62,11 @@ class ContainerMigrateSorting implements UpgradeWizardInterface, RepeatableInter
 
     public function executeUpdate(): bool
     {
-        Bootstrap::initializeBackendUser();
-        Bootstrap::initializeBackendAuthentication();
-        Bootstrap::initializeLanguageObject();
+        if (Environment::isCli() === false) {
+            Bootstrap::initializeBackendUser();
+            Bootstrap::initializeBackendAuthentication();
+            Bootstrap::initializeLanguageObject();
+        }
         $this->sorting->run(false);
         return true;
     }
