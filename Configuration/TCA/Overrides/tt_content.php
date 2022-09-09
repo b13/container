@@ -10,6 +10,8 @@ call_user_func(static function () {
                 'default' => 0,
                 'type' => 'select',
                 'foreign_table' => 'tt_content',
+                // if not set, all content elements are already loaded before itemsProcFunc is called
+                'foreign_table_where' => ' AND 1=2',
                 'itemsProcFunc' => \B13\Container\Tca\ItemProcFunc::class . '->txContainerParent',
                 'renderType' => 'selectSingle',
             ],
