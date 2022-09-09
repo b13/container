@@ -318,4 +318,20 @@ class LocalizeTest extends DatahandlerTest
         $secondContainer = $this->fetchOneRecord('t3_origuid', 91);
         self::assertSame($secondContainer['uid'], $secondChildRow['tx_container_parent']);
     }
+
+    /**
+     * @test
+     */
+    public function localizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainer(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/Fixtures/Localize/localize_element_after_already_localized_container.csv');
+        $cmdmap = [
+            'tt_content' => [3 => ['localize' => 1]],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+
+        $translatedRow = $this->fetchOneRecord('t3_origuid', 3);
+        self::assertTrue($translatedRow['sorting'] > 512);
+    }
 }

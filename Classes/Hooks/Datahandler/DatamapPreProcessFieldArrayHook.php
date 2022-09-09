@@ -68,7 +68,9 @@ class DatamapPreProcessFieldArrayHook
         }
         try {
             $container = $this->containerFactory->buildContainer($record['uid']);
-            $incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
+            if ($container->getLanguage() === 0 || !$container->isConnectedMode()) {
+                $incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
+            }
         } catch (Exception $e) {
         }
         return $incomingFieldArray;
