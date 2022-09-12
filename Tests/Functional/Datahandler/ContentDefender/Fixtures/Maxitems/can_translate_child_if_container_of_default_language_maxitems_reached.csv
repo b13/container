@@ -1,0 +1,12 @@
+"sys_language"
+,"uid"
+,1
+"pages"
+,"uid","pid",sys_language_uid,l10n_parent
+,1,0,0,0
+,2,0,1,1
+"tt_content"
+,"uid","pid","colPos","sorting","CType","tx_container_parent",sys_language_uid,l18n_parent,l10n_source
+,1,1,0,256,"b13-2cols-with-header-container",0,0,0,0
+,2,1,0,512,"b13-2cols-with-header-container",0,1,1,1
+,3,1,202,1024,"header",1,0,0,0

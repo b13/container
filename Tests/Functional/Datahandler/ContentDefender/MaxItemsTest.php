@@ -32,6 +32,7 @@ class MaxItemsTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
+        $this->linkSiteConfigurationIntoTestInstance();
     }
 
     /**
@@ -449,5 +450,24 @@ class MaxItemsTest extends DatahandlerTest
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function canTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_translate_child_if_container_of_default_language_maxitems_reached.csv');
+        $cmdmap = [
+            'tt_content' => [
+                3 => ['localize' => 1],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $this->fetchOneRecord('t3_origuid', 3);
+        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 }
