@@ -1,22 +1,28 @@
 <?php
 
-declare(strict_types=1);
-
-call_user_func(static function () {
-    $iconsToRegister = [
-        'container-1col',
-        'container-2col',
-        'container-2col-left',
-        'container-2col-right',
-        'container-3col',
-        'container-4col',
-    ];
-    $icons = [];
-    foreach ($iconsToRegister as $icon) {
-        $icons[$icon] = [
-            'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-            'EXT:container/Resources/Public/Icons/' . $icon . '.svg',
-        ];
-    }
-    return $icons;
-});
+return [
+    'container-1col' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:container/Resources/Public/Icons/container-1col.svg',
+    ],
+    'container-2col' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:container/Resources/Public/Icons/container-2col.svg',
+    ],
+    'container-2col-left' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:container/Resources/Public/Icons/container-2col-left.svg',
+    ],
+    'container-2col-right' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:container/Resources/Public/Icons/container-2col-right.svg',
+    ],
+    'container-3col' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:container/Resources/Public/Icons/container-3col.svg',
+    ],
+    'container-4col' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:container/Resources/Public/Icons/container-4col.svg',
+    ],
+];
