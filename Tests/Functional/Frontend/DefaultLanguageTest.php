@@ -21,7 +21,7 @@ class DefaultLanguageTest extends AbstractFrontendTest
      */
     public function childrenAreRendered(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/default_language.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/default_language.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -29,7 +29,7 @@ class DefaultLanguageTest extends AbstractFrontendTest
                 'setup' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript'],
             ]
         );
-        $response = $this->executeFrontendRequest(new InternalRequest());
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-default</h1>', $body);

@@ -15,6 +15,8 @@ namespace B13\Container\DataProcessing;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Frontend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -107,7 +109,14 @@ class ContainerProcessor implements DataProcessorInterface
     ): array {
         $children = $container->getChildrenByColPos($colPos);
 
-        $contentRecordRenderer = new RecordsContentObject($cObj);
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $contentRecordRenderer = new RecordsContentObject($cObj);
+        } else {
+            $contentRecordRenderer = new RecordsContentObject();
+            $contentRecordRenderer->setContentObjectRenderer($cObj);
+            $contentRecordRenderer->setRequest($this->getRequest());
+        }
         $conf = [
             'tables' => 'tt_content',
         ];
@@ -128,5 +137,10 @@ class ContainerProcessor implements DataProcessorInterface
         }
         $processedData[$as] = $children;
         return $processedData;
+    }
+
+    protected function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

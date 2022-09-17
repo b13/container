@@ -16,22 +16,18 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 class DefaultLanguageTest extends DatahandlerTest
 {
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
         'typo3conf/ext/content_defender',
     ];
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/setup.csv');
     }
 
     /**
@@ -40,7 +36,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAtTopDoNotMoveDisallowedCTypeElement(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -71,7 +67,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAfterOtherElemenDoNotMoveDisallowedCTypeElement(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -102,7 +98,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function copyElementIntoContainerAtTopDoNotCopyDisallowedCTypeElement(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -142,7 +138,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAtTopMoveAisallowedCTypeElement(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -173,7 +169,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAfterOtherElemenMoveAllowedCTypeElement(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -204,7 +200,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function copyElementIntoContainerAtTopCopyAllowedCTypeElement(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [

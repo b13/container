@@ -26,9 +26,9 @@ class IntegrityTest extends FunctionalTestCase
 {
 
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
@@ -38,7 +38,7 @@ class IntegrityTest extends FunctionalTestCase
      */
     public function integrityCreateWrongPidError(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.csv');
         $integrity = GeneralUtility::makeInstance(Integrity::class);
         $res = $integrity->run();
         self::assertTrue(isset($res['errors']));
@@ -57,9 +57,10 @@ class IntegrityTest extends FunctionalTestCase
      */
     public function wrongPidErrorElementsAreShownAsUnusedElements(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.csv');
 
-        $GLOBALS['BE_USER'] = $this->setUpBackendUserFromFixture(1);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
+        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         Bootstrap::initializeLanguageObject();
 
         $backendLayout = new BackendLayout(
@@ -94,8 +95,9 @@ class IntegrityTest extends FunctionalTestCase
      */
     public function integrityFixDeleteChildrenWithWrongPid(): void
     {
-        $GLOBALS['BE_USER'] = $this->setUpBackendUserFromFixture(1);
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
+        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.csv');
         $integrity = GeneralUtility::makeInstance(Integrity::class);
         $res = $integrity->run();
         $integrityFix = GeneralUtility::makeInstance(IntegrityFix::class);

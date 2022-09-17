@@ -21,24 +21,24 @@ class ContentStorageTest extends FunctionalTestCase
 {
 
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $coreExtensionsToLoad = ['workspaces'];
+    protected array $coreExtensionsToLoad = ['workspaces'];
 
     /**
      * @test
      */
     public function getContainerChildrenReturnsAllLiveChildrenInDraftWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         $database = GeneralUtility::makeInstance(Database::class);
@@ -55,7 +55,7 @@ class ContentStorageTest extends FunctionalTestCase
      */
     public function getContainerChildrenReturnsAllLiveChildrenInLiveWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
         $database = GeneralUtility::makeInstance(Database::class);
         $context = GeneralUtility::makeInstance(Context::class);
@@ -71,7 +71,7 @@ class ContentStorageTest extends FunctionalTestCase
      */
     public function deletedChildInWorkspaceReturnsChildInLiveWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/deletedChildInWorkspace.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/deletedChildInWorkspace.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
         $database = GeneralUtility::makeInstance(Database::class);
@@ -88,7 +88,7 @@ class ContentStorageTest extends FunctionalTestCase
      */
     public function deletedChildInWorkspaceReturnsNoChildInDraftWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/deletedChildInWorkspace.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContentStorage/deletedChildInWorkspace.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         $database = GeneralUtility::makeInstance(Database::class);

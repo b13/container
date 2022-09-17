@@ -246,6 +246,12 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         docker-compose down
         ;;
+    patchV10)
+        setUpDockerComposeDotEnv
+        docker-compose run patchV10
+        SUITE_EXIT_CODE=$?
+        docker-compose down
+        ;;
     functional)
         setUpDockerComposeDotEnv
         case ${DBMS} in

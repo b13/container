@@ -21,7 +21,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function deleteContainerDeleteChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -42,7 +42,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerToOtherPageMovesChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -74,7 +74,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerCopiesChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -105,7 +105,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerToOtherLanguageCopiesChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -136,7 +136,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerToOtherLanguageCopiesNestedChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 55 => [
@@ -165,7 +165,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerToOtherLanguageMovesChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/Container/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [

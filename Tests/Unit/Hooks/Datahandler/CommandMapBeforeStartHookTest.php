@@ -21,28 +21,35 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class CommandMapBeforeStartHookTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @test
      */
     public function rewriteCommandMapTargetForTopAtContainerTest(): void
     {
-        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['buildContainer'])
+            ->getMock();
         $container = new Container([], []);
-        $containerFactory->buildContainer(3)->willReturn($container);
-        $containerService = $this->prophesize(ContainerService::class);
-        $containerService->getNewContentElementAtTopTargetInColumn($container, 2)->willReturn(-4);
-        $database = $this->prophesize(Database::class);
-        $tcaRegistry = $this->prophesize(Registry::class);
+        $containerFactory->expects(self::once())->method('buildContainer')->with(3)->willReturn($container);
+        $containerService = $this->getMockBuilder(ContainerService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getNewContentElementAtTopTargetInColumn'])
+            ->getMock();
+        $containerService->expects(self::once())->method('getNewContentElementAtTopTargetInColumn')->with($container, 2)->willReturn(-4);
+        $database = $this->getMockBuilder(Database::class)->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
             [
-                'containerFactory' => $containerFactory->reveal(),
-                'tcaRegistry' => $tcaRegistry->reveal(),
-                'database' => $database->reveal(),
-                'containerService' => $containerService->reveal(), ]
+                'containerFactory' => $containerFactory,
+                'tcaRegistry' => $tcaRegistry,
+                'database' => $database,
+                'containerService' => $containerService,
+            ]
         );
         $cmdmap = [
             'tt_content' => [
@@ -89,15 +96,16 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
             'colPos' => 3,
         ];
 
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $containerService = $this->prophesize(ContainerService::class);
-        $database = $this->prophesize(Database::class);
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $database->fetchOneRecord(1)->willReturn($copyAfterRecord);
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
+        $database = $this->getMockBuilder(Database::class)->onlyMethods(['fetchOneRecord'])->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
+        $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn($copyAfterRecord);
+
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal(), 'containerService' => $containerService->reveal()]
+            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
         );
         $commandMap = [
             'tt_content' => [
@@ -131,14 +139,14 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
      */
     public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
     {
-        $database = $this->prophesize(Database::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $containerService = $this->prophesize(ContainerService::class);
+        $database = $this->getMockBuilder(Database::class)->getMock();
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal(), 'containerService' => $containerService->reveal()]
+            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
         );
         $commandMap = [
             'tt_content' => [
@@ -175,14 +183,14 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
      */
     public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
     {
-        $database = $this->prophesize(Database::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $containerService = $this->prophesize(ContainerService::class);
+        $database = $this->getMockBuilder(Database::class)->getMock();
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
         $dataHandlerHook = $this->getAccessibleMock(
             CommandMapBeforeStartHook::class,
             ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'database' => $database->reveal(), 'containerService' => $containerService->reveal()]
+            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
         );
         $commandMap = [
             'tt_content' => [

@@ -10,26 +10,31 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractFrontendTest extends FunctionalTestCase
 {
     /**
-     * @var string[]
+     * @var non-empty-string[]
      */
-    protected $coreExtensionsToLoad = ['core', 'frontend', 'workspaces', 'fluid_styled_content'];
+    protected array $coreExtensionsToLoad = ['core', 'frontend', 'workspaces', 'fluid_styled_content'];
 
     /**
-     * @var string[]
+     * @var array<string, non-empty-string>
      */
-    protected $pathsToLinkInTestInstance = [
+    protected array $pathsToLinkInTestInstance = [
         'typo3conf/ext/container/Build/sites' => 'typo3conf/sites',
     ];
 
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
@@ -50,5 +55,13 @@ abstract class AbstractFrontendTest extends FunctionalTestCase
         $content = implode('', $notEmpty);
         $content = preg_replace('/<div id="container-start"><\/div>(.*)<div id="container-end"><\/div>/', '$1', $content);
         return $content;
+    }
+
+    protected function executeFrontendRequestWrapper(InternalRequest $request, InternalRequestContext $context = null, bool $followRedirects = false): ResponseInterface
+    {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 11) {
+            return $this->executeFrontendRequest($request, $context, $followRedirects);
+        }
+        return $this->executeFrontendSubRequest($request, $context, $followRedirects);
     }
 }

@@ -5,7 +5,16 @@ parameters:
     - %currentWorkingDirectory%/Classes
     - %currentWorkingDirectory%/Tests
 
+  excludePaths:
+    - %currentWorkingDirectory%/Classes/Listener/ModifyNewContentElementWizardItems.php
+    - %currentWorkingDirectory%/Classes/Listener/BootCompleted.php
+    - %currentWorkingDirectory%/Classes/Listener/ContentUsedOnPage.php
+    - %currentWorkingDirectory%/Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
+
   ignoreErrors:
+    -
+      message: '#Method TYPO3\\CMS\\Core\\Domain\\Repository\\PageRepository::getLanguageOverlay\(\) invoked with 3 parameters, 2 required.#'
+      path: %currentWorkingDirectory%/Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
     -
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 0 parameters, 1 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
@@ -16,15 +25,20 @@ parameters:
       message: '#Constant ORIGINAL_ROOT not found.#'
       path: %currentWorkingDirectory%/Tests
     -
-      message: '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::.*#'
-      path: %currentWorkingDirectory%/Tests
-    -
       message: '#PHPDoc tag @.*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/_generated/BackendTesterActions.php
     -
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
     - '#Constant LF not found.#'
-    - '#Parameter \$event of method B13\\Container\\Listener\\BootCompleted::__invoke\(\) has invalid typehint type TYPO3\\CMS\\Core\\Core\\Event\\BootCompletedEvent.#'
     - '#Cannot call method fetchAllAssociative\(\) on Doctrine\\DBAL\\Driver\\ResultStatement\|int.#'
     - '#Cannot call method fetchAssociative\(\) on Doctrine\\DBAL\\Driver\\ResultStatement\|int.#'
+    -
+      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject::setRequest\(\).#'
+      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
+    -
+      message: '#Class TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject constructor invoked with 0 parameters, 1 required.#'
+      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
+    -
+      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject::setContentObjectRenderer\(\).#'
+      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php

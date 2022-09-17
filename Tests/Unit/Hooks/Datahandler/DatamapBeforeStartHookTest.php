@@ -20,34 +20,34 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DatamapBeforeStartHookTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @test
      */
     public function datamapForLocalizationsExtendsDatamapWithLocalizations(): void
     {
-        $database = $this->prophesize(Database::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $defaultRecord = [
             'uid' => 2,
             'tx_container_parent' => 0,
             'sys_language_uid' => 0,
         ];
-        $database->fetchOverlayRecords($defaultRecord)->willReturn([['uid' => 3]]);
-        $database->fetchOneRecord(2)->willReturn($defaultRecord);
-
-        $containerRegistry = $this->prophesize(Registry::class);
-        $containerService = $this->prophesize(ContainerService::class);
-
+        $database = $this->getMockBuilder(Database::class)
+            ->onlyMethods(['fetchOverlayRecords', 'fetchOneRecord'])
+            ->getMock();
+        $database->expects(self::once())->method('fetchOverlayRecords')->with($defaultRecord)->willReturn([['uid' => 3]]);
+        $database->expects(self::once())->method('fetchOneRecord')->with(2)->willReturn($defaultRecord);
+        $containerRegistry = $this->getMockBuilder(Registry::class)->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
         $dataHandlerHook = $this->getAccessibleMock(
             DatamapBeforeStartHook::class,
             ['foo'],
             [
-                'containerFactory' => $containerFactory->reveal(),
-                'database' => $database->reveal(),
-                'tcaRegistry' => $containerRegistry->reveal(),
-                'containerService' => $containerService->reveal(),
+                'containerFactory' => $containerFactory,
+                'database' => $database,
+                'tcaRegistry' => $containerRegistry,
+                'containerService' => $containerService,
             ]
         );
         $datamap = [

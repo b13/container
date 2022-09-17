@@ -21,7 +21,7 @@ class NewElementTest extends DatahandlerTest
      */
     public function newElementAfterContainerSortElementAfterLastChild(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/NewElement/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/NewElement/setup.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [

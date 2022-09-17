@@ -7,9 +7,20 @@ parameters:
 
   excludePaths:
     - %currentWorkingDirectory%/Classes/ContentDefender/Hooks/WizardItems.php
+    - %currentWorkingDirectory%/Classes/Listener/ModifyNewContentElementWizardItems.php
+    - %currentWorkingDirectory%/Classes/Listener/ContentUsedOnPage.php
 
   ignoreErrors:
+    -
+      message: '#Access to an undefined property B13\\Container\\Tests\\Acceptance\\Support\\Extension\\BackendContainerEnvironment::\$config.#'
+      path: %currentWorkingDirectory%/Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
+    -
+      message: '#Call to an undefined static method TYPO3\\TestingFramework\\Core\\Acceptance\\Extension\\BackendEnvironment::bootstrapTypo3Environment\(\).#'
+      path: %currentWorkingDirectory%/Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
     - '#^Cannot call method fetch.*\(\) on Doctrine\\DBAL\\Result\|int\.$#'
+    -
+      message: '#Method TYPO3\\CMS\\Core\\Domain\\Repository\\PageRepository::getLanguageOverlay\(\) invoked with 3 parameters, 2 required.#'
+      path: %currentWorkingDirectory%/Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
     -
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 1 parameter, 0 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
@@ -20,8 +31,8 @@ parameters:
       message: '#Constant ORIGINAL_ROOT not found.#'
       path: %currentWorkingDirectory%/Tests
     -
-      message: '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::.*#'
-      path: %currentWorkingDirectory%/Tests
+      message: '#Call to an undefined static method TYPO3\\TestingFramework\\Core\\Acceptance\\Extension\\BackendEnvironment::_initialize\(\).#'
+      path: %currentWorkingDirectory%/Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
     -
       message: '#PHPDoc tag @.*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/_generated/BackendTesterActions.php
@@ -29,3 +40,6 @@ parameters:
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
     - '#Constant LF not found.#'
+    -
+      message: '#Class TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject constructor invoked with 0 parameters, 1 required.#'
+      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php

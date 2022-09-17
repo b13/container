@@ -17,7 +17,7 @@ class DataProcessorWithIrreTest extends AbstractFrontendTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/data_processor_with_irre.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/data_processor_with_irre.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -36,7 +36,7 @@ class DataProcessorWithIrreTest extends AbstractFrontendTest
      */
     public function relationIsRendered(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('irre-title-default', $body);
@@ -48,7 +48,7 @@ class DataProcessorWithIrreTest extends AbstractFrontendTest
      */
     public function translatedRelationIsRendered(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('irre-title-translated', $body);

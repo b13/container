@@ -34,17 +34,17 @@ abstract class DatahandlerTest extends FunctionalTestCase
     protected $backendUser;
 
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $coreExtensionsToLoad = ['workspaces'];
+    protected array $coreExtensionsToLoad = ['workspaces'];
 
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
@@ -68,14 +68,14 @@ abstract class DatahandlerTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
     protected function setUp(): void
     {
         parent::setUp();
-        $this->backendUser = $this->setUpBackendUserFromFixture(1);
+        if ($this->typo3MajorVersion === 10) {
+            $this->importCSVDataSet(__DIR__ . '/../Fixtures/sys_language_for_v10.csv');
+        }
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
+        $this->backendUser = $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $GLOBALS['BE_USER'] = $this->backendUser;
         Bootstrap::initializeLanguageObject();
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);

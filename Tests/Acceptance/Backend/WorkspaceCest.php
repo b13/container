@@ -43,9 +43,11 @@ class WorkspaceCest
     public function liveWorkspaceShowsLiveElements(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForText('header-live');
         $I->see('header-live');
         $I->dontSee('header-ws');
         $I->dontSee('header-new-ws');
@@ -60,9 +62,11 @@ class WorkspaceCest
     {
         $this->switchToTestWs($I);
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForText('header-ws');
         $I->dontSee('header-live');
         $I->see('header-ws');
         $I->see('header-new-ws');
@@ -77,9 +81,11 @@ class WorkspaceCest
     public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
     {
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForElement('select[name="languageMenu"]');
         $I->selectOption('select[name="languageMenu"]', 'german');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->see('translation-live');
@@ -95,9 +101,11 @@ class WorkspaceCest
     {
         $this->switchToTestWs($I);
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForElement('select[name="languageMenu"]');
         $I->selectOption('select[name="languageMenu"]', 'german');
         $I->waitForElementNotVisible('#t3js-ui-block');
 
@@ -117,6 +125,7 @@ class WorkspaceCest
         }
         $this->switchToTestWs($I);
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithWorkspace-movedContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();

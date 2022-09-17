@@ -36,6 +36,7 @@ class BackendTester extends \Codeception\Actor
             ]);
             $I->saveSessionSnapshot($username . 'Login');
         }
+        $I->wait(0.2);
         $I->switchToIFrame('list_frame');
         $I->waitForElement(Locator::firstElement('div.module'));
         $I->switchToIFrame();

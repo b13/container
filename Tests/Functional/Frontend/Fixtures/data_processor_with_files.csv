@@ -1,0 +1,16 @@
+"pages"
+,"uid","pid","title","slug"
+,1,0,"page-1","/"
+"tt_content"
+,"uid","pid","CType","colPos","tx_container_parent","media"
+,1,1,"b13-2cols",,,
+,2,1,"uploads",200,1,1
+"sys_file_reference"
+,"uid","tablenames","fieldname","uid_local","uid_foreign"
+,1,"tt_content","media",1,2
+"sys_file_storage"
+,"uid","is_online","driver","configuration"
+,1,1,"Local","<?xml version="1.0" encoding="utf-8" standalone="yes" ?><T3FlexForms><data><sheet index="sDEF"><language index="lDEF"><field index="basePath"><value index="vDEF">typo3conf/ext/container</value></field><field index="pathType"><value index="vDEF">relative</value></field><field index="baseUri"><value index="vDEF"></value></field><field index="caseSensitive"><value index="vDEF">1</value></field></language></sheet></data></T3FlexForms>"
+"sys_file"
+,"uid","name","identifier","storage"
+,1,"README.md","README.md",1

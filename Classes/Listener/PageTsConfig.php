@@ -14,6 +14,8 @@ namespace B13\Container\Listener;
 
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Configuration\Event\ModifyLoadedPageTsConfigEvent;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageTsConfig
 {
@@ -30,7 +32,11 @@ class PageTsConfig
     public function __invoke(ModifyLoadedPageTsConfigEvent $event): void
     {
         $tsConfig = $event->getTsConfig();
-        $tsConfig['default'] = $this->tcaRegistry->getPageTsString() . "\n" . $tsConfig['default'];
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
+            $tsConfig['global'] = $this->tcaRegistry->getPageTsString() . "\n" . $tsConfig['global'];
+        } else {
+            $tsConfig['default'] = $this->tcaRegistry->getPageTsString() . "\n" . $tsConfig['default'];
+        }
         $event->setTsConfig($tsConfig);
     }
 }

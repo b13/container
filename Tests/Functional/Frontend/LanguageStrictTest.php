@@ -14,14 +14,10 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class LanguageStrictTest extends AbstractFrontendTest
 {
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/setup.xml');
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -33,10 +29,11 @@ class LanguageStrictTest extends AbstractFrontendTest
 
     /**
      * @test
+     * @group frontend
      */
     public function nothingTranslated(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
@@ -50,11 +47,12 @@ class LanguageStrictTest extends AbstractFrontendTest
 
     /**
      * @test
+     * @group frontend
      */
     public function bothTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_both_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_both_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-de</h1>', $body);
@@ -68,11 +66,12 @@ class LanguageStrictTest extends AbstractFrontendTest
 
     /**
      * @test
+     * @group frontend
      */
     public function bothTranslatedTranslatedChildHidden(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_both_translated_tranlated_child_hidden.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_both_translated_tranlated_child_hidden.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-de</h1>', $body);
@@ -86,11 +85,12 @@ class LanguageStrictTest extends AbstractFrontendTest
 
     /**
      * @test
+     * @group frontend
      */
     public function childTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_child_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_child_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
@@ -104,11 +104,12 @@ class LanguageStrictTest extends AbstractFrontendTest
 
     /**
      * @test
+     * @group frontend
      */
     public function containerTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_container_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageStrict/tt_content_container_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-de</h1>', $body);
