@@ -49,7 +49,8 @@ class DatamapHook extends DatamapDataHandlerHook
                     isset($values['tx_container_parent']) &&
                     $values['tx_container_parent'] > 0 &&
                     isset($values['colPos']) &&
-                    $values['colPos'] > 0
+                    $values['colPos'] > 0 &&
+                    (!isset($values['l18n_parent']) || (int)$values['l18n_parent'] === 0)
                 ) {
                     $useChildId = null;
                     $colPos = (int)$values['colPos'];
