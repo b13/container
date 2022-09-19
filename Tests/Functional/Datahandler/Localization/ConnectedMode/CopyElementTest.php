@@ -38,4 +38,30 @@ class CopyElementTest extends DatahandlerTest
         $translatedRow = $this->fetchOneRecord('t3_origuid', 4);
         self::assertTrue($translatedRow['sorting'] > 512);
     }
+
+    /**
+     * @test
+     */
+    public function copyElementAfterContainerWithChildKeepsColPosForTranslatedElement(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/ConnectedMode/Fixtures/CopyElement/copy_element_after_container_with_child.csv');
+        $cmdmap = [
+            'tt_content' => [
+                3 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $translatedRow = $this->fetchOneRecord('t3_origuid', 4);
+        self::assertTrue($translatedRow['colPos'] === 0);
+    }
 }
