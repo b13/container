@@ -40,14 +40,14 @@ class IntegrityCommand extends Command
             foreach ($res['errors'] as $error) {
                 $errors[] = $error->getErrorMessage();
             }
-            $io->error('ERRORS: ' . chr(10) . implode(chr(10), $errors) );
+            $io->error('ERRORS: ' . chr(10) . implode(chr(10), $errors));
         }
         if (count($res['warnings']) > 0) {
             $warnings = [];
             foreach ($res['warnings'] as $warning) {
                 $warnings[] = $warning->getErrorMessage();
             }
-            $io->error('WARNINGS ("unused elements")' . chr(10) . implode(chr(10), $warnings) );
+            $io->error('WARNINGS ("unused elements")' . chr(10) . implode(chr(10), $warnings));
         }
         if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
             $io->success('Good Job, no errors/warnings!');
