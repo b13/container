@@ -77,7 +77,7 @@ This is an example to create a 2 column container. The code snippet goes into a 
 | `setGridLayoutPaths` | Layout root paths for grid, only affects the [Fluid-based page module](https://docs.typo3.org/c/typo3/cms-core/master/en-us/Changelog/10.3/Feature-90348-NewFluid-basedReplacementForPageLayoutView.html) | `array $gridLayoutPaths` | `[]` |
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard (v10 only) | `bool $saveAndCloseInNewContentElementWizard` | `true` |
 | `setRegisterInNewContentElementWizard` |register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
-| `setGroup` | Custom Group (used as optgroup for CType select (v10 only), and as tab in New Content Element Wiazrd). If empty "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
+| `setGroup` | Custom Group (used as optgroup for CType select (v10 only), and as tab in New Content Element Wizard). If empty "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
 | `setDefaultValues` | Default values for the newContentElement.wizardItems | `array $defaultValues` | `[]` |
 
 __Notes:__
