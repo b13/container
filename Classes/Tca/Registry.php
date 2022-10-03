@@ -136,7 +136,7 @@ class Registry implements SingletonInterface
 
     public function getRegisteredCTypes(): array
     {
-        return array_keys((array)$GLOBALS['TCA']['tt_content']['containerConfiguration']);
+        return array_keys((array)($GLOBALS['TCA']['tt_content']['containerConfiguration'] ?? []));
     }
 
     public function getGrid(string $cType): array
