@@ -16,6 +16,7 @@ use B13\Container\Integrity\Integrity;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class IntegrityCommand extends Command
 {
@@ -32,21 +33,24 @@ class IntegrityCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
         $res = $this->integrity->run();
         if (count($res['errors']) > 0) {
-            $output->writeln('ERRORS');
+            $errors = [];
             foreach ($res['errors'] as $error) {
-                $output->writeln($error->getErrorMessage());
+                $errors[] = $error->getErrorMessage();
             }
+            $io->error('ERRORS: ' . chr(10) . implode(chr(10), $errors));
         }
         if (count($res['warnings']) > 0) {
-            $output->writeln('WARNINGS ("unused elements")');
-            foreach ($res['warnings'] as $error) {
-                $output->writeln($error->getErrorMessage());
+            $warnings = [];
+            foreach ($res['warnings'] as $warning) {
+                $warnings[] = $warning->getErrorMessage();
             }
+            $io->error('WARNINGS ("unused elements")' . chr(10) . implode(chr(10), $warnings));
         }
         if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
-            $output->writeln('Good Job, no ERRORS/WARNINGS');
+            $io->success('Good Job, no errors/warnings!');
         }
         return 0;
     }
