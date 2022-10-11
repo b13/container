@@ -40,7 +40,7 @@ class UsedRecords
     {
         $record = $params['record'];
 
-        if ($record['tx_container_parent'] > 0) {
+        if (isset($record['tx_container_parent']) && $record['tx_container_parent'] > 0) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$record['tx_container_parent']);
                 $columns = $this->tcaRegistry->getAvailableColumns($container->getCType());
