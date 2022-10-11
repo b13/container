@@ -1,0 +1,43 @@
+"pages"
+,"uid","pid","backend_layout","TSconfig"
+,1,0,"pagets__exampleKey","<![CDATA[
+                                        mod.web_layout.BackendLayouts {
+                             exampleKey {
+                               title = Example
+                               config {
+                                 backend_layout {
+                                   colCount = 1
+                                   rowCount = 2
+                                   rows {
+                                     1 {
+                                       columns {
+                                         1 {
+                                           name = 0x1
+                                           colPos = 9
+                                           allowed {
+                                                 CType = b13-2cols-with-header-container,bullets
+                                               }
+                                         }
+                                       }
+                                     }
+                                     2 {
+                                       columns {
+                                         1 {
+                                           name = 0x0
+                                           colPos = 10
+                                         }
+                                       }
+                                     }
+                                   }
+                                 }
+                               }
+                             }
+                           }
+                                       ]]>"
+"tt_content"
+,"uid","pid","colPos","CType","tx_container_parent"
+,1,1,10,"b13-2cols-with-header-container",
+,2,1,200,"header",1
+,3,1,9,"bullets",
+,4,1,10,"b13-2cols",
+,5,1,200,"bullets",4

@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Configuration\Features;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,7 +38,10 @@ class Registry implements SingletonInterface
                 $containerConfiguration->getGroup(),
             ]
         );
-        if (GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('fluidBasedPageModule')) {
+        if (
+            (GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12 ||
+            GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('fluidBasedPageModule')
+        ) {
             $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['previewRenderer'] = \B13\Container\Backend\Preview\ContainerPreviewRenderer::class;
         }
 

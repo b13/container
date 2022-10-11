@@ -16,28 +16,33 @@ use B13\Container\Domain\Model\Container;
 use B13\Container\Hooks\UsedRecords;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\PageLayoutView;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class UsedRecordsTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
+
     /**
      * @test
      */
     public function addContainerChildrenReturnsUsedOfParamsIfTxContainerParentIsZero(): void
     {
-        $pageLayoutView = $this->prophesize(PageLayoutView::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $registry = $this->prophesize(Registry::class);
-        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $registry->reveal());
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12) {
+            self::markTestSkipped('TODO test v12');
+        }
+        $pageLayoutView = $this->getMockBuilder(PageLayoutView::class)->disableOriginalConstructor()->getMock();
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
+        $registry = $this->getMockBuilder(Registry::class)->getMock();
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $registry);
         $params = [
             'used' => true,
             'record' => ['tx_container_parent' => 0],
         ];
-        self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView));
         $params['used'] = false;
-        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView));
     }
 
     /**
@@ -45,20 +50,29 @@ class UsedRecordsTest extends UnitTestCase
      */
     public function addContainerChildrenReturnsTrueIfChildrenInContainerColPos(): void
     {
-        $pageLayoutView = $this->prophesize(PageLayoutView::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $container = $this->prophesize(Container::class);
-        $container->getCType()->willReturn('myCType');
-        $container->hasChildInColPos(2, 3)->willReturn(true);
-        $containerFactory->buildContainer(1)->willReturn($container->reveal());
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 2]]);
-        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12) {
+            self::markTestSkipped('TODO test v12');
+        }
+        $pageLayoutView = $this->getMockBuilder(PageLayoutView::class)->disableOriginalConstructor()->getMock();
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['buildContainer'])
+            ->getMock();
+        $container = $this->getMockBuilder(Container::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getCType', 'hasChildInColPos'])
+            ->getMock();
+        $container->expects(self::once())->method('getCType')->willReturn('myCType');
+        $container->expects(self::once())->method('hasChildInColPos')->with(2, 3)->willReturn(true);
+        $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['getAvailableColumns'])->getMock();
+        $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $tcaRegistry);
         $params = [
             'used' => false,
             'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0],
         ];
-        self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView));
     }
 
     /**
@@ -66,20 +80,29 @@ class UsedRecordsTest extends UnitTestCase
      */
     public function addContainerChildrenReturnsFalseIfChildrenIsNotInContainerColPos(): void
     {
-        $pageLayoutView = $this->prophesize(PageLayoutView::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $container = $this->prophesize(Container::class);
-        $container->getCType()->willReturn('myCType');
-        $container->hasChildInColPos(2, 3)->willReturn(false);
-        $containerFactory->buildContainer(1)->willReturn($container->reveal());
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 2]]);
-        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12) {
+            self::markTestSkipped('TODO test v12');
+        }
+        $pageLayoutView = $this->getMockBuilder(PageLayoutView::class)->disableOriginalConstructor()->getMock();
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['buildContainer'])
+            ->getMock();
+        $container = $this->getMockBuilder(Container::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getCType', 'hasChildInColPos'])
+            ->getMock();
+        $container->expects(self::once())->method('getCType')->willReturn('myCType');
+        $container->expects(self::once())->method('hasChildInColPos')->with(2, 3)->willReturn(false);
+        $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['getAvailableColumns'])->getMock();
+        $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $tcaRegistry);
         $params = [
             'used' => false,
             'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0],
         ];
-        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView));
     }
 
     /**
@@ -87,18 +110,27 @@ class UsedRecordsTest extends UnitTestCase
      */
     public function addContainerChildrenReturnsFalseIfChildrenIsNotInRegisterdGrid(): void
     {
-        $pageLayoutView = $this->prophesize(PageLayoutView::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $container = $this->prophesize(Container::class);
-        $container->getCType()->willReturn('myCType');
-        $containerFactory->buildContainer(1)->willReturn($container->reveal());
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $tcaRegistry->getAvailableColumns('myCType')->willReturn([['colPos' => 3]]);
-        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory->reveal(), $tcaRegistry->reveal());
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12) {
+            self::markTestSkipped('TODO test v12');
+        }
+        $pageLayoutView = $this->getMockBuilder(PageLayoutView::class)->disableOriginalConstructor()->getMock();
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['buildContainer'])
+            ->getMock();
+        $container = $this->getMockBuilder(Container::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getCType'])
+            ->getMock();
+        $container->expects(self::once())->method('getCType')->willReturn('myCType');
+        $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['getAvailableColumns'])->getMock();
+        $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 3]]);
+        $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $tcaRegistry);
         $params = [
             'used' => false,
             'record' => ['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3],
         ];
-        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView->reveal()));
+        self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView));
     }
 }

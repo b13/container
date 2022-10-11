@@ -17,7 +17,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class RegistryTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @test

@@ -1,0 +1,14 @@
+"pages"
+,"uid","pid","is_siteroot","title","perms_everybody","sys_language_uid","l10n_parent","l10n_source"
+,20,1,,"pageWithWorkspace",17,,,
+,21,1,,"pageWithWorkspace-1",17,1,20,20
+"tt_content"
+,"uid","pid","CType","header","colPos","tx_container_parent","l18n_parent","sys_language_uid","t3ver_wsid","t3ver_oid","l10n_source","t3ver_state"
+,200,20,"b13-2cols-with-header-container",,,,,,,,,
+,201,20,"header","header-live",200,200,,,,,,
+,202,20,"header","header-ws",200,200,,,1,201,,
+,203,20,"header","header-new-ws",200,200,,,1,0,,
+,204,20,"header","header-new-ws",200,200,,,1,203,,
+,205,20,"b13-2cols-with-header-container",,,,200,1,,,,
+,206,20,"header","translation-live",200,200,201,1,,,,
+,207,20,"header","translation-ws",200,200,201,1,1,206,,

@@ -1,0 +1,10 @@
+"pages"
+,"uid","pid","is_siteroot","title","perms_everybody","sys_language_uid","l10n_parent","l10n_source"
+,22,1,,"pageWithWorkspace-movedContainer",17,,,
+"tt_content"
+,"uid","pid","CType","header","colPos","tx_container_parent","l18n_parent","sys_language_uid","t3ver_wsid","t3ver_oid","l10n_source","t3ver_state"
+,600,22,"b13-2cols-with-header-container",,,,,,,,,
+,601,22,"header","header-live",200,600,,,,,,
+,602,22,"header","header-outside",,,,,,,,
+,603,22,"b13-2cols-with-header-container",,,,,,1,600,,4
+,604,22,"header","header-ws",200,600,,,1,601,,4

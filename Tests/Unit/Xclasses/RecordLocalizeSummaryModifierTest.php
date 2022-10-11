@@ -17,7 +17,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class RecordLocalizeSummaryModifierTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @test
@@ -70,8 +70,10 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
      */
     public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns(): void
     {
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $tcaRegistry->getAllAvailableColumns()->willReturn(
+        $tcaRegistry = $this->getMockBuilder(Registry::class)
+            ->onlyMethods(['getAllAvailableColumns'])
+            ->getMock();
+        $tcaRegistry->expects(self::once())->method('getAllAvailableColumns')->willReturn(
             [
                 ['colPos' => 2],
                 ['colPos' => 3],
@@ -82,7 +84,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
         $recordLocalizeSummeryModifier = $this->getAccessibleMock(
             RecordLocalizeSummaryModifier::class,
             ['getContainerUids', 'getContainerChildren'],
-            [$tcaRegistry->reveal()]
+            [$tcaRegistry]
         );
         $rebuildedColumns = $recordLocalizeSummeryModifier->_call('rebuildColumns', $columns);
         self::assertSame([2, 3, 0], $rebuildedColumns['columnList']);

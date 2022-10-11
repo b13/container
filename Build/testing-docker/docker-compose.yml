@@ -129,11 +129,36 @@ services:
           set -x
         fi
         php -v | grep '^PHP';
-        if [ ${TYPO3} -eq 10 ]; then
-          composer install --no-progress --no-interaction;
+        if [ ${TYPO3} -eq 11 ]; then
+          composer install --no-progress --no-interaction
+          composer prepare-tests
+        elif [ ${TYPO3} -eq 10 ]; then
+          composer require friendsofphp/php-cs-fixer:^3.4 typo3/cms-install:^10.4 typo3/cms-fluid-styled-content:^10.4 typo3/cms-info:^10.4 typo3/cms-workspaces:^10.4 typo3/testing-framework:^6 --dev -W --no-progress --no-interaction
+          if [ "${PHP_VERSION}" == "7.4" ]; then
+            composer require friendsofphp/php-cs-fixer:~3.9.0 --dev --no-progress --no-interaction
+          fi
+          composer prepare-tests-10 && composer prepare-tests
         else
-          composer remove typo3/cms* --dev --no-progress --no-interaction && composer require typo3/cms-install:^11.5 typo3/cms-fluid-styled-content:^11.5 typo3/cms-info:^11.5 typo3/cms-workspaces:^11.5 --dev -W --no-progress --no-interaction
+          composer remove typo3/cms* ichhabrecht/content-defender --dev --no-progress --no-interaction && composer config --no-interaction --no-plugins allow-plugins.sbuerk/typo3-cmscomposerinstallers-testingframework-bridge true && composer require typo3/cms-install:12.*.*@dev typo3/cms-fluid-styled-content:12.*.*@dev typo3/cms-info:12.*.*@dev typo3/cms-workspaces:12.*.*@dev sbuerk/typo3-cmscomposerinstallers-testingframework-bridge:^0.0.1 --dev -W --no-progress --no-interaction
+          composer prepare-tests
         fi
+      "
+
+  patchV10:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    user: ${HOST_UID}
+    volumes:
+      - ${ROOT_DIR}:${ROOT_DIR}
+      - ${HOST_HOME}:${HOST_HOME}
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+    working_dir: ${ROOT_DIR}
+    command: >
+      /bin/sh -c "
+        find Tests -name \\*.php -print0 | xargs -0 sed -i 's/protected array \(.*\)testExtensionsToLoad = \[/protected \1testExtensionsToLoad = [/g';
+        find Tests -name \\*.php -print0 | xargs -0 sed -i 's/protected bool \(.*\)resetSingletonInstances = /protected \1resetSingletonInstances = /g';
+        find Tests -name \\*.php -print0 | xargs -0 sed -i 's/protected array \(.*\)coreExtensionsToLoad = \[/protected \1coreExtensionsToLoad = [/g';
+        find Tests -name \\*.php -print0 | xargs -0 sed -i 's/protected array \(.*\)pathsToLinkInTestInstance = \[/protected \1pathsToLinkInTestInstance = [/g';
       "
 
   composer_validate:

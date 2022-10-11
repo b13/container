@@ -13,18 +13,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '7.4', '7.3', '7.2' ]
-        TYPO3: [ '10' ]
+        php: [ '7.4', '8.0', '8.1' ]
+        TYPO3: [ '11' ]
         include:
-          - TYPO3: '11'
+          - TYPO3: '12'
             php: '8.1'
-          - TYPO3: '11'
-            php: '8.0'
-          - TYPO3: '11'
+          - TYPO3: '10'
             php: '7.4'
+          - TYPO3: '10'
+            php: '7.2'
+          - TYPO3: '10'
+            php: '7.3'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Patch  10
+        if: matrix.TYPO3 == '10'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s patchV10
 
       - name: Install testing system
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerInstall
@@ -44,15 +50,21 @@ jobs:
       - name: Unit Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
 
-      - name: Functional Tests with mariadb
+      - name: Functional Tests with mariadb 10/11
+        if: matrix.TYPO3 != '12'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
 
-      - name: Acceptance Tests With Fluid Base Page Module on TYPO 10
-        if: startsWith(matrix.TYPO3, '10')
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -f -s acceptance -e --fail-fast
+      - name: Functional Tests with mariadb 12
+        if: matrix.TYPO3 == '12'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -e "--exclude-group=content_defender"
 
-      - name: Acceptance Tests
+      - name: Acceptance Tests 10/11
+        if: matrix.TYPO3 != '12'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e --fail-fast
+
+      - name: Acceptance Tests 12
+        if: matrix.TYPO3 == '12'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e "--fail-fast --skip-group=content_defender"
 
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v2

@@ -19,7 +19,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ContainerGridColumnItemTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
     ];
 
@@ -29,13 +29,17 @@ class ContainerGridColumnItemTest extends FunctionalTestCase
     public function getNewContentUrlContainsUidOfLiveWorkspaceAsContainerParent(): void
     {
         $container = new Container(['uid' => 2, 't3ver_oid' => 1], []);
-        $pageLayoutContext = $this->prophesize(PageLayoutContext::class);
-        $pageLayoutContext->getPageId()->willReturn(3);
-        $gridColumn = $this->prophesize(GridColumn::class);
+        $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getPageId'])
+            ->getMock();
+        $pageLayoutContext->expects(self::any())->method('getPageId')->willReturn(3);
+        $gridColumn = $this->getMockBuilder(GridColumn::class)->disableOriginalConstructor()
+            ->getMock();
         $containerGridColumnItem = $this->getAccessibleMock(ContainerGridColumnItem::class, ['foo'], [], '', false);
         $containerGridColumnItem->_set('container', $container);
-        $containerGridColumnItem->_set('context', $pageLayoutContext->reveal());
-        $containerGridColumnItem->_set('column', $gridColumn->reveal());
+        $containerGridColumnItem->_set('context', $pageLayoutContext);
+        $containerGridColumnItem->_set('column', $gridColumn);
         $containerGridColumnItem->_set('record', ['uid' => 4]);
         $newContentUrl = $containerGridColumnItem->getNewContentAfterUrl();
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');

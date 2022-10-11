@@ -18,6 +18,7 @@ use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerFactory
@@ -49,15 +50,24 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
 
     protected function doOverlay(array $defaultRecords, LanguageAspect $languageAspect): array
     {
+        $typo3Version = new Typo3Version();
         $overlayed = [];
         $pageRepository = $this->contentStorage->getPageRepository();
         foreach ($defaultRecords as $defaultRecord) {
-            $overlay = $pageRepository->getRecordOverlay(
-                'tt_content',
-                $defaultRecord,
-                $languageAspect->getContentId(),
-                $languageAspect->getOverlayType() === $languageAspect::OVERLAYS_MIXED ? '1' : 'hideNonTranslated'
-            );
+            if ($typo3Version->getMajorVersion() < 12) {
+                $overlay = $pageRepository->getRecordOverlay(
+                    'tt_content',
+                    $defaultRecord,
+                    $languageAspect->getContentId(),
+                    $languageAspect->getOverlayType() === $languageAspect::OVERLAYS_MIXED ? '1' : 'hideNonTranslated'
+                );
+            } else {
+                $overlay = $pageRepository->getLanguageOverlay(
+                    'tt_content',
+                    $defaultRecord,
+                    $languageAspect
+                );
+            }
             if ($overlay !== null) {
                 $overlayed[] = $overlay;
             }

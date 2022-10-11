@@ -21,9 +21,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class RegistryTest extends FunctionalTestCase
 {
     /**
-     * @var array
+     * @var non-empty-string[]
      */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
     ];
 

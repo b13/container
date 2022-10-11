@@ -19,21 +19,24 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ContainerFactoryTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @test
      */
     public function containerByUidReturnsNullIfNoRecordInDatabaseIsFound(): void
     {
-        $database = $this->prophesize(Database::class);
-        $database->fetchOneRecord(1)->willReturn(null);
-        $tcaRegistry = $this->prophesize(Registry::class);
-        $context = $this->prophesize(Context::class);
+        $database = $this->getMockBuilder(Database::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchOneRecord'])
+            ->getMock();
+        $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn(null);
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
+        $context = $this->getMockBuilder(Context::class)->getMock();
         $containerFactory = $this->getAccessibleMock(
             ContainerFactory::class,
             ['foo'],
-            ['database' => $database->reveal(), 'tcaRegistry' => $tcaRegistry->reveal(), 'context' => $context->reveal()]
+            ['database' => $database, 'tcaRegistry' => $tcaRegistry, 'context' => $context]
         );
         self::assertNull($containerFactory->_call('containerByUid', 1));
     }

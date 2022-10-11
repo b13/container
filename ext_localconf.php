@@ -31,7 +31,10 @@ call_user_func(static function () {
             \B13\Container\Hooks\TableConfigurationPostProcessing::class;
     }
 
-    if (\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule') === false) {
+    if (
+        $typo3Version->getMajorVersion() < 12 &&
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule') === false
+    ) {
         // draw container grid
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
             \B13\Container\Hooks\DrawItem::class;
@@ -43,9 +46,11 @@ call_user_func(static function () {
         'className' => \B13\Container\Xclasses\LocalizationController::class,
     ];
 
-    // remove container colPos from "unused" page-elements
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
-        \B13\Container\Hooks\UsedRecords::class . '->addContainerChildren';
+    if ($typo3Version->getMajorVersion() < 12) {
+        // remove container colPos from "unused" page-elements
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
+            \B13\Container\Hooks\UsedRecords::class . '->addContainerChildren';
+    }
 
     // add tx_container_parent parameter to wizard items
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =

@@ -33,11 +33,11 @@ class LayoutCest
     public function connectedModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
-
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithLocalization']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->see('2cols-header-0');
+        $I->waitForText('2cols-header-0');
         $I->see('header-header-0');
         $I->dontSee('2cols-header-1');
         $I->dontSee('header-header-1');
@@ -75,9 +75,11 @@ class LayoutCest
     public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithLocalization']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForElement('select[name="languageMenu"]');
         $I->selectOption('select[name="languageMenu"]', 'german');
         $I->waitForElementNotVisible('#t3js-ui-block');
         // we have a "Content" Button for new elements with Fluid based page module
@@ -96,9 +98,11 @@ class LayoutCest
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'emptyPage']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForText('Content');
         $I->click('Content');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
@@ -121,19 +125,21 @@ class LayoutCest
     public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree): void
     {
         $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithContainer']);
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+        $pageTree->openPath(['home', 'pageWithContainer-2']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
-        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
-        // "[data-colpos="1-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
+        $I->waitForElement('#element-tt_content-700 [data-colpos="700-200"]');
+        $I->click('Content', '#element-tt_content-700 [data-colpos="700-200"]');
+        // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
         $I->click('Header Only');
         $I->switchToContentFrame();
         $I->see('header [200]');
-        $I->see('b13-2cols-with-header-container [1]');
+        $I->see('b13-2cols-with-header-container [700]');
     }
 
     /**
@@ -145,9 +151,11 @@ class LayoutCest
     {
         //@depends canCreateContainer
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-1 [data-colpos="1-200"]');
         $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
         if ((new Typo3Version())->getMajorVersion() === 10) {
             $I->dontSee('english', $selector);
@@ -180,10 +188,12 @@ class LayoutCest
     {
         //@depends canCreateContainer
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
 
+        $I->waitForElement('select[name="languageMenu"]');
         $I->selectOption('select[name="languageMenu"]', 'german');
         $I->waitForElementNotVisible('#t3js-ui-block');
 
@@ -217,10 +227,12 @@ class LayoutCest
     {
         // test must be before canTranslateChild
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
 
+        $I->waitForElement('select[name="actionMenu"]');
         $I->selectOption('select[name="actionMenu"]', 'Languages');
         if ((new Typo3Version())->getMajorVersion() > 10) {
             $I->selectOption('select[name="languageMenu"]', 'All languages');
@@ -248,12 +260,15 @@ class LayoutCest
     public function canTranslateChild(BackendTester $I, PageTree $pageTree): void
     {
         $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+        $pageTree->openPath(['home', 'pageWithTranslatedContainer-2']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-712');
 
-        $I->click('headerOfChild', '#element-tt_content-212');
+        $I->click('headerOfChild', '#element-tt_content-712');
 
+        $I->waitForElement('select[name="_langSelector"]');
         $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
         $typo3Version = new Typo3Version();
         if ($typo3Version->getMajorVersion() === 10) {
@@ -270,10 +285,12 @@ class LayoutCest
     public function canSeeContainerColumnTitleForDifferentContainers(BackendTester $I, PageTree $pageTree): void
     {
         $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         // b13-2cols-with-header-container container
+        $I->waitForText('header');
         $I->see('header');
         $I->see('left side');
         $I->see('right side');

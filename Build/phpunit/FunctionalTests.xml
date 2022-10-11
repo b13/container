@@ -23,6 +23,5 @@
     <php>
         <ini name="display_errors" value="1" />
         <env name="TYPO3_CONTEXT" value="Testing" />
-        <const name="TYPO3_TESTING_FUNCTIONAL_REMOVE_ERROR_HANDLER" value="true" />
     </php>
 </phpunit>

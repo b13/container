@@ -12,6 +12,9 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class ContainerConfiguration
 {
     /**
@@ -89,6 +92,12 @@ class ContainerConfiguration
         $this->label = $label;
         $this->description = $description;
         $this->grid = $grid;
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12) {
+            $this->gridPartialPaths = [
+                'EXT:backend/Resources/Private/Partials/',
+                'EXT:container/Resources/Private/Partials12/',
+            ];
+        }
     }
 
     /**
