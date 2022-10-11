@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace B13\Container\Tests\Unit\Xclasses;
+namespace B13\Container\Tests\Unit\Service;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -11,8 +11,8 @@ namespace B13\Container\Tests\Unit\Xclasses;
  * of the License, or any later version.
  */
 
+use B13\Container\Service\RecordLocalizeSummaryModifier;
 use B13\Container\Tca\Registry;
-use B13\Container\Xclasses\RecordLocalizeSummaryModifier;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class RecordLocalizeSummaryModifierTest extends UnitTestCase
@@ -37,7 +37,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
             0 => [['uid' => 1]],
             200 => [['uid' => 2]],
         ];
-        $filtered = $recordLocalizeSummeryModifier->_call('filterRecords', $recordsToTranslate);
+        $filtered = $recordLocalizeSummeryModifier->filterRecords($recordsToTranslate);
         self::assertTrue(count($filtered[0]) === 1);
         self::assertTrue(empty($filtered[200]));
     }
@@ -60,7 +60,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
             0 => [['uid' => 3]],
             200 => [['uid' => 2]],
         ];
-        $filtered = $recordLocalizeSummeryModifier->_call('filterRecords', $recordsToTranslate);
+        $filtered = $recordLocalizeSummeryModifier->filterRecords($recordsToTranslate);
         self::assertTrue(count($filtered[0]) === 1);
         self::assertTrue(count($filtered[200]) === 1);
     }
@@ -86,7 +86,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
             ['getContainerUids', 'getContainerChildren'],
             [$tcaRegistry]
         );
-        $rebuildedColumns = $recordLocalizeSummeryModifier->_call('rebuildColumns', $columns);
+        $rebuildedColumns = $recordLocalizeSummeryModifier->rebuildColumns($columns);
         self::assertSame([2, 3, 0], $rebuildedColumns['columnList']);
     }
 }

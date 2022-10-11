@@ -9,6 +9,9 @@ parameters:
     - %currentWorkingDirectory%/Classes/Listener/ModifyNewContentElementWizardItems.php
     - %currentWorkingDirectory%/Classes/Listener/BootCompleted.php
     - %currentWorkingDirectory%/Classes/Listener/ContentUsedOnPage.php
+    - %currentWorkingDirectory%/Classes/Listener/RecordSummaryForLocalization.php
+    - %currentWorkingDirectory%/Tests/Unit/Listener/ContentUsedOnPageTest.php
+    - %currentWorkingDirectory%/Tests/Functional/Listener/ContentUsedOnPageTest.php
     - %currentWorkingDirectory%/Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
 
   ignoreErrors:
