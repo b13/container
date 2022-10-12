@@ -12,6 +12,7 @@ namespace B13\Container\Xclasses;
  * of the License, or any later version.
  */
 
+use B13\Container\Service\RecordLocalizeSummaryModifier;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;

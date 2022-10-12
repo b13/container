@@ -31,30 +31,24 @@ call_user_func(static function () {
             \B13\Container\Hooks\TableConfigurationPostProcessing::class;
     }
 
-    if (
-        $typo3Version->getMajorVersion() < 12 &&
-        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule') === false
-    ) {
-        // draw container grid
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
-            \B13\Container\Hooks\DrawItem::class;
-    }
-    // else, if enabled we register container previewRenderer in registry foreach container CType
-
-    // LocalizationController Xclass
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
-        'className' => \B13\Container\Xclasses\LocalizationController::class,
-    ];
-
     if ($typo3Version->getMajorVersion() < 12) {
-        // remove container colPos from "unused" page-elements
+        // remove container colPos from "unused" page-elements (v12: IsContentUsedOnPageLayoutEvent)
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
             \B13\Container\Hooks\UsedRecords::class . '->addContainerChildren';
+        // add tx_container_parent parameter to wizard items (v12: ModifyNewContentElementWizardItemsEvent)
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =
+            \B13\Container\Hooks\WizardItems::class;
+        // LocalizationController Xclass (v12: AfterRecordSummaryForLocalizationEvent)
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
+            'className' => \B13\Container\Xclasses\LocalizationController::class,
+        ];
+        if (\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\Features::class)->isFeatureEnabled('fluidBasedPageModule') === false) {
+            // draw container grid
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
+                \B13\Container\Hooks\DrawItem::class;
+            // else, if enabled we register container previewRenderer in registry foreach container CType
+        }
     }
-
-    // add tx_container_parent parameter to wizard items
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =
-        \B13\Container\Hooks\WizardItems::class;
 
     $commandMapHooks = [
         'tx_container-post-process' => \B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook::class,

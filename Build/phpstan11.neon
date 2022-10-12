@@ -6,9 +6,11 @@ parameters:
     - %currentWorkingDirectory%/Tests
 
   excludePaths:
-    - %currentWorkingDirectory%/Classes/ContentDefender/Hooks/WizardItems.php
     - %currentWorkingDirectory%/Classes/Listener/ModifyNewContentElementWizardItems.php
     - %currentWorkingDirectory%/Classes/Listener/ContentUsedOnPage.php
+    - %currentWorkingDirectory%/Tests/Unit/Listener/ContentUsedOnPageTest.php
+    - %currentWorkingDirectory%/Tests/Functional/Listener/ContentUsedOnPageTest.php
+    - %currentWorkingDirectory%/Classes/Listener/RecordSummaryForLocalization.php
 
   ignoreErrors:
     -

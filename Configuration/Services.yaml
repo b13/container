@@ -46,6 +46,11 @@ services:
     shared: false
     public: true
 
+  B13\Container\Listener\RecordSummaryForLocalization:
+    tags:
+      - name: event.listener
+        identifier: 'tx-container-record-summary-for-localization'
+        event: TYPO3\CMS\Backend\Controller\Event\AfterRecordSummaryForLocalizationEvent
   B13\Container\Listener\ContentUsedOnPage:
     tags:
       - name: event.listener

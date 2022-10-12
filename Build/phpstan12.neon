@@ -13,7 +13,6 @@ parameters:
     - %currentWorkingDirectory%/Classes/Hooks/DrawItem.php
     - %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
     - %currentWorkingDirectory%/Classes/ViewHelpers/DrawChildrenViewHelper.php
-    # todo
     - %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
     - %currentWorkingDirectory%/Tests/Unit/Hooks/UsedRecordsTest.php
 
@@ -24,9 +23,6 @@ parameters:
     -
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 1 parameter, 0 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
-    -
-      message: '#Class TYPO3\\CMS\\Backend\\View\\PageLayoutView constructor invoked with 1 parameter, 0 required.#'
-      path: %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
     -
       message: '#Class TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject does not have a constructor and must be instantiated without any parameters.#'
       path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php

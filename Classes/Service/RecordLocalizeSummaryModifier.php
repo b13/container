@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace B13\Container\Xclasses;
+namespace B13\Container\Service;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -41,7 +41,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
         ];
     }
 
-    protected function filterRecords(array $recordsPerColPos): array
+    public function filterRecords(array $recordsPerColPos): array
     {
         // cannot be done by event in v10
         $uids = [];
@@ -83,7 +83,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
         return $filtered;
     }
 
-    protected function rebuildColumns(array $columns): array
+    public function rebuildColumns(array $columns): array
     {
         // this can be done with AfterPageColumnsSelectedForLocalizationEvent event in v10
         $containerColumns = $this->containerRegistry->getAllAvailableColumns();
