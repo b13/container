@@ -186,7 +186,7 @@ class CommandMapBeforeStartHook
                 foreach ($cmds as $cmd => $data) {
                     if ($cmd === 'localize') {
                         $record = $this->database->fetchOneRecord((int)$id);
-                        if ($record['tx_container_parent'] > 0) {
+                        if ($record !== null && $record['tx_container_parent'] > 0) {
                             $container = $this->database->fetchOneRecord($record['tx_container_parent']);
                             if ($container === null) {
                                 // should not happen
