@@ -59,7 +59,7 @@ class DatamapPreProcessFieldArrayHook
             return $incomingFieldArray;
         }
         $record = $this->database->fetchOneRecord(-(int)$incomingFieldArray['pid']);
-        if ($record['tx_container_parent'] > 0) {
+        if ($record === null || $record['tx_container_parent'] > 0) {
             // new elements in container have already correct target
             return $incomingFieldArray;
         }
@@ -92,7 +92,7 @@ class DatamapPreProcessFieldArrayHook
         }
         $record = $this->database->fetchOneRecord(-$incomingFieldArray['pid']);
         $translatedContainerRecord = $this->database->fetchOneTranslatedRecordByl10nSource((int)$incomingFieldArray['tx_container_parent'], (int)$incomingFieldArray['sys_language_uid']);
-        if ($translatedContainerRecord === null) {
+        if ($record === null || $translatedContainerRecord === null) {
             return $incomingFieldArray;
         }
         try {
