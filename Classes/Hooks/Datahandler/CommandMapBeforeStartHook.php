@@ -84,7 +84,7 @@ class CommandMapBeforeStartHook
                             $target = -(int)$value;
                         }
                         $record = $this->database->fetchOneRecord($target);
-                        if ($record['tx_container_parent'] > 0) {
+                        if ($record === null || $record['tx_container_parent'] > 0) {
                             // elements in container have already correct target
                             continue;
                         }
