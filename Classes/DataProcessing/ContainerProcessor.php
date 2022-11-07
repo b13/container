@@ -83,11 +83,12 @@ class ContainerProcessor implements DataProcessorInterface
             } else {
                 $colPos = (int)$processorConfiguration['colPos'];
             }
+            $as = $cObj->stdWrapValue('as', $processorConfiguration, 'children');
             $processedData = $this->processColPos(
                 $cObj,
                 $container,
                 $colPos,
-                $cObj->stdWrapValue('as', $processorConfiguration, 'children'),
+                $as,
                 $processedData,
                 $processorConfiguration
             );
