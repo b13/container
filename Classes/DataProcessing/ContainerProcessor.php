@@ -35,6 +35,11 @@ class ContainerProcessor implements DataProcessorInterface
      */
     protected $contentDataProcessor;
 
+    /**
+     * @var Container
+     */
+    protected $container;
+
     public function __construct(ContainerFactory $containerFactory, ContentDataProcessor $contentDataProcessor)
     {
         $this->containerFactory = $containerFactory;
@@ -59,18 +64,17 @@ class ContainerProcessor implements DataProcessorInterface
         }
 
         try {
-            $container = $this->containerFactory->buildContainer($contentId);
+            $this->container = $this->containerFactory->buildContainer($contentId);
         } catch (Exception $e) {
             // do nothing
             return $processedData;
         }
 
         if (empty($processorConfiguration['colPos']) && empty($processorConfiguration['colPos.'])) {
-            $allColPos = $container->getChildrenColPos();
+            $allColPos = $this->container->getChildrenColPos();
             foreach ($allColPos as $colPos) {
                 $processedData = $this->processColPos(
                     $cObj,
-                    $container,
                     $colPos,
                     'children_' . $colPos,
                     $processedData,
@@ -86,7 +90,6 @@ class ContainerProcessor implements DataProcessorInterface
             $as = $cObj->stdWrapValue('as', $processorConfiguration, 'children');
             $processedData = $this->processColPos(
                 $cObj,
-                $container,
                 $colPos,
                 $as,
                 $processedData,
@@ -98,13 +101,12 @@ class ContainerProcessor implements DataProcessorInterface
 
     protected function processColPos(
         ContentObjectRenderer $cObj,
-        Container $container,
         int $colPos,
         string $as,
         array $processedData,
         array $processorConfiguration
     ): array {
-        $children = $container->getChildrenByColPos($colPos);
+        $children = $this->container->getChildrenByColPos($colPos);
 
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
