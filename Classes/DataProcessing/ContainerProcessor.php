@@ -65,7 +65,8 @@ class ContainerProcessor implements DataProcessorInterface
             return $processedData;
         }
 
-        if (empty($processorConfiguration['colPos']) && empty($processorConfiguration['colPos.'])) {
+        $colPos = (int)$cObj->stdWrapValue('colPos', $processorConfiguration);
+        if (empty($colPos)) {
             $allColPos = $container->getChildrenColPos();
             foreach ($allColPos as $colPos) {
                 $processedData = $this->processColPos(
@@ -78,11 +79,6 @@ class ContainerProcessor implements DataProcessorInterface
                 );
             }
         } else {
-            if ($processorConfiguration['colPos.'] ?? null) {
-                $colPos = (int)$cObj->stdWrap($processorConfiguration['colPos'], $processorConfiguration['colPos.']);
-            } else {
-                $colPos = (int)$processorConfiguration['colPos'];
-            }
             $as = $cObj->stdWrapValue('as', $processorConfiguration, 'children');
             $processedData = $this->processColPos(
                 $cObj,
