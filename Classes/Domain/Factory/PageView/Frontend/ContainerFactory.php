@@ -40,8 +40,9 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
 
     public function buildContainer(int $uid): Container
     {
+        /** @var LanguageAspect $languageAspect */
         $languageAspect =  GeneralUtility::makeInstance(Context::class)->getAspect('language');
-        $language = $languageAspect->get('id');
+        $language = $languageAspect->getId();
         if ($language > 0 && $languageAspect->doOverlays()) {
             return $this->buildContainerWithOverlay($uid, $languageAspect);
         }

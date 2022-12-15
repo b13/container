@@ -35,7 +35,7 @@ class RegistryTest extends UnitTestCase
     public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
     {
         $registry = GeneralUtility::makeInstance(Registry::class);
-        $res = $registry->getPageTsString('');
+        $res = $registry->getPageTsString();
         self::assertSame('', $res, 'empty string should be returned');
     }
 }
