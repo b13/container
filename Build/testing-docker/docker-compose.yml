@@ -130,7 +130,7 @@ services:
         fi
         php -v | grep '^PHP';
         if [ ${TYPO3} -eq 11 ]; then
-          composer install --no-progress --no-interaction
+          composer require typo3/cms-install:^11.5 typo3/cms-fluid-styled-content:^11.5 typo3/cms-info:^11.5 typo3/cms-workspaces:^11.5 --dev -W --no-progress --no-interaction
           composer prepare-tests
         elif [ ${TYPO3} -eq 10 ]; then
           composer require friendsofphp/php-cs-fixer:^3.4 typo3/cms-install:^10.4 typo3/cms-fluid-styled-content:^10.4 typo3/cms-info:^10.4 typo3/cms-workspaces:^10.4 typo3/testing-framework:^6 --dev -W --no-progress --no-interaction

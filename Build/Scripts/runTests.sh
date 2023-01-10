@@ -4,9 +4,9 @@
 # TYPO3 core test runner based on docker and docker-compose.
 #
 
-# Function to write a .env file in Build/testing-docker/local
+# Function to write a .env file in Build/testing-docker
 # This is read by docker-compose and vars defined here are
-# used in Build/testing-docker/local/docker-compose.yml
+# used in Build/testing-docker/docker-compose.yml
 setUpDockerComposeDotEnv() {
     # Delete possibly existing local .env file if exists
     [ -e .env ] && rm .env
@@ -55,7 +55,7 @@ Options:
             - lint: PHP linting
             - unit (default): PHP unit tests
 
-    -t <10|11>
+    -t <10|11|12>
         Only with -s composerInstall|phpstan|acceptance
         TYPO3 core major version the extension is embedded in for testing.
 
@@ -67,7 +67,7 @@ Options:
             - postgres: use postgres
             - sqlite: use sqlite
 
-    -p <7.2|7.3|7.4|8.0>
+    -p <7.2|7.3|7.4|8.0|8.1>
         Specifies the PHP minor version to be used
             - 7.4 (default): use PHP 7.4
 
