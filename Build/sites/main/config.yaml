@@ -44,6 +44,21 @@ languages:
     fallbacks: '0'
     flag: fr
     languageId: '2'
+  -
+    title: ch-german
+    enabled: true
+    base: /ch/
+    typo3Language: de
+    locale: de_CH.UTF-8
+    iso-639-1: de
+    websiteTitle: ''
+    navigationTitle: ''
+    hreflang: ''
+    direction: ''
+    fallbackType: strict
+    fallbacks: '1'
+    flag: ch
+    languageId: '3'
 rootPageId: 1
 routes: {  }
 websiteTitle: 'Testing'
