@@ -12,6 +12,7 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
+use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
@@ -237,6 +238,13 @@ class CommandMapBeforeStartHook
         $colPos = $data['colPos'];
         if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
             [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
+            $data['colPos'] = $newColPos;
+            $data['tx_container_parent'] = $containerId;
+        } elseif (strpos((string)$colPos, (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12) > 0) {
+            $pos = strripos((string)$colPos, (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12);
+            $splitted = GeneralUtility::intExplode((string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12, $colPos, true);
+            $newColPos = (int)array_pop($splitted);
+            $containerId = (int)substr((string)$colPos, 0, $pos);
             $data['colPos'] = $newColPos;
             $data['tx_container_parent'] = $containerId;
         } elseif (!isset($data['tx_container_parent'])) {

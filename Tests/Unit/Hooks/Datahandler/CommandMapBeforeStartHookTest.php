@@ -11,6 +11,7 @@ namespace B13\Container\Tests\Unit\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
+use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Domain\Service\ContainerService;
@@ -176,6 +177,50 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $commandMap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $commandMap);
         self::assertSame(34, $commandMap['tt_content'][39]['copy']['update']['colPos']);
         self::assertSame(2, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
+    }
+
+    /**
+     * @test
+     */
+    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValueForDelimiterV12WithMultipleDelimiters(): void
+    {
+        $database = $this->getMockBuilder(Database::class)->getMock();
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
+        $dataHandlerHook = $this->getAccessibleMock(
+            CommandMapBeforeStartHook::class,
+            ['foo'],
+            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
+        );
+        $commandMap = [
+            'tt_content' => [
+                39 => [
+                    'copy' => [
+                        'update' => [
+                            'colPos' => '2' . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12 . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12 . '34',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        // should be
+        $expected = [
+            'tt_content' => [
+                39 => [
+                    'copy' => [
+                        'update' => [
+                            'colPos' => 34,
+                            'tx_container_parent' => (int)('2' . (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12),
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $commandMap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $commandMap);
+        self::assertSame(34, $commandMap['tt_content'][39]['copy']['update']['colPos']);
+        self::assertSame((int)('2' . (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12), $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
     }
 
     /**

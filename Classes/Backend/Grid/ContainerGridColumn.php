@@ -20,6 +20,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumn extends GridColumn
 {
+    public const CONTAINER_COL_POS_DELIMITER_V12 = 999990;
+
     protected $container;
 
     protected $allowNewContentElements = true;
@@ -37,6 +39,11 @@ class ContainerGridColumn extends GridColumn
         $this->container = $container;
         $this->allowNewContentElements = $allowNewContentElements;
         $this->newContentElementAtTopTarget = $newContentElementAtTopTarget;
+    }
+
+    public function getDataColPos(): int
+    {
+        return (int)($this->getContainerUid() . self::CONTAINER_COL_POS_DELIMITER_V12 . $this->getColumnNumber());
     }
 
     public function getContainerUid(): int

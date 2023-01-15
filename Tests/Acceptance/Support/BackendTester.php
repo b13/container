@@ -11,8 +11,11 @@ namespace B13\Container\Tests\Acceptance\Support;
  * of the License, or any later version.
  */
 
+use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Tests\Acceptance\Support\_generated\BackendTesterActions;
 use Codeception\Util\Locator;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Acceptance\Step\FrameSteps;
 
 class BackendTester extends \Codeception\Actor
@@ -40,5 +43,13 @@ class BackendTester extends \Codeception\Actor
         $I->switchToIFrame('list_frame');
         $I->waitForElement(Locator::firstElement('div.module'));
         $I->switchToIFrame();
+    }
+
+    public function getDataColPos(int $containerId, int $colPos): string
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 11) {
+            return (string)($containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12 . $colPos);
+        }
+        return (string)($containerId . '-' . $colPos);
     }
 }

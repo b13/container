@@ -12,9 +12,11 @@ namespace B13\Container\Tests\Functional\Tca;
  * of the License, or any later version.
  */
 
+use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Tca\ContainerConfiguration;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -26,6 +28,29 @@ class RegistryTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
     ];
+
+    /**
+     * @test
+     */
+    public function colPosContainerParentCannotBeUsedinColPos(): void
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            self::markTestSkipped('Exception will be thrown on next major release');
+        }
+        $this->expectException(\InvalidArgumentException::class);
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container', // CType
+                'foo', // label
+                'bar', // description
+                [
+                    [['name' => 'foo', 'colPos' => ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12]],
+                ] // grid configuration
+            )
+            )
+        );
+    }
 
     /**
      * @test

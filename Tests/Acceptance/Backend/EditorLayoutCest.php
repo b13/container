@@ -37,8 +37,9 @@ class EditorLayoutCest
         $pageTree->openPath(['home', 'pageWithContainer-5']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $dataColPos = $I->getDataColPos(802, 200);
         // header
-        $I->waitForElement('#element-tt_content-802 [data-colpos="802-200"]');
-        $I->see('Content', '#element-tt_content-802 [data-colpos="802-200"]');
+        $I->waitForElement('#element-tt_content-802 [data-colpos="' . $dataColPos . '"]');
+        $I->see('Content', '#element-tt_content-802 [data-colpos="' . $dataColPos . '"]');
     }
 }
