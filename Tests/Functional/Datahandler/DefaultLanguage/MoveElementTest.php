@@ -231,4 +231,26 @@ class MoveElementTest extends DatahandlerTest
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
     }
+
+    /**
+     * @test
+     */
+    public function moveContainerIntoItSelfs(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => -2,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 1);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+    }
 }

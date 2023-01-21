@@ -12,6 +12,7 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  */
 
 use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use TYPO3\CMS\Core\Database\Connection;
 
 class CopyElementTest extends DatahandlerTest
 {
@@ -255,5 +256,37 @@ class CopyElementTest extends DatahandlerTest
         self::assertSame(0, (int)$row['colPos']);
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyContainerIntoItSelfs(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => -2,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $rows = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->in(
+                    't3_origuid',
+                    $queryBuilder->createNamedParameter([1, 2], Connection::PARAM_INT_ARRAY)
+                )
+            )
+            ->execute()
+            ->fetchAssociative();
+        self::assertTrue(empty($rows));
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 }
