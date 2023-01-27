@@ -108,7 +108,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('newContentTitleShort', $this->getLanguageService()->getLL('content'));
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
-        $view->assign('containerRecord', $container->getContainerRecord());
+        $view->assign('containerRecord', $record);
         $rendered = $view->render();
 
         return $content . $rendered;
