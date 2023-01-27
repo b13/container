@@ -33,9 +33,9 @@ class PageTsConfig
     {
         $tsConfig = $event->getTsConfig();
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
-            $tsConfig['global'] = $this->tcaRegistry->getPageTsString() . "\n" . $tsConfig['global'];
+            $tsConfig['global'] = trim($this->tcaRegistry->getPageTsString() . "\n" . ($tsConfig['global'] ?? ''));
         } else {
-            $tsConfig['default'] = $this->tcaRegistry->getPageTsString() . "\n" . $tsConfig['default'];
+            $tsConfig['default'] = trim($this->tcaRegistry->getPageTsString() . "\n" . ($tsConfig['default'] ?? ''));
         }
         $event->setTsConfig($tsConfig);
     }
