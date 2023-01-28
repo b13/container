@@ -96,7 +96,7 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
             $defaultRecord = $this->defaultContainer($record);
             if ($defaultRecord === null) {
                 // free mode
-                $childRecords = $this->children($record, $record['sys_language_uid']);
+                $childRecords = $this->children($record, (int)$record['sys_language_uid']);
             } else {
                 // connected mode
                 $childRecords = $this->children($defaultRecord, 0);

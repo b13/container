@@ -92,7 +92,7 @@ class CommandMapHook extends CmdmapDataHandlerHook
     {
         if (isset($record['tx_container_parent']) &&
             $record['tx_container_parent'] > 0 &&
-            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess($record['tx_container_parent'])
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$record['tx_container_parent'])
         ) {
             return true;
         }
@@ -110,7 +110,7 @@ class CommandMapHook extends CmdmapDataHandlerHook
     {
         if (isset($record['tx_container_parent']) &&
             $record['tx_container_parent'] > 0 &&
-            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess($record['tx_container_parent'])
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$record['tx_container_parent'])
         ) {
             return true;
         }

@@ -45,11 +45,11 @@ class ContentUsedOnPage
                 foreach ($columns as $column) {
                     if ($column['colPos'] === (int)$record['colPos']) {
                         if ($record['sys_language_uid'] > 0 && $container->isConnectedMode()) {
-                            $used = $container->hasChildInColPos($record['colPos'], $record['l18n_parent']);
+                            $used = $container->hasChildInColPos((int)$record['colPos'], (int)$record['l18n_parent']);
                             $event->setUsed($used);
                             return;
                         }
-                        $used = $container->hasChildInColPos($record['colPos'], $record['uid']);
+                        $used = $container->hasChildInColPos((int)$record['colPos'], (int)$record['uid']);
                         $event->setUsed($used);
                         return;
                     }

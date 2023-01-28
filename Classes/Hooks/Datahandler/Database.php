@@ -60,7 +60,7 @@ class Database implements SingletonInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'l18n_parent',
-                    $queryBuilder->createNamedParameter($record['uid'], Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int)$record['uid'], Connection::PARAM_INT)
                 )
             )
             ->execute();

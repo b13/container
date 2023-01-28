@@ -42,7 +42,7 @@ class ContainerFactory extends \B13\Container\Domain\Factory\ContainerFactory
     protected function defaultContainer(array $localizedContainer): ?array
     {
         if (isset($localizedContainer['_ORIG_uid'])) {
-            $localizedContainer = $this->database->fetchOneRecord($localizedContainer['uid']);
+            $localizedContainer = $this->database->fetchOneRecord((int)$localizedContainer['uid']);
         }
         $defaultRecord = $this->database->fetchOneDefaultRecord($localizedContainer);
         if ($defaultRecord === null) {

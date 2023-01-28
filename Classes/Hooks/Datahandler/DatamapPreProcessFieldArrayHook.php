@@ -67,7 +67,7 @@ class DatamapPreProcessFieldArrayHook
             return $incomingFieldArray;
         }
         try {
-            $container = $this->containerFactory->buildContainer($record['uid']);
+            $container = $this->containerFactory->buildContainer((int)$record['uid']);
             if ($container->getLanguage() === 0 || !$container->isConnectedMode()) {
                 $incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
             }
@@ -97,7 +97,7 @@ class DatamapPreProcessFieldArrayHook
         }
         try {
             $incomingFieldArray['tx_container_parent'] = $translatedContainerRecord['uid'];
-            $container = $this->containerFactory->buildContainer($translatedContainerRecord['uid']);
+            $container = $this->containerFactory->buildContainer((int)$translatedContainerRecord['uid']);
             if ((int)$record['sys_language_uid'] === 0 || empty($container->getChildrenByColPos((int)$incomingFieldArray['colPos']))) {
                 $target = $this->containerService->getNewContentElementAtTopTargetInColumn($container, (int)$incomingFieldArray['colPos']);
                 $incomingFieldArray['pid'] = $target;

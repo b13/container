@@ -92,7 +92,7 @@ class CommandMapBeforeStartHook
                             continue;
                         }
                         try {
-                            $container = $this->containerFactory->buildContainer($record['uid']);
+                            $container = $this->containerFactory->buildContainer((int)$record['uid']);
                             $target = $this->containerService->getAfterContainerElementTarget($container);
                             if (is_array($value)) {
                                 $cmd[$operation]['target'] = $target;
@@ -187,7 +187,7 @@ class CommandMapBeforeStartHook
                     if ($cmd === 'localize') {
                         $record = $this->database->fetchOneRecord((int)$id);
                         if ($record !== null && $record['tx_container_parent'] > 0) {
-                            $container = $this->database->fetchOneRecord($record['tx_container_parent']);
+                            $container = $this->database->fetchOneRecord((int)$record['tx_container_parent']);
                             if ($container === null) {
                                 // should not happen
                                 continue;
