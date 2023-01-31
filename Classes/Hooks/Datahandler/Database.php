@@ -15,7 +15,9 @@ namespace B13\Container\Hooks\Datahandler;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,7 +27,10 @@ class Database implements SingletonInterface
     protected function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        $queryBuilder->getRestrictions()
+            ->removeByType(HiddenRestriction::class)
+            ->removeByType(StartTimeRestriction::class)
+            ->removeByType(EndTimeRestriction::class);
         return $queryBuilder;
     }
 
