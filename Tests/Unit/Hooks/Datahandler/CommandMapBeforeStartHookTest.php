@@ -87,7 +87,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
     /**
      * @test
      */
-    public function rewriteSimpleCommandMapTest(): void
+    public function rewriteSimpleCommandMapTestForIntoContainer(): void
     {
         $copyAfterRecord = [
             'uid' => 1,
@@ -123,6 +123,58 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
                         'target' => -1,
                         'update' => [
                             'colPos' => '2-3',
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $rewrittenCommandMap = $dataHandlerHook->_call('rewriteSimpleCommandMap', $commandMap);
+        self::assertSame($expected, $rewrittenCommandMap);
+    }
+
+    /**
+     * @test
+     */
+    public function rewriteSimpleCommandMapTestForAfterContainer(): void
+    {
+        $copyAfterRecord = [
+            'uid' => 1,
+            'tx_container_parent' => 0,
+            'sys_language_uid' => 0,
+            'colPos' => 3,
+            'CType' => 'container-ctype',
+        ];
+
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
+        $database = $this->getMockBuilder(Database::class)->onlyMethods(['fetchOneRecord'])->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['isContainerElement'])->getMock();
+        $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn($copyAfterRecord);
+        $tcaRegistry->expects(self::once())->method('isContainerElement')->with('container-ctype')->willReturn(true);
+
+        $dataHandlerHook = $this->getAccessibleMock(
+            CommandMapBeforeStartHook::class,
+            ['foo'],
+            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
+        );
+        $commandMap = [
+            'tt_content' => [
+                4 => [
+                    'copy' => -1,
+                ],
+            ],
+        ];
+        // should be
+        $expected = [
+            'tt_content' => [
+                4 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [
+                            'colPos' => 3,
                             'sys_language_uid' => 0,
 
                         ],

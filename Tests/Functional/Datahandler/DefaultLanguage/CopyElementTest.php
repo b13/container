@@ -232,4 +232,28 @@ class CopyElementTest extends DatahandlerTest
         self::assertSame(1, (int)$row['pid']);
         self::assertSame(0, (int)$row['sys_language_uid']);
     }
+
+    /**
+     * @test
+     */
+    public function copyElementAfterContainerWithSimpleCommandMap(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        // see test above what should be done
+        $cmdmap = [
+            'tt_content' => [
+                2 => [
+                    'copy' => -1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('t3_origuid', 2);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+        self::assertSame(1, (int)$row['pid']);
+        self::assertSame(0, (int)$row['sys_language_uid']);
+    }
 }

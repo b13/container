@@ -157,21 +157,37 @@ class CommandMapBeforeStartHook
                     }
                     if ((int)$cmd[$operation] < 0) {
                         $target = (int)$cmd[$operation];
-                        $recordToCopy = $this->database->fetchOneRecord((int)abs($target));
-                        if ($recordToCopy === null || $recordToCopy['tx_container_parent'] === 0) {
+                        $targetRecordForOperation = $this->database->fetchOneRecord((int)abs($target));
+                        if ($targetRecordForOperation === null) {
                             continue;
                         }
-                        $cmd = [
+                        if ((int)$targetRecordForOperation['tx_container_parent'] > 0) {
+                            // record will be copied/moved into container
+                            $cmd = [
                                 $operation => [
                                     'action' => 'paste',
                                     'target' => $target,
                                     'update' => [
-                                        'colPos' => $recordToCopy['tx_container_parent'] . '-' . $recordToCopy['colPos'],
-                                        'sys_language_uid' => $recordToCopy['sys_language_uid'],
+                                        'colPos' => $targetRecordForOperation['tx_container_parent'] . '-' . $targetRecordForOperation['colPos'],
+                                        'sys_language_uid' => $targetRecordForOperation['sys_language_uid'],
 
                                     ],
                                 ],
                             ];
+                        } elseif ($this->tcaRegistry->isContainerElement($targetRecordForOperation['CType'])) {
+                            // record will be copied/moved after container
+                            $cmd = [
+                                $operation => [
+                                    'action' => 'paste',
+                                    'target' => $target,
+                                    'update' => [
+                                        'colPos' => (int)$targetRecordForOperation['colPos'],
+                                        'sys_language_uid' => $targetRecordForOperation['sys_language_uid'],
+
+                                    ],
+                                ],
+                            ];
+                        }
                     }
                 }
             }
