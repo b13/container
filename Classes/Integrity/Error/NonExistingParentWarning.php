@@ -39,6 +39,11 @@ class NonExistingParentWarning implements ErrorInterface
             ' has non existing tx_container_parent ' . $childRecord['tx_container_parent'];
     }
 
+    public function getChildRecord(): array
+    {
+        return $this->childRecord;
+    }
+
     /**
      * @return string
      */
