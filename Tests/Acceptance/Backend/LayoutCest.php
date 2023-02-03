@@ -121,6 +121,31 @@ class LayoutCest
     /**
      * @param BackendTester $I
      * @param PageTree $pageTree
+     * @throws \Exception
+     */
+    public function canDragAndDropElementOutsideIntoContainer(BackendTester $I, PageTree $pageTree)
+    {
+        $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+        $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        // header
+        $I->waitForElement('#element-tt_content-901');
+        $dataColPos = $I->getDataColPos(900, 200);
+        $I->waitForElement('#element-tt_content-900 [data-colpos="' . $dataColPos . '"] .t3js-page-ce-dropzone-available');
+        $I->dontSeeElement('#element-tt_content-900 #element-tt_content-901');
+        $I->dragAndDrop('#element-tt_content-901 .t3js-page-ce-draghandle', '#element-tt_content-900 [data-colpos="' . $dataColPos . '"] .t3js-page-ce-dropzone-available');
+        $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-901');
+        $I->seeElement('#element-tt_content-900 #element-tt_content-901');
+    }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
      */
     public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree): void
     {
@@ -130,8 +155,9 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
-        $I->waitForElement('#element-tt_content-700 [data-colpos="700-200"]');
-        $I->click('Content', '#element-tt_content-700 [data-colpos="700-200"]');
+        $dataColPos = $I->getDataColPos(700, 200);
+        $I->waitForElement('#element-tt_content-700 [data-colpos="' . $dataColPos . '"]');
+        $I->click('Content', '#element-tt_content-700 [data-colpos="' . $dataColPos . '"]');
         // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
@@ -155,14 +181,15 @@ class LayoutCest
         $pageTree->openPath(['home', 'pageWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForElement('#element-tt_content-1 [data-colpos="1-200"]');
+        $dataColPos = $I->getDataColPos(1, 200);
+        $I->waitForElement('#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
         $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
         if ((new Typo3Version())->getMajorVersion() === 10) {
             $I->dontSee('english', $selector);
         } else {
             $I->dontSeeElement($selector . ' .t3js-flag[title="english"]');
         }
-        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
+        $I->click('Content', '#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
@@ -201,7 +228,8 @@ class LayoutCest
 
         $selector = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
         $I->dontSee('german', $selector);
-        $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $uid . '-200"]');
+        $dataColPos = $I->getDataColPos($uid, 200);
+        $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');

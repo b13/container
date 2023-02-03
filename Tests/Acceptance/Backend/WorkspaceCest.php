@@ -130,7 +130,8 @@ class WorkspaceCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         // 600 is live uid (603 is ws uid)
-        $I->waitForElement('td[data-colpos="600-200"]');
+        $dataColPos = $I->getDataColPos(600, 200);
+        $I->waitForElement('td[data-colpos="' . $dataColPos . '"]');
         $this->switchToLiveWs($I);
     }
 
