@@ -42,7 +42,7 @@ class ContainerService implements SingletonInterface
         $allColumns = $this->tcaRegistry->getAllAvailableColumnsColPos($container->getCType());
         foreach ($allColumns as $colPos) {
             if ($colPos === $targetColPos && $previousRecord !== null) {
-                $target = -$previousRecord['uid'];
+                $target = -(int)$previousRecord['uid'];
             }
             $children = $container->getChildrenByColPos($colPos);
             if (!empty($children)) {
@@ -62,9 +62,9 @@ class ContainerService implements SingletonInterface
         }
         $lastChild = array_pop($childRecords);
         if (!$this->tcaRegistry->isContainerElement($lastChild['CType'])) {
-            return -$lastChild['uid'];
+            return -(int)$lastChild['uid'];
         }
-        $container = $this->containerFactory->buildContainer($lastChild['uid']);
+        $container = $this->containerFactory->buildContainer((int)$lastChild['uid']);
         return $this->getAfterContainerElementTarget($container);
     }
 }

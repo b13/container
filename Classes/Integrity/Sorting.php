@@ -101,7 +101,7 @@ class Sorting implements SingletonInterface
         $datahandler->enableLogging = false;
         foreach ($containerRecords as $containerRecord) {
             try {
-                $container = $this->containerFactory->buildContainer($containerRecord['uid']);
+                $container = $this->containerFactory->buildContainer((int)$containerRecord['uid']);
             } catch (Exception $e) {
                 // should not happend
                 continue;

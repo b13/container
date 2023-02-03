@@ -47,9 +47,9 @@ class UsedRecords
                 foreach ($columns as $column) {
                     if ($column['colPos'] === (int)$record['colPos']) {
                         if ($record['sys_language_uid'] > 0 && $container->isConnectedMode()) {
-                            return $container->hasChildInColPos($record['colPos'], $record['l18n_parent']);
+                            return $container->hasChildInColPos((int)$record['colPos'], (int)$record['l18n_parent']);
                         }
-                        return $container->hasChildInColPos($record['colPos'], $record['uid']);
+                        return $container->hasChildInColPos((int)$record['colPos'], (int)$record['uid']);
                     }
                 }
                 return false;

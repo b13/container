@@ -61,18 +61,18 @@ class CommandMapAfterFinishHook
                     // copied from non default language (connectecd mode) children
                     if ($copiedFromChild !== null && $copiedFromChild['sys_language_uid'] > 0 && $copiedFromChild['l18n_parent'] > 0) {
                         // fetch orig container
-                        $origContainer = $this->database->fetchOneTranslatedRecordByLocalizationParent($copiedFromChild['tx_container_parent'], $copiedFromChild['sys_language_uid']);
+                        $origContainer = $this->database->fetchOneTranslatedRecordByLocalizationParent((int)$copiedFromChild['tx_container_parent'], $copiedFromChild['sys_language_uid']);
                         // should never be null
                         if ($origContainer !== null) {
                             $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$origContainer['uid'], $copyToLanguage);
                             if ($freeModeContainer !== null) {
-                                $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                                $data['tt_content'][$newId] = ['tx_container_parent' => (int)$freeModeContainer['uid']];
                             }
                         }
                     } else {
                         $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$child['tx_container_parent'], $copyToLanguage);
                         if ($freeModeContainer !== null) {
-                            $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                            $data['tt_content'][$newId] = ['tx_container_parent' => (int)$freeModeContainer['uid']];
                         }
                     }
                 }

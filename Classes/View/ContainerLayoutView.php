@@ -269,7 +269,7 @@ class ContainerLayoutView extends PageLayoutView
     protected function renderRecords(int $colPos): string
     {
         $containerRecord = $this->container->getContainerRecord();
-        $this->resolveSiteLanguages($containerRecord['pid']);
+        $this->resolveSiteLanguages((int)$containerRecord['pid']);
         $records = $this->container->getChildrenByColPos($colPos);
         $this->nextThree = 1;
         $this->generateTtContentDataArray($records);

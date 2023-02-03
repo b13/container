@@ -73,10 +73,10 @@ abstract class ContentStorage
             $pid = $containerRecord['_ORIG_pid'];
         }
         if (isset($containerRecord['t3ver_oid']) && $containerRecord['t3ver_oid'] > 0) {
-            $defaultContainerRecord = $this->database->fetchOneRecord($containerRecord['t3ver_oid']);
-            $uid = $defaultContainerRecord['uid'];
+            $defaultContainerRecord = $this->database->fetchOneRecord((int)$containerRecord['t3ver_oid']);
+            $uid = (int)$defaultContainerRecord['uid'];
         } else {
-            $uid = $containerRecord['uid'];
+            $uid = (int)$containerRecord['uid'];
         }
         if (!isset($this->records[$pid][$language])) {
             $this->records[$pid][$language] = $this->buildRecords($pid, $language);
