@@ -15,6 +15,7 @@ namespace B13\Container\Tests\Functional\Tca;
 use B13\Container\Tca\ContainerConfiguration;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -92,5 +93,62 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
         $specialHeader = $pageTsConfig['mod.']['wizards.']['newContentElement.']['wizardItems.']['special.']['header'] ?? '';
         $expected = 'LLL:EXT:backend/Resources/Private/Language/locallang_db_new_content_el.xlf:special';
         self::assertSame($expected, $specialHeader);
+    }
+
+    /**
+     * @test
+     */
+    public function registryThrowsExceptionForInvalideColPosConfiguration(): void
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            self::markTestSkipped('Exception will be thrown on next major release');
+        }
+        $this->expectException(\InvalidArgumentException::class);
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container',
+                'foo',
+                'bar',
+                [
+                    [
+                        [['name' => 'col 1', 'colPos' => 1]],
+                        [['name' => 'col 2', 'colPos' => 2]],
+                    ],
+                ]
+            )
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function registryThrowsExceptionForInvalideCTypeConfiguration(): void
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            self::markTestSkipped('Exception will be thrown on next major release');
+        }
+        $this->expectException(\InvalidArgumentException::class);
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container',
+                'foo',
+                'bar',
+                []
+            )
+            )
+        );
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container',
+                'foo',
+                'bar',
+                []
+            )
+            )
+        );
     }
 }
