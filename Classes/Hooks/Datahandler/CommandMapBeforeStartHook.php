@@ -58,12 +58,53 @@ class CommandMapBeforeStartHook
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
         $this->unsetInconsistentLocalizeCommands($dataHandler);
+        $this->unsetInconsistentCopyOrMoveCommands($dataHandler);
         $dataHandler->cmdmap = $this->rewriteSimpleCommandMap($dataHandler->cmdmap);
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
         // previously page id is used for copy/moving element at top of a container colum
         // but this leeds to wrong sorting in page context (e.g. List-Module)
         $dataHandler->cmdmap = $this->rewriteCommandMapTargetForTopAtContainer($dataHandler->cmdmap);
         $dataHandler->cmdmap = $this->rewriteCommandMapTargetForAfterContainer($dataHandler->cmdmap);
+    }
+
+    protected function unsetInconsistentCopyOrMoveCommands(DataHandler $dataHandler): void
+    {
+        // a container should not be copied/moved inside himself
+        if (!empty($dataHandler->cmdmap['tt_content'])) {
+            foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {
+                foreach ($cmds as $operation => $value) {
+                    if (in_array($operation, ['copy', 'move'], true) === false) {
+                        continue;
+                    }
+                    if ((is_array($value) && $value['target'] < 0) || (int)$value < 0) {
+                        // move/copy element after other element
+                        // proof target element has not element as container
+                        if (is_array($value)) {
+                            $target = -(int)$value['target'];
+                        } else {
+                            // simple command
+                            $target = -(int)$value;
+                        }
+                        $record = $this->database->fetchOneRecord($target);
+                        if (isset($record['tx_container_parent']) && (int)$record['tx_container_parent'] === $id) {
+                            $dataHandler->log(
+                                'tt_content',
+                                $id,
+                                1,
+                                0,
+                                1,
+                                $operation . ' failed: container cannot be moved/copied into itself',
+                                28
+                            );
+                            unset($dataHandler->cmdmap['tt_content'][$id][$operation]);
+                            if (!empty($dataHandler->cmdmap['tt_content'][$id])) {
+                                unset($dataHandler->cmdmap['tt_content'][$id]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected function rewriteCommandMapTargetForAfterContainer(array $cmdmap): array
