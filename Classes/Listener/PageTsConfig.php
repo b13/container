@@ -33,7 +33,7 @@ class PageTsConfig
     {
         $tsConfig = $event->getTsConfig();
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
-            $tsConfig['global'] = trim($this->tcaRegistry->getPageTsString() . "\n" . ($tsConfig['global'] ?? ''));
+            $tsConfig = array_merge(['pageTsConfig-package-container' => $this->tcaRegistry->getPageTsString()], $tsConfig);
         } else {
             $tsConfig['default'] = trim($this->tcaRegistry->getPageTsString() . "\n" . ($tsConfig['default'] ?? ''));
         }
