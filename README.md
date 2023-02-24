@@ -134,6 +134,14 @@ The TypoScript is necessary to define the rendering of the container in the fron
         }
     }
 
+#### Options for DataProcessing
+
+| Option                      | Description                                                                                                | Default                                                      | Parameter   |
+|-----------------------------|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|-------------|
+| `contentId`                 | id of container to to process                                                                              | current uid of content element ``$cObj->data['uid']``        | ``?ìnt``    |
+| `colPos`                    | colPos of children to to process                                                                           | empty, all children are processed (as ``children_<colPos>``) | ``?int``    |
+| `as`                        | variable to use for proceesedData (only if ``colPos`` is set)                                              | ``children``                                                 | ``?string`` |
+| `skipRenderingChildContent` | do not call ``ContentObjectRenderer->render()`` for children, (``renderedContent`` in child will be empty) | empty                                                        | ``?int``    |
 
 ### Template
 
