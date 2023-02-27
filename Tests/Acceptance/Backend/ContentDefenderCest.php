@@ -133,4 +133,23 @@ class ContentDefenderCest
         $I->waitForElement('#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
         $I->dontSee('Content', '#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
     }
+
+    public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree)
+    {
+        $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $dataColPos = $I->getDataColPos(402, 202);
+        $I->waitForElement('#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
+        $I->click('Content', '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
+        $I->switchToIFrame();
+        $I->waitForElement('.modal-dialog');
+        $I->waitForText('Header Only');
+        $I->click('Header Only');
+        $I->switchToContentFrame();
+        $I->waitForText('Create new Page Content on page');
+        $I->seeElement('#EditDocumentController');
+    }
 }

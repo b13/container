@@ -51,6 +51,12 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
         }
         $cType = $container->getCType();
         $configuration = $this->tcaRegistry->getContentDefenderConfiguration($cType, $colPos);
+        // maxitems needs not to be considered in this case
+        // (new content elemment wizard, TcaCTypeItems: new record, TcaCTypeItems: edit record)
+        // consider maxitems here leeds to errors, because relation to container gets lost in EXT:content_defender
+        // EXT:container has already a own solution to prevent new records inside a container if maxitems is reached
+        // "New Content" Button is not rendered inside die colPos, this is possible because EXT:container has its own templates
+        $configuration['maxitems'] = 0;
         return $configuration;
     }
 
