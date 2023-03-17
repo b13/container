@@ -466,4 +466,22 @@ class MaxItemsTest extends DatahandlerTest
         $this->fetchOneRecord('t3_origuid', 3);
         self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function canSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_save_child_in_default_language_when_translated_and_maxitems_is_reached.csv');
+        $record = $this->fetchOneRecord('uid', 3);
+        $datamap = [
+            'tt_content' => [
+                3 => $record,
+            ],
+        ];
+        $this->dataHandler->start($datamap, [], $this->backendUser);
+        $this->dataHandler->process_datamap();
+        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+    }
 }
