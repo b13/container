@@ -140,7 +140,7 @@ class Container
             return false;
         }
         foreach ($this->childRecords[$colPos] as $childRecord) {
-            if ($childRecord['uid'] === $childUid) {
+            if ((int)$childRecord['uid'] === $childUid) {
                 return true;
             }
         }
