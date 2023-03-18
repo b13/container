@@ -16,6 +16,7 @@ use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook;
 use IchHabRecht\ContentDefender\Repository\ContentRepository;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -49,9 +50,19 @@ class DatamapHook extends DatamapDataHandlerHook
                     isset($values['tx_container_parent']) &&
                     $values['tx_container_parent'] > 0 &&
                     isset($values['colPos']) &&
-                    $values['colPos'] > 0 &&
-                    (!isset($values['l18n_parent']) || (int)$values['l18n_parent'] === 0)
+                    $values['colPos'] > 0
                 ) {
+                    // no maxitems check for localized records
+                    if (isset($values['l18n_parent'])) {
+                        if ((int)$values['l18n_parent'] !== 0) {
+                            continue;
+                        }
+                    } elseif (MathUtility::canBeInterpretedAsInteger($id)) {
+                        $record = BackendUtility::getRecord('tt_content', $id);
+                        if (isset($record['l18n_parent']) && (int)$record['l18n_parent'] !== 0) {
+                            continue;
+                        }
+                    }
                     $useChildId = null;
                     $colPos = (int)$values['colPos'];
                     $containerId = (int)$values['tx_container_parent'];
