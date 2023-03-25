@@ -113,6 +113,9 @@ class ContainerProcessor implements DataProcessorInterface
         $conf = [
             'tables' => 'tt_content',
         ];
+        if ($processorConfiguration['conf.'] ?? false) {
+            $conf['conf.'] = $processorConfiguration['conf.'];
+        }
         foreach ($children as &$child) {
             if (!isset($processorConfiguration['skipRenderingChildContent']) || (int)$processorConfiguration['skipRenderingChildContent'] === 0) {
                 if ($child['l18n_parent'] > 0) {
