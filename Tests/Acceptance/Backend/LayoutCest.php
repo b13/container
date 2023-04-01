@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LayoutCest
 {
@@ -41,7 +42,15 @@ class LayoutCest
         $I->see('header-header-0');
         $I->dontSee('2cols-header-1');
         $I->dontSee('header-header-1');
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->waitForElement('select[name="languageMenu"]');
+            $I->selectOption('select[name="languageMenu"]', 'german');
+        } else {
+            $I->waitForText('Language');
+            $I->click('Language');
+            $I->waitForText('german');
+            $I->click('german');
+        }
 
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->see('2cols-header-1');
@@ -49,7 +58,11 @@ class LayoutCest
         $I->dontSee('2cols-header-0');
         $I->dontSee('header-header-0');
 
-        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->selectOption('select[name="actionMenu"]', 'Languages');
+        } else {
+            $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
+        }
         $I->waitForElementNotVisible('#t3js-ui-block');
 
         // td.t3-grid-cell:nth-child(1)
@@ -79,12 +92,23 @@ class LayoutCest
         $pageTree->openPath(['home', 'pageWithLocalization']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForElement('select[name="languageMenu"]');
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->waitForElement('select[name="languageMenu"]');
+            $I->selectOption('select[name="languageMenu"]', 'german');
+        } else {
+            $I->waitForText('Language');
+            $I->click('Language');
+            $I->waitForText('german');
+            $I->click('german');
+        }
         $I->waitForElementNotVisible('#t3js-ui-block');
         // we have a "Content" Button for new elements with Fluid based page module
         $I->dontSee('Content', '#element-tt_content-102 .t3-page-ce-body');
-        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->selectOption('select[name="actionMenu"]', 'Languages');
+        } else {
+            $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
+        }
         $I->waitForElementNotVisible('#t3js-ui-block');
         // but not in Language View
         $I->dontSee('Content', '#element-tt_content-102');
@@ -103,11 +127,21 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText('Content');
-        $I->click('Content');
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Content');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
+        }
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
-        $I->click('Container');
-        $I->click('2 Column Container With Header');
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Container');
+            $I->click('2 Column Container With Header');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('container')");
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
+        }
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
@@ -162,7 +196,12 @@ class LayoutCest
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Header Only');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+        }
         $I->switchToContentFrame();
         $I->see('header [200]');
         $I->see('b13-2cols-with-header-container [700]');
@@ -193,7 +232,12 @@ class LayoutCest
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Header Only');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+        }
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
@@ -220,8 +264,15 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
 
-        $I->waitForElement('select[name="languageMenu"]');
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->waitForElement('select[name="languageMenu"]');
+            $I->selectOption('select[name="languageMenu"]', 'german');
+        } else {
+            $I->waitForText('Language');
+            $I->click('Language');
+            $I->waitForText('german');
+            $I->click('german');
+        }
         $I->waitForElementNotVisible('#t3js-ui-block');
 
         $uid = 104;
@@ -233,7 +284,12 @@ class LayoutCest
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Header Only');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+        }
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
@@ -261,9 +317,21 @@ class LayoutCest
         $I->switchToContentFrame();
 
         $I->waitForElement('select[name="actionMenu"]');
-        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->selectOption('select[name="actionMenu"]', 'Languages');
+        } else {
+            $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
+        }
         if ((new Typo3Version())->getMajorVersion() > 10) {
-            $I->selectOption('select[name="languageMenu"]', 'All languages');
+            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+                $I->waitForElement('select[name="languageMenu"]');
+                $I->selectOption('select[name="languageMenu"]', 'All languages');
+            } else {
+                $I->waitForText('Language');
+                $I->click('Language');
+                $I->waitForText('All languages');
+                $I->click('All languages');
+            }
         }
         $I->waitForElementVisible('a.t3js-localize');
         $I->click('a.t3js-localize');

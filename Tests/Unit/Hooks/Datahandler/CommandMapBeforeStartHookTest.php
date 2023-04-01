@@ -42,16 +42,10 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $containerService->expects(self::once())->method('getNewContentElementAtTopTargetInColumn')->with($container, 2)->willReturn(-4);
         $database = $this->getMockBuilder(Database::class)->getMock();
         $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
-        $dataHandlerHook = $this->getAccessibleMock(
-            CommandMapBeforeStartHook::class,
-            ['foo'],
-            [
-                'containerFactory' => $containerFactory,
-                'tcaRegistry' => $tcaRegistry,
-                'database' => $database,
-                'containerService' => $containerService,
-            ]
-        );
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
+            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
+            ->addMethods(['foo'])
+            ->getMock();
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -102,12 +96,10 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $database = $this->getMockBuilder(Database::class)->onlyMethods(['fetchOneRecord'])->getMock();
         $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
         $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn($copyAfterRecord);
-
-        $dataHandlerHook = $this->getAccessibleMock(
-            CommandMapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
-        );
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
+            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
+            ->addMethods(['foo'])
+            ->getMock();
         $commandMap = [
             'tt_content' => [
                 4 => [
@@ -154,12 +146,10 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['isContainerElement'])->getMock();
         $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn($copyAfterRecord);
         $tcaRegistry->expects(self::once())->method('isContainerElement')->with('container-ctype')->willReturn(true);
-
-        $dataHandlerHook = $this->getAccessibleMock(
-            CommandMapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
-        );
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
+            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
+            ->addMethods(['foo'])
+            ->getMock();
         $commandMap = [
             'tt_content' => [
                 4 => [
@@ -196,11 +186,10 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
         $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
-        $dataHandlerHook = $this->getAccessibleMock(
-            CommandMapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
-        );
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
+            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
+            ->addMethods(['foo'])
+            ->getMock();
         $commandMap = [
             'tt_content' => [
                 39 => [
@@ -240,11 +229,10 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
         $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
-        $dataHandlerHook = $this->getAccessibleMock(
-            CommandMapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
-        );
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
+            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
+            ->addMethods(['foo'])
+            ->getMock();
         $commandMap = [
             'tt_content' => [
                 39 => [
@@ -284,11 +272,10 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
         $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
-        $dataHandlerHook = $this->getAccessibleMock(
-            CommandMapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService]
-        );
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
+            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
+            ->addMethods(['foo'])
+            ->getMock();
         $commandMap = [
             'tt_content' => [
                 39 => [

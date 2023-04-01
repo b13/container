@@ -13,6 +13,8 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContentDefenderCest
 {
@@ -147,7 +149,12 @@ class ContentDefenderCest
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Header Only');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+        }
         $I->switchToContentFrame();
         $I->waitForText('Create new Page Content on page');
         $I->seeElement('#EditDocumentController');

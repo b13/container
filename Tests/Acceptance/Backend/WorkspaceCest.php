@@ -15,6 +15,7 @@ use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use Codeception\Scenario;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Acceptance\Helper\Topbar;
 
 class WorkspaceCest
@@ -85,8 +86,15 @@ class WorkspaceCest
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForElement('select[name="languageMenu"]');
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->waitForElement('select[name="languageMenu"]');
+            $I->selectOption('select[name="languageMenu"]', 'german');
+        } else {
+            $I->waitForText('Language');
+            $I->click('Language');
+            $I->waitForText('german');
+            $I->click('german');
+        }
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->see('translation-live');
         $I->dontSee('translation-ws');
@@ -105,8 +113,15 @@ class WorkspaceCest
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForElement('select[name="languageMenu"]');
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->waitForElement('select[name="languageMenu"]');
+            $I->selectOption('select[name="languageMenu"]', 'german');
+        } else {
+            $I->waitForText('Language');
+            $I->click('Language');
+            $I->waitForText('german');
+            $I->click('german');
+        }
         $I->waitForElementNotVisible('#t3js-ui-block');
 
         $I->dontSee('translation-live');

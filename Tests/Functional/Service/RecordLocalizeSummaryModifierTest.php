@@ -34,11 +34,10 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     {
         $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/two_container_elements.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
-        $recordLocalizeSummeryModifier = $this->getAccessibleMock(
-            RecordLocalizeSummaryModifier::class,
-            ['foo'],
-            ['containerRegistry' => $containerRegistry]
-        );
+        $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
+            ->addMethods(['foo'])
+            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->getMock();
         $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [1, 2]);
         self::assertSame(2, count($containerUids));
     }
@@ -50,11 +49,10 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     {
         $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/hidden_child_record.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
-        $recordLocalizeSummeryModifier = $this->getAccessibleMock(
-            RecordLocalizeSummaryModifier::class,
-            ['foo'],
-            ['containerRegistry' => $containerRegistry]
-        );
+        $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
+            ->addMethods(['foo'])
+            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->getMock();
         $containerChildren = $recordLocalizeSummeryModifier->_call('getContainerChildren', [1]);
         self::assertTrue(isset($containerChildren[1]));
         self::assertIsArray($containerChildren[1]);
@@ -67,11 +65,10 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     {
         $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/hidden_container_record.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
-        $recordLocalizeSummeryModifier = $this->getAccessibleMock(
-            RecordLocalizeSummaryModifier::class,
-            ['foo'],
-            ['containerRegistry' => $containerRegistry]
-        );
+        $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
+            ->addMethods(['foo'])
+            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->getMock();
         $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [1]);
         self::assertSame([1], $containerUids);
     }
@@ -83,11 +80,10 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     {
         $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/container_and_translated_container.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
-        $recordLocalizeSummeryModifier = $this->getAccessibleMock(
-            RecordLocalizeSummaryModifier::class,
-            ['foo'],
-            ['containerRegistry' => $containerRegistry]
-        );
+        $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
+            ->addMethods(['foo'])
+            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->getMock();
         $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [2]);
         self::assertSame([2, 1], $containerUids);
     }
