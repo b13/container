@@ -33,10 +33,10 @@ class Registry implements SingletonInterface
             'tt_content',
             'CType',
             [
-                $containerConfiguration->getLabel(),
-                $containerConfiguration->getCType(),
-                $containerConfiguration->getCType(),
-                $containerConfiguration->getGroup(),
+                'label' => $containerConfiguration->getLabel(),
+                'value' => $containerConfiguration->getCType(),
+                'icon' => $containerConfiguration->getCType(),
+                'group' => $containerConfiguration->getGroup(),
             ]
         );
         if (
