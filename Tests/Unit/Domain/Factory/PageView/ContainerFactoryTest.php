@@ -35,7 +35,7 @@ class ContainerFactoryTest extends UnitTestCase
         $context = $this->getMockBuilder(Context::class)->getMock();
         $containerFactory = $this->getMockBuilder($this->buildAccessibleProxy(ContainerFactory::class))
             ->setConstructorArgs(['database' => $database, 'tcaRegistry' => $tcaRegistry, 'context' => $context])
-            ->addMethods(['foo'])
+            ->onlyMethods([])
             ->getMock();
         self::assertNull($containerFactory->_call('containerByUid', 1));
     }
