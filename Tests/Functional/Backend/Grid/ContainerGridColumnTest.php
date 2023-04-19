@@ -33,7 +33,10 @@ class ContainerGridColumnTest extends FunctionalTestCase
             ->onlyMethods(['getPageId'])
             ->getMock();
         $pageLayoutContext->expects(self::any())->method('getPageId')->willReturn(3);
-        $containerGridColumn = $this->getAccessibleMock(ContainerGridColumn::class, ['foo'], [], '', false);
+        $containerGridColumn = $this->getMockBuilder($this->buildAccessibleProxy(ContainerGridColumn::class))
+            ->disableOriginalConstructor()
+            ->addMethods(['foo'])
+            ->getMock();
         $containerGridColumn->_set('container', $container);
         $containerGridColumn->_set('context', $pageLayoutContext);
         $newContentUrl = $containerGridColumn->getNewContentUrl();

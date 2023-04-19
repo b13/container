@@ -40,16 +40,15 @@ class DatamapBeforeStartHookTest extends UnitTestCase
         $database->expects(self::once())->method('fetchOneRecord')->with(2)->willReturn($defaultRecord);
         $containerRegistry = $this->getMockBuilder(Registry::class)->getMock();
         $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
-        $dataHandlerHook = $this->getAccessibleMock(
-            DatamapBeforeStartHook::class,
-            ['foo'],
-            [
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(DatamapBeforeStartHook::class))
+            ->setConstructorArgs([
                 'containerFactory' => $containerFactory,
                 'database' => $database,
                 'tcaRegistry' => $containerRegistry,
                 'containerService' => $containerService,
-            ]
-        );
+            ])
+            ->addMethods(['foo'])
+            ->getMock();
         $datamap = [
             'tt_content' => [
                 2 => [

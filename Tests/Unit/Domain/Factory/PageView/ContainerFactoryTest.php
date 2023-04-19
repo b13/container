@@ -33,11 +33,10 @@ class ContainerFactoryTest extends UnitTestCase
         $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn(null);
         $tcaRegistry = $this->getMockBuilder(Registry::class)->getMock();
         $context = $this->getMockBuilder(Context::class)->getMock();
-        $containerFactory = $this->getAccessibleMock(
-            ContainerFactory::class,
-            ['foo'],
-            ['database' => $database, 'tcaRegistry' => $tcaRegistry, 'context' => $context]
-        );
+        $containerFactory = $this->getMockBuilder($this->buildAccessibleProxy(ContainerFactory::class))
+            ->setConstructorArgs(['database' => $database, 'tcaRegistry' => $tcaRegistry, 'context' => $context])
+            ->addMethods(['foo'])
+            ->getMock();
         self::assertNull($containerFactory->_call('containerByUid', 1));
     }
 }
