@@ -18,6 +18,7 @@ use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -72,8 +73,12 @@ class IntegrityFix implements SingletonInterface
                     'uid',
                     $queryBuilder->createNamedParameter($child['uid'], \PDO::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $queryBuilder->executeStatement();
+        } else {
+            $queryBuilder->execute();
+        }
     }
 
     /**
@@ -120,7 +125,11 @@ class IntegrityFix implements SingletonInterface
                             // i think this is always true
                             $stm->set('l10n_source', $defaultChildRecord['uid']);
                         }
-                        $stm->execute();
+                        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+                            $stm = $stm->executeStatement();
+                        } else {
+                            $stm = $stm->execute();
+                        }
                     }
                 }
                 // disconnect container ?

@@ -44,8 +44,12 @@ class Database implements SingletonInterface
                     'uid',
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             $record = $stm->fetch();
         } else {
@@ -67,8 +71,12 @@ class Database implements SingletonInterface
                     'l18n_parent',
                     $queryBuilder->createNamedParameter((int)$record['uid'], Connection::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             return (array)$stm->fetchAll();
         }
@@ -89,8 +97,12 @@ class Database implements SingletonInterface
                     'sys_language_uid',
                     $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             $record = $stm->fetch();
         } else {
@@ -116,8 +128,12 @@ class Database implements SingletonInterface
                     'sys_language_uid',
                     $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             $record = $stm->fetch();
         } else {
@@ -148,8 +164,12 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
-            ->orderBy('sorting', 'ASC')
-            ->execute();
+            ->orderBy('sorting', 'ASC');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             return (array)$stm->fetchAll();
         }
@@ -178,8 +198,12 @@ class Database implements SingletonInterface
                     't3ver_oid',
                     $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             $record = $stm->fetch();
         } else {

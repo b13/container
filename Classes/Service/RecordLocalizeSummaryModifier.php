@@ -116,8 +116,12 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                     'CType',
                     $queryBuilder->createNamedParameter($containerCTypes, Connection::PARAM_STR_ARRAY)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             $rows = $stm->fetchAll();
         } else {
@@ -148,8 +152,12 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                     'tx_container_parent',
                     $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
             $rows = $stm->fetchAll();
         } else {

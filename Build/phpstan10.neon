@@ -34,8 +34,9 @@ parameters:
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
     - '#Constant LF not found.#'
-    - '#Cannot call method fetchAllAssociative\(\) on Doctrine\\DBAL\\Driver\\ResultStatement\|int.#'
     - '#Cannot call method fetchAssociative\(\) on Doctrine\\DBAL\\Driver\\ResultStatement\|int.#'
+    - '#Call to an undefined method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder::executeQuery\(\).#'
+    - '#Call to an undefined method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder::executeStatement\(\).#'
     -
       message: '#Call to protected method getTypoScriptFrontendController\(\) of class TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer.#'
       path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
