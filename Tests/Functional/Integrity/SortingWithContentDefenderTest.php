@@ -57,7 +57,7 @@ class SortingWithContentDefenderTest extends FunctionalTestCase
      */
     public function childBeforeContainerIsSortedAfterContainerEvenIfCTypeDisallowedByContentDefender(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/SortingWithContentDefender/disallowed_child_is_before_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingWithContentDefender/disallowed_child_is_before_container.csv');
         $errors = $this->sorting->run(false);
         self::assertTrue(count($errors) === 1, 'should get one error');
         $rows = $this->getContentsByUid();

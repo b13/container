@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace B13\Container\Tests\Functional\Xclasses;
+namespace B13\Container\Tests\Functional\Service;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -32,7 +32,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
      */
     public function getContainerUidsReturnsAllUids(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/two_container_elements.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/two_container_elements.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->addMethods(['foo'])
@@ -47,7 +47,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
      */
     public function getContainerChildrenReturnsHiddenRecords(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/hidden_child_record.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_child_record.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->addMethods(['foo'])
@@ -63,7 +63,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
      */
     public function getContainerUidsReturnsHiddenUids(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/hidden_container_record.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_container_record.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->addMethods(['foo'])
@@ -78,7 +78,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
      */
     public function getContainerUidsReturnsAlsoUidsOfL18nParents(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Service/Fixtures/container_and_translated_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/container_and_translated_container.csv');
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->addMethods(['foo'])

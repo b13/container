@@ -17,7 +17,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -51,7 +51,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function bothTranslated(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_both_translated.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_both_translated.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -70,7 +70,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function fallbackForStrictLanguageToOtherTranslationFreeMode(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_fallback_for_strict_language_to_other_translation_free_mode.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_fallback_for_strict_language_to_other_translation_free_mode.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/ch'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -89,7 +89,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function bothTranslatedTranslatedChildHidden(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -108,7 +108,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function childTranslated(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_child_translated.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_child_translated.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -127,7 +127,7 @@ class LanguageFallbackTest extends AbstractFrontendTest
      */
     public function containerTranslated(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/LanguageFallback/tt_content_container_translated.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_container_translated.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);

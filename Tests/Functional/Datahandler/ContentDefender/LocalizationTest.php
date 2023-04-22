@@ -27,7 +27,7 @@ class LocalizationTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Localization/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localization/setup.csv');
     }
 
     /**

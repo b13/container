@@ -27,7 +27,7 @@ class DefaultLanguageTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/setup.csv');
     }
 
     /**
@@ -36,7 +36,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAtTopDoNotMoveDisallowedCTypeElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/disallowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -67,7 +67,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAfterOtherElemenDoNotMoveDisallowedCTypeElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/disallowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -98,7 +98,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function copyElementIntoContainerAtTopDoNotCopyDisallowedCTypeElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/disallowed_content_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/disallowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -138,7 +138,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAtTopMoveAisallowedCTypeElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/allowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -169,7 +169,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAfterOtherElemenMoveAllowedCTypeElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/allowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [
@@ -200,7 +200,7 @@ class DefaultLanguageTest extends DatahandlerTest
      */
     public function copyElementIntoContainerAtTopCopyAllowedCTypeElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/DefaultLanguage/allowed_content_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/allowed_content_element.csv');
         $cmdmap = [
             'tt_content' => [
                 71 => [

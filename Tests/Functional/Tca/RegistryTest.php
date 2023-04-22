@@ -102,7 +102,7 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
      */
     public function originalPageTsIsNotOverriden(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Tca/Fixtures/original_page_ts_is_not_overridden.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/original_page_ts_is_not_overridden.csv');
         \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
             (
             new ContainerConfiguration(

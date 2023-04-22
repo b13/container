@@ -21,7 +21,7 @@ class CopyContainerInContainerTest extends DatahandlerTest
      */
     public function copyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyContainerInContainer/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerInContainer/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [

@@ -21,7 +21,7 @@ class DefaultLanguageTest extends AbstractFrontendTest
      */
     public function childrenAreRendered(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/default_language.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -46,7 +46,7 @@ class DefaultLanguageTest extends AbstractFrontendTest
      */
     public function childrenAreNotRenderedIfSkipOptionIsSet(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/default_language.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
         $this->setUpFrontendRootPage(
             1,
             [

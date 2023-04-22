@@ -20,7 +20,7 @@ class CopyPageTest extends DatahandlerTest
      */
     public function copyPageCopiesChildrenOfContainer(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyPage/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyPage/setup.csv');
         $cmdmap = [
             'pages' => [
                 1 => [

@@ -21,7 +21,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function deleteContainerDeleteChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/delete_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/delete_container.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -42,7 +42,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerAfterElementMovesChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/move_container_after_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_after_element.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -76,7 +76,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerToOtherPageAtTopMovesChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/move_container_other_page_on_top.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_other_page_on_top.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -108,7 +108,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerToOtherPageAtTopCopiesChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/copy_container_other_page_on_top.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/copy_container_other_page_on_top.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -138,7 +138,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerToOtherPageAfterElementCopiesChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/copy_container_other_page_after_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/copy_container_other_page_after_element.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -169,7 +169,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerToOtherPageAfterElementMovesChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/move_container_other_page_after_element.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_other_page_after_element.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -200,7 +200,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerKeepsSortingOfChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/copy_container_keeps_sorting.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/copy_container_keeps_sorting.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -228,7 +228,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerOtherPageOnTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/move_or_copy_container_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_or_copy_container_other_page.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -268,7 +268,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerOtherPageAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/move_or_copy_container_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_or_copy_container_other_page.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -308,7 +308,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerOtherPageOnTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/move_or_copy_container_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_or_copy_container_other_page.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -352,7 +352,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function copyContainerOtherPageAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/Container/move_or_copy_container_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_or_copy_container_other_page.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [

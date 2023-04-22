@@ -37,7 +37,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canMoveElementIntoContainerIfMaxitemsIsNotReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_move_element_into_container_if_maxitems_is_not_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_move_element_into_container_if_maxitems_is_not_reached.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -69,7 +69,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function cannotMoveElementIntoContainerIfMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/cannot_move_element_into_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_move_element_into_container_if_maxitems_is_reached.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -101,7 +101,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function cannotCopyElementIntoContainerIfMaxitemsIsReachedAfterIntoContainer(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/cannot_copy_element_into_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_copy_element_into_container_if_maxitems_is_reached.csv');
 
         $cmdmap = [
             'tt_content' => [
@@ -144,7 +144,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function cannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/cannot_copy_element_into_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_copy_element_into_container_if_maxitems_is_reached.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -176,7 +176,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canCreateElementInContainerIfMaxitemsIsNotReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_create_element_in_container_if_maxitems_is_not_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_create_element_in_container_if_maxitems_is_not_reached.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [
@@ -213,7 +213,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function cannotCreateElementInContainerIfMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/cannot_create_element_in_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_create_element_in_container_if_maxitems_is_reached.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [
@@ -250,7 +250,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canEditElementInContainerWhenMaxitemIsReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_edit_element_in_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_edit_element_in_container_if_maxitems_is_reached.csv');
         $datamap = [
             'tt_content' => [
                 3 => [
@@ -276,7 +276,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canMoveContainerWithMaxitemsReachedColumnToOtherPage(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_move_container_with_maxitems_reached_column_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_move_container_with_maxitems_reached_column_to_other_page.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -308,7 +308,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canCopyContainerWithMaxitemsReachedColumnToOtherPage(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_copy_container_with_maxitems_reached_column_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_container_with_maxitems_reached_column_to_other_page.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -340,7 +340,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canCopyElementFromContainerMaxitemsReachedColumnToOtherColumn(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_column.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_column.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -369,7 +369,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canCopyElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -398,7 +398,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canMoveElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -427,7 +427,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function cannotMoveElementInsideContainerColumnIfMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/cannot_move_element_inside_container_column_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_move_element_inside_container_column_if_maxitems_is_reached.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -454,7 +454,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_translate_child_if_container_of_default_language_maxitems_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_translate_child_if_container_of_default_language_maxitems_reached.csv');
         $cmdmap = [
             'tt_content' => [
                 3 => ['localize' => 1],
@@ -473,7 +473,7 @@ class MaxItemsTest extends DatahandlerTest
      */
     public function canSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_save_child_in_default_language_when_translated_and_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_save_child_in_default_language_when_translated_and_maxitems_is_reached.csv');
         $record = $this->fetchOneRecord('uid', 3);
         $datamap = [
             'tt_content' => [

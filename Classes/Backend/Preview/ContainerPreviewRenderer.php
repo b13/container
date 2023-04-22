@@ -104,8 +104,8 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->setTemplatePathAndFilename($gridTemplate);
 
         $view->assign('hideRestrictedColumns', (bool)(BackendUtility::getPagesTSconfig($context->getPageId())['mod.']['web_layout.']['hideRestrictedCols'] ?? false));
-        $view->assign('newContentTitle', $this->getLanguageService()->getLL('newContentElement'));
-        $view->assign('newContentTitleShort', $this->getLanguageService()->getLL('content'));
+        $view->assign('newContentTitle', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement'));
+        $view->assign('newContentTitleShort', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:content'));
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
         $view->assign('containerRecord', $record);

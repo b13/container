@@ -20,7 +20,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyElementAfterContainerCopiesTranslationAfterContainer(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/ConnectedMode/Fixtures/CopyElement/copy_element_after_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/copy_element_after_container.csv');
         $cmdmap = [
             'tt_content' => [
                 3 => [
@@ -44,7 +44,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyElementAfterContainerWithChildKeepsColPosForTranslatedElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/ConnectedMode/Fixtures/CopyElement/copy_element_after_container_with_child.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/copy_element_after_container_with_child.csv');
         $cmdmap = [
             'tt_content' => [
                 3 => [
