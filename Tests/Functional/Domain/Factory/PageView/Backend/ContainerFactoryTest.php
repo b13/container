@@ -55,7 +55,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function localizedContainerChildElementsHasSortingOfDefaultChildElements(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
         $container = $containerFactory->buildContainer(2);
         $children = $container->getChildrenByColPos(201);
@@ -70,9 +70,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function movedElementIntoOtherContainerInWorkspace(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/movedElementIntoOtherContainerInWorkspace.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/movedElementIntoOtherContainerInWorkspace.csv');
         } else {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.csv');
         }
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
@@ -93,7 +93,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function movedElementIntoContainerInWorkspace(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedElementIntoContainerInWorkspace.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoContainerInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
@@ -111,9 +111,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerRespectSortingOfMovedChildrenInWorkspace(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/movedChildrenInWorkspaceSorting.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/movedChildrenInWorkspaceSorting.csv');
         } else {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.csv');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
@@ -133,9 +133,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsMovedChildrenInWorkspaceWithTranslation(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/movedChildrenInWorkspaceWithTranslation.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/movedChildrenInWorkspaceWithTranslation.csv');
         } else {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/movedChildrenInWorkspaceWithTranslation.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceWithTranslation.csv');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         $languageAspect = GeneralUtility::makeInstance(LanguageAspect::class, 1);
@@ -158,9 +158,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsCopiedChildrenInWorkspace(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/copiedChildrenInWorkspace.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/copiedChildrenInWorkspace.csv');
         } else {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/copiedChildrenInWorkspace.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/copiedChildrenInWorkspace.csv');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
@@ -184,9 +184,9 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsChildrenWhenMovedToOtherPage(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/container_moved_to_other_page.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/container_moved_to_other_page.csv');
         } else {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/container_moved_to_other_page.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
@@ -210,11 +210,11 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function containerHoldsLocalizedChildrenWhenMovedToOtherPage(): void
     {
         if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/container_moved_to_other_page.csv');
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/10/localized_container_moved_to_other_page.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/container_moved_to_other_page.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/localized_container_moved_to_other_page.csv');
         } else {
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/container_moved_to_other_page.csv');
-            $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/PageView/Backend/Fixture/ContainerFactory/localized_container_moved_to_other_page.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
+            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localized_container_moved_to_other_page.csv');
         }
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);

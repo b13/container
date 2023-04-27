@@ -20,7 +20,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveChildElementOutsideContainerAtTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -51,7 +51,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveChildElementOutsideContainerAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -83,7 +83,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveChildElementToOtherColumnTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -117,7 +117,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveChildElementToOtherColumnAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -148,7 +148,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAtTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 4 => [
@@ -182,7 +182,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 4 => [
@@ -213,7 +213,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveElementIntoContainerAfterElementWithSimpleCommandMap(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         // see test above
         $cmdmap = [
             'tt_content' => [
@@ -237,7 +237,7 @@ class MoveElementTest extends DatahandlerTest
      */
     public function moveContainerIntoItSelfs(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [

@@ -18,9 +18,9 @@ class ContainerTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Workspace/Fixtures/pages.csv');
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Workspace/Fixtures/tt_content.csv');
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Workspace/Fixtures/sys_workspace.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_workspace.csv');
         $this->backendUser->setWorkspace(1);
     }
 

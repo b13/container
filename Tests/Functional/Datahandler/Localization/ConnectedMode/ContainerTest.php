@@ -21,7 +21,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function deleteContainerDeleteTranslatedChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/ConnectedMode/Fixtures/Container/delete_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/delete_container.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -42,7 +42,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function moveContainerToOtherPageMovesChildren(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/ConnectedMode/Fixtures/Container/move_container_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_to_other_page.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [

@@ -22,7 +22,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyChildElementOutsideContainerAtTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -53,7 +53,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyChildElementOutsideContainerAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -85,7 +85,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyChildElementToOtherColumnTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -119,7 +119,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyChildElementToOtherColumnAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -150,7 +150,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyElementIntoContainerAtTop(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 4 => [
@@ -184,7 +184,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyElementIntoContainerAfterElement(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 4 => [
@@ -215,7 +215,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyElementIntoContainerAfterElementWithSimpleCommandMap(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         // see test above what should be done
         $cmdmap = [
             'tt_content' => [
@@ -239,7 +239,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyElementAfterContainerWithSimpleCommandMap(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/CopyElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         // see test above what should be done
         $cmdmap = [
             'tt_content' => [
@@ -263,7 +263,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyContainerIntoItSelfs(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/DefaultLanguage/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [

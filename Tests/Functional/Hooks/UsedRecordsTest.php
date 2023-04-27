@@ -49,7 +49,7 @@ class UsedRecordsTest extends FunctionalTestCase
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             self::markTestSkipped('>= v12 is tested by Listener ContentUsedOnPageTest');
         }
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Hooks/Fixtures/UsedRecords/children_in_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/UsedRecords/children_in_container.csv');
         $pageLayout = $this->getPageLayoutView();
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class);
         $record = $this->fetchOneRecordByUid(2);
@@ -65,7 +65,7 @@ class UsedRecordsTest extends FunctionalTestCase
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             self::markTestSkipped('>= v12 is tested by Listener ContentUsedOnPageTest');
         }
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Hooks/Fixtures/UsedRecords/children_in_container_wrong_pid.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/UsedRecords/children_in_container_wrong_pid.csv');
         $pageLayout = $this->getPageLayoutView();
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class);
         $record = $this->fetchOneRecordByUid(2);
@@ -81,7 +81,7 @@ class UsedRecordsTest extends FunctionalTestCase
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             self::markTestSkipped('>= v12 is tested by Listener ContentUsedOnPageTest');
         }
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Hooks/Fixtures/UsedRecords/children_in_container_wrong_colpos.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/UsedRecords/children_in_container_wrong_colpos.csv');
         $pageLayout = $this->getPageLayoutView();
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class);
         $record = $this->fetchOneRecordByUid(2);
@@ -97,7 +97,7 @@ class UsedRecordsTest extends FunctionalTestCase
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             self::markTestSkipped('>= v12 is tested by Listener ContentUsedOnPageTest');
         }
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Hooks/Fixtures/UsedRecords/children_not_in_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/UsedRecords/children_not_in_container.csv');
         $pageLayout = $this->getPageLayoutView();
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class);
         $record = $this->fetchOneRecordByUid(2);
@@ -113,7 +113,7 @@ class UsedRecordsTest extends FunctionalTestCase
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             self::markTestSkipped('>= v12 is tested by Listener ContentUsedOnPageTest');
         }
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Hooks/Fixtures/UsedRecords/localized_content.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/UsedRecords/localized_content.csv');
         $pageLayout = $this->getPageLayoutView();
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class);
         $record = $this->fetchOneRecordByUid(4);

@@ -19,7 +19,7 @@ class DataProcessorWithFilesTest extends AbstractFrontendTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Frontend/Fixtures/data_processor_with_files.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/data_processor_with_files.csv');
         $this->setUpFrontendRootPage(
             1,
             [

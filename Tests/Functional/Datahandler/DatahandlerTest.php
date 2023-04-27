@@ -55,7 +55,7 @@ abstract class DatahandlerTest extends FunctionalTestCase
 
     protected function linkSiteConfigurationIntoTestInstance(): void
     {
-        $from = ORIGINAL_ROOT . '/typo3conf/sites';
+        $from = ORIGINAL_ROOT . '../../Build/sites';
         $to = $this->getInstancePath() . '/typo3conf/sites';
         if (!is_dir($from)) {
             throw new \Exception('site config directory not found', 1630425034);

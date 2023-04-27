@@ -22,7 +22,7 @@ class NewElementTest extends DatahandlerTest
      */
     public function newElementAfterContainerSortElementAfterLastChild(): void
     {
-        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/Localization/FreeMode/Fixtures/NewElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/setup.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [
