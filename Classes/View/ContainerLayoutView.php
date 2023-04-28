@@ -118,7 +118,7 @@ class ContainerLayoutView extends PageLayoutView
     {
         $this->CType_labels = [];
         foreach ($GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'] as $val) {
-            $this->CType_labels[$val[1]] = $this->getLanguageService()->sL($val[0]);
+            $this->CType_labels[$val['value'] ?? $val[1]] = $this->getLanguageService()->sL($val['label'] ?? $val[0]);
         }
 
         $this->itemLabels = [];
