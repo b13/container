@@ -135,11 +135,20 @@ class DatamapHook extends DatamapDataHandlerHook
                 $this->mapping[$record['uid']]['colPos']
             );
         } elseif (isset($record['tx_container_parent']) && $record['tx_container_parent'] > 0) {
-            $columnConfiguration = $this->containerColumnConfigurationService->override(
-                $columnConfiguration,
-                (int)$record['tx_container_parent'],
-                (int)$record['colPos']
-            );
+            $copyMapping = $this->containerColumnConfigurationService->getCopyMappingByOrigUid((int)($record['t3_origuid'] ?? 0));
+            if ($copyMapping !== null) {
+                $columnConfiguration = $this->containerColumnConfigurationService->override(
+                    $columnConfiguration,
+                    $copyMapping['tx_container_parent'],
+                    $copyMapping['colPos']
+                );
+            } else {
+                $columnConfiguration = $this->containerColumnConfigurationService->override(
+                    $columnConfiguration,
+                    (int)$record['tx_container_parent'],
+                    (int)$record['colPos']
+                );
+            }
         }
         return parent::isRecordAllowedByRestriction($columnConfiguration, $record);
     }

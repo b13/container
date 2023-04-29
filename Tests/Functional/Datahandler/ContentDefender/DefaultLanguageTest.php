@@ -224,4 +224,35 @@ class DefaultLanguageTest extends DatahandlerTest
         self::assertSame(1, (int)$row['tx_container_parent'], 'element should  be inside container');
         self::assertSame(200, (int)$row['colPos'], 'element should  be inside container colPos');
     }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function copyChildFromOtherContainerIntoColposWhereTargetElementInOtherColposHasRestrictionIsAllowd(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/copy_child_from_other_container_into_colpos_where_target_element_in_other_colpos_has_restriction.csv');
+        $cmdmap = [
+            'tt_content' => [
+                73 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -2,
+                        'update' => [
+                            'colPos' => '1-201',
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('t3_origuid', 73);
+        self::assertSame(1, (int)$row['tx_container_parent'], 'element should  be inside container');
+        self::assertSame(201, (int)$row['colPos'], 'element should  be inside container colPos');
+    }
 }

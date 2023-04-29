@@ -34,6 +34,8 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     protected $copyMapping = [];
 
+    protected $copyMappingByOrigUid = [];
+
     public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
     {
         $this->containerFactory = $containerFactory;
@@ -45,7 +47,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
         return BackendUtility::getRecord('tt_content', $uid);
     }
 
-    public function addCopyMapping(int $sourceContentId, int $containerId, int $targetColpos): array
+    public function addCopyMapping(int $sourceContentId, int $containerId, int $targetColpos): void
     {
         $record = $this->getRecord($sourceContentId);
         $sourceColPos = (int)$record['colPos'];
@@ -55,7 +57,18 @@ class ContainerColumnConfigurationService implements SingletonInterface
             'sourceColPos' => $sourceColPos,
             'targetColPos' => $targetColpos,
         ];
-        return $this->copyMapping[$sourceContainerId . '-' . $sourceColPos];
+        $this->copyMappingByOrigUid[$sourceContentId] = [
+            'tx_container_parent' => $containerId,
+            'colPos' => $targetColpos,
+        ];
+    }
+
+    public function getCopyMappingByOrigUid(int $uid): ?array
+    {
+        if (isset($this->copyMappingByOrigUid[$uid])) {
+            return $this->copyMappingByOrigUid[$uid];
+        }
+        return null;
     }
 
     public function setContainerIsCopied($containerId): void
