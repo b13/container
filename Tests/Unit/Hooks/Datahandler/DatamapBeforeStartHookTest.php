@@ -47,7 +47,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
                 'tcaRegistry' => $containerRegistry,
                 'containerService' => $containerService,
             ])
-            ->addMethods(['foo'])
+            ->onlyMethods([])
             ->getMock();
         $datamap = [
             'tt_content' => [
