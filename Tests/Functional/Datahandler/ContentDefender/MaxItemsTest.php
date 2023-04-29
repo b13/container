@@ -471,6 +471,25 @@ class MaxItemsTest extends DatahandlerTest
      * @test
      * @group content_defender
      */
+    public function canCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
+    {
+        $this->importCSVDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/Maxitems/can_copy_to_language_child_if_container_of_default_language_maxitems_reached.csv');
+        $cmdmap = [
+            'tt_content' => [
+                3 => ['copyToLanguage' => 1],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $this->fetchOneRecord('t3_origuid', 3);
+        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
     public function canSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_save_child_in_default_language_when_translated_and_maxitems_is_reached.csv');
