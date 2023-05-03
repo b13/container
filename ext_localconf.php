@@ -65,7 +65,8 @@ call_user_func(static function () {
     // EXT:content_defender
     $packageManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Package\PackageManager::class);
     if ($packageManager->isPackageActive('content_defender')) {
-        if (version_compare($packageManager->getPackage('content_defender')->getPackageMetaData()->getVersion(), '3.1.0', '>=')) {
+        $contentDefenderVersion = $packageManager->getPackage('content_defender')->getPackageMetaData()->getVersion();
+        if (version_compare($contentDefenderVersion, '3.1.0', '>=') || $contentDefenderVersion === 'dev-main') {
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['content_defender']['ColumnConfigurationManipulationHook']['tx_container'] =
                 \B13\Container\ContentDefender\Hooks\ColumnConfigurationManipulationHook::class;
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook::class] = [
