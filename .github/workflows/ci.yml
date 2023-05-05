@@ -50,21 +50,11 @@ jobs:
       - name: Unit Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
 
-      - name: Functional Tests with mariadb 10/11
-        if: matrix.TYPO3 != '12'
+      - name: Functional Tests with mariadb
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
 
-      - name: Functional Tests with mariadb 12
-        if: matrix.TYPO3 == '12'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -e "--exclude-group=content_defender"
-
-      - name: Acceptance Tests 10/11
-        if: matrix.TYPO3 != '12'
+      - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e --fail-fast
-
-      - name: Acceptance Tests 12
-        if: matrix.TYPO3 == '12'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e "--fail-fast --skip-group=content_defender"
 
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v2

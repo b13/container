@@ -78,13 +78,6 @@ class BackendContainerEnvironment extends BackendEnvironment
             $this->localConfig['configurationToUseInTestInstance']['SYS']['features']['fluidBasedPageModule'] = true;
         }
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() === 12) {
-            // without content_defender
-            $this->localConfig['testExtensionsToLoad'] = [
-                'typo3conf/ext/container',
-                'typo3conf/ext/container_example',
-            ];
-        }
         if ($typo3Version->getMajorVersion() === 10) {
             $this->localConfig['csvDatabaseFixtures'][] = __DIR__ . '/../../Fixtures/sys_language.csv';
         }
