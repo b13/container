@@ -95,6 +95,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
             $grid->addRow($rowObject);
         }
 
+        $containerLabel = $GLOBALS["TCA"]["tt_content"]["containerConfiguration"][$record['CType']]["label"];
         $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
         $partialRootPaths = $this->tcaRegistry->getGridPartialPaths($record['CType']);
         $layoutRootPaths = $this->tcaRegistry->getGridLayoutPaths($record['CType']);
@@ -109,6 +110,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
         $view->assign('containerRecord', $record);
+        $view->assign('backendLayoutTitle', $containerLabel);
         $rendered = $view->render();
 
         return $content . $rendered;
