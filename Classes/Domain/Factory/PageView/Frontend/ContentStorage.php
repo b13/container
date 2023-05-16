@@ -18,7 +18,6 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 
 class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStorage
 {
-
     /**
      * @var PageRepository
      */

@@ -19,7 +19,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ContentStorageTest extends FunctionalTestCase
 {
-
     /**
      * @var non-empty-string[]
      */

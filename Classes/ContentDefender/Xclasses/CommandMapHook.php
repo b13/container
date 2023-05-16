@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CommandMapHook extends CmdmapDataHandlerHook
 {
-
     /**
      * @var ContainerColumnConfigurationService
      */

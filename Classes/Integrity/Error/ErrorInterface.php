@@ -14,7 +14,6 @@ namespace B13\Container\Integrity\Error;
 
 interface ErrorInterface
 {
-
     /**
      * @return string
      */

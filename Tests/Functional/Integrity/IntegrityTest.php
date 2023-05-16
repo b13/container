@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Integrity;
 
 /*
@@ -24,7 +25,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class IntegrityTest extends FunctionalTestCase
 {
-
     /**
      * @var non-empty-string[]
      */

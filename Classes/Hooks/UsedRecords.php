@@ -19,7 +19,6 @@ use TYPO3\CMS\Backend\View\PageLayoutView;
 
 class UsedRecords
 {
-
     /**
      * @var Registry
      */

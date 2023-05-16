@@ -21,7 +21,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 
 class ContainerColumnConfigurationService implements SingletonInterface
 {
-
     /**
      * @var Registry
      */

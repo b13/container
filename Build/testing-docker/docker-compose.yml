@@ -139,7 +139,7 @@ services:
           fi
           composer prepare-tests-10 && composer prepare-tests
         else
-          composer config --no-interaction --no-plugins allow-plugins.sbuerk/typo3-cmscomposerinstallers-testingframework-bridge true && composer require typo3/cms-backend:^12.4 sbuerk/typo3-cmscomposerinstallers-testingframework-bridge:^0.0.1 ichhabrecht/content-defender:dev-main --dev -W --no-progress --no-interaction
+          composer require typo3/cms-backend:^12.4 friendsofphp/php-cs-fixer:^3.16 typo3/coding-standards:^0.7 ichhabrecht/content-defender:dev-main --dev -W --no-progress --no-interaction
           composer prepare-tests
         fi
       "
