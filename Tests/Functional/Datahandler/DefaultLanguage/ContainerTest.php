@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -15,7 +16,6 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
 class ContainerTest extends DatahandlerTest
 {
-
     /**
      * @test
      */

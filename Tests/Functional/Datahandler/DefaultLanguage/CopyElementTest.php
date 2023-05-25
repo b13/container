@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -16,7 +17,6 @@ use TYPO3\CMS\Core\Database\Connection;
 
 class CopyElementTest extends DatahandlerTest
 {
-
     /**
      * @test
      */

@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Sorting implements SingletonInterface
 {
-
     /**
      * @var Database
      */

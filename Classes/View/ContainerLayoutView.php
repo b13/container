@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Versioning\VersionState;
 
 class ContainerLayoutView extends PageLayoutView
 {
-
     /**
      * @var ContainerFactory
      */

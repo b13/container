@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DatamapHook extends DatamapDataHandlerHook
 {
-
     /**
      * @var ContainerColumnConfigurationService
      */

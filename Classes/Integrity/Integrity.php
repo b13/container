@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 
 class Integrity implements SingletonInterface
 {
-
     /**
      * @var Database
      */

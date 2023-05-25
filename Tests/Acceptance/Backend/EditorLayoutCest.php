@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -16,7 +17,6 @@ use B13\Container\Tests\Acceptance\Support\PageTree;
 
 class EditorLayoutCest
 {
-
     /**
      * @param BackendTester $I
      */

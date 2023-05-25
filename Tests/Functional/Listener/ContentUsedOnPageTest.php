@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Listener;
 
 /*
@@ -21,7 +22,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ContentUsedOnPageTest extends FunctionalTestCase
 {
-
     /**
      * @var non-empty-string[]
      */
