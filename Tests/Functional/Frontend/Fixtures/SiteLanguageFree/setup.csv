@@ -1,0 +1,10 @@
+"pages"
+,"uid","pid","title","slug","sys_language_uid","l10n_parent","l10n_source"
+,1,0,"page-1","/",0,0,0
+,2,0,"page-1-language-4","/",4,1,1
+"tt_content"
+,"uid","pid","CType","header","sys_language_uid","colPos","tx_container_parent","l18n_parent","l10n_source"
+,1,1,"b13-2cols-with-header-container","container-default",0,0,0,0,0
+,2,1,"header","header-default",0,200,1,0,0
+,3,1,"b13-2cols-with-header-container","container-translated",4,0,0,1,1
+,4,1,"header","header-translated",4,200,1,2,2
