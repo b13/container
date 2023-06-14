@@ -1,0 +1,6 @@
+"tt_content"
+,"uid","pid","CType","t3ver_wsid","t3ver_state","colPos","tx_container_parent","t3ver_oid"
+,11,1,"b13-2cols-with-header-container",1,1,0,0,0
+,12,1,"header",1,1,200,11,0,
+,13,1,"b13-2cols-with-header-container",1,-1,0,11,11,
+,14,1,"header",1,-1,200,11,12,
