@@ -58,9 +58,9 @@ class CommandMapBeforeStartHook
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
         $this->unsetInconsistentLocalizeCommands($dataHandler);
-        $this->unsetInconsistentCopyOrMoveCommands($dataHandler);
         $dataHandler->cmdmap = $this->rewriteSimpleCommandMap($dataHandler->cmdmap);
         $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
+        $this->unsetInconsistentCopyOrMoveCommands($dataHandler);
         // previously page id is used for copy/moving element at top of a container colum
         // but this leeds to wrong sorting in page context (e.g. List-Module)
         $dataHandler->cmdmap = $this->rewriteCommandMapTargetForTopAtContainer($dataHandler->cmdmap);
@@ -76,9 +76,24 @@ class CommandMapBeforeStartHook
                     if (in_array($operation, ['copy', 'move'], true) === false) {
                         continue;
                     }
+
+                    // move/copy element on top of container column
+                    // proof target element has not element as container (nested)
+                    if (isset($value['update']['tx_container_parent'])) {
+                        $targetContainerId = (int)$value['update']['tx_container_parent'];
+                        while ($targetContainerId > 0) {
+                            if ($targetContainerId === $id) {
+                                $this->logAndUnsetCmd($id, $operation, 'failed: container cannot be moved/copied into itself', $dataHandler);
+                                break;
+                            }
+                            $record = $this->database->fetchOneRecord($targetContainerId);
+                            $targetContainerId = $record['tx_container_parent'] ?? 0;
+                        }
+                    }
+
+                    // move/copy element after other element in container
+                    // proof target element has not element as container (nested)
                     if ((is_array($value) && $value['target'] < 0) || (int)$value < 0) {
-                        // move/copy element after other element
-                        // proof target element has not element as container
                         if (is_array($value)) {
                             $target = -(int)$value['target'];
                         } else {
@@ -86,20 +101,12 @@ class CommandMapBeforeStartHook
                             $target = -(int)$value;
                         }
                         $record = $this->database->fetchOneRecord($target);
-                        if (isset($record['tx_container_parent']) && (int)$record['tx_container_parent'] === $id) {
-                            $dataHandler->log(
-                                'tt_content',
-                                $id,
-                                1,
-                                0,
-                                1,
-                                $operation . ' failed: container cannot be moved/copied into itself',
-                                28
-                            );
-                            unset($dataHandler->cmdmap['tt_content'][$id][$operation]);
-                            if (!empty($dataHandler->cmdmap['tt_content'][$id])) {
-                                unset($dataHandler->cmdmap['tt_content'][$id]);
+                        while (isset($record['tx_container_parent']) && (int)$record['tx_container_parent'] > 0) {
+                            if ((int)$record['tx_container_parent'] === $id) {
+                                $this->logAndUnsetCmd($id, $operation, 'failed: container cannot be moved/copied into itself', $dataHandler);
+                                break;
                             }
+                            $record = $this->database->fetchOneRecord((int)$record['tx_container_parent']);
                         }
                     }
                 }
@@ -252,19 +259,7 @@ class CommandMapBeforeStartHook
                             }
                             $translatedContainer = $this->database->fetchOneTranslatedRecordByLocalizationParent($container['uid'], (int)$data);
                             if ($translatedContainer === null || (int)$translatedContainer['l18n_parent'] === 0) {
-                                $dataHandler->log(
-                                    'tt_content',
-                                    $id,
-                                    1,
-                                    0,
-                                    1,
-                                    'Localization failed: container is in free mode or not translated',
-                                    28
-                                );
-                                unset($dataHandler->cmdmap['tt_content'][$id][$cmd]);
-                                if (!empty($dataHandler->cmdmap['tt_content'][$id])) {
-                                    unset($dataHandler->cmdmap['tt_content'][$id]);
-                                }
+                                $this->logAndUnsetCmd($id, $cmd, 'Localization failed: container is in free mode or not translated', $dataHandler);
                             }
                         }
                     }
@@ -309,5 +304,22 @@ class CommandMapBeforeStartHook
             $data['colPos'] = (int)$colPos;
         }
         return $data;
+    }
+
+    protected function logAndUnsetCmd(int $id, string $cmd, string $message, DataHandler $dataHandler): void
+    {
+        $dataHandler->log(
+            'tt_content',
+            $id,
+            1,
+            0,
+            1,
+            $cmd . ' ' . $message,
+            28
+        );
+        unset($dataHandler->cmdmap['tt_content'][$id][$cmd]);
+        if (!empty($dataHandler->cmdmap['tt_content'][$id])) {
+            unset($dataHandler->cmdmap['tt_content'][$id]);
+        }
     }
 }
