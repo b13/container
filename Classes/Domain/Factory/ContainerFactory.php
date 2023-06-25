@@ -14,9 +14,11 @@ namespace B13\Container\Domain\Factory;
 
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Versioning\VersionState;
 
 class ContainerFactory implements SingletonInterface
 {
@@ -95,7 +97,21 @@ class ContainerFactory implements SingletonInterface
 
     protected function children(array $containerRecord, int $language): array
     {
-        return $this->database->fetchRecordsByParentAndLanguage((int)$containerRecord['uid'], $language);
+        $records = $this->database->fetchRecordsByParentAndLanguage((int)$containerRecord['uid'], $language);
+        $records = $this->workspaceOverlay($records);
+        return $records;
+    }
+
+    protected function workspaceOverlay(array $records): array
+    {
+        $filtered = [];
+        foreach ($records as $row) {
+            BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
+            if ($row && !VersionState::cast($row['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
+                $filtered[] = $row;
+            }
+        }
+        return $filtered;
     }
 
     protected function sortLocalizedRecordsByDefaultRecords(array $defaultRecords, array $localizedRecords): array

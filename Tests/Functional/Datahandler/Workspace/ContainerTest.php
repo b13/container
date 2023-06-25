@@ -460,4 +460,62 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(200, $workspaceElement['colPos']);
         self::assertTrue($workspaceElement['sorting'] > $origFirstElement['sorting']);
     }
+
+    /**
+     * @test
+     */
+    public function copyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChild(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_deleted_placeholder.csv');
+        $cmdmap = [
+            'tt_content' => [
+                10 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+
+        $copiedContainer = $this->fetchOneRecord('t3_origuid', 10);
+        //no children
+
+        $queryBuilder = $this->getQueryBuilder();
+        $possibleChild = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_container_parent',
+                    $queryBuilder->createNamedParameter($copiedContainer['uid'], \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAssociative();
+        self::assertFalse($possibleChild);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChild(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_deleted_placeholder.csv');
+        $cmdmap = [
+            'tt_content' => [
+                10 => [
+                    'delete' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        // deleted placeholder exists
+        $this->fetchOneRecord('uid', 12);
+    }
 }
