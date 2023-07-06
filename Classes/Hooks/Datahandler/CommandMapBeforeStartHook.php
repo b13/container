@@ -87,7 +87,7 @@ class CommandMapBeforeStartHook
                                 break;
                             }
                             $record = $this->database->fetchOneRecord($targetContainerId);
-                            $targetContainerId = $record['tx_container_parent'] ?? 0;
+                            $targetContainerId = (int)($record['tx_container_parent'] ?? 0);
                         }
                     }
 
