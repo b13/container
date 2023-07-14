@@ -138,7 +138,7 @@ The TypoScript is necessary to define the rendering of the container in the fron
 
 | Option                      | Description                                                                                                | Default                                                      | Parameter   |
 |-----------------------------|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|-------------|
-| `contentId`                 | id of container to to process                                                                              | current uid of content element ``$cObj->data['uid']``        | ``?ìnt``    |
+| `contentId`                 | id of container to to process                                                                              | current uid of content element ``$cObj->data['uid']``        | ``?int``    |
 | `colPos`                    | colPos of children to to process                                                                           | empty, all children are processed (as ``children_<colPos>``) | ``?int``    |
 | `as`                        | variable to use for proceesedData (only if ``colPos`` is set)                                              | ``children``                                                 | ``?string`` |
 | `skipRenderingChildContent` | do not call ``ContentObjectRenderer->render()`` for children, (``renderedContent`` in child will not exist) | empty                                                        | ``?int``    |
@@ -163,7 +163,7 @@ The html template file goes in the folder that you have defined in your TypoScri
 </f:for>
 ```
 
-With explicit colPos defined use `{children_200]201>}` as set in the example above
+With explicit colPos defined use `{children_200|201}` as set in the example above
 
 ## Concepts
 - Complete registration is done with one PHP call to TCA Registry
