@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Backend\Grid;
 
 /*
@@ -35,7 +36,7 @@ class ContainerGridColumnTest extends FunctionalTestCase
         $pageLayoutContext->expects(self::any())->method('getPageId')->willReturn(3);
         $containerGridColumn = $this->getMockBuilder($this->buildAccessibleProxy(ContainerGridColumn::class))
             ->disableOriginalConstructor()
-            ->addMethods(['foo'])
+            ->onlyMethods([])
             ->getMock();
         $containerGridColumn->_set('container', $container);
         $containerGridColumn->_set('context', $pageLayoutContext);

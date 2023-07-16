@@ -59,6 +59,19 @@ languages:
     fallbacks: '1'
     flag: ch
     languageId: '3'
+  - title: English-Free
+    enabled: true
+    base: /en-free/
+    typo3Language: default
+    locale: en_US.utf8
+    iso-639-1: en
+    navigationTitle: EN
+    hreflang: en-US
+    direction: ltr
+    fallbackType: free
+    fallbacks: '0'
+    flag: gb
+    languageId: '4'
 rootPageId: 1
 routes: {  }
 websiteTitle: 'Testing'

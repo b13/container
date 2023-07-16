@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\Workspace;
 
 /*
@@ -12,6 +13,10 @@ namespace B13\Container\Tests\Functional\Datahandler\Workspace;
  */
 
 use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\WorkspaceAspect;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerTest extends DatahandlerTest
 {
@@ -22,6 +27,48 @@ class ContainerTest extends DatahandlerTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_workspace.csv');
         $this->backendUser->setWorkspace(1);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $workspaceAspect = new WorkspaceAspect(1);
+        $context->setAspect('workspace', $workspaceAspect);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteContainerDeleteChildren(): void
+    {
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() === 10) {
+            $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_container_with_child_in_workspace10.csv');
+        } else {
+            $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_container_with_child_in_workspace.csv');
+        }
+
+        $cmdmap = [
+            'tt_content' => [
+                11 => [
+                    'delete' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder->select('uid', 'deleted')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter(12, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAssociative();
+        if ($typo3Version->getMajorVersion() === 10) {
+            self::assertSame(1, $row['deleted']);
+        } else {
+            self::assertFalse($row);
+        }
     }
 
     protected function getMovedWorkspaceRows(int $movedUid): array
@@ -412,5 +459,63 @@ class ContainerTest extends DatahandlerTest
         self::assertSame(1, $workspaceElement['tx_container_parent']);
         self::assertSame(200, $workspaceElement['colPos']);
         self::assertTrue($workspaceElement['sorting'] > $origFirstElement['sorting']);
+    }
+
+    /**
+     * @test
+     */
+    public function copyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChild(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_deleted_placeholder.csv');
+        $cmdmap = [
+            'tt_content' => [
+                10 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+
+        $copiedContainer = $this->fetchOneRecord('t3_origuid', 10);
+        //no children
+
+        $queryBuilder = $this->getQueryBuilder();
+        $possibleChild = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_container_parent',
+                    $queryBuilder->createNamedParameter($copiedContainer['uid'], \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAssociative();
+        self::assertFalse($possibleChild);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChild(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_deleted_placeholder.csv');
+        $cmdmap = [
+            'tt_content' => [
+                10 => [
+                    'delete' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        // deleted placeholder exists
+        $this->fetchOneRecord('uid', 12);
     }
 }

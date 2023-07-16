@@ -18,7 +18,6 @@ use TYPO3\CMS\Backend\View\BackendLayoutView;
 
 class ItemProcFunc
 {
-
     /**
      * @var ContainerFactory
      */

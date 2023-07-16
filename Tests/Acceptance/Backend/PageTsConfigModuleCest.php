@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Core\Information\Typo3Version;
 
 class PageTsConfigModuleCest
 {
-
     /**
      * @param BackendTester $I
      */

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -15,6 +16,87 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
 class ContainerTest extends DatahandlerTest
 {
+    /**
+     * @test
+     */
+    public function moveContainerIntoItSelfsNestedAfterElement(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_into_itselfs_nested.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => -3,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 1);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+    }
+
+    /**
+     * @test
+     */
+    public function moveContainerIntoItSelfsNestedAtTop(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_into_itselfs_nested.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 2,
+                        'update' => [
+                            'colPos' => '2-202',
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 1);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+    }
+
+    /**
+     * @test
+     */
+    public function moveContainerIntoItSelfsAtTop(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_into_itselfs_nested.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 2,
+                        'update' => [
+                            'colPos' => '1-202',
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $row = $this->fetchOneRecord('uid', 1);
+        self::assertSame(0, (int)$row['tx_container_parent']);
+        self::assertSame(0, (int)$row['colPos']);
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+    }
 
     /**
      * @test

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
 
 /*
@@ -16,7 +17,6 @@ use TYPO3\CMS\Core\Utility\StringUtility;
 
 class NewElementTest extends DatahandlerTest
 {
-
     /**
      * @test
      */

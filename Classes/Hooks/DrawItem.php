@@ -21,7 +21,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class DrawItem implements PageLayoutViewDrawItemHookInterface, SingletonInterface
 {
-
     /**
      * @var Registry
      */

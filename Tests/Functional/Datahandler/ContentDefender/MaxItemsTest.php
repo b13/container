@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
@@ -458,6 +459,25 @@ class MaxItemsTest extends DatahandlerTest
         $cmdmap = [
             'tt_content' => [
                 3 => ['localize' => 1],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $this->fetchOneRecord('t3_origuid', 3);
+        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function canCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_to_language_child_if_container_of_default_language_maxitems_reached.csv');
+        $cmdmap = [
+            'tt_content' => [
+                3 => ['copyToLanguage' => 1],
             ],
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);

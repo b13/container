@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 
 class SortingCommand extends Command
 {
-
     /**
      * @var Sorting
      */

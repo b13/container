@@ -17,7 +17,6 @@ use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 
 class TableConfigurationPostProcessing implements TableConfigurationPostProcessingHookInterface
 {
-
     /**
      * @var Registry
      */

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
 
 /*
@@ -15,7 +16,6 @@ use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
 
 class MoveElementTest extends DatahandlerTest
 {
-
     /**
      * @test
      */

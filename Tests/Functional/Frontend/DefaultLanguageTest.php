@@ -14,7 +14,6 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class DefaultLanguageTest extends AbstractFrontendTest
 {
-
     /**
      * @test
      * @group frontend
