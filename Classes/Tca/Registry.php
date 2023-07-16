@@ -29,16 +29,30 @@ class Registry implements SingletonInterface
      */
     public function configureContainer(ContainerConfiguration $containerConfiguration): void
     {
-        ExtensionManagementUtility::addTcaSelectItem(
-            'tt_content',
-            'CType',
-            [
-                'label' => $containerConfiguration->getLabel(),
-                'value' => $containerConfiguration->getCType(),
-                'icon' => $containerConfiguration->getCType(),
-                'group' => $containerConfiguration->getGroup(),
-            ]
-        );
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            ExtensionManagementUtility::addTcaSelectItem(
+                'tt_content',
+                'CType',
+                [
+                    'label' => $containerConfiguration->getLabel(),
+                    'value' => $containerConfiguration->getCType(),
+                    'icon' => $containerConfiguration->getCType(),
+                    'group' => $containerConfiguration->getGroup(),
+                ]
+            );
+        } else {
+            ExtensionManagementUtility::addTcaSelectItem(
+                'tt_content',
+                'CType',
+                [
+                    $containerConfiguration->getLabel(),
+                    $containerConfiguration->getCType(),
+                    $containerConfiguration->getCType(),
+                    $containerConfiguration->getGroup(),
+                ]
+            );
+        }
+
         if (
             (GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12 ||
             GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('fluidBasedPageModule')
@@ -51,10 +65,17 @@ class Registry implements SingletonInterface
                 if (str_contains((string)$column['colPos'], (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12)) {
                     trigger_error('delimiter ' . (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12 . ' cannot be used as colPos (will throw Exception on next major releas)', E_USER_DEPRECATED);
                 }
-                $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
-                    'label' => $column['name'],
-                    'value' => $column['colPos'],
-                ];
+                if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+                    $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
+                        'label' => $column['name'],
+                        'value' => $column['colPos'],
+                    ];
+                } else {
+                    $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
+                        $column['name'],
+                        $column['colPos'],
+                    ];
+                }
             }
         }
 
