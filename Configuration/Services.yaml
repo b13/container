@@ -105,5 +105,5 @@ services:
     tags:
       - name: 'console.command'
         command: 'container:sorting'
-        schedulable: false
+        schedulable: true
         description: Resort Content Elements
