@@ -104,13 +104,8 @@ class ContainerProcessor implements DataProcessorInterface
         $children = $container->getChildrenByColPos($colPos);
 
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
-            $contentRecordRenderer = new RecordsContentObject($cObj);
-        } else {
-            $contentRecordRenderer = new RecordsContentObject();
-            $contentRecordRenderer->setContentObjectRenderer($cObj);
-            $contentRecordRenderer->setRequest($this->getRequest());
-        }
+        $contentRecordRenderer = $cObj->getContentObject('RECORDS');
+
         $conf = [
             'tables' => 'tt_content',
         ];
