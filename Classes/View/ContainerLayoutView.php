@@ -117,7 +117,11 @@ class ContainerLayoutView extends PageLayoutView
     {
         $this->CType_labels = [];
         foreach ($GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'] as $val) {
-            $this->CType_labels[$val[1]] = $this->getLanguageService()->sL($val[0]);
+            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+                $this->CType_labels[$val['value'] ?? $val[1]] = $this->getLanguageService()->sL($val['label'] ?? $val[0]);
+            } else {
+                $this->CType_labels[$val[1]] = $this->getLanguageService()->sL($val[0]);
+            }
         }
 
         $this->itemLabels = [];
