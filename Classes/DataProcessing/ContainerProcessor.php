@@ -108,8 +108,8 @@ class ContainerProcessor implements DataProcessorInterface
             $contentRecordRenderer = new RecordsContentObject($cObj);
         } else {
             $contentRecordRenderer = new RecordsContentObject();
-            $contentRecordRenderer->setContentObjectRenderer($cObj);
             $contentRecordRenderer->setRequest($this->getRequest());
+            $contentRecordRenderer->setContentObjectRenderer($cObj);
         }
         $conf = [
             'tables' => 'tt_content',
