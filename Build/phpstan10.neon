@@ -37,14 +37,5 @@ parameters:
     - '#Cannot call method fetchAllAssociative\(\) on Doctrine\\DBAL\\Driver\\ResultStatement\|int.#'
     - '#Cannot call method fetchAssociative\(\) on Doctrine\\DBAL\\Driver\\ResultStatement\|int.#'
     -
-      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject::setRequest\(\).#'
-      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
-    -
-      message: '#Class TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject constructor invoked with 0 parameters, 1 required.#'
-      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
-    -
-      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject::setContentObjectRenderer\(\).#'
-      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
-    -
       message: '#Call to protected method getTypoScriptFrontendController\(\) of class TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer.#'
       path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
