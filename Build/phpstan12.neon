@@ -24,9 +24,6 @@ parameters:
       message: '#Method TYPO3\\CMS\\Backend\\View\\PageLayoutView::__construct\(\).* invoked with 1 parameter, 0 required.#'
       path: %currentWorkingDirectory%/Classes/View/ContainerLayoutView.php
     -
-      message: '#Class TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject does not have a constructor and must be instantiated without any parameters.#'
-      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
-    -
       message: '#Constant ORIGINAL_ROOT not found.#'
       path: %currentWorkingDirectory%/Tests
     -
