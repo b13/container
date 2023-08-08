@@ -40,9 +40,6 @@ parameters:
       message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject::setRequest\(\).#'
       path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
     -
-      message: '#Class TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject constructor invoked with 0 parameters, 1 required.#'
-      path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
-    -
       message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\ContentObject\\RecordsContentObject::setContentObjectRenderer\(\).#'
       path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
     -
