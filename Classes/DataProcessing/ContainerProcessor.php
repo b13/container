@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
-use TYPO3\CMS\Frontend\ContentObject\RecordsContentObject;
 
 class ContainerProcessor implements DataProcessorInterface
 {
@@ -103,13 +102,15 @@ class ContainerProcessor implements DataProcessorInterface
     ): array {
         $children = $container->getChildrenByColPos($colPos);
 
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         $contentRecordRenderer = $cObj->getContentObject('RECORDS');
+        if ($contentRecordRenderer === null) {
+            throw new ContainerDataProcessingFailedException('RECORDS content object not available.', 1691483526);
+        }
 
         $conf = [
             'tables' => 'tt_content',
         ];
-        if ($typo3Version->getMajorVersion() < 11) {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 11) {
             /** @var LanguageAspect $languageAspect */
             $languageAspect = $GLOBALS['TSFE']->getContext()->getAspect('language');
         } else {
