@@ -207,4 +207,28 @@ class Database implements SingletonInterface
         }
         return $rows;
     }
+
+    public function getSortingByUid(int $uid): ?int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $stm = $queryBuilder
+            ->select('sorting')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
+                )
+            )
+            ->execute();
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $row = $stm->fetch();
+        } else {
+            $row = $stm->fetchAssociative();
+        }
+        if ($row === false || !isset($row['sorting'])) {
+            return null;
+        }
+        return $row['sorting'];
+    }
 }

@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Functional\Integrity;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
 use B13\Container\Integrity\Sorting;
 use B13\Container\Tca\Registry;
@@ -48,7 +49,8 @@ class SortingTest extends FunctionalTestCase
         $sortingDatabase = GeneralUtility::makeInstance(Database::class);
         $factoryDatabase = GeneralUtility::makeInstance(\B13\Container\Domain\Factory\Database::class, $context);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class, $factoryDatabase, $containerRegistry, $context);
-        $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory);
+        $containerService = GeneralUtility::makeInstance(ContainerService::class, $containerRegistry, $containerFactory);
+        $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
     }
 
     /**
@@ -61,6 +63,20 @@ class SortingTest extends FunctionalTestCase
         self::assertTrue(count($errors) === 1, 'should get one error');
         $rows = $this->getContentsByUid();
         self::assertTrue($rows[1]['sorting'] < $rows[2]['sorting'], 'child should be sorted after container');
+    }
+
+    /**
+     * @test
+     */
+    public function nestedContainer(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/nested_container.csv');
+        $errors = $this->sorting->run(false);
+        self::assertTrue(count($errors) === 1, 'should get one error');
+        $rows = $this->getContentsByUid();
+        self::assertTrue($rows[1]['sorting'] > $rows[4]['sorting'], 'child should be sorted after container');
+        $errors = $this->sorting->run();
+        self::assertTrue(count($errors) === 1, 'no error is added error');
     }
 
     /**

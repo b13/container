@@ -15,6 +15,7 @@ namespace B13\Container\Integrity;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -37,13 +38,19 @@ class Sorting implements SingletonInterface
      */
     protected $containerFactory;
 
+    /**
+     * @var ContainerService
+     */
+    protected $containerService;
+
     protected $errors = [];
 
-    public function __construct(Database $database, Registry $tcaRegistry, ContainerFactory $containerFactory)
+    public function __construct(Database $database, Registry $tcaRegistry, ContainerFactory $containerFactory, ContainerService $containerService)
     {
         $this->database = $database;
         $this->tcaRegistry = $tcaRegistry;
         $this->containerFactory = $containerFactory;
+        $this->containerService = $containerService;
     }
 
     public function run(bool $dryRun = true): array
@@ -89,6 +96,16 @@ class Sorting implements SingletonInterface
                     return true;
                 }
                 $prevSorting = $child['sorting'];
+                if ($this->tcaRegistry->isContainerElement($child['CType'])) {
+                    $childContainer = $this->containerFactory->buildContainer((int)$child['uid']);
+                    $targetUid = (-1) * $this->containerService->getAfterContainerElementTarget($childContainer);
+                    if ($childContainer->getUid() !== $targetUid) {
+                        $sorting = $this->database->getSortingByUid($targetUid);
+                        if ($child['sorting'] <= $sorting) {
+                            $prevSorting = $sorting;
+                        }
+                    }
+                }
             }
         }
         return false;

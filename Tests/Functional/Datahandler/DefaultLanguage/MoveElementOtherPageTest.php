@@ -260,8 +260,8 @@ class MoveElementOtherPageTest extends DatahandlerTest
         $row = $this->fetchOneRecord('uid', 4);
         $lastChild = $this->fetchOneRecord('uid', 13);
         $nextElement = $this->fetchOneRecord('uid', 14);
-        self::assertTrue($row['sorting'] > $lastChild['sorting'], 'copied element is not sorted after last child container');
-        self::assertTrue($row['sorting'] < $nextElement['sorting'], 'copied element is not sorted before containers next element');
+        self::assertTrue($row['sorting'] > $lastChild['sorting'], 'moved element is not sorted after last child container');
+        self::assertTrue($row['sorting'] < $nextElement['sorting'], 'moved element is not sorted before containers next element');
     }
 
     /**
