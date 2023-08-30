@@ -39,3 +39,6 @@ parameters:
     -
       message: '#Call to protected method getTypoScriptFrontendController\(\) of class TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer.#'
       path: %currentWorkingDirectory%/Classes/DataProcessing/ContainerProcessor.php
+    -
+      message: '#Static method TYPO3\\CMS\\Core\\Core\\Bootstrap::initializeBackendUser\(\) invoked with 2 parameters.*#'
+      path: %currentWorkingDirectory%/*

@@ -15,8 +15,12 @@ namespace B13\Container\Updates;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
@@ -76,7 +80,13 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, Rep
     public function executeUpdate(): bool
     {
         if (Environment::isCli() === false) {
-            Bootstrap::initializeBackendUser();
+            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
+                $requestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
+                $request = $requestFactory::fromGlobals();
+                Bootstrap::initializeBackendUser(BackendUserAuthentication::class, $request);
+            } else {
+                Bootstrap::initializeBackendUser();
+            }
             Bootstrap::initializeBackendAuthentication();
             Bootstrap::initializeLanguageObject();
         }
