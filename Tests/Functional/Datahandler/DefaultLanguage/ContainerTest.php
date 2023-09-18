@@ -302,7 +302,7 @@ class ContainerTest extends DatahandlerTest
         $secondChild = $this->fetchOneRecord('t3_origuid', 5);
         self::assertTrue($child['sorting'] < $secondChild['sorting']);
         $container = $this->fetchOneRecord('uid', 1);
-        self::assertTrue($child['sorting'] > $container['sorting'], 'moved child is sorted before container');
+        self::assertTrue($child['sorting'] > $container['sorting'], 'copied child is sorted before container');
     }
 
     /**

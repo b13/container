@@ -39,4 +39,29 @@ class NewElementTest extends DatahandlerTest
         $lastChildInContainer = $this->fetchOneRecord('uid', 2);
         self::assertTrue($newRecord['sorting'] > $lastChildInContainer['sorting'], 'new element is not sorted after last child in container');
     }
+
+    /**
+     * @test
+     */
+    public function newElementAfterNestedContainerSortElementAfterLastChild(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/nested_container.csv');
+        $newId = StringUtility::getUniqueId('NEW');
+        $datamap = [
+            'tt_content' => [
+                $newId => [
+                    'pid' => -3,
+                    'colPos' => 201,
+                    'tx_container_parent' => 2,
+                ],
+            ],
+        ];
+        $this->dataHandler->start($datamap, [], $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+
+        $newRecord = $this->fetchOneRecord('uid', 5);
+        $lastChildInContainer = $this->fetchOneRecord('uid', 4);
+        self::assertTrue($newRecord['sorting'] > $lastChildInContainer['sorting'], 'new element is not sorted after last child in container');
+    }
 }

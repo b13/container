@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Functional\Integrity;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
 use B13\Container\Integrity\Sorting;
 use B13\Container\Tca\Registry;
@@ -49,7 +50,8 @@ class SortingWithContentDefenderTest extends FunctionalTestCase
         $sortingDatabase = GeneralUtility::makeInstance(Database::class);
         $factoryDatabase = GeneralUtility::makeInstance(\B13\Container\Domain\Factory\Database::class, $context);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class, $factoryDatabase, $containerRegistry, $context);
-        $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory);
+        $containerService = GeneralUtility::makeInstance(ContainerService::class, $containerRegistry, $containerFactory);
+        $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
     }
 
     /**

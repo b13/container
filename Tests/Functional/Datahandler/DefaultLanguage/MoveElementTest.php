@@ -254,4 +254,25 @@ class MoveElementTest extends DatahandlerTest
         self::assertSame(0, (int)$row['colPos']);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
+
+    /**
+     * @test
+     */
+    public function moveElementAfterNestedContainerHasCorrectSorting(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/nested_container.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => -3,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        $movedElementRow = $this->fetchOneRecord('uid', 1);
+        $elementInNestedContainerRow = $this->fetchOneRecord('uid', 4);
+        self::assertTrue($movedElementRow['sorting'] > $elementInNestedContainerRow['sorting'], 'moved element is not sorted after element in nested container');
+    }
 }

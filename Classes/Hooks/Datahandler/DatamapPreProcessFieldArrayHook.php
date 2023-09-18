@@ -55,12 +55,15 @@ class DatamapPreProcessFieldArrayHook
 
     protected function newElementAfterContainer(array $incomingFieldArray): array
     {
-        if (isset($incomingFieldArray['tx_container_parent']) && (int)$incomingFieldArray['tx_container_parent'] > 0) {
+        $record = $this->database->fetchOneRecord(-(int)$incomingFieldArray['pid']);
+        if ($record === null) {
+            // new elements in container have already correct target
             return $incomingFieldArray;
         }
-        $record = $this->database->fetchOneRecord(-(int)$incomingFieldArray['pid']);
-        if ($record === null || $record['tx_container_parent'] > 0) {
-            // new elements in container have already correct target
+        if (
+            (int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0) ||
+            (isset($record['t3_origuid']) && $record['t3_origuid'] > 0 && (int)$record['t3_origuid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0))
+        ) {
             return $incomingFieldArray;
         }
         if (!$this->tcaRegistry->isContainerElement($record['CType'])) {

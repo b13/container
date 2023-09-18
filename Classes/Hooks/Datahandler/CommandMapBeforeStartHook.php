@@ -122,19 +122,20 @@ class CommandMapBeforeStartHook
                     if (in_array($operation, ['copy', 'move'], true) === false) {
                         continue;
                     }
-                    if (
-                        (!isset($value['update']['tx_container_parent']) || (int)$value['update']['tx_container_parent'] === 0) &&
-                        ((is_array($value) && $value['target'] < 0) || (int)$value < 0)
-                    ) {
+                    if ((is_array($value) && $value['target'] < 0) || (int)$value < 0) {
                         if (is_array($value)) {
                             $target = -(int)$value['target'];
                         } else {
                             // simple command
                             $target = -(int)$value;
                         }
-                        $record = $this->database->fetchOneRecord($target);
-                        if ($record === null || $record['tx_container_parent'] > 0) {
+                        if ($target === (int)$value['update']['tx_container_parent']) {
                             // elements in container have already correct target
+                            continue;
+                        }
+                        $record = $this->database->fetchOneRecord($target);
+                        if ($record === null) {
+                            // should not happen
                             continue;
                         }
                         if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
