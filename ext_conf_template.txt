@@ -1,0 +1,2 @@
+# cat=behaviour; type=options[Disabled (hidden) by default=0,Enabled (not hidden) by default=1]; label=Default disabled/hidden state of child elements after copying or translating a container
+childElementsEnabledOnCopy = 0

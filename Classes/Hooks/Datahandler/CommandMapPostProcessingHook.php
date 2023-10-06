@@ -15,6 +15,7 @@ namespace B13\Container\Hooks\Datahandler;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -53,6 +54,7 @@ class CommandMapPostProcessingHook
             }
             if (count($cmd['tt_content']) > 0) {
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->neverHideAtCopy = $this->getNeverHideAtCopySetting();
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
             }
@@ -102,12 +104,23 @@ class CommandMapPostProcessingHook
                     $cmd['tt_content'][$record['uid']][$command]['update']['sys_language_uid'] = $origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'];
                 }
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->neverHideAtCopy = $this->getNeverHideAtCopySetting();
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
             }
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->endContainerProcess($origUid);
         } catch (Exception $e) {
             // nothing todo
+        }
+    }
+
+    protected function getNeverHideAtCopySetting()
+    {
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        try {
+            return (bool) $extensionConfiguration->get('container', 'childElementsEnabledOnCopy');
+        } catch (\Exception $exception) {
+            return false;
         }
     }
 }
