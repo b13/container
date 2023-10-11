@@ -258,7 +258,7 @@ class CommandMapBeforeStartHook
                                 // should not happen
                                 continue;
                             }
-                            $translatedContainer = $this->database->fetchOneTranslatedRecordByLocalizationParent($container['uid'], (int)$data);
+                            $translatedContainer = $this->database->fetchOneTranslatedRecordByLocalizationParent((int)$container['uid'], (int)$data);
                             if ($translatedContainer === null || (int)$translatedContainer['l18n_parent'] === 0) {
                                 $this->logAndUnsetCmd($id, $cmd, 'Localization failed: container is in free mode or not translated', $dataHandler);
                             }
