@@ -17,6 +17,7 @@ use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CommandMapPostProcessingHook
 {
@@ -30,8 +31,12 @@ class CommandMapPostProcessingHook
         $this->containerFactory = $containerFactory;
     }
 
-    public function processCmdmap_postProcess(string $command, string $table, int $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
+    public function processCmdmap_postProcess(string $command, string $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
+        if (!MathUtility::canBeInterpretedAsInteger($id) || (int)$id === 0) {
+            return;
+        }
+        $id = (int)$id;
         if ($table === 'tt_content' && $command === 'copy' && !empty($pasteDatamap['tt_content'])) {
             $this->copyOrMoveChildren($id, (int)$value, (int)array_key_first($pasteDatamap['tt_content']), 'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
