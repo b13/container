@@ -129,7 +129,7 @@ class CommandMapBeforeStartHook
                             // simple command
                             $target = -(int)$value;
                         }
-                        if ($target === (int)$value['update']['tx_container_parent']) {
+                        if (isset($value['update']['tx_container_parent']) && $target === (int)$value['update']['tx_container_parent']) {
                             // elements in container have already correct target
                             continue;
                         }
