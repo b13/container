@@ -28,6 +28,10 @@ class CopyContainerTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
+        if ($this->typo3MajorVersion === 12) {
+            // content_defender calls FormDataCompiler which wants access global variable TYPO3_REQUEST
+            $GLOBALS['TYPO3_REQUEST'] = null;
+        }
         $this->importCSVDataSet(__DIR__ . '/Fixtures/copy_container.csv');
     }
 
