@@ -41,9 +41,10 @@ class ContainerGridColumn extends GridColumn
         $this->newContentElementAtTopTarget = $newContentElementAtTopTarget;
     }
 
-    public function getDataColPos(): int
+    public function getDataColPos(): string
     {
-        return (int)($this->getContainerUid() . self::CONTAINER_COL_POS_DELIMITER_V12 . $this->getColumnNumber());
+        // we return a string because of 32-bit system PHP_INT_MAX
+        return (string)$this->getContainerUid() . (string)self::CONTAINER_COL_POS_DELIMITER_V12 . (string)$this->getColumnNumber();
     }
 
     public function getContainerUid(): int
