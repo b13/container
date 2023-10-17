@@ -31,6 +31,12 @@ class SortingCommand extends Command
     {
         $this->addArgument('dryrun', InputArgument::OPTIONAL, 'do not execute queries', true);
         $this->addOption('apply', null, InputOption::VALUE_NONE, 'apply migration');
+        $this->addOption(
+            'enable-logging',
+            null,
+            InputOption::VALUE_NONE,
+            'enables datahandler logging, should only use for debug issues, not in production'
+        );
     }
 
     public function __construct(Sorting $sorting, string $name = null)
@@ -47,7 +53,7 @@ class SortingCommand extends Command
         }
         Bootstrap::initializeBackendAuthentication();
         Bootstrap::initializeLanguageObject();
-        $errors = $this->sorting->run($dryrun);
+        $errors = $this->sorting->run($dryrun, $input->getOption('enable-logging'));
         foreach ($errors as $error) {
             $output->writeln($error);
         }

@@ -53,7 +53,7 @@ class Sorting implements SingletonInterface
         $this->containerService = $containerService;
     }
 
-    public function run(bool $dryRun = true): array
+    public function run(bool $dryRun = true, bool $enableLogging = false): array
     {
         $cTypes = $this->tcaRegistry->getRegisteredCTypes();
         $containerRecords = $this->database->getContainerRecords($cTypes);
@@ -67,7 +67,7 @@ class Sorting implements SingletonInterface
             }
             $this->unsetContentDefenderConfiguration($cType);
         }
-        $this->fixChildrenSorting($containerRecords, $colPosByCType, $dryRun);
+        $this->fixChildrenSorting($containerRecords, $colPosByCType, $dryRun, $enableLogging);
         return $this->errors;
     }
 
@@ -111,10 +111,10 @@ class Sorting implements SingletonInterface
         return false;
     }
 
-    protected function fixChildrenSorting(array $containerRecords, array $colPosByCType, bool $dryRun): void
+    protected function fixChildrenSorting(array $containerRecords, array $colPosByCType, bool $dryRun, bool $enableLogging): void
     {
         $datahandler = GeneralUtility::makeInstance(DataHandler::class);
-        $datahandler->enableLogging = false;
+        $datahandler->enableLogging = $enableLogging;
         foreach ($containerRecords as $containerRecord) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$containerRecord['uid']);
