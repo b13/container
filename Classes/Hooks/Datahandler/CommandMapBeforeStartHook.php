@@ -19,7 +19,6 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CommandMapBeforeStartHook
 {
@@ -289,8 +288,8 @@ class CommandMapBeforeStartHook
     protected function dataFromContainerIdColPos(array $data): array
     {
         $colPos = $data['colPos'];
-        if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-            [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
+        if (strpos((string)$colPos, ContainerGridColumn::CONTAINER_COL_POS_DELIMITER) > 0) {
+            [$containerId, $newColPos] = GeneralUtility::intExplode(ContainerGridColumn::CONTAINER_COL_POS_DELIMITER, $colPos);
             $data['colPos'] = $newColPos;
             $data['tx_container_parent'] = $containerId;
         } elseif (strpos((string)$colPos, (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12) > 0) {
