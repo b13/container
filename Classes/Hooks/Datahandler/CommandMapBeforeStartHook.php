@@ -218,7 +218,7 @@ class CommandMapBeforeStartHook
                                     'action' => 'paste',
                                     'target' => $target,
                                     'update' => [
-                                        'colPos' => $targetRecordForOperation['tx_container_parent'] . '-' . $targetRecordForOperation['colPos'],
+                                        'colPos' => $targetRecordForOperation['tx_container_parent'] . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $targetRecordForOperation['colPos'],
                                         'sys_language_uid' => $targetRecordForOperation['sys_language_uid'],
 
                                     ],
