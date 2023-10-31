@@ -10,6 +10,7 @@ namespace B13\Container\View;
  * of the License, or any later version.
  */
 
+use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
@@ -235,7 +236,7 @@ class ContainerLayoutView extends PageLayoutView
         if ($this->getBackendUser()->checkLanguageAccess($this->container->getLanguage())) {
             $content = '
                 <div class="t3-page-ce t3js-page-ce" data-page="' . $this->container->getPid() . '" id="' . StringUtility::getUniqueId() . '">
-                    <div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-' . $colPos . '-page-' . $this->container->getUid() . '-' . StringUtility::getUniqueId() . '">'
+                    <div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-' . $colPos . '-page-' . $this->container->getUid() . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . StringUtility::getUniqueId() . '">'
                 . $link
                 . '</div>
                     <div class="t3-page-ce-dropzone-available t3js-page-ce-dropzone-available"></div>
@@ -286,7 +287,7 @@ class ContainerLayoutView extends PageLayoutView
         $id = $containerRecord['pid'];
 
         // Start wrapping div
-        $content .= '<div data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '" data-language-uid="' . $currentLanguage . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $currentLanguage . ' t3-page-ce-wrapper">';
+        $content .= '<div data-colpos="' . $containerRecord['uid'] . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos . '" data-language-uid="' . $currentLanguage . '" class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-' . $currentLanguage . ' t3-page-ce-wrapper">';
         if ($allowNewContentElements) {
             $content .= $this->renderNewContentButtonAtTop($colPos);
         }
@@ -315,9 +316,9 @@ class ContainerLayoutView extends PageLayoutView
                 $singleElementHTML = '<div class="t3-page-ce t3js-page-ce t3js-page-ce-sortable ' . $statusHidden . '" id="element-tt_content-'
                     . $row['uid'] . '" data-table="tt_content" data-uid="' . $row['uid'] . '"' . $displayNone . '>' . $singleElementHTML . '</div>';
 
-                $singleElementHTML .= '<div class="t3-page-ce" data-colpos="' . $containerRecord['uid'] . '-' . $colPos . '">';
+                $singleElementHTML .= '<div class="t3-page-ce" data-colpos="' . $containerRecord['uid'] . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos . '">';
                 $singleElementHTML .= '<div class="t3js-page-new-ce t3-page-ce-wrapper-new-ce" id="colpos-' . $colPos . '-page-' . $id .
-                    '-' . StringUtility::getUniqueId() . '">';
+                    ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . StringUtility::getUniqueId() . '">';
                 // Add icon "new content element below"
                 if (!$disableMoveAndNewButtons
                     && $this->isContentEditable()

@@ -12,6 +12,7 @@ namespace B13\Container\ContentDefender;
  * of the License, or any later version.
  */
 
+use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
@@ -51,7 +52,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
         $record = $this->getRecord($sourceContentId);
         $sourceColPos = (int)$record['colPos'];
         $sourceContainerId = (int)$record['tx_container_parent'];
-        $this->copyMapping[$sourceContainerId . '-' . $sourceColPos] = [
+        $this->copyMapping[$sourceContainerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $sourceColPos] = [
             'containerId' => $containerId,
             'sourceColPos' => $sourceColPos,
             'targetColPos' => $targetColpos,
@@ -82,16 +83,16 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     public function getTargetColPosForNew(int $containerId, int $colPos): ?int
     {
-        if (isset($this->copyMapping[$containerId . '-' . $colPos])) {
-            return $this->copyMapping[$containerId . '-' . $colPos]['targetColPos'];
+        if (isset($this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos])) {
+            return $this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos]['targetColPos'];
         }
         return null;
     }
 
     public function getContainerIdForNew(int $containerId, int $colPos): ?int
     {
-        if (isset($this->copyMapping[$containerId . '-' . $colPos])) {
-            return $this->copyMapping[$containerId . '-' . $colPos]['containerId'];
+        if (isset($this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos])) {
+            return $this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos]['containerId'];
         }
         return null;
     }

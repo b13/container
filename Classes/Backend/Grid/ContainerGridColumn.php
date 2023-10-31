@@ -20,6 +20,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumn extends GridColumn
 {
+    public const CONTAINER_COL_POS_DELIMITER = '-';
+
     public const CONTAINER_COL_POS_DELIMITER_V12 = 999990;
 
     protected $container;
