@@ -38,7 +38,7 @@ class ContentUsedOnPage
     public function __invoke(IsContentUsedOnPageLayoutEvent $event): void
     {
         $record = $event->getRecord();
-        if ($record['tx_container_parent'] > 0) {
+        if ($record['tx_container_parent'] ?? 0 > 0) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$record['tx_container_parent']);
                 $columns = $this->tcaRegistry->getAvailableColumns($container->getCType());
