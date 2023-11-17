@@ -18,6 +18,7 @@ use B13\Container\Integrity\IntegrityFix;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -83,6 +84,7 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, Rep
             if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
                 $requestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
                 $request = $requestFactory::fromGlobals();
+                $request = $request->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request));
                 Bootstrap::initializeBackendUser(BackendUserAuthentication::class, $request);
             } else {
                 Bootstrap::initializeBackendUser();
