@@ -140,6 +140,7 @@ class LayoutCest
             $I->click('2 Column Container With Header');
         } else {
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('container')");
+            $I->wait(0.5);
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
         }
         $I->switchToContentFrame();
