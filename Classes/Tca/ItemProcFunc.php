@@ -48,7 +48,7 @@ class ItemProcFunc
     public function colPos(array &$parameters): void
     {
         $row = $parameters['row'];
-        if ($row['tx_container_parent'] > 0) {
+        if (($row['tx_container_parent'] ?? 0) > 0) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
@@ -80,7 +80,7 @@ class ItemProcFunc
     {
         $row = $parameters['row'];
         $items = [];
-        if ($row['tx_container_parent'] > 0) {
+        if (($row['tx_container_parent'] ?? 0) > 0) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
