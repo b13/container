@@ -74,13 +74,13 @@ services:
   B13\Container\Command\FixLanguageModeCommand:
     tags:
       - name: 'console.command'
-        command: 'container:fixLanguageModeCommand'
+        command: 'container:fixLanguageMode'
         schedulable: false
         description: connect children of connected container if possible, else disconnect container
   B13\Container\Command\FixContainerParentForConnectedModeCommand:
     tags:
       - name: 'console.command'
-        command: 'container:fixContainerParentForConnectedModeCommand'
+        command: 'container:fixContainerParentForConnectedMode'
         schedulable: false
         description: tx_container_parent of children in connected mode should point to default language container
   B13\Container\Command\DeleteChildrenWithWrongPidCommand:
@@ -92,7 +92,7 @@ services:
   B13\Container\Command\DeleteChildrenWithNonExistingParentCommand:
     tags:
       - name: 'console.command'
-        command: 'container:deleteChildrenWithNonExistingParentCommand'
+        command: 'container:deleteChildrenWithNonExistingParent'
         schedulable: false
         description: delete all child records with a non existing parent record (they are displayed as unsued)
   B13\Container\Command\IntegrityCommand:
