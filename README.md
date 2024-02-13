@@ -175,6 +175,24 @@ With explicit colPos defined use `{children_200|201}` as set in the example abov
 - Custom definitions make use of custom `colPos` values so site owners build their own elements, no fixed `colPos` given, so no interference with existing solutions
 - Each container type is just a definition for its own `CType`
 
+## CLI commands
+
+There's several CLI commands to check/fix the integrity of the containers and their children.
+
+```bash
+# Check the sorting of container children
+vendor/bin/typo3 container:sorting
+
+# Fix the sorting of container children on page 123
+vendor/bin/typo3 container:sorting --apply 123
+
+# ??
+bin/typo3 container:fixLanguageModeCommand
+bin/typo3 container:fixContainerParentForConnectedModeCommand
+bin/typo3 container:deleteChildrenWithWrongPid
+bin/typo3 container:deleteChildrenWithNonExistingParentCommand
+```
+
 ## TODOs / Proofments
 - Integrity proofment
 - List module actions
