@@ -29,7 +29,6 @@ class SortingCommand extends Command
 
     protected function configure()
     {
-        $this->addArgument('dryrun', InputArgument::OPTIONAL, 'do not execute queries', true);
         $this->addOption('apply', null, InputOption::VALUE_NONE, 'apply migration');
         $this->addOption(
             'enable-logging',
@@ -47,10 +46,8 @@ class SortingCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryrun = (bool)$input->getArgument('dryrun');
-        if ($input->getOption('apply') === true) {
-            $dryrun = false;
-        }
+        $dryrun = $input->getOption('apply') !== true;
+
         Bootstrap::initializeBackendAuthentication();
         Bootstrap::initializeLanguageObject();
         $errors = $this->sorting->run($dryrun, $input->getOption('enable-logging'));
