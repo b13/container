@@ -187,10 +187,10 @@ vendor/bin/typo3 container:sorting
 vendor/bin/typo3 container:sorting --apply 123
 
 # ??
-bin/typo3 container:fixLanguageModeCommand
-bin/typo3 container:fixContainerParentForConnectedModeCommand
+bin/typo3 container:fixLanguageMode
+bin/typo3 container:fixContainerParentForConnectedMode
 bin/typo3 container:deleteChildrenWithWrongPid
-bin/typo3 container:deleteChildrenWithNonExistingParentCommand
+bin/typo3 container:deleteChildrenWithNonExistingParent
 ```
 
 ## TODOs / Proofments
