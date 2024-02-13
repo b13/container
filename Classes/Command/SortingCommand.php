@@ -29,6 +29,7 @@ class SortingCommand extends Command
 
     protected function configure()
     {
+        $this->addArgument('pid', InputArgument::OPTIONAL, 'limit to this pid', 0);
         $this->addOption('apply', null, InputOption::VALUE_NONE, 'apply migration');
         $this->addOption(
             'enable-logging',
@@ -47,10 +48,15 @@ class SortingCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryrun = $input->getOption('apply') !== true;
+        $pid = (int)$input->getArgument('pid');
 
         Bootstrap::initializeBackendAuthentication();
         Bootstrap::initializeLanguageObject();
-        $errors = $this->sorting->run($dryrun, $input->getOption('enable-logging'));
+        $errors = $this->sorting->run(
+            $dryrun,
+            $input->getOption('enable-logging'),
+            $pid
+        );
         foreach ($errors as $error) {
             $output->writeln($error);
         }

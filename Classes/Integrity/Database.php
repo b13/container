@@ -129,7 +129,7 @@ class Database implements SingletonInterface
         return (array)$stm->fetchAllAssociative();
     }
 
-    public function getContainerRecords(array $cTypes): array
+    public function getContainerRecords(array $cTypes, ?int $pid): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
@@ -145,6 +145,14 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             );
+        if (!empty($pid)) {
+            $stm->andWhere(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
+                )
+            );
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             $stm = $stm->executeQuery();
         } else {
@@ -162,7 +170,7 @@ class Database implements SingletonInterface
         return $rows;
     }
 
-    public function getContainerRecordsFreeMode(array $cTypes): array
+    public function getContainerRecordsFreeMode(array $cTypes, ?int $pid): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
@@ -182,6 +190,14 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             );
+        if (!empty($pid)) {
+            $stm->andWhere(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
+                )
+            );
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             $stm = $stm->executeQuery();
         } else {
