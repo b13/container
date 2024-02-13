@@ -129,7 +129,7 @@ class Database implements SingletonInterface
         return (array)$stm->fetchAllAssociative();
     }
 
-    public function getContainerRecords(array $cTypes, ?int $pid): array
+    public function getContainerRecords(array $cTypes, ?int $pid = null): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
@@ -170,7 +170,7 @@ class Database implements SingletonInterface
         return $rows;
     }
 
-    public function getContainerRecordsFreeMode(array $cTypes, ?int $pid): array
+    public function getContainerRecordsFreeMode(array $cTypes, ?int $pid = null): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
