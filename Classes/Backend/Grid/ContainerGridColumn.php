@@ -30,17 +30,21 @@ class ContainerGridColumn extends GridColumn
 
     protected $newContentElementAtTopTarget;
 
+    protected bool $collapsed = false;
+
     public function __construct(
         PageLayoutContext $context,
         array $columnDefinition,
         Container $container,
         int $newContentElementAtTopTarget,
-        bool $allowNewContentElements = true
+        bool $allowNewContentElements = true,
+        bool $collapsed = false
     ) {
         parent::__construct($context, $columnDefinition);
         $this->container = $container;
         $this->allowNewContentElements = $allowNewContentElements;
         $this->newContentElementAtTopTarget = $newContentElementAtTopTarget;
+        $this->collapsed = $collapsed;
     }
 
     public function getDataColPos(): string
@@ -86,5 +90,10 @@ class ContainerGridColumn extends GridColumn
         ];
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         return (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+    }
+
+    public function getCollapsed(): bool
+    {
+        return $this->collapsed;
     }
 }

@@ -142,7 +142,11 @@ class CommandMapBeforeStartHook
                         }
                         try {
                             $container = $this->containerFactory->buildContainer((int)$record['uid']);
-                            $target = $this->containerService->getAfterContainerElementTarget($container);
+                            if ((int)$value['update']['tx_container_parent'] > 0) {
+                                $target = $this->containerService->getAfterContainerElementTarget($container);
+                            } else {
+                                continue;
+                            }
                             if (is_array($value)) {
                                 $cmd[$operation]['target'] = $target;
                             } else {

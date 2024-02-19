@@ -6,6 +6,16 @@
             <trans-unit id="container" resname="container">
                 <source>Container</source>
             </trans-unit>
+
+			<trans-unit id="collapsecontent">
+				<source>Collapse content in column</source>
+			</trans-unit>
+			<trans-unit id="expandcontent">
+				<source>Expand content in column</source>
+			</trans-unit>
+			<trans-unit id="contentcollapsed">
+				<source>This column is collapsed!</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>
