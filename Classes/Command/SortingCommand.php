@@ -57,12 +57,17 @@ class SortingCommand extends Command
             $input->getOption('enable-logging'),
             $pid
         );
-        foreach ($errors as $error) {
-            $output->writeln($error);
+
+        if ($output->isVerbose()) {
+            $output->writeln('Checking ' . ($pid > 0 ? 'page ' . $pid : 'entire pagetree') . ($dryrun ? ' [DRYRUN]' : ''));
+            foreach ($errors as $error) {
+                $output->writeln($error);
+            }
+            if (empty($errors)) {
+                $output->writeln('- all good, nothing to do here');
+            }
         }
-        if (empty($errors)) {
-            $output->writeln('migration finished');
-        }
-        return 0;
+
+        return self::SUCCESS;
     }
 }
