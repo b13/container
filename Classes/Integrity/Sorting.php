@@ -92,7 +92,7 @@ class Sorting implements SingletonInterface
             $children = $container->getChildrenByColPos($colPos);
             foreach ($children as $child) {
                 if ($child['sorting'] <= $prevSorting) {
-                    $this->errors[] = 'container uid: ' . $containerRecord['uid'] . ', pid ' . $containerRecord['pid'] . ' must be fixed';
+                    $this->errors[] = '- pid ' . $containerRecord['pid'] . ', container uid ' . $containerRecord['uid'] . ' must be fixed';
                     return true;
                 }
                 $prevSorting = $child['sorting'];
