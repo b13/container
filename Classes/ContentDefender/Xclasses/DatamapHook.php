@@ -70,6 +70,9 @@ class DatamapHook extends DatamapDataHandlerHook
                         }
                     }
                     $containerId = (int)$values['tx_container_parent'];
+                    if (isset($dataHandler->datamap['tt_content'][$id]['t3_origuid'])) {
+                        $this->containerColumnConfigurationService->setContainerIsCopied($containerId);
+                    }
                     // copyToLanguage case
                     if ((int)($values['l18n_parent'] ?? 1) === 0 &&
                         (int)($values['l10n_source'] ?? 0) > 0 &&
