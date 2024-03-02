@@ -12,9 +12,9 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 
-class CopyElementTest extends DatahandlerTest
+class CopyElementTest extends AbstractDatahandler
 {
     /**
      * @test

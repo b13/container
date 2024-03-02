@@ -10,22 +10,11 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 
-class WorkspaceTest extends AbstractFrontendTest
+class WorkspaceTest extends AbstractFrontend
 {
-    protected $typo3MajorVersion;
-
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        $this->typo3MajorVersion = $typo3Version->getMajorVersion();
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -91,11 +80,7 @@ class WorkspaceTest extends AbstractFrontendTest
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/10/container_moved_to_other_page.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -127,13 +112,8 @@ class WorkspaceTest extends AbstractFrontendTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_pages.csv');
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/10/container_moved_to_other_page.csv');
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/10/localized_container_moved_to_other_page.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_container_moved_to_other_page.csv');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de/'), $context);
         $body = (string)$response->getBody();

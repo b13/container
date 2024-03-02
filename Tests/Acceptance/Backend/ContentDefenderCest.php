@@ -141,6 +141,9 @@ class ContentDefenderCest
         $I->dontSee('Content', '#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
     }
 
+    /**
+     * @group content_defender
+     */
     public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');

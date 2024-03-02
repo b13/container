@@ -12,8 +12,6 @@ namespace B13\Container\Integrity\Error;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-
 class WrongLanguageWarning implements ErrorInterface
 {
     private const IDENTIFIER = 'WrongLanguageWarning';
@@ -61,7 +59,7 @@ class WrongLanguageWarning implements ErrorInterface
      */
     public function getSeverity(): int
     {
-        return AbstractMessage::WARNING;
+        return ErrorInterface::WARNING;
     }
 
     /**

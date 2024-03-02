@@ -12,10 +12,10 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use TYPO3\CMS\Core\Database\Connection;
 
-class CopyElementTest extends DatahandlerTest
+class CopyElementTest extends AbstractDatahandler
 {
     /**
      * @test
@@ -284,7 +284,7 @@ class CopyElementTest extends DatahandlerTest
                     $queryBuilder->createNamedParameter([1, 2], Connection::PARAM_INT_ARRAY)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertTrue(empty($rows));
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');

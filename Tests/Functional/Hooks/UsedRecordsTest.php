@@ -14,8 +14,8 @@ namespace B13\Container\Tests\Functional\Hooks;
 
 use B13\Container\Hooks\UsedRecords;
 use TYPO3\CMS\Backend\View\PageLayoutView;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -32,12 +32,6 @@ class UsedRecordsTest extends FunctionalTestCase
 
     protected function getPageLayoutView(): PageLayoutView
     {
-        if ((new Typo3Version())->getMajorVersion() < 11) {
-            $eventDispatcher = $this->getMockBuilder(EventDispatcher::class)
-                ->disableOriginalConstructor()
-                ->getMock();
-            return new PageLayoutView($eventDispatcher);
-        }
         return new PageLayoutView();
     }
 
@@ -129,10 +123,10 @@ class UsedRecordsTest extends FunctionalTestCase
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertIsArray($row);
         return $row;

@@ -18,8 +18,8 @@ use B13\Container\Integrity\Database;
 use B13\Container\Integrity\SortingInPage;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -43,7 +43,7 @@ class SortingInPageTest extends FunctionalTestCase
         parent::setUp();
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
-        Bootstrap::initializeLanguageObject();
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         $context = GeneralUtility::makeInstance(Context::class);
         $containerRegistry = GeneralUtility::makeInstance(Registry::class);
         $sortingDatabase = GeneralUtility::makeInstance(Database::class);
@@ -93,7 +93,7 @@ class SortingInPageTest extends FunctionalTestCase
         $res = $queryBuilder->select('uid', 'sorting', 'colPos')
             ->from('tt_content')
             ->orderBy('sorting')
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
         $rows = [];
         foreach ($res as $row) {

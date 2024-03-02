@@ -19,6 +19,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DeleteChildrenWithNonExistingParentCommand extends Command
 {
@@ -42,7 +44,7 @@ class DeleteChildrenWithNonExistingParentCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         Bootstrap::initializeBackendAuthentication();
-        Bootstrap::initializeLanguageObject();
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         $res = $this->integrity->run();
         foreach ($res['warnings'] as $warning) {
             if ($warning instanceof NonExistingParentWarning) {

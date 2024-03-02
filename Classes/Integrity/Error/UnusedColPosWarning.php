@@ -12,8 +12,6 @@ namespace B13\Container\Integrity\Error;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-
 class UnusedColPosWarning implements ErrorInterface
 {
     private const IDENTIFIER = 'UnusedColPosWarning';
@@ -61,6 +59,6 @@ class UnusedColPosWarning implements ErrorInterface
      */
     public function getSeverity(): int
     {
-        return AbstractMessage::WARNING;
+        return ErrorInterface::WARNING;
     }
 }

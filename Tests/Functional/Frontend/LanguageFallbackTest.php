@@ -12,7 +12,7 @@ namespace B13\Container\Tests\Functional\Frontend;
 
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class LanguageFallbackTest extends AbstractFrontendTest
+class LanguageFallbackTest extends AbstractFrontend
 {
     protected function setUp(): void
     {

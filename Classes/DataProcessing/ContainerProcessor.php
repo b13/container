@@ -16,8 +16,8 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Frontend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -35,10 +35,13 @@ class ContainerProcessor implements DataProcessorInterface
      */
     protected $contentDataProcessor;
 
-    public function __construct(ContainerFactory $containerFactory, ContentDataProcessor $contentDataProcessor)
+    protected Context $context;
+
+    public function __construct(ContainerFactory $containerFactory, ContentDataProcessor $contentDataProcessor, Context $context)
     {
         $this->containerFactory = $containerFactory;
         $this->contentDataProcessor = $contentDataProcessor;
+        $this->context = $context;
     }
 
     public function process(
@@ -110,13 +113,8 @@ class ContainerProcessor implements DataProcessorInterface
         $conf = [
             'tables' => 'tt_content',
         ];
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 11) {
-            /** @var LanguageAspect $languageAspect */
-            $languageAspect = $GLOBALS['TSFE']->getContext()->getAspect('language');
-        } else {
-            /** @var LanguageAspect $languageAspect */
-            $languageAspect = $cObj->getTypoScriptFrontendController()->getContext()->getAspect('language');
-        }
+        /** @var LanguageAspect $languageAspect */
+        $languageAspect = $this->context->getAspect('language');
         foreach ($children as &$child) {
             if (!isset($processorConfiguration['skipRenderingChildContent']) || (int)$processorConfiguration['skipRenderingChildContent'] === 0) {
                 if ($child['l18n_parent'] > 0 && $languageAspect->doOverlays()) {

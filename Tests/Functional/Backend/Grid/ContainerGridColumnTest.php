@@ -35,11 +35,9 @@ class ContainerGridColumnTest extends FunctionalTestCase
             ->getMock();
         $pageLayoutContext->expects(self::any())->method('getPageId')->willReturn(3);
         $containerGridColumn = $this->getMockBuilder($this->buildAccessibleProxy(ContainerGridColumn::class))
-            ->disableOriginalConstructor()
+            ->setConstructorArgs(['context' => $pageLayoutContext, 'columnDefinition' => [], 'container' => $container, 'newContentElementAtTopTarget' => 0])
             ->onlyMethods([])
             ->getMock();
-        $containerGridColumn->_set('container', $container);
-        $containerGridColumn->_set('context', $pageLayoutContext);
         $newContentUrl = $containerGridColumn->getNewContentUrl();
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
     }

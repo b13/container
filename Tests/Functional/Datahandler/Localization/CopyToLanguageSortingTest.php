@@ -12,9 +12,9 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 
-class CopyToLanguageSortingTest extends DatahandlerTest
+class CopyToLanguageSortingTest extends AbstractDatahandler
 {
     protected function setUp(): void
     {

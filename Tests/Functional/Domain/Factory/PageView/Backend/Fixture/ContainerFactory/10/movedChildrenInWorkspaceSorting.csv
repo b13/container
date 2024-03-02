@@ -1,7 +1,0 @@
-"tt_content"
-,"uid","pid","CType","colPos","sorting","header","tx_container_parent","t3ver_wsid","t3ver_oid","t3ver_state","t3ver_move_id"
-,101,1,"b13-2cols-with-header-container",,,,,,,,
-,102,1,"header",200,2,"live header 1",101,,,,
-,103,1,"header",200,3,"live header 2",101,,,,
-,104,1,"header",200,4,"ws header 2",101,1,103,4,
-,105,1,,200,1,"[MOVE-TO PLACEHOLDER for #102, WS#1]",101,1,0,3,103

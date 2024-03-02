@@ -28,7 +28,6 @@ setUpDockerComposeDotEnv() {
     echo "DOCKER_PHP_IMAGE=${DOCKER_PHP_IMAGE}" >> .env
     echo "TYPO3=${TYPO3}" >> .env
     echo "PHP_VERSION=${PHP_VERSION}" >> .env
-    echo "FLUID_BASED_PAGE_MODULE=${FLUID_BASED_PAGE_MODULE}" >> .env
     echo "EXTRA_TEST_OPTIONS=${EXTRA_TEST_OPTIONS}" >> .env
     echo "SCRIPT_VERBOSE=${SCRIPT_VERBOSE}" >> .env
     echo "CGLCHECK_DRY_RUN=${CGLCHECK_DRY_RUN}" >> .env
@@ -130,13 +129,12 @@ cd ../testing-docker || exit 1
 ROOT_DIR=`readlink -f ${PWD}/../../`
 TEST_SUITE="unit"
 DBMS="mariadb"
-PHP_VERSION="7.4"
+PHP_VERSION="8.2"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9000
 EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
-TYPO3="10"
-FLUID_BASED_PAGE_MODULE=0
+TYPO3="12"
 
 # Option parsing
 # Reset in case getopts has been used previously in the shell
@@ -173,9 +171,6 @@ while getopts ":s:d:p:e:t:xy:nhuvf" OPT; do
             ;;
         n)
             CGLCHECK_DRY_RUN="-n"
-            ;;
-        f)
-            FLUID_BASED_PAGE_MODULE=1
             ;;
         u)
             TEST_SUITE=update
@@ -243,12 +238,6 @@ case ${TEST_SUITE} in
     composerValidate)
         setUpDockerComposeDotEnv
         docker-compose run composer_validate
-        SUITE_EXIT_CODE=$?
-        docker-compose down
-        ;;
-    patchV10)
-        setUpDockerComposeDotEnv
-        docker-compose run patchV10
         SUITE_EXIT_CODE=$?
         docker-compose down
         ;;

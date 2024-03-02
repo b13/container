@@ -14,7 +14,7 @@ namespace B13\Container\Tests\Functional\Frontend;
 
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class DataProcessorWithFilesTest extends AbstractFrontendTest
+class DataProcessorWithFilesTest extends AbstractFrontend
 {
     protected function setUp(): void
     {

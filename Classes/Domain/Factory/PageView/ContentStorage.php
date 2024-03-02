@@ -14,8 +14,6 @@ namespace B13\Container\Domain\Factory\PageView;
 
 use B13\Container\Domain\Factory\Database;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class ContentStorage
 {
@@ -69,9 +67,6 @@ abstract class ContentStorage
     public function getContainerChildren(array $containerRecord, int $language): array
     {
         $pid = (int)$containerRecord['pid'];
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 11 && !empty($containerRecord['_ORIG_pid'])) {
-            $pid = $containerRecord['_ORIG_pid'];
-        }
         if (isset($containerRecord['t3ver_oid']) && $containerRecord['t3ver_oid'] > 0) {
             $defaultContainerRecord = $this->database->fetchOneRecord((int)$containerRecord['t3ver_oid']);
             $uid = (int)$defaultContainerRecord['uid'];

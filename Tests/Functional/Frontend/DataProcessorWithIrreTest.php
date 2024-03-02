@@ -12,7 +12,7 @@ namespace B13\Container\Tests\Functional\Frontend;
 
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class DataProcessorWithIrreTest extends AbstractFrontendTest
+class DataProcessorWithIrreTest extends AbstractFrontend
 {
     public function setUp(): void
     {

@@ -12,10 +12,10 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
-class NewElementTest extends DatahandlerTest
+class NewElementTest extends AbstractDatahandler
 {
     /**
      * @test

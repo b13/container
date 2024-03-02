@@ -12,9 +12,12 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class DefaultLanguageTest extends DatahandlerTest
+class DefaultLanguageTest extends AbstractDatahandler
 {
     /**
      * @var non-empty-string[]
@@ -28,7 +31,7 @@ class DefaultLanguageTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
-        if ($this->typo3MajorVersion === 12) {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
             // content_defender calls FormDataCompiler which wants access global variable TYPO3_REQUEST
             $GLOBALS['TYPO3_REQUEST'] = null;
         }
@@ -129,11 +132,11 @@ class DefaultLanguageTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     't3_origuid',
-                    $queryBuilder->createNamedParameter(71, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(71, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
         self::assertFalse($row, 'element should not be copied');
     }
 
