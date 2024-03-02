@@ -15,7 +15,7 @@ namespace B13\Container\Tests\Functional\Integrity;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
-use B13\Container\Integrity\Sorting;
+use B13\Container\Integrity\SortingInPage;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Bootstrap;
@@ -23,10 +23,10 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class SortingTest extends FunctionalTestCase
+class SortingInPageTest extends FunctionalTestCase
 {
     /**
-     * @var Sorting
+     * @var SortingInPage
      */
     protected $sorting;
 
@@ -50,57 +50,41 @@ class SortingTest extends FunctionalTestCase
         $factoryDatabase = GeneralUtility::makeInstance(\B13\Container\Domain\Factory\Database::class, $context);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class, $factoryDatabase, $containerRegistry, $context);
         $containerService = GeneralUtility::makeInstance(ContainerService::class, $containerRegistry, $containerFactory);
-        $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
+        $this->sorting = GeneralUtility::makeInstance(SortingInPage::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
     }
 
     /**
      * @test
      */
-    public function childBeforeContainerIsSortedAfterContainer(): void
+    public function containerIsSortedAfterChildOfPreviousContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/child_is_before_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/container_is_sorted_before_child_of_previous_container.csv');
         $errors = $this->sorting->run(false);
         self::assertTrue(count($errors) === 1, 'should get one error');
         $rows = $this->getContentsByUid();
-        self::assertTrue($rows[1]['sorting'] < $rows[2]['sorting'], 'child should be sorted after container');
+        self::assertTrue($rows[2]['sorting'] > $rows[3]['sorting'], 'container should be sorted after child of previous container');
     }
 
     /**
      * @test
      */
-    public function nestedContainer(): void
+    public function containerIsSortedAfterChildOfPreviousContainerWithChangedChildrenSorting(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/nested_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/container_is_sorted_before_child_of_previous_container_with_changed_children_sorting.csv');
         $errors = $this->sorting->run(false);
         self::assertTrue(count($errors) === 1, 'should get one error');
         $rows = $this->getContentsByUid();
-        self::assertTrue($rows[1]['sorting'] > $rows[4]['sorting'], 'child should be sorted after container');
+        self::assertTrue($rows[2]['sorting'] > $rows[3]['sorting'], 'container should be sorted after child of previous container');
+    }
+
+    /**
+     * @test
+     */
+    public function nothingDoneForAlreadyCorrectSorted(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/correct_sorted.csv');
         $errors = $this->sorting->run();
-        self::assertTrue(count($errors) === 1, 'no error is added error');
-    }
-
-    /**
-     * @test
-     */
-    public function childSecondColIsSortedAfterChildInFirstCol(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/child_in_second_col_is_before_child_in_first_col.csv');
-        $errors = $this->sorting->run(false);
-        self::assertTrue(count($errors) === 1, 'should get one error');
-        $rows = $this->getContentsByUid();
-        self::assertTrue($rows[3]['sorting'] < $rows[2]['sorting'], 'child in second col should be sorted after child in first col');
-    }
-
-    /**
-     * @test
-     */
-    public function translatedChildInFreeModeBeforeContainerIsSortedAfterContainer(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/translated_child_in_free_mode_is_before_container.csv');
-        $errors = $this->sorting->run(false);
-        self::assertTrue(count($errors) === 1, 'should get one error');
-        $rows = $this->getContentsByUid();
-        self::assertTrue($rows[1]['sorting'] < $rows[2]['sorting'], 'child should be sorted after container');
+        self::assertTrue(count($errors) === 0, 'should get no error');
     }
 
     protected function getContentsByUid(): array
@@ -108,6 +92,7 @@ class SortingTest extends FunctionalTestCase
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $res = $queryBuilder->select('uid', 'sorting', 'colPos')
             ->from('tt_content')
+            ->orderBy('sorting')
             ->execute()
             ->fetchAllAssociative();
         $rows = [];

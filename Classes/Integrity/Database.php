@@ -129,6 +129,54 @@ class Database implements SingletonInterface
         return (array)$stm->fetchAllAssociative();
     }
 
+    public function getNonContainerChildrenPerColPos(array $containerUsedColPosArray, ?int $pid = null): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $stm = $queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->notIn(
+                    'colPos',
+                    $queryBuilder->createNamedParameter($containerUsedColPosArray, Connection::PARAM_INT_ARRAY)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                )
+            );
+        if (!empty($pid)) {
+            $stm->andWhere(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
+                )
+            );
+        }
+        $stm->orderBy('pid');
+        $stm->addOrderBy('colPos');
+        $stm->addOrderBy('sorting');
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
+            $stm = $stm->executeQuery();
+        } else {
+            $stm = $stm->execute();
+        }
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
+            $results = $stm->fetchAll();
+        } else {
+            $results = $stm->fetchAllAssociative();
+        }
+        $rows = [];
+        foreach ($results as $result) {
+            $key = $result['pid'] . '-' . $result['colPos'];
+            if (!isset($rows[$key])) {
+                $rows[$key] = [];
+            }
+            $rows[$key][$result['uid']] = $result;
+        }
+        return $rows;
+    }
+
     public function getContainerRecords(array $cTypes, ?int $pid = null): array
     {
         $queryBuilder = $this->getQueryBuilder();

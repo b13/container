@@ -35,7 +35,7 @@ class SortingWithContentDefenderTest extends FunctionalTestCase
     ];
 
     /**
-     * @var sorting
+     * @var Sorting
      */
     protected $sorting;
 

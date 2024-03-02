@@ -107,3 +107,9 @@ services:
         command: 'container:sorting'
         schedulable: false
         description: Resort Content Elements
+  B13\Container\Command\SortingInPageCommand:
+    tags:
+      - name: 'console.command'
+        command: 'container:sorting-in-page'
+        schedulable: false
+        description: Resort Content Elements
