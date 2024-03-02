@@ -186,6 +186,9 @@ vendor/bin/typo3 container:sorting
 # Fix the sorting of container children on page 123
 vendor/bin/typo3 container:sorting --apply 123
 
+# Check the sorting of records in page colPos
+vendor/bin/typo3 container:sorting-in-page
+
 # ??
 bin/typo3 container:fixLanguageMode
 bin/typo3 container:fixContainerParentForConnectedMode
