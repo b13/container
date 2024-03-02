@@ -12,10 +12,12 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
-class MaxItemsTest extends DatahandlerTest
+class MaxItemsTest extends AbstractDatahandler
 {
     /**
      * @var non-empty-string[]
@@ -29,7 +31,7 @@ class MaxItemsTest extends DatahandlerTest
     protected function setUp(): void
     {
         parent::setUp();
-        if ($this->typo3MajorVersion === 12) {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
             // content_defender calls FormDataCompiler which wants access global variable TYPO3_REQUEST
             $GLOBALS['TYPO3_REQUEST'] = null;
         }
@@ -137,7 +139,7 @@ class MaxItemsTest extends DatahandlerTest
                     $queryBuilder->createNamedParameter(2)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
@@ -169,7 +171,7 @@ class MaxItemsTest extends DatahandlerTest
                     $queryBuilder->createNamedParameter(2)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
@@ -206,7 +208,7 @@ class MaxItemsTest extends DatahandlerTest
                     $queryBuilder->createNamedParameter($newId)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertIsArray($row);
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
@@ -243,7 +245,7 @@ class MaxItemsTest extends DatahandlerTest
                     $queryBuilder->createNamedParameter($newId)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertFalse($row);
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');

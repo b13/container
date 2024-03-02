@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\RepeatableInterface;
@@ -90,7 +91,7 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, Rep
                 Bootstrap::initializeBackendUser();
             }
             Bootstrap::initializeBackendAuthentication();
-            Bootstrap::initializeLanguageObject();
+            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         }
         $res = $this->integrity->run();
         foreach ($res['errors'] as $error) {

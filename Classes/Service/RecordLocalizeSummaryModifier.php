@@ -17,7 +17,6 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -105,7 +104,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
             return [];
         }
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('uid', 'l18n_parent')
+        $rows = $queryBuilder->select('uid', 'l18n_parent')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->in(
@@ -116,17 +115,9 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                     'CType',
                     $queryBuilder->createNamedParameter($containerCTypes, Connection::PARAM_STR_ARRAY)
                 )
-            );
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            $rows = $stm->fetchAll();
-        } else {
-            $rows = $stm->fetchAllAssociative();
-        }
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
         $containerUids = [];
         foreach ($rows as $row) {
             $containerUids[] = $row['uid'];
@@ -141,7 +132,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
     {
         $containerChildren = [];
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
+        $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->in(
@@ -150,19 +141,11 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
                 ),
                 $queryBuilder->expr()->neq(
                     'tx_container_parent',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
-            );
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            $rows = $stm->fetchAll();
-        } else {
-            $rows = $stm->fetchAllAssociative();
-        }
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
         foreach ($rows as $row) {
             $containerChildren[$row['uid']] = $row;
         }

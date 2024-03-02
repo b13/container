@@ -14,14 +14,11 @@ use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ContainerFactoryTest extends FunctionalTestCase
 {
-    protected $typo3MajorVersion;
-
     /**
      * @var non-empty-string[]
      */
@@ -34,21 +31,6 @@ class ContainerFactoryTest extends FunctionalTestCase
      * @var non-empty-string[]
      */
     protected array $coreExtensionsToLoad = ['workspaces'];
-
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        $this->typo3MajorVersion = $typo3Version->getMajorVersion();
-    }
-
-    protected function getWorkspaceIdField(): string
-    {
-        if ($this->typo3MajorVersion < 11) {
-            return '_ORIG_uid';
-        }
-        return 'uid';
-    }
 
     /**
      * @test
@@ -69,12 +51,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function movedElementIntoOtherContainerInWorkspace(): void
     {
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/movedElementIntoOtherContainerInWorkspace.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.csv');
-        }
-
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
@@ -85,7 +62,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $children = $container->getChildrenByColPos(201);
         self::assertSame(1, count($children));
         $first = $children[0];
-        self::assertSame(104, $first[$this->getWorkspaceIdField()]);
+        self::assertSame(104, $first['uid']);
     }
 
     /**
@@ -110,11 +87,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function containerRespectSortingOfMovedChildrenInWorkspace(): void
     {
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/movedChildrenInWorkspaceSorting.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.csv');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
@@ -122,7 +95,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $children = $container->getChildrenByColPos(200);
         self::assertSame(2, count($children));
         $first = $children[0];
-        self::assertSame(104, $first[$this->getWorkspaceIdField()]);
+        self::assertSame(104, $first['uid']);
         $second = $children[1];
         self::assertSame(102, $second['uid']);
     }
@@ -132,11 +105,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function containerHoldsMovedChildrenInWorkspaceWithTranslation(): void
     {
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/movedChildrenInWorkspaceWithTranslation.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceWithTranslation.csv');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceWithTranslation.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         $languageAspect = GeneralUtility::makeInstance(LanguageAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
@@ -149,7 +118,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $children = $container->getChildrenByColPos(202);
         self::assertSame(1, count($children));
         $first = $children[0];
-        self::assertSame(110, $first[$this->getWorkspaceIdField()]);
+        self::assertSame(110, $first['uid']);
     }
 
     /**
@@ -157,11 +126,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function containerHoldsCopiedChildrenInWorkspace(): void
     {
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/copiedChildrenInWorkspace.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/copiedChildrenInWorkspace.csv');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/copiedChildrenInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
@@ -173,9 +138,6 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(1, count($children));
         $first = $children[0];
         self::assertSame(104, $first['uid']);
-        if ($this->typo3MajorVersion < 11) {
-            self::assertSame(105, $first['_ORIG_uid']);
-        }
     }
 
     /**
@@ -183,25 +145,16 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function containerHoldsChildrenWhenMovedToOtherPage(): void
     {
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/container_moved_to_other_page.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
-        if ($this->typo3MajorVersion < 11) {
-            // default record uid
-            $container = $containerFactory->buildContainer(200);
-        } else {
-            // versioned record uid
-            $container = $containerFactory->buildContainer(203);
-        }
+        // versioned record uid
+        $container = $containerFactory->buildContainer(203);
         $children = $container->getChildrenByColPos(201);
         self::assertSame(1, count($children));
         $first = $children[0];
-        self::assertSame(205, $first[$this->getWorkspaceIdField()]);
+        self::assertSame(205, $first['uid']);
     }
 
     /**
@@ -209,26 +162,16 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     public function containerHoldsLocalizedChildrenWhenMovedToOtherPage(): void
     {
-        if ($this->typo3MajorVersion < 11) {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/container_moved_to_other_page.csv');
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/10/localized_container_moved_to_other_page.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
-            $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localized_container_moved_to_other_page.csv');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localized_container_moved_to_other_page.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
-        if ($this->typo3MajorVersion < 11) {
-            // default record uid
-            $container = $containerFactory->buildContainer(210);
-        } else {
-            // versioned record uid
-            $container = $containerFactory->buildContainer(213);
-        }
+        // versioned record uid
+        $container = $containerFactory->buildContainer(213);
         $children = $container->getChildrenByColPos(201);
         self::assertSame(1, count($children));
         $first = $children[0];
-        self::assertSame(215, $first[$this->getWorkspaceIdField()]);
+        self::assertSame(215, $first['uid']);
     }
 }

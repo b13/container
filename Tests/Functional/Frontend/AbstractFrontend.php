@@ -11,13 +11,11 @@ namespace B13\Container\Tests\Functional\Frontend;
  */
 
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-abstract class AbstractFrontendTest extends FunctionalTestCase
+abstract class AbstractFrontend extends FunctionalTestCase
 {
     /**
      * @var non-empty-string[]
@@ -59,9 +57,6 @@ abstract class AbstractFrontendTest extends FunctionalTestCase
 
     protected function executeFrontendRequestWrapper(InternalRequest $request, InternalRequestContext $context = null, bool $followRedirects = false): ResponseInterface
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 11) {
-            return $this->executeFrontendRequest($request, $context, $followRedirects);
-        }
         return $this->executeFrontendSubRequest($request, $context, $followRedirects);
     }
 }

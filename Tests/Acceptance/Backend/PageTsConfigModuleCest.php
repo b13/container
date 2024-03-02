@@ -33,6 +33,9 @@ class PageTsConfigModuleCest
         if ($typo3Version->getMajorVersion() < 12) {
             $scenario->skip('InfoModuleCest is used');
         }
+        if ($typo3Version->getMajorVersion() > 12) {
+            $scenario->skip('(no PageTsConfig required');
+        }
         $I->click('Page TSconfig');
         $I->waitForElement('#typo3-pagetree-tree .nodes .node');
         $pageTree->openPath(['home', 'pageWithContainer-6']);
@@ -46,6 +49,6 @@ class PageTsConfigModuleCest
         $I->waitForText('Configuration');
         $I->click('Configuration');
         $I->waitForText('b13-2cols-with-header-container');
-        $I->see('b13-2cols-with-header-container = EXT:container/Resources/Private/Templates/Container.html');
+        $I->see('b13-2cols-with-header-container');
     }
 }

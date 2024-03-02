@@ -11,18 +11,16 @@ namespace B13\Container\Tests\Functional\Datahandler;
  */
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-abstract class DatahandlerTest extends FunctionalTestCase
+abstract class AbstractDatahandler extends FunctionalTestCase
 {
-    protected $typo3MajorVersion;
-
     /**
      * @var DataHandler
      */
@@ -46,13 +44,6 @@ abstract class DatahandlerTest extends FunctionalTestCase
      */
     protected array $coreExtensionsToLoad = ['workspaces'];
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        $this->typo3MajorVersion = $typo3Version->getMajorVersion();
-    }
-
     protected function linkSiteConfigurationIntoTestInstance(): void
     {
         $from = ORIGINAL_ROOT . '../../Build/sites';
@@ -71,13 +62,10 @@ abstract class DatahandlerTest extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        if ($this->typo3MajorVersion === 10) {
-            $this->importCSVDataSet(__DIR__ . '/../Fixtures/sys_language_for_v10.csv');
-        }
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
         $this->backendUser = $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $GLOBALS['BE_USER'] = $this->backendUser;
-        Bootstrap::initializeLanguageObject();
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
     }
 
@@ -104,10 +92,10 @@ abstract class DatahandlerTest extends FunctionalTestCase
             ->where(
                 $queryBuilder->expr()->eq(
                     $field,
-                    $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($id, Connection::PARAM_INT)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertIsArray($row, 'cannot fetch row for field ' . $field . ' with id ' . $id);
         return $row;

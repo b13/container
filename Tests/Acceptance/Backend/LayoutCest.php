@@ -158,6 +158,41 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
+    public function canCreateContainerContentElementSaveAndClose(BackendTester $I, PageTree $pageTree)
+    {
+        $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+        $pageTree->openPath(['home', 'emptyPage']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->waitForText('Content');
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Content');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
+        }
+        $I->switchToIFrame();
+        $I->waitForElement('.modal-dialog');
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Container');
+            // b13-2cols
+            $I->click('2 Column Some Description of the Container');
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('container')");
+            $I->wait(0.5);
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
+        }
+        $I->switchToContentFrame();
+        $I->waitForText('2-cols-left');
+        $I->canSee('2-cols-left', '.t3-grid-container');
+    }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
+     */
     public function canDragAndDropElementOutsideIntoContainer(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
@@ -196,12 +231,18 @@ class LayoutCest
         // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
-        $I->waitForText('Header Only');
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
+            $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('header ')");
+            $I->waitForText('Header Only');
+            if ($typo3Version->getMajorVersion() < 13) {
+                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            } else {
+                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+            }
         }
         $I->switchToContentFrame();
         $I->see('header [200]');
@@ -224,31 +265,29 @@ class LayoutCest
         $dataColPos = $I->getDataColPos(1, 200);
         $I->waitForElement('#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
         $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
-        if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->dontSee('english', $selector);
-        } else {
-            $I->dontSeeElement($selector . ' .t3js-flag[title="english"]');
-        }
+        $I->dontSeeElement($selector . ' .t3js-flag[title="english"]');
         $I->click('Content', '#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
-        $I->waitForText('Header Only');
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
+            $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('header ')");
+            $I->waitForText('Header Only');
+            if ($typo3Version->getMajorVersion() < 13) {
+                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            } else {
+                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+            }
         }
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->see('english', $selector);
-        } else {
-            $I->canSeeElement($selector . ' .t3js-flag[title="english"]');
-        }
+        $I->canSeeElement($selector . ' .t3js-flag[title="english"]');
     }
 
     /**
@@ -284,23 +323,25 @@ class LayoutCest
         $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
-        $I->waitForText('Header Only');
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
+            $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('header ')");
+            $I->waitForText('Header Only');
+            if ($typo3Version->getMajorVersion() < 13) {
+                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            } else {
+                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+            }
         }
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->see('german', $selector);
-        } else {
-            $I->canSeeElement($selector . ' .t3js-flag[title="german"]');
-        }
+        $I->canSeeElement($selector . ' .t3js-flag[title="german"]');
     }
 
     /**
@@ -323,29 +364,21 @@ class LayoutCest
         } else {
             $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
         }
-        if ((new Typo3Version())->getMajorVersion() > 10) {
-            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-                $I->waitForElement('select[name="languageMenu"]');
-                $I->selectOption('select[name="languageMenu"]', 'All languages');
-            } else {
-                $I->waitForText('Language');
-                $I->click('Language');
-                $I->waitForText('All languages');
-                $I->click('All languages');
-            }
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+            $I->waitForElement('select[name="languageMenu"]');
+            $I->selectOption('select[name="languageMenu"]', 'All languages');
+        } else {
+            $I->waitForText('Language');
+            $I->click('Language');
+            $I->waitForText('All languages');
+            $I->click('All languages');
         }
         $I->waitForElementVisible('a.t3js-localize');
         $I->click('a.t3js-localize');
 
         $I->switchToIFrame();
         $I->waitForElement('.t3js-localization-option');
-        if ((new Typo3Version())->getMajorVersion() < 11) {
-            $I->click('.t3js-localization-option');
-            $I->click('Next');
-            $I->waitForElement('div[data-slide="localize-summary"]');
-        } else {
-            $I->waitForElement('div[data-bs-slide="localize-summary"]');
-        }
+        $I->waitForElement('div[data-bs-slide="localize-summary"]');
         $I->waitForText('(212) headerOfChild');
     }
 
@@ -367,12 +400,7 @@ class LayoutCest
 
         $I->waitForElement('select[name="_langSelector"]');
         $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
-        $typo3Version = new Typo3Version();
-        if ($typo3Version->getMajorVersion() === 10) {
-            $I->see('[Translate to language-1:] headerOfChild');
-        } else {
-            $I->see('[Translate to german:] headerOfChild');
-        }
+        $I->see('[Translate to german:] headerOfChild');
     }
 
     /**

@@ -6,10 +6,14 @@ parameters:
     - %currentWorkingDirectory%/Tests
 
   excludePaths:
+    - %currentWorkingDirectory%/Classes/ContentDefender
+    - %currentWorkingDirectory%/Tests/Functional/Datahandler/ContentDefender
     - %currentWorkingDirectory%/Classes/Hooks/TableConfigurationPostProcessing.php
     - %currentWorkingDirectory%/Classes/Hooks/UsedRecords.php
     - %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
     - %currentWorkingDirectory%/Tests/Unit/Hooks/UsedRecordsTest.php
+    - %currentWorkingDirectory%/Classes/Hooks/WizardItems.php
+    - %currentWorkingDirectory%/Classes/Listener/PageTsConfig.php
 
   ignoreErrors:
     -
@@ -25,3 +29,9 @@ parameters:
       message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
       path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
     - '#Constant LF not found.#'
+    -
+      message: '#Class TYPO3\\CMS\\Core\\Database\\Query\\Restriction\\FrontendWorkspaceRestriction not found.#'
+      path: %currentWorkingDirectory%/Classes/Domain/Factory/Database.php
+    -
+      message: '#.* TYPO3\\CMS\\Core\\Domain\\Repository\\PageRepository::getRecordOverlay\(\) .*#'
+      path: %currentWorkingDirectory%/Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php

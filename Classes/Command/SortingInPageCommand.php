@@ -19,6 +19,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SortingInPageCommand extends Command
 {
@@ -51,7 +53,7 @@ class SortingInPageCommand extends Command
         $pid = (int)$input->getArgument('pid');
 
         Bootstrap::initializeBackendAuthentication();
-        Bootstrap::initializeLanguageObject();
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         $errors = $this->sorting->run(
             $dryrun,
             $input->getOption('enable-logging'),

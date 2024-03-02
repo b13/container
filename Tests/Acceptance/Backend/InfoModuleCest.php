@@ -46,6 +46,6 @@ class InfoModuleCest
         $I->selectOption('select[name="' . $selectbox1Name . '"]', 'Page TSconfig');
         $I->waitForElement('select[name="' . $selectbox2Name . '"]');
         $I->selectOption('select[name="' . $selectbox2Name . '"]', 99);
-        $I->see('b13-2cols-with-header-container = EXT:container/Resources/Private/Templates/Container.html');
+        $I->see('b13-2cols-with-header-container');
     }
 }

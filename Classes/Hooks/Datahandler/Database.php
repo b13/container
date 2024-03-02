@@ -18,7 +18,6 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -37,24 +36,16 @@ class Database implements SingletonInterface
     public function fetchOneRecord(int $uid): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
+        $record = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                 )
-            );
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            $record = $stm->fetch();
-        } else {
-            $record = $stm->fetchAssociative();
-        }
+            )
+            ->executeQuery()
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }
@@ -64,50 +55,36 @@ class Database implements SingletonInterface
     public function fetchOverlayRecords(array $record): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
+        $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'l18n_parent',
                     $queryBuilder->createNamedParameter((int)$record['uid'], Connection::PARAM_INT)
                 )
-            );
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            return (array)$stm->fetchAll();
-        }
-        return (array)$stm->fetchAllAssociative();
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $rows;
     }
 
     public function fetchOneTranslatedRecordByl10nSource(int $uid, int $language): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
+        $record = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'l10n_source',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
                 )
-            );
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            $record = $stm->fetch();
-        } else {
-            $record = $stm->fetchAssociative();
-        }
+            )
+            ->executeQuery()
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }
@@ -117,28 +94,20 @@ class Database implements SingletonInterface
     public function fetchOneTranslatedRecordByLocalizationParent(int $uid, int $language): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
+        $record = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'l18n_parent',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
                 )
-            );
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            $record = $stm->fetch();
-        } else {
-            $record = $stm->fetchAssociative();
-        }
+            )
+            ->executeQuery()
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }
@@ -148,67 +117,53 @@ class Database implements SingletonInterface
     public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
+        $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'tx_container_parent',
-                    $queryBuilder->createNamedParameter($parent, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($parent, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->orderBy('sorting', 'ASC');
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            return (array)$stm->fetchAll();
-        }
-        return (array)$stm->fetchAllAssociative();
+            ->orderBy('sorting', 'ASC')
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $rows;
     }
 
     public function fetchContainerRecordLocalizedFreeMode(int $defaultUid, int $language): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
+        $record = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'l10n_source',
-                    $queryBuilder->createNamedParameter($defaultUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($defaultUid, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'l18n_parent',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
-            );
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            $stm = $stm->executeQuery();
-        } else {
-            $stm = $stm->execute();
-        }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 10) {
-            $record = $stm->fetch();
-        } else {
-            $record = $stm->fetchAssociative();
-        }
+            )
+            ->executeQuery()
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }

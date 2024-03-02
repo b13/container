@@ -12,13 +12,13 @@ namespace B13\Container\Tests\Functional\Datahandler\Workspace;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
-use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ContainerTest extends DatahandlerTest
+class ContainerTest extends AbstractDatahandler
 {
     protected function setUp(): void
     {
@@ -37,13 +37,7 @@ class ContainerTest extends DatahandlerTest
      */
     public function deleteContainerDeleteChildren(): void
     {
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() === 10) {
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_container_with_child_in_workspace10.csv');
-        } else {
-            $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_container_with_child_in_workspace.csv');
-        }
-
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_container_with_child_in_workspace.csv');
         $cmdmap = [
             'tt_content' => [
                 11 => [
@@ -59,16 +53,12 @@ class ContainerTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter(12, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(12, Connection::PARAM_INT)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
-        if ($typo3Version->getMajorVersion() === 10) {
-            self::assertSame(1, $row['deleted']);
-        } else {
-            self::assertFalse($row);
-        }
+        self::assertFalse($row);
     }
 
     protected function getMovedWorkspaceRows(int $movedUid): array
@@ -79,23 +69,11 @@ class ContainerTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     't3_origuid',
-                    $queryBuilder->createNamedParameter($movedUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($movedUid, Connection::PARAM_INT)
                 )
             );
-        if ($this->typo3MajorVersion < 11) {
-            $stm->orWhere(
-                $queryBuilder->expr()->eq(
-                    't3ver_move_id',
-                    $queryBuilder->createNamedParameter($movedUid, \PDO::PARAM_INT)
-                )
-            );
-        }
-        $rows = $stm->execute()->fetchAll();
-        if ($this->typo3MajorVersion < 11) {
-            self::assertSame(2, count($rows));
-        } else {
-            self::assertSame(1, count($rows));
-        }
+        $rows = $stm->executeQuery()->fetchAllAssociative();
+        self::assertSame(1, count($rows));
         return $rows;
     }
 
@@ -107,16 +85,12 @@ class ContainerTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     't3_origuid',
-                    $queryBuilder->createNamedParameter($copiedUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($copiedUid, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAll();
-        if ($this->typo3MajorVersion < 11) {
-            self::assertSame(2, count($rows));
-        } else {
-            self::assertSame(1, count($rows));
-        }
+            ->executeQuery()
+            ->fetchAllAssociative();
+        self::assertSame(1, count($rows));
         return $rows;
     }
 
@@ -146,10 +120,10 @@ class ContainerTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     't3ver_oid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(2, Connection::PARAM_INT)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertFalse($row);
     }
@@ -407,14 +381,14 @@ class ContainerTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     't3_origuid',
-                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertIsArray($containerRow);
         $rows = $this->getCopiedWorkspaceRows(2);
@@ -449,13 +423,7 @@ class ContainerTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $origFirstElement = $this->fetchOneRecord('uid', 2);
-        if ($this->typo3MajorVersion < 11) {
-            // we have to consider the moved placeholder
-            $workspaceElement = $this->fetchOneRecord('t3ver_move_id', 5);
-        } else {
-            // will not work in v10
-            $workspaceElement = $this->fetchOneRecord('t3ver_oid', 5);
-        }
+        $workspaceElement = $this->fetchOneRecord('t3ver_oid', 5);
         self::assertSame(1, $workspaceElement['tx_container_parent']);
         self::assertSame(200, $workspaceElement['colPos']);
         self::assertTrue($workspaceElement['sorting'] > $origFirstElement['sorting']);
@@ -492,10 +460,10 @@ class ContainerTest extends DatahandlerTest
             ->where(
                 $queryBuilder->expr()->eq(
                     'tx_container_parent',
-                    $queryBuilder->createNamedParameter($copiedContainer['uid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($copiedContainer['uid'], Connection::PARAM_INT)
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
         self::assertFalse($possibleChild);
     }

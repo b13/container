@@ -13,12 +13,9 @@ namespace B13\Container\Tests\Acceptance\Support\Extension;
  */
 
 use Codeception\Event\SuiteEvent;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Acceptance\Extension\BackendEnvironment;
-use TYPO3\TestingFramework\Core\Functional\Framework\DataHandling\DataSet;
-use TYPO3\TestingFramework\Core\Testbase;
 
 class BackendContainerEnvironment extends BackendEnvironment
 {
@@ -44,9 +41,6 @@ class BackendContainerEnvironment extends BackendEnvironment
             'typo3conf/ext/container',
             'typo3conf/ext/container_example',
             'typo3conf/ext/content_defender',
-        ],
-        'configurationToUseInTestInstance' => [
-            'SYS' => ['features' => ['fluidBasedPageModule' => false]],
         ],
         'csvDatabaseFixtures' => [
             __DIR__ . '/../../Fixtures/be_users.csv',
@@ -75,52 +69,31 @@ class BackendContainerEnvironment extends BackendEnvironment
 
     public function _initialize(): void
     {
-        if (getenv('FLUID_BASED_PAGE_MODULE')) {
-            $this->localConfig['configurationToUseInTestInstance']['SYS']['features']['fluidBasedPageModule'] = true;
-        }
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() === 10) {
-            $this->localConfig['csvDatabaseFixtures'][] = __DIR__ . '/../../Fixtures/sys_language.csv';
+        if ($typo3Version->getMajorVersion() === 13) {
+            $this->localConfig['testExtensionsToLoad'] = [
+                'typo3conf/ext/container',
+                'typo3conf/ext/container_example',
+            ];
         }
         parent::_initialize();
     }
 
-    public function bootstrapTypo3Environment(SuiteEvent $suiteEvent)
+    public function bootstrapTypo3Environment(SuiteEvent $suiteEvent): void
     {
+        parent::bootstrapTypo3Environment($suiteEvent);
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 11) {
-            $backup = $this->config['csvDatabaseFixtures'];
-            $this->config['csvDatabaseFixtures'] = [];
-            parent::bootstrapTypo3Environment($suiteEvent);
-
-            $this->config['csvDatabaseFixtures'] = $backup;
-            foreach ($this->config['csvDatabaseFixtures'] as $fixture) {
-                // uses $connection->getSchemaManager() instead of $connection->createSchemaManager()
-                $this->importCSVDataSetV10($fixture);
-            }
-        } else {
-            parent::bootstrapTypo3Environment($suiteEvent);
+        if ($typo3Version->getMajorVersion() < 13) {
+            return;
         }
-    }
+        $content = "<?php
 
-    protected function importCSVDataSetV10(string $path): void
-    {
-        $dataSet = DataSet::read($path, true);
-        foreach ($dataSet->getTableNames() as $tableName) {
-            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
-            foreach ($dataSet->getElements($tableName) as $element) {
-                // Some DBMS like postgresql are picky about inserting blob types with correct cast, setting
-                // types correctly (like Connection::PARAM_LOB) allows doctrine to create valid SQL
-                $types = [];
-                // use getSchemaManager instead of createSchemaManager
-                $tableDetails = $connection->getSchemaManager()->listTableDetails($tableName);
-                foreach ($element as $columnName => $columnValue) {
-                    $types[] = $tableDetails->getColumn($columnName)->getType()->getBindingType();
-                }
-                // Insert the row
-                $connection->insert($tableName, $element, $types);
-            }
-            Testbase::resetTableSequences($connection, $tableName);
-        }
+call_user_func(static function () {
+    \$classLoader = require __DIR__ . '/../../../../../..' . '/vendor/autoload.php';
+    \TYPO3\TestingFramework\Core\SystemEnvironmentBuilder::run(1, \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_BE);
+    \TYPO3\CMS\Core\Core\Bootstrap::init(\$classLoader)->get(\TYPO3\CMS\Backend\Http\Application::class)->run();
+});";
+        $instancePath = ORIGINAL_ROOT . 'typo3temp/var/tests/acceptance';
+        file_put_contents($instancePath . '/typo3/index.php', $content);
     }
 }

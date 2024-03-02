@@ -12,8 +12,6 @@ namespace B13\Container\Integrity\Error;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-
 class ChildInTranslatedContainerError implements ErrorInterface
 {
     private const IDENTIFIER = 'ChildInTranslatedContainerError';
@@ -60,7 +58,7 @@ class ChildInTranslatedContainerError implements ErrorInterface
      */
     public function getSeverity(): int
     {
-        return AbstractMessage::ERROR;
+        return ErrorInterface::ERROR;
     }
 
     /**

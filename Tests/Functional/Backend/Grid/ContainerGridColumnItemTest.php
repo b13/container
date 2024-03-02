@@ -38,13 +38,9 @@ class ContainerGridColumnItemTest extends FunctionalTestCase
         $gridColumn = $this->getMockBuilder(GridColumn::class)->disableOriginalConstructor()
             ->getMock();
         $containerGridColumnItem = $this->getMockBuilder($this->buildAccessibleProxy(ContainerGridColumnItem::class))
-            ->disableOriginalConstructor()
+            ->setConstructorArgs(['context' => $pageLayoutContext, 'column' => $gridColumn, 'record' => ['uid' => 4], 'container' => $container])
             ->onlyMethods([])
             ->getMock();
-        $containerGridColumnItem->_set('container', $container);
-        $containerGridColumnItem->_set('context', $pageLayoutContext);
-        $containerGridColumnItem->_set('column', $gridColumn);
-        $containerGridColumnItem->_set('record', ['uid' => 4]);
         $newContentUrl = $containerGridColumnItem->getNewContentAfterUrl();
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
     }

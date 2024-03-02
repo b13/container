@@ -31,6 +31,11 @@ class PageTsConfig
 
     public function __invoke(ModifyLoadedPageTsConfigEvent $event): void
     {
+        // s. https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/ContentElements/CustomBackendPreview.html#ConfigureCE-Preview-EventListener
+        // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 12) {
+            return;
+        }
         $tsConfig = $event->getTsConfig();
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
             $tsConfig = array_merge(['pageTsConfig-package-container' => $this->tcaRegistry->getPageTsString()], $tsConfig);

@@ -20,19 +20,15 @@ jobs:
             php: '8.1'
           - TYPO3: '12'
             php: '8.2'
-          - TYPO3: '10'
-            php: '7.4'
-          - TYPO3: '10'
-            php: '7.2'
-          - TYPO3: '10'
-            php: '7.3'
+          - TYPO3: '12'
+            php: '8.3'
+          - TYPO3: '13'
+            php: '8.2'
+          - TYPO3: '13'
+            php: '8.3'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Patch  10
-        if: matrix.TYPO3 == '10'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s patchV10
 
       - name: Install testing system
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerInstall
@@ -52,11 +48,21 @@ jobs:
       - name: Unit Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
 
-      - name: Functional Tests with mariadb
+      - name: Functional Tests v12/v11
+        if: matrix.TYPO3 != '13'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
 
-      - name: Acceptance Tests
+      - name: Functional Tests v13
+        if: matrix.TYPO3 == '13'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -e "--exclude-group=content_defender"
+
+      - name: Acceptance Tests v12/v11
+        if: matrix.TYPO3 != '13'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e --fail-fast
+
+      - name: Acceptance Tests v13
+        if: matrix.TYPO3 == '13'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e "--fail-fast --skip-group=content_defender --skip-group=workspace"
 
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v2

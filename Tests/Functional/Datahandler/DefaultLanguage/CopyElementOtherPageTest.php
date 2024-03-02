@@ -12,9 +12,9 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 
-class CopyElementOtherPageTest extends DatahandlerTest
+class CopyElementOtherPageTest extends AbstractDatahandler
 {
     /**
      * @test

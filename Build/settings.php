@@ -6,6 +6,7 @@ return [
         'defaultUC' => [
             'startModule' => 'help_AboutAbout',
         ],
+        'installToolPassword' => 'foo',
     ],
     'DB' => [
         'Connections' => [

@@ -14,6 +14,8 @@ namespace B13\Container\Listener;
 
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ModifyNewContentElementWizardItems
 {
@@ -21,13 +23,18 @@ class ModifyNewContentElementWizardItems
     {
         $parent = $this->getParentIdFromRequest();
         if ($parent !== null) {
+            $typo3Version = (GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion();
             $wizardItems = $event->getWizardItems();
             foreach ($wizardItems as $key => $wizardItem) {
-                $wizardItems[$key]['tt_content_defValues']['tx_container_parent'] = $parent;
-                if (!isset($wizardItems[$key]['params'])) {
-                    $wizardItems[$key]['params'] = '?defVals[tt_content][tx_container_parent]=' . $parent;
+                if ($typo3Version < 13) {
+                    $wizardItems[$key]['tt_content_defValues']['tx_container_parent'] = $parent;
+                    if (!isset($wizardItems[$key]['params'])) {
+                        $wizardItems[$key]['params'] = '?defVals[tt_content][tx_container_parent]=' . $parent;
+                    } else {
+                        $wizardItems[$key]['params'] .= '&defVals[tt_content][tx_container_parent]=' . $parent;
+                    }
                 } else {
-                    $wizardItems[$key]['params'] .= '&defVals[tt_content][tx_container_parent]=' . $parent;
+                    $wizardItems[$key]['defaultValues']['tx_container_parent'] = $parent;
                 }
             }
             $event->setWizardItems($wizardItems);

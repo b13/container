@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Unit\Tca;
  */
 
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -35,6 +36,9 @@ class RegistryTest extends UnitTestCase
      */
     public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
     {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 13) {
+            self::markTestSkipped('not used in v13');
+        }
         $registry = GeneralUtility::makeInstance(Registry::class);
         $res = $registry->getPageTsString();
         self::assertSame('', $res, 'empty string should be returned');

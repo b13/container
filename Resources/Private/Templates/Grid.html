@@ -1,27 +1,9 @@
 <html
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-    xmlns:container="http://typo3.org/ns/B13/Container/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
 
-
-<f:if condition="{grid}">
-    <f:comment>View\ContainerLayoutView</f:comment>
-    <table style="width: 100%; table-layout: fixed;">
-        <f:for each="{grid}" as="row">
-            <tr>
-                <f:for each="{row}" as="column">
-                    <td class="t3-grid-cell" valign="top"{f:if(condition:"{column.colspan}", then: ' colspan="{column.colspan}"')}{f:if(condition:"{column.rowspan}", then: ' rowspan="{column.rowspan}"')}>
-                        <container:drawChildren uid="{uid}" colPos="{column.colPos}" />
-                    </td>
-                </f:for>
-            </tr>
-        </f:for>
-    </table>
-</f:if>
-
 <f:if condition="{containerGrid}">
-    <f:comment>Backend\Preview\ContainerLayoutView (Fluid based page module)</f:comment>
     <f:render partial="PageLayout/Grid" arguments="{grid: containerGrid, hideRestrictedColumns: hideRestrictedColumns, newContentTitle: newContentTitle, newContentTitleShort: newContentTitleShort, allowEditContent: allowEditContent}" />
 </f:if>
 
