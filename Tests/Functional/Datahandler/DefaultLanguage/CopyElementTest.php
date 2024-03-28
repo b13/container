@@ -263,7 +263,7 @@ class CopyElementTest extends DatahandlerTest
      */
     public function copyContainerIntoItSelfs(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/setup.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -289,6 +289,7 @@ class CopyElementTest extends DatahandlerTest
         self::assertTrue(empty($rows));
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
+
     /**
      * @test
      */
