@@ -2,8 +2,32 @@
     <f:if condition="{column.active}">
         <f:then>
             <div class="t3-page-column-header-icons">
+                <f:if condition="{column.collapsed}">
+                    <f:then>
+                        <a href="#"
+                           class="btn btn-default btn-borderless t3js-toggle-container-column toggle-content"
+                           title="{f:translate(key: 'LLL:EXT:container/Resources/Private/Language/locallang.xlf:expandcontent')}"
+                           data-toggle-title="{f:translate(key: 'LLL:EXT:container/Resources/Private/Language/locallang.xlf:collapsecontent')}"
+                           data-state="collapsed">
+                            <core:icon identifier="actions-view-list-collapse" />
+                            <core:icon identifier="actions-view-list-expand" />
+                        </a>
+                    </f:then>
+                    <f:else>
+                        <a href="#"
+                           class="btn btn-default btn-borderless t3js-toggle-container-column toggle-content"
+                           title="{f:translate(key: 'LLL:EXT:container/Resources/Private/Language/locallang.xlf:collapsecontent')}"
+                           data-toggle-title="{f:translate(key: 'LLL:EXT:container/Resources/Private/Language/locallang.xlf:expandcontent')}"
+                           data-state="expanded">
+                            <core:icon identifier="actions-view-list-collapse" />
+                            <core:icon identifier="actions-view-list-expand" />
+                        </a>
+                    </f:else>
+                </f:if>
                 <f:if condition="{allowEditContent} && {column.editUrl}">
-                    <a href="{column.editUrl}" title="{column.editLinkTitle}"><core:icon identifier="actions-document-open" /></a>
+                    <a href="{column.editUrl}"
+                       title="{column.editLinkTitle}"
+                       class="btn btn-default btn-borderless"><core:icon identifier="actions-document-open" /></a>
                 </f:if>
             </div>
             {column.title}

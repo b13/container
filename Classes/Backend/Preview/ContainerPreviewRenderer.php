@@ -77,12 +77,24 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         foreach ($containerGrid as $row => $cols) {
             $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
             foreach ($cols as $col) {
-                $newContentElementAtTopTarget = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $col['colPos']);
-                if ($this->containerColumnConfigurationService->isMaxitemsReached($container, $col['colPos'])) {
-                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $newContentElementAtTopTarget, false);
+                $collapseId = $record['uid'] . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12 . $col['colPos'];
+                if (isset($this->getBackendUser()->uc['moduleData']['list']['containerExpanded'][$collapseId])) {
+                    $collapsed = $this->getBackendUser()->uc['moduleData']['list']['containerExpanded'][$collapseId] > 0;
                 } else {
-                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $newContentElementAtTopTarget);
+                    $collapsed = (bool)($col['collapsed'] ?? false);
                 }
+
+                $newContentElementAtTopTarget = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $col['colPos']);
+                $allowNewContentElements = !$this->containerColumnConfigurationService->isMaxitemsReached($container, $col['colPos']);
+                $columnObject = GeneralUtility::makeInstance(
+                    ContainerGridColumn::class,
+                    $context,
+                    $col,
+                    $container,
+                    $newContentElementAtTopTarget,
+                    $allowNewContentElements,
+                    $collapsed
+                );
                 $rowObject->addColumn($columnObject);
                 if (isset($col['colPos'])) {
                     $records = $container->getChildrenByColPos($col['colPos']);
