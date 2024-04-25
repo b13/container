@@ -14,6 +14,8 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use B13\Container\Tests\Acceptance\Support\PageTreeV13;
+use Codeception\Scenario;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -31,11 +33,15 @@ class LayoutCest
      * @param BackendTester $I
      * @param PageTree $pageTree
      */
-    public function connectedModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree)
+    public function connectedModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithLocalization']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithLocalization']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithLocalization']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText('2cols-header-0');
@@ -85,11 +91,15 @@ class LayoutCest
      * @param BackendTester $I
      * @param PageTree $pageTree
      */
-    public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree)
+    public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithLocalization']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithLocalization']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithLocalization']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
@@ -119,11 +129,15 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree)
+    public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'emptyPage']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'emptyPage']);
+        } else {
+            $pageTreeV13->openPath(['home', 'emptyPage']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText('Content');
@@ -139,9 +153,9 @@ class LayoutCest
             $I->click('Container');
             $I->click('2 Column Container With Header');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('container')");
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('container')");
             $I->wait(0.5);
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
         }
         $I->switchToContentFrame();
         $I->click('Save');
@@ -158,11 +172,15 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canCreateContainerContentElementSaveAndClose(BackendTester $I, PageTree $pageTree)
+    public function canCreateContainerContentElementSaveAndClose(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'emptyPage']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'emptyPage']);
+        } else {
+            $pageTreeV13->openPath(['home', 'emptyPage']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText('Content');
@@ -179,13 +197,21 @@ class LayoutCest
             // b13-2cols
             $I->click('2 Column Some Description of the Container');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('container')");
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('container')");
             $I->wait(0.5);
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
         }
         $I->switchToContentFrame();
         $I->waitForText('2-cols-left');
         $I->canSee('2-cols-left', '.t3-grid-container');
+    }
+
+    protected function getNewRecordWizardSelector(): string
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            return 'typo3-backend-new-content-element-wizard';
+        }
+        return 'typo3-backend-new-record-wizard';
     }
 
     /**
@@ -193,11 +219,16 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canDragAndDropElementOutsideIntoContainer(BackendTester $I, PageTree $pageTree)
+    public function canDragAndDropElementOutsideIntoContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13, Scenario $scenario)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        } else {
+            $scenario->skip('drag and drop currently not work, s git show 4f459c2925be702ce93f047d7af32d296de1ddd6 Tests/Acceptance/Support/Helper/Mouse.php');
+            $pageTreeV13->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
@@ -206,7 +237,11 @@ class LayoutCest
         $I->waitForElement('#element-tt_content-900 [data-colpos="' . $dataColPos . '"] .t3js-page-ce-dropzone-available');
         $I->dontSeeElement('#element-tt_content-900 #element-tt_content-901');
         $I->dragAndDrop('#element-tt_content-901 .t3js-page-ce-draghandle', '#element-tt_content-900 [data-colpos="' . $dataColPos . '"] .t3js-page-ce-dropzone-available');
-        $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainerAndElementOutsice']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForElement('#element-tt_content-901');
@@ -217,11 +252,15 @@ class LayoutCest
      * @param BackendTester $I
      * @param PageTree $pageTree
      */
-    public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree): void
+    public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainer-2']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainer-2']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainer-2']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
@@ -236,12 +275,12 @@ class LayoutCest
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('header ')");
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
             if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
-                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
             }
         }
         $I->switchToContentFrame();
@@ -254,12 +293,16 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canCreateContentElementInContainer(BackendTester $I, PageTree $pageTree)
+    public function canCreateContentElementInContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         //@depends canCreateContainer
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainer']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainer']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainer']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(1, 200);
@@ -274,12 +317,12 @@ class LayoutCest
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('header ')");
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
             if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
-                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
             }
         }
         $I->switchToContentFrame();
@@ -295,12 +338,16 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree)
+    public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         //@depends canCreateContainer
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
 
@@ -328,12 +375,12 @@ class LayoutCest
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').filter('header ')");
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
             if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
-                $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
             }
         }
         $I->switchToContentFrame();
@@ -349,12 +396,16 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canTranslateChildWithTranslationModule(BackendTester $I, PageTree $pageTree): void
+    public function canTranslateChildWithTranslationModule(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         // test must be before canTranslateChild
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithTranslatedContainer']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
 
@@ -377,8 +428,10 @@ class LayoutCest
         $I->click('a.t3js-localize');
 
         $I->switchToIFrame();
-        $I->waitForElement('.t3js-localization-option');
-        $I->waitForElement('div[data-bs-slide="localize-summary"]');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('.t3js-localization-option');
+            $I->waitForElement('div[data-bs-slide="localize-summary"]');
+        }
         $I->waitForText('(212) headerOfChild');
     }
 
@@ -387,11 +440,15 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canTranslateChild(BackendTester $I, PageTree $pageTree): void
+    public function canTranslateChild(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithTranslatedContainer-2']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithTranslatedContainer-2']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithTranslatedContainer-2']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForElement('#element-tt_content-712');
@@ -407,11 +464,15 @@ class LayoutCest
      * @param BackendTester $I
      * @param PageTree $pageTree
      */
-    public function canSeeContainerColumnTitleForDifferentContainers(BackendTester $I, PageTree $pageTree): void
+    public function canSeeContainerColumnTitleForDifferentContainers(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithDifferentContainers']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         // b13-2cols-with-header-container container

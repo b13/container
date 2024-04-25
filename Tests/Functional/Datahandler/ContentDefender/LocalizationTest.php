@@ -13,7 +13,6 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -63,9 +62,7 @@ class LocalizationTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 72);
-        self::assertSame(0, (int)$row['tx_container_parent'], 'translation of element should not be in container');
-        self::assertSame(0, (int)$row['colPos'], 'translation of element should not be in container colPos');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localization/MoveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCTypeResult.csv');
     }
 
     /**
@@ -93,17 +90,6 @@ class LocalizationTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(72, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-        self::assertFalse($row, 'translation should not be copied');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localization/CopyElementIntoContainerAtTopDoNotCopyTranslationIfDisallowedCTypeResult.csv');
     }
 }

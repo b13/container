@@ -11,9 +11,6 @@ namespace B13\Container\Tests\Functional\Datahandler;
  */
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -62,42 +59,11 @@ abstract class AbstractDatahandler extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->linkSiteConfigurationIntoTestInstance();
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
         $this->backendUser = $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $GLOBALS['BE_USER'] = $this->backendUser;
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-    }
-
-    /**
-     * @return QueryBuilder
-     */
-    protected function getQueryBuilder(): QueryBuilder
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder;
-    }
-
-    /**
-     * @param string $field
-     * @param int $id
-     * @return array
-     */
-    protected function fetchOneRecord(string $field, int $id): array
-    {
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    $field,
-                    $queryBuilder->createNamedParameter($id, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-        self::assertIsArray($row, 'cannot fetch row for field ' . $field . ' with id ' . $id);
-        return $row;
     }
 }

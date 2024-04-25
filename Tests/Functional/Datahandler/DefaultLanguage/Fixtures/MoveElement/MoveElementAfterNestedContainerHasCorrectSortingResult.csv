@@ -1,0 +1,9 @@
+"pages"
+,"uid","pid","title"
+,1,0,"page-1"
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent"
+,1,1,"header","outside",1024,0,201,2,0
+,2,1,"b13-2cols-with-header-container","container",256,0,0,0,0
+,3,1,"b13-2cols-with-header-container","nested-container",512,0,201,2,0
+,4,1,"header","element-in-nested-container",768,0,201,3,0

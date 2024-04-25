@@ -34,8 +34,6 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     protected $copyMapping = [];
 
-    protected $copyMappingByOrigUid = [];
-
     public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
     {
         $this->containerFactory = $containerFactory;
@@ -57,16 +55,12 @@ class ContainerColumnConfigurationService implements SingletonInterface
             'sourceColPos' => $sourceColPos,
             'targetColPos' => $targetColpos,
         ];
-        $this->copyMappingByOrigUid[$sourceContentId] = [
-            'tx_container_parent' => $containerId,
-            'colPos' => $targetColpos,
-        ];
     }
 
-    public function getCopyMappingByOrigUid(int $uid): ?array
+    public function getCopyMappingBySourceContainerIdAndTargetColPos(int $containerId, int $targetColpos): ?array
     {
-        if (isset($this->copyMappingByOrigUid[$uid])) {
-            return $this->copyMappingByOrigUid[$uid];
+        if (isset($this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $targetColpos])) {
+            return $this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $targetColpos];
         }
         return null;
     }
