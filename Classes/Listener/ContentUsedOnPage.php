@@ -54,8 +54,6 @@ class ContentUsedOnPage
                         return;
                     }
                 }
-                $event->setUsed(false);
-                return;
             } catch (Exception $e) {
             }
         }
