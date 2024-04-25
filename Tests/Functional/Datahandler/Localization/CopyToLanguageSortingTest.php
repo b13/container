@@ -16,16 +16,10 @@ use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 
 class CopyToLanguageSortingTest extends AbstractDatahandler
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->linkSiteConfigurationIntoTestInstance();
-    }
-
     /**
      * @return array
      */
-    public function localizeKeepsSortingDataProvider(): array
+    public static function localizeKeepsSortingDataProvider(): array
     {
         return [
             ['cmdmap' => [
@@ -33,13 +27,13 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
                     4 => ['copyToLanguage' => 1],
                     1 => ['copyToLanguage' => 1],
                 ],
-            ]],
+            ], 'Dataset1'],
             ['cmdmap' => [
                 'tt_content' => [
                     1 => ['copyToLanguage' => 1],
                     4 => ['copyToLanguage' => 1],
                 ],
-            ]],
+            ], 'Dataset2'],
         ];
     }
 
@@ -47,20 +41,12 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
      * @test
      * @dataProvider localizeKeepsSortingDataProvider
      */
-    public function localizeKeepsSorting(array $cmdmap): void
+    public function localizeKeepsSorting(array $cmdmap, string $dataset): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/localize_containers.csv');
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $translatedContainer1 = $this->fetchOneRecord('t3_origuid', 1);
-        $translatedChild11 = $this->fetchOneRecord('t3_origuid', 2);
-        $translatedChild12 = $this->fetchOneRecord('t3_origuid', 3);
-        $translatedContainer2 = $this->fetchOneRecord('t3_origuid', 4);
-        $translatedChild21 = $this->fetchOneRecord('t3_origuid', 5);
-        self::assertTrue($translatedContainer1['sorting'] < $translatedChild11['sorting'], 'child-1-1 is sorted before container-1');
-        self::assertTrue($translatedChild11['sorting'] < $translatedChild12['sorting'], 'child-1-2 is sorted before child-1-1');
-        self::assertTrue($translatedChild12['sorting'] < $translatedContainer2['sorting'], 'container-2 is sorted before child-1-2');
-        self::assertTrue($translatedContainer2['sorting'] < $translatedChild21['sorting'], 'child-2-1 is sorted before container-2');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeKeepsSorting' . $dataset . 'Result.csv');
     }
 
     /**
@@ -78,11 +64,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $translatedContainer1 = $this->fetchOneRecord('uid', 4);
-        $translatedChild11 = $this->fetchOneRecord('t3_origuid', 2);
-        $translatedChild12 = $this->fetchOneRecord('uid', 5);
-        self::assertTrue($translatedContainer1['sorting'] < $translatedChild11['sorting'], 'child-1-1 is sorted before container-1');
-        self::assertTrue($translatedChild11['sorting'] < $translatedChild12['sorting'], 'child-1-1 is sorted after child-1-2');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAtTopOfContainerResult.csv');
     }
 
     /**
@@ -100,10 +82,6 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $translatedContainer1 = $this->fetchOneRecord('uid', 4);
-        $translatedChild11 = $this->fetchOneRecord('uid', 5);
-        $translatedChild12 = $this->fetchOneRecord('t3_origuid', 3);
-        self::assertTrue($translatedContainer1['sorting'] < $translatedChild11['sorting'], 'child-1-1 is sorted before container-1');
-        self::assertTrue($translatedChild11['sorting'] < $translatedChild12['sorting'], 'child-1-1 is sorted after child-1-2');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAfterContainerChildResult.csv');
     }
 }

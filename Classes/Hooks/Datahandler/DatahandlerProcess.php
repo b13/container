@@ -33,7 +33,7 @@ class DatahandlerProcess implements SingletonInterface
     public function endContainerProcess(int $containerId): void
     {
         if (in_array($containerId, $this->containerInProcess, true)) {
-            $this->containerInProcess = array_diff([$containerId], $this->containerInProcess);
+            $this->containerInProcess = array_diff($this->containerInProcess, [$containerId]);
         }
     }
 }

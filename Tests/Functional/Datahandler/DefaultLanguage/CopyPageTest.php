@@ -32,18 +32,6 @@ class CopyPageTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 1);
-        $child = $this->fetchOneRecord('t3_origuid', 2);
-
-        self::assertSame(2, $child['pid']);
-        self::assertSame(2, $copiedRecord['pid']);
-
-        self::assertSame(3, $copiedRecord['uid']);
-        self::assertSame(4, $child['uid']);
-
-        self::assertSame(3, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyPage/CopyPageCopiesChildrenOfContainerResult.csv');
     }
 }
