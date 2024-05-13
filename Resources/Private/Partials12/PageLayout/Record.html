@@ -15,7 +15,7 @@
     </div>
     <f:if condition="{allowEditContent} && {item.column.contentEditable} && {item.column.allowNewContent} && {column.active}">
         <div class="t3-page-ce-actions t3js-page-new-ce" id="colpos-{item.column.columnNumber}-page-{item.context.pageId}-{item.column.uniqueId}">
-            <typo3-backend-new-content-element-wizard-button url="{item.newContentAfterUrl}" title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}">
+            <typo3-backend-new-content-element-wizard-button url="{item.newContentAfterUrl}" subject="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}">
                 <button type="button" class="btn btn-default btn-sm">
                     <core:icon identifier="actions-add" />
                     <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:content" />
