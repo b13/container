@@ -1,43 +1,58 @@
-From 9a9c1881a149d39c9419e441d9065c0b93cbe0f4 Mon Sep 17 00:00:00 2001
+From 4e8c22eb07e80cd1e2c458f4bb34e8b429f44aff Mon Sep 17 00:00:00 2001
 From: Achim Fritz <achim.fritz@b13.com>
-Date: Sun, 21 Apr 2024 17:25:12 +0200
-Subject: [PATCH] [TASK] js-13
+Date: Sun, 2 Jun 2024 15:58:42 +0200
+Subject: [PATCH] [PATCH] js-13
 
+Change-Id: I79c575c643026091b31e4d5f8a8b60898fa7f70f
 ---
- .../backend/layout-module/drag-drop.ts        | 27 +++++++++++++++----
- .../TypeScript/backend/layout-module/paste.ts | 21 ++++++++++-----
- 2 files changed, 36 insertions(+), 12 deletions(-)
+ .../backend/layout-module/drag-drop.ts        | 32 +++++++++++++------
+ .../TypeScript/backend/layout-module/paste.ts | 23 ++++++++-----
+ 2 files changed, 37 insertions(+), 18 deletions(-)
 
 diff --git a/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts b/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts
-index 897f3d390b..ee877f3094 100644
+index 21dbdc58f57..d7aa60fdf40 100644
 --- a/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts
 +++ b/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts
-@@ -20,11 +20,11 @@ import { BaseEvent } from '@interactjs/core/BaseEvent';
- import { Interactable } from '@interactjs/core/Interactable';
- import { DragEvent } from '@interactjs/actions/drag/plugin';
- import { DropEvent } from '@interactjs/actions/drop/DropEvent';
+@@ -15,20 +15,20 @@
+  * Module: @typo3/backend/layout-module/drag-drop
+  * this JS code does the drag+drop logic for the Layout module (Web => Page)
+  */
 -import DocumentService from '@typo3/core/document-service';
 -import DataHandler from '../ajax-data-handler';
 -import Icons from '../icons';
 -import ResponseInterface from '../ajax-data-handler/response-interface';
 -import RegularEvent from '@typo3/core/event/regular-event';
+-import { DataTransferTypes } from '@typo3/backend/enum/data-transfer-types';
+-import type { DragDropThumbnail, DragTooltipMetadata } from '@typo3/backend/drag-tooltip';
+-import BroadcastService from '@typo3/backend/broadcast-service';
+-import { BroadcastMessage } from '@typo3/backend/broadcast-message';
 +import DocumentService from '@typo3/core/document-service.js';
 +import DataHandler from '@typo3/backend/ajax-data-handler.js';
 +import Icons from '@typo3/backend/icons.js';
 +import ResponseInterface from '@typo3/backend/ajax-data-handler/response-interface.js';
 +import RegularEvent from '@typo3/core/event/regular-event.js';
++import { DataTransferTypes } from '@typo3/backend/enum/data-transfer-types.js';
++import type { DragDropThumbnail, DragTooltipMetadata } from '@typo3/backend/drag-tooltip.js';
++import BroadcastService from '@typo3/backend/broadcast-service.js';
++import { BroadcastMessage } from '@typo3/backend/broadcast-message.js';
  
  interface Parameters {
    cmd?: { [key: string]: { [key: string]: any } };
-@@ -194,6 +194,7 @@ class DragDrop {
-     const dropContainer = e.target as HTMLElement;
-     const draggedElement = e.relatedTarget as HTMLElement;
-     const newColumn = DragDrop.getColumnPositionForElement(dropContainer);
-+    const newTxContainerParent = DragDrop.getTxContainerParentPositionForElement(dropContainer);
-     const contentElementUid: number = parseInt(draggedElement.dataset.uid, 10);
+   data?: { [key: string]: { [key: string]: any } };
+-  CB?: { paste: string, update: { colPos: number | boolean, sys_language_uid: number } };
++  CB?: { paste: string, update: { colPos: number | boolean, sys_language_uid: number, txContainerParent: number } };
+ }
  
-     if (typeof (contentElementUid) === 'number' && contentElementUid > 0) {
-@@ -218,9 +219,12 @@ class DragDrop {
+ type ContentElementDragDropData = {
+@@ -175,6 +175,7 @@ class DragDrop {
+     }
+ 
+     const newColumn = this.getColumnPositionForElement(dropContainer);
++    const newTxContainerParent = this.getTxContainerParentPositionForElement(dropContainer);
+     const contentElementDragDropData = JSON.parse(event.dataTransfer.getData(DataTransferTypes.content)) as ContentElementDragDropData;
+ 
+     draggedElement = document.querySelector(`${Identifiers.content}[data-uid="${contentElementDragDropData.uid}"]`);
+@@ -204,8 +205,10 @@ class DragDrop {
        }
  
        let colPos: number | boolean = 0;
@@ -46,11 +61,9 @@ index 897f3d390b..ee877f3094 100644
          colPos = newColumn;
 +        txContainerParent = newTxContainerParent;
        }
-+
-       const isCopyAction = (e.dragEvent.ctrlKey || dropContainer.classList.contains('t3js-paste-copy'));
+       const isCopyAction = (event.ctrlKey || dropContainer.classList.contains('t3js-paste-copy'));
        const datahandlerCommand = isCopyAction ? 'copy' : 'move';
-       parameters.cmd = {
-@@ -232,6 +236,7 @@ class DragDrop {
+@@ -218,6 +221,7 @@ class DragDrop {
                update: {
                  colPos: colPos,
                  sys_language_uid: language,
@@ -58,27 +71,23 @@ index 897f3d390b..ee877f3094 100644
                },
              }
            }
-@@ -300,6 +305,18 @@ class DragDrop {
-     }
+@@ -307,6 +311,14 @@ class DragDrop {
      return false;
    }
-+
-+  /**
-+   * @param element HTMLElement
-+   * @return int
-+   */
-+  private static getTxContainerParentPositionForElement(element: HTMLElement) {
-+    const columnContainer = element.closest('[data-tx-container-parent]') as HTMLElement;
+ 
++  protected getTxContainerParentPositionForElement (element: HTMLElement): number {
++    const columnContainer = element.closest('[data-colpos]') as HTMLElement;
 +    if (columnContainer !== null && columnContainer.dataset.txContainerParent !== undefined) {
 +      return parseInt(columnContainer.dataset.txContainerParent, 10);
 +    }
 +    return 0;
 +  }
- }
- 
- export default new DragDrop();
++
+   protected getDragTooltipMetadataFromContentElement(contentElement: HTMLElement): DragTooltipMetadata {
+     let description, iconIdentifier;
+     const thumbnails: DragDropThumbnail[] = [];
 diff --git a/Build/Sources/TypeScript/backend/layout-module/paste.ts b/Build/Sources/TypeScript/backend/layout-module/paste.ts
-index 64b38ad534..b8d91e5d3f 100644
+index 64b38ad5343..c1f4f5e604f 100644
 --- a/Build/Sources/TypeScript/backend/layout-module/paste.ts
 +++ b/Build/Sources/TypeScript/backend/layout-module/paste.ts
 @@ -11,20 +11,20 @@
@@ -95,13 +104,14 @@ index 64b38ad534..b8d91e5d3f 100644
   */
 -import ResponseInterface from '../ajax-data-handler/response-interface';
 -import DataHandler from '../ajax-data-handler';
-+import ResponseInterface from '@typo3/backend/ajax-data-handler/response-interface.js';
-+import DataHandler from '@typo3/backend/ajax-data-handler.js';
- import { default as Modal, ModalElement, Button } from '@typo3/backend/modal';
+-import { default as Modal, ModalElement, Button } from '@typo3/backend/modal';
 -import Severity from '../severity';
 -import '@typo3/backend/element/icon-element';
 -import { SeverityEnum } from '../enum/severity';
 -import RegularEvent from '@typo3/core/event/regular-event';
++import ResponseInterface from '@typo3/backend/ajax-data-handler/response-interface.js';
++import DataHandler from '@typo3/backend/ajax-data-handler.js';
++import { default as Modal, ModalElement, Button } from '@typo3/backend/modal.js';
 +import Severity from '@typo3/backend/severity.js';
 +import '@typo3/backend/element/icon-element.js';
 +import { SeverityEnum } from '@typo3/backend/enum/severity.js';

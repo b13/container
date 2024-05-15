@@ -1,5 +1,5 @@
 "tt_content"
-,"uid","pid","CType","header","t3ver_state","t3ver_wsid","colPos","tx_container_parent","t3_origuid","t3ver_oid"
-,10,1,"b13-2cols-with-header-container","container-default",0,0,,,,
-,11,1,"header","header",0,0,200,10,0,0
-,12,1,"header","header-deleted-in-ws",2,1,200,10,11,11
+,"uid","pid","CType","header","t3ver_state","t3ver_wsid","colPos","tx_container_parent","t3ver_oid"
+,10,1,"b13-2cols-with-header-container","container-default",0,0,,,
+,11,1,"header","header",0,0,200,10,0
+,12,1,"header","header-deleted-in-ws",2,1,200,10,11

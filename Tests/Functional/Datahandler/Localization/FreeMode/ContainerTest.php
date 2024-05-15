@@ -31,10 +31,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 51);
-        self::assertSame(1, $row['deleted']);
-        $row = $this->fetchOneRecord('uid', 52);
-        self::assertSame(1, $row['deleted']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildrenResult.csv');
     }
 
     /**
@@ -60,13 +57,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(51, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
-        $container = $this->fetchOneRecord('uid', 51);
-        self::assertTrue($child['sorting'] > $container['sorting'], 'moved child is sorted before container');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildrenResult.csv');
     }
 
     /**
@@ -90,14 +81,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 51);
-        $child = $this->fetchOneRecord('t3_origuid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
-        $container = $this->fetchOneRecord('uid', 51);
-        self::assertTrue($child['sorting'] > $container['sorting'], 'copied child is sorted before container');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerCopiesChildrenResult.csv');
     }
 
     /**
@@ -122,13 +106,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 51);
-        $child = $this->fetchOneRecord('t3_origuid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
-        self::assertTrue($child['sorting'] > $copiedRecord['sorting'], 'copied child is sorted before container');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildrenResult.csv');
     }
 
     /**
@@ -153,11 +131,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('t3_origuid', 56);
-        $nestedChild = $this->fetchOneRecord('t3_origuid', 57);
-        self::assertSame($child['uid'], $nestedChild['tx_container_parent']);
-        self::assertSame(200, $nestedChild['colPos']);
-        self::assertSame(0, $nestedChild['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesNestedChildrenResult.csv');
     }
 
     /**
@@ -183,12 +157,6 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(51, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
-        $container = $this->fetchOneRecord('uid', 51);
-        self::assertTrue($child['sorting'] > $container['sorting'], 'moved child is sorted before container');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageMovesChildrenResult.csv');
     }
 }

@@ -134,12 +134,12 @@ class DatamapHook extends DatamapDataHandlerHook
                 $this->mapping[$record['uid']]['colPos']
             );
         } elseif (isset($record['tx_container_parent']) && $record['tx_container_parent'] > 0) {
-            $copyMapping = $this->containerColumnConfigurationService->getCopyMappingByOrigUid((int)($record['t3_origuid'] ?? 0));
+            $copyMapping = $this->containerColumnConfigurationService->getCopyMappingBySourceContainerIdAndTargetColPos((int)$record['tx_container_parent'], (int)$record['colPos']);
             if ($copyMapping !== null) {
                 $columnConfiguration = $this->containerColumnConfigurationService->override(
                     $columnConfiguration,
-                    $copyMapping['tx_container_parent'],
-                    $copyMapping['colPos']
+                    $copyMapping['containerId'],
+                    $copyMapping['targetColPos']
                 );
             } else {
                 $columnConfiguration = $this->containerColumnConfigurationService->override(

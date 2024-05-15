@@ -17,10 +17,14 @@ use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
 use TYPO3\CMS\Backend\View\BackendLayout\BackendLayout;
 use TYPO3\CMS\Backend\View\BackendLayout\ContentFetcher;
+use TYPO3\CMS\Backend\View\Drawing\DrawingConfiguration;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -80,7 +84,14 @@ class IntegrityTest extends FunctionalTestCase
             )
             ->executeQuery()
             ->fetchAssociative();
-        $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
+            $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout);
+        } else {
+            $site = $this->getMockBuilder(Site::class)->disableOriginalConstructor()->getMock();
+            $drawingConfiguration = $this->getMockBuilder(DrawingConfiguration::class)->disableOriginalConstructor()->getMock();
+            $serverRequest = $this->getMockBuilder(ServerRequest::class)->disableOriginalConstructor()->getMock();
+            $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout, $site, $drawingConfiguration, $serverRequest);
+        }
         $contentFetcher = new ContentFetcher($pageLayoutContext);
         $unusedRecords = $contentFetcher->getUnusedRecords();
         $unusedRecordsArr = [];

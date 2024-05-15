@@ -1,6 +1,6 @@
 "tt_content"
-,"uid","pid","CType","sys_language_uid","l18n_parent","header","t3_origuid","colPos","tx_container_parent","t3ver_wsid","t3ver_oid","t3ver_state"
-,210,2,"b13-2cols-with-header-container",1,200,"loc container live",200,,,,,
-,211,2,"header",1,201,"header-live",,201,200,0,,
-,213,1,"b13-2cols-with-header-container",1,203,"loc container ws",210,0,,1,210,4
-,215,1,"header",1,205,"header-ws loc",211,201,200,1,211,4
+,"uid","pid","CType","sys_language_uid","l18n_parent","header","colPos","tx_container_parent","t3ver_wsid","t3ver_oid","t3ver_state"
+,210,2,"b13-2cols-with-header-container",1,200,"loc container live",,,,,
+,211,2,"header",1,201,"header-live",201,200,0,,
+,213,1,"b13-2cols-with-header-container",1,203,"loc container ws",0,,1,210,4
+,215,1,"header",1,205,"header-ws loc",201,200,1,211,4

@@ -37,16 +37,6 @@ class CopyContainerInContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedChildContainer1 = $this->fetchOneRecord('t3_origuid', 2);
-        $copiedContentInChildContainer1 = $this->fetchOneRecord('t3_origuid', 3);
-        $copiedChildContainer2 = $this->fetchOneRecord('t3_origuid', 4);
-        $copiedContentInChildContainer2 = $this->fetchOneRecord('t3_origuid', 5);
-        self::assertSame($copiedChildContainer1['uid'], $copiedContentInChildContainer1['tx_container_parent']);
-        self::assertSame($copiedChildContainer2['uid'], $copiedContentInChildContainer2['tx_container_parent']);
-        $container = $this->fetchOneRecord('t3_origuid', 1);
-        self::assertTrue($container['sorting'] < $copiedChildContainer1['sorting'], 'sorting fail 1');
-        self::assertTrue($copiedChildContainer1['sorting'] < $copiedContentInChildContainer1['sorting'], 'sorting fail 2');
-        self::assertTrue($copiedContentInChildContainer1['sorting'] < $copiedChildContainer2['sorting'], 'sorting fail 3');
-        self::assertTrue($copiedChildContainer2['sorting'] < $copiedContentInChildContainer2['sorting'], 'sorting fail 4');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerInContainer/CopyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainerResult.csv');
     }
 }

@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use B13\Container\Tests\Acceptance\Support\PageTreeV13;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Acceptance\Helper\Topbar;
@@ -40,11 +41,15 @@ class WorkspaceCest
      * @param PageTree $pageTree
      * @group workspace
      */
-    public function liveWorkspaceShowsLiveElements(BackendTester $I, PageTree $pageTree)
+    public function liveWorkspaceShowsLiveElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithWorkspace']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithWorkspace']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithWorkspace']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText('header-live');
@@ -58,12 +63,16 @@ class WorkspaceCest
      * @param PageTree $pageTree
      * @group workspace
      */
-    public function testWorkspaceShowsWorkspaceElements(BackendTester $I, PageTree $pageTree)
+    public function testWorkspaceShowsWorkspaceElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $this->switchToTestWs($I);
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithWorkspace']);
+        $this->switchToTestWs($I);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithWorkspace']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithWorkspace']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText('header-ws');
@@ -78,11 +87,15 @@ class WorkspaceCest
      * @param PageTree $pageTree
      * @group workspace
      */
-    public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
+    public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithWorkspace']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithWorkspace']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithWorkspace']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
@@ -104,12 +117,16 @@ class WorkspaceCest
      * @param PageTree $pageTree
      * @group workspace
      */
-    public function testWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
+    public function testWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
-        $this->switchToTestWs($I);
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithWorkspace']);
+        $this->switchToTestWs($I);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithWorkspace']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithWorkspace']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
@@ -131,12 +148,16 @@ class WorkspaceCest
     /**
      * @group workspace
      */
-    public function testWorkspaceShowsLiveContainerUidForContainerParentFieldWhenContainerIsAlreadyMoved(BackendTester $I, PageTree $pageTree)
+    public function testWorkspaceShowsLiveContainerUidForContainerParentFieldWhenContainerIsAlreadyMoved(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $this->switchToTestWs($I);
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithWorkspace-movedContainer']);
+        $this->switchToTestWs($I);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithWorkspace-movedContainer']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithWorkspace-movedContainer']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         // 600 is live uid (603 is ws uid)

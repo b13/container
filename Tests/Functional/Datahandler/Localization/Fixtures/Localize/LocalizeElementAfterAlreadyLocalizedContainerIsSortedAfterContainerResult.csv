@@ -1,0 +1,10 @@
+"pages"
+,"uid","pid","title"
+,1,0,""
+,2,0,""
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent","l10n_source"
+,1,1,"b13-2cols","",256,0,0,0,0,0
+,2,1,"b13-2cols","",512,1,0,0,1,1
+,3,1,"header","",320,0,0,0,0,0
+,4,1,"header"," (copy 1)",768,1,0,0,3,3

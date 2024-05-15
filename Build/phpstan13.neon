@@ -35,3 +35,6 @@ parameters:
     -
       message: '#.* TYPO3\\CMS\\Core\\Domain\\Repository\\PageRepository::getRecordOverlay\(\) .*#'
       path: %currentWorkingDirectory%/Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
+    -
+      message: '#Class TYPO3\\CMS\\Backend\\View\\PageLayoutContext constructor invoked with 2 parameters, 5 required.#'
+      path: %currentWorkingDirectory%/Tests/Functional/Integrity/IntegrityTest.php

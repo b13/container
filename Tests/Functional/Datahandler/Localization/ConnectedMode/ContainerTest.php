@@ -31,10 +31,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 21);
-        self::assertSame(1, $row['deleted']);
-        $row = $this->fetchOneRecord('uid', 22);
-        self::assertSame(1, $row['deleted']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteTranslatedChildrenResult.csv');
     }
 
     /**
@@ -60,10 +57,6 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 22);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(1, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildrenResult.csv');
     }
 }

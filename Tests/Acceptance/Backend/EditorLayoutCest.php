@@ -14,6 +14,9 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use B13\Container\Tests\Acceptance\Support\PageTreeV13;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EditorLayoutCest
 {
@@ -25,16 +28,15 @@ class EditorLayoutCest
         $I->loginAs('editor');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
-    public function canSeeNewContentButton(BackendTester $I, PageTree $pageTree)
+    public function canSeeNewContentButton(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainer-5']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainer-5']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainer-5']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(802, 200);

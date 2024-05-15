@@ -15,7 +15,6 @@ namespace B13\Container\Tests\Functional\Datahandler\Workspace;
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerTest extends AbstractDatahandler
@@ -47,51 +46,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('uid', 'deleted')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter(12, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-        self::assertFalse($row);
-    }
-
-    protected function getMovedWorkspaceRows(int $movedUid): array
-    {
-        $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter($movedUid, Connection::PARAM_INT)
-                )
-            );
-        $rows = $stm->executeQuery()->fetchAllAssociative();
-        self::assertSame(1, count($rows));
-        return $rows;
-    }
-
-    protected function getCopiedWorkspaceRows(int $copiedUid): array
-    {
-        $queryBuilder = $this->getQueryBuilder();
-        $rows = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter($copiedUid, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAllAssociative();
-        self::assertSame(1, count($rows));
-        return $rows;
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerDeleteChildrenResult.csv');
     }
 
     /**
@@ -109,23 +64,7 @@ class ContainerTest extends AbstractDatahandler
 
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
-
-        // new container
-        $row = $this->fetchOneRecord('t3ver_oid', 1);
-        self::assertSame(1, $row['t3ver_wsid']);
-        // child
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(2, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-        self::assertFalse($row);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/NewVersionDoesNotCreateNewVersionsOfChildrenResult.csv');
     }
 
     /**
@@ -149,19 +88,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-
-        // moved record is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $rows = $this->getMovedWorkspaceRows(2);
-        foreach ($rows as $row) {
-            self::assertSame(1, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(1, $row['tx_container_parent']);
-            self::assertSame(201, $row['colPos']);
-        }
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInContainerResult.csv');
     }
 
     /**
@@ -186,19 +113,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-
-        // moved record is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $rows = $this->getMovedWorkspaceRows(2);
-        foreach ($rows as $row) {
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(0, $row['tx_container_parent']);
-            self::assertSame(0, $row['colPos']);
-            self::assertSame(3, $row['pid']);
-        }
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveChildOutsideContainerResult.csv');
     }
 
     /**
@@ -223,19 +138,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-
-        // copied record is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $rows = $this->getMovedWorkspaceRows(2);
-        foreach ($rows as $row) {
-            self::assertSame(1, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(91, $row['tx_container_parent']);
-            self::assertSame(201, $row['colPos']);
-        }
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInOtherContainerResult.csv');
     }
 
     /**
@@ -260,19 +163,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-
-        // moved record is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $rows = $this->getCopiedWorkspaceRows(2);
-        foreach ($rows as $row) {
-            self::assertSame(1, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(1, $row['tx_container_parent']);
-            self::assertSame(201, $row['colPos']);
-        }
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInContainerResult.csv');
     }
 
     /**
@@ -298,18 +189,7 @@ class ContainerTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
 
-        // copied record is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $rows = $this->getCopiedWorkspaceRows(2);
-        foreach ($rows as $row) {
-            self::assertSame(3, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(0, $row['tx_container_parent']);
-            self::assertSame(0, $row['colPos']);
-        }
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyChildOutsideContainerResult.csv');
     }
 
     /**
@@ -334,19 +214,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-
-        // copied record is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $rows = $this->getCopiedWorkspaceRows(2);
-        foreach ($rows as $row) {
-            self::assertSame(1, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame(91, $row['tx_container_parent']);
-            self::assertSame(201, $row['colPos']);
-        }
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInOtherContainerResult.csv');
     }
 
     /**
@@ -369,35 +237,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-
-        // copied child is not modified
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['tx_container_parent']);
-        self::assertSame(200, $row['colPos']);
-
-        $queryBuilder = $this->getQueryBuilder();
-        $containerRow = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    't3ver_oid',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-        self::assertIsArray($containerRow);
-        $rows = $this->getCopiedWorkspaceRows(2);
-        foreach ($rows as $row) {
-            self::assertSame(3, $row['pid']);
-            self::assertSame(1, $row['t3ver_wsid']);
-            self::assertSame($containerRow['uid'], $row['tx_container_parent']);
-            self::assertSame(200, $row['colPos']);
-        }
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerResult.csv');
     }
 
     /**
@@ -422,11 +262,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $origFirstElement = $this->fetchOneRecord('uid', 2);
-        $workspaceElement = $this->fetchOneRecord('t3ver_oid', 5);
-        self::assertSame(1, $workspaceElement['tx_container_parent']);
-        self::assertSame(200, $workspaceElement['colPos']);
-        self::assertTrue($workspaceElement['sorting'] > $origFirstElement['sorting']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveRecordInColPosCreatesWorkspaceElementInContainerResult.csv');
     }
 
     /**
@@ -450,22 +286,7 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-
-        $copiedContainer = $this->fetchOneRecord('t3_origuid', 10);
-        //no children
-
-        $queryBuilder = $this->getQueryBuilder();
-        $possibleChild = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'tx_container_parent',
-                    $queryBuilder->createNamedParameter($copiedContainer['uid'], Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-        self::assertFalse($possibleChild);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChildResult.csv');
     }
 
     /**
@@ -483,7 +304,6 @@ class ContainerTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        // deleted placeholder exists
-        $this->fetchOneRecord('uid', 12);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChildResult.csv');
     }
 }
