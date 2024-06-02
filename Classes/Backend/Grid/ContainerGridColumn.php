@@ -22,8 +22,6 @@ class ContainerGridColumn extends GridColumn
 {
     public const CONTAINER_COL_POS_DELIMITER = '-';
 
-    public const CONTAINER_COL_POS_DELIMITER_V12 = 999990;
-
     protected $container;
 
     protected $allowNewContentElements = true;
@@ -41,12 +39,6 @@ class ContainerGridColumn extends GridColumn
         $this->container = $container;
         $this->allowNewContentElements = $allowNewContentElements;
         $this->newContentElementAtTopTarget = $newContentElementAtTopTarget;
-    }
-
-    public function getDataColPos(): string
-    {
-        // we return a string because of 32-bit system PHP_INT_MAX
-        return (string)$this->getContainerUid() . (string)self::CONTAINER_COL_POS_DELIMITER_V12 . (string)$this->getColumnNumber();
     }
 
     public function getContainerUid(): int

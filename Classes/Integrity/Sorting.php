@@ -12,7 +12,6 @@ namespace B13\Container\Integrity;
  * of the License, or any later version.
  */
 
-use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
@@ -141,7 +140,8 @@ class Sorting implements SingletonInterface
                                         'action' => 'paste',
                                         'target' => $container->getPid(),
                                         'update' => [
-                                            'colPos' => $container->getUid() . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $child['colPos'],
+                                            'colPos' => $child['colPos'],
+                                            'tx_container_parent' => $container->getUid(),
                                             'sys_language_uid' => $containerRecord['sys_language_uid'],
 
                                         ],
@@ -160,7 +160,8 @@ class Sorting implements SingletonInterface
                                         'action' => 'paste',
                                         'target' => -$prevChild['uid'],
                                         'update' => [
-                                            'colPos' => $container->getUid() . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $child['colPos'],
+                                            'colPos' => $child['colPos'],
+                                            'tx_container_parent' => $container->getUid(),
                                             'sys_language_uid' => $containerRecord['sys_language_uid'],
 
                                         ],
