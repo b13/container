@@ -45,11 +45,6 @@ class ContainerConfiguration
     /**
      * @var string
      */
-    protected $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html';
-
-    /**
-     * @var string
-     */
     protected $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html';
 
     /**
@@ -107,16 +102,6 @@ class ContainerConfiguration
     public function setIcon(string $icon): ContainerConfiguration
     {
         $this->icon = $icon;
-        return $this;
-    }
-
-    /**
-     * @param string $backendTemplate
-     * @return ContainerConfiguration
-     */
-    public function setBackendTemplate(string $backendTemplate): ContainerConfiguration
-    {
-        $this->backendTemplate = $backendTemplate;
         return $this;
     }
 
@@ -262,7 +247,6 @@ class ContainerConfiguration
             'icon' => $this->icon,
             'label' => $this->label,
             'description' => $this->description,
-            'backendTemplate' => $this->backendTemplate,
             'grid' => $this->grid,
             'gridTemplate' => $this->gridTemplate,
             'gridPartialPaths' => $this->gridPartialPaths,
