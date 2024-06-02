@@ -37,11 +37,4 @@ call_user_func(static function () {
     // useColumnsForDefaultValues colPos,sys_language_uid,CType
     // new element
     $GLOBALS['TCA']['tt_content']['ctrl']['useColumnsForDefaultValues'] .= ',tx_container_parent';
-
-    // Workspace placeholder for container parent. Since this property got removed in
-    // https://forge.typo3.org/issues/92791, only extend, if it still exists (TYPO3 < v11).
-    // @todo Can be removed once v11 is the lowest supported version.
-    if (isset($GLOBALS['TCA']['tt_content']['ctrl']['shadowColumnsForNewPlaceholders'])) {
-        $GLOBALS['TCA']['tt_content']['ctrl']['shadowColumnsForNewPlaceholders'] .= ',tx_container_parent';
-    }
 });
