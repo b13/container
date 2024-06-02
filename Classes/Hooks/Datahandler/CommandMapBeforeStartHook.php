@@ -292,13 +292,6 @@ class CommandMapBeforeStartHook
             [$containerId, $newColPos] = GeneralUtility::intExplode(ContainerGridColumn::CONTAINER_COL_POS_DELIMITER, $colPos);
             $data['colPos'] = $newColPos;
             $data['tx_container_parent'] = $containerId;
-        } elseif (strpos((string)$colPos, (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12) > 0) {
-            $pos = strripos((string)$colPos, (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12);
-            $splitted = GeneralUtility::intExplode((string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12, $colPos, true);
-            $newColPos = (int)array_pop($splitted);
-            $containerId = (int)substr((string)$colPos, 0, $pos);
-            $data['colPos'] = $newColPos;
-            $data['tx_container_parent'] = $containerId;
         } elseif (!isset($data['tx_container_parent'])) {
             $data['tx_container_parent'] = 0;
             $data['colPos'] = (int)$colPos;

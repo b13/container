@@ -12,7 +12,6 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
-use B13\Container\Backend\Grid\ContainerGridColumn;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -63,9 +62,6 @@ class Registry implements SingletonInterface
         }
         foreach ($containerConfiguration->getGrid() as $row) {
             foreach ($row as $column) {
-                if (str_contains((string)$column['colPos'], (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12)) {
-                    throw new \InvalidArgumentException('delimiter ' . (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12 . ' cannot be used as colPos', 1710970406);
-                }
                 if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
                     $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
                         'label' => $column['name'],
