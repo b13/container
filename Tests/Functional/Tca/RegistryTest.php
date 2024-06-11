@@ -113,4 +113,71 @@ class RegistryTest extends FunctionalTestCase
         $expected = 'LLL:EXT:backend/Resources/Private/Language/locallang_db_new_content_el.xlf:special';
         self::assertSame($expected, $specialHeader);
     }
+
+    /**
+     * @test
+     * @dataProvider contentDefenderData
+     */
+    public function getContentDefenderConfiguration(int $colPos, array $disallowedCTypes, array $expectedConfiguration)
+    {
+        $registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class);
+        $registry->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container', // CType
+                'foo', // label
+                'bar', // description
+                [
+                    [
+                        ['name' => 'foo', 'colPos' => 1],
+                        ['name' => 'foo2', 'colPos' => 2, 'allowed' => ['CType' => 'ce1'], 'disallowed' => ['CType' => 'ce2']],
+                        ['name' => 'foo3', 'colPos' => 3, 'maxitems' => 3],
+                        ['name' => 'foo4', 'colPos' => 4, 'allowed' => ['CType' => 'ce1']],
+                    ],
+                ] // grid configuration
+            )
+            )->setGroup('special')
+        );
+        if ($disallowedCTypes !== []) {
+            foreach ($disallowedCTypes as $cType) {
+                $registry->addDisallowedCType($cType);
+            }
+        }
+        $configuration = $registry->getContentDefenderConfiguration('b13-container', $colPos);
+        self::assertEquals($expectedConfiguration, $configuration);
+    }
+
+    public static function contentDefenderData(): \Traversable
+    {
+        yield 'no column' => [
+            'colPos' => 999,
+            'disallowedCTypes' => [],
+            'expectedConfiguration' => [],
+        ];
+        yield 'default configuration' => [
+            'colPos' => 1,
+            'disallowedCTypes' => [],
+            'expectedConfiguration' => ['allowed.' => [], 'disallowed.' => [], 'maxitems' => 0],
+        ];
+        yield 'maxitems' => [
+            'colPos' => 3,
+            'disallowedCTypes' => [],
+            'expectedConfiguration' => ['allowed.' => [], 'disallowed.' => [], 'maxitems' => 3],
+        ];
+        yield 'allowed and disallowed' => [
+            'colPos' => 2,
+            'disallowedCTypes' => [],
+            'expectedConfiguration' => ['allowed.' => ['CType' => 'ce1'], 'disallowed.' => ['CType' => 'ce2'], 'maxitems' => 0],
+        ];
+        yield 'globally disallowed CType' => [
+            'colPos' => 4,
+            'disallowedCTypes' => ['ce3'],
+            'expectedConfiguration' => ['allowed.' => ['CType' => 'ce1'], 'disallowed.' => ['CType' => 'ce3'], 'maxitems' => 0],
+        ];
+        yield 'globally disallowed CType explicity allowed' => [
+            'colPos' => 4,
+            'disallowedCTypes' => ['ce1'],
+            'expectedConfiguration' => ['allowed.' => ['CType' => 'ce1'], 'disallowed.' => [], 'maxitems' => 0],
+        ];
+    }
 }

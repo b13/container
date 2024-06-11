@@ -24,6 +24,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Registry implements SingletonInterface
 {
     /**
+     * This list is populated by "addDisallowedCType" and allows defining CTypes that are disallowed
+     * in all containers, when they are not explicitly allowed by configuration.
+     * Note that the disallow functionality requires Ext:content_defender.
+     */
+    protected array $disallowedCTypes = [];
+
+    /**
      * @param ContainerConfiguration $containerConfiguration
      */
     public function configureContainer(ContainerConfiguration $containerConfiguration): void
@@ -103,6 +110,23 @@ class Registry implements SingletonInterface
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerConfiguration->getCType()] = $containerConfiguration->toArray();
     }
 
+    /**
+     * Add a CType and exclude it from all containers per default.
+     * It may be explicitly enabled using the "allowed" configuration.
+     *
+     * NOTE: In order for this to correctly take effect, call this method
+     * in your extension's ext_localconf.php, not in TCA.
+     *
+     * @see getContentDefenderConfiguration
+     */
+    public function addDisallowedCType(string $cType): void
+    {
+        if (in_array($cType, $this->disallowedCTypes)) {
+            return;
+        }
+        $this->disallowedCTypes[] = $cType;
+    }
+
     public function getContentDefenderConfiguration(string $cType, int $colPos): array
     {
         $contentDefenderConfiguration = [];
@@ -113,8 +137,19 @@ class Registry implements SingletonInterface
                     $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
                     $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
                     $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                    break 2;
                 }
             }
+        }
+        // Add globally disallowed CTypes when they are not explicitly allowed and not already disallowed
+        $addDisallowedCTypes = array_diff(
+            $this->disallowedCTypes,
+            GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowed.']['CType'] ?? '', true)
+        );
+        if ($addDisallowedCTypes !== []) {
+            $allDisallowedCTypes = GeneralUtility::trimExplode(',', $contentDefenderConfiguration['disallowed.']['CType'] ?? '', true);
+            array_push($allDisallowedCTypes, ...$addDisallowedCTypes);
+            $contentDefenderConfiguration['disallowed.']['CType'] = implode(',', $allDisallowedCTypes);
         }
         return $contentDefenderConfiguration;
     }
