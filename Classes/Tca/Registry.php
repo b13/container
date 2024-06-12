@@ -12,6 +12,8 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
+use B13\Container\Events\BeforeContainerConfigurationIsAppliedEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -22,11 +24,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
+    protected EventDispatcher $eventDispatcher;
+
+    public function __construct(EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * @param ContainerConfiguration $containerConfiguration
      */
     public function configureContainer(ContainerConfiguration $containerConfiguration): void
     {
+        $beforeContainerConfigurationIsAppliedEvent = new BeforeContainerConfigurationIsAppliedEvent($containerConfiguration);
+        $this->eventDispatcher->dispatch($beforeContainerConfigurationIsAppliedEvent);
+        if ($beforeContainerConfigurationIsAppliedEvent->shouldBeSkipped()) {
+            return;
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             ExtensionManagementUtility::addTcaSelectItem(
                 'tt_content',
@@ -109,6 +123,7 @@ class Registry implements SingletonInterface
                     $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
                     $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
                     $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                    return $contentDefenderConfiguration;
                 }
             }
         }
@@ -167,10 +182,7 @@ class Registry implements SingletonInterface
 
     public function getGrid(string $cType): array
     {
-        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'])) {
-            return [];
-        }
-        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'];
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? [];
     }
 
     public function getGridTemplate(string $cType): ?string
@@ -238,12 +250,6 @@ class Registry implements SingletonInterface
 
     public function getPageTsString(): string
     {
-        // s. https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/ContentElements/CustomBackendPreview.html#ConfigureCE-Preview-EventListener
-        // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() > 12) {
-            throw new \BadMethodCallException('removed with TYPO3 13');
-        }
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             return '';
         }
@@ -259,21 +265,36 @@ class Registry implements SingletonInterface
                 }
                 $groupedByGroup[$group][$cType] = $containerConfiguration;
             }
+            if ($containerConfiguration['backendTemplate'] !== null) {
+                $pageTs .= LF . 'mod.web_layout.tt_content.preview {
+' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
+}
+';
+            }
+        }
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() > 12) {
+            // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
+            return $pageTs;
         }
 
         foreach ($groupedByGroup as $group => $containerConfigurations) {
             $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ?? $group;
 
-            $content = '
+            $content = '';
+            if (!in_array($group, ['common', 'menu', 'special', 'forms', 'plugins'])) {
+                // do not override EXT:backend dummy placeholders for item groups
+                $content .= '
 mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabel . '
-mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 ';
+            }
             foreach ($containerConfigurations as $cType => $containerConfiguration) {
                 array_walk($containerConfiguration['defaultValues'], static function (&$item, $key) {
                     $item = $key . ' = ' . $item;
                 });
                 $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['defaultValues']);
-
+                $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.show := addToList(' . $cType . ')
+';
                 $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
 ' . $cType . ' {
     title = ' . $containerConfiguration['label'] . '

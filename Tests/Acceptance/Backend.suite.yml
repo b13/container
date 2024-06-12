@@ -1,16 +1,13 @@
 actor: BackendTester
 modules:
   enabled:
-    - WebDriver:
-        url: http://web:8000/typo3temp/var/tests/acceptance
-        browser: chrome
-        wait: 1
-        host: chrome
     - \TYPO3\TestingFramework\Core\Acceptance\Helper\Acceptance
     - Asserts
 
-extensions:
-    enabled:
+env:
+  classic:
+    extensions:
+      enabled:
         - B13\Container\Tests\Acceptance\Support\Extension\BackendContainerEnvironment
 
 groups:

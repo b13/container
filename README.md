@@ -71,6 +71,7 @@ This is an example to create a 2 column container. The code snippet goes into a 
 | Method name | Description | Parameters | Default |
 | ----------- | ----------- | ---------- | ---------- |
 | `setIcon` | icon file, or existing icon identifier | `string $icon` | `'EXT:container/Resources/Public/Icons/Extension.svg'` |
+| `setBackendTemplate` | Template for backend view| `string $backendTemplate` | `null'` |
 | `setGridTemplate` | Template for grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
 | `setGridPartialPaths` / `addGridPartialPath` | Partial root paths for grid | `array $gridPartialPaths` / `string $gridPartialPath` | `['EXT:backend/Resources/Private/Partials/', 'EXT:container/Resources/Private/Partials/']` |
 | `setGridLayoutPaths` | Layout root paths for grid | `array $gridLayoutPaths` | `[]` |
@@ -163,6 +164,18 @@ The html template file goes in the folder that you have defined in your TypoScri
 ```
 
 With explicit colPos defined use `{children_200|201}` as set in the example above
+
+## Events
+
+### BeforeContainerConfigurationIsAppliedEvent
+
+* change container configuration for 3rd party extensions container you have installed
+* apply same configuration to all or a set of containers (e.g. ``gridTemplate``)
+* **Note** grid and CType cannot be changed
+
+### BeforeContainerPreviewIsRendered
+
+change view object, e.g. add variables to view or change paths
 
 ## Concepts
 - Complete registration is done with one PHP call to TCA Registry

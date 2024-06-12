@@ -42,6 +42,8 @@ class ContainerConfiguration
      */
     protected $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
 
+    protected ?string $backendTemplate = null;
+
     /**
      * @var string
      */
@@ -102,6 +104,16 @@ class ContainerConfiguration
     public function setIcon(string $icon): ContainerConfiguration
     {
         $this->icon = $icon;
+        return $this;
+    }
+
+    /**
+     * @param string $backendTemplate
+     * @return ContainerConfiguration
+     */
+    public function setBackendTemplate(string $backendTemplate): ContainerConfiguration
+    {
+        $this->backendTemplate = $backendTemplate;
         return $this;
     }
 
@@ -206,6 +218,31 @@ class ContainerConfiguration
         return $this->grid;
     }
 
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getIcon(): string
+    {
+        return $this->icon;
+    }
+
+    public function getBackendTemplate(): ?string
+    {
+        return $this->backendTemplate;
+    }
+
+    public function isRegisterInNewContentElementWizard(): bool
+    {
+        return $this->registerInNewContentElementWizard;
+    }
+
+    public function getDefaultValues(): array
+    {
+        return $this->defaultValues;
+    }
+
     /**
      * @return string[]
      */
@@ -237,6 +274,23 @@ class ContainerConfiguration
         return $this;
     }
 
+    protected function setLabel(string $label): ContainerConfiguration
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    public function setDescription(string $description): ContainerConfiguration
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getGridTemplate(): string
+    {
+        return $this->gridTemplate;
+    }
+
     /**
      * @return mixed[]
      */
@@ -247,6 +301,7 @@ class ContainerConfiguration
             'icon' => $this->icon,
             'label' => $this->label,
             'description' => $this->description,
+            'backendTemplate' => $this->backendTemplate,
             'grid' => $this->grid,
             'gridTemplate' => $this->gridTemplate,
             'gridPartialPaths' => $this->gridPartialPaths,

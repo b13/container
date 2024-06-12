@@ -33,13 +33,22 @@ class RegistryTest extends FunctionalTestCase
      */
     public function getPageTsAddsPreviewConfigEvenIfRegisterInNewContentElementWizardIsSetToFalse(): void
     {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            // s. https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/ContentElements/CustomBackendPreview.html#ConfigureCE-Preview-EventListener
-            self::markTestSkipped('event listener is used');
-        } else {
-            // https://github.com/b13/container/pull/153
-            self::markTestSkipped('todo check this, TS removed, mod.web_layout.tt_content.preview');
-        }
+        // https://github.com/b13/container/pull/153
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (new ContainerConfiguration(
+                'b13-container', // CType
+                'foo', // label
+                'bar', // description
+                [] // grid configuration
+            ))->setRegisterInNewContentElementWizard(false)
+            ->setBackendTemplate('EXT:container/Resources/Private/Templates/Container.html')
+        );
+        $registry = GeneralUtility::makeInstance(Registry::class);
+        $pageTs = $registry->getPageTsString();
+        $expected = 'mod.web_layout.tt_content.preview {
+b13-container = EXT:container/Resources/Private/Templates/Container.html
+}';
+        self::assertStringContainsString($expected, $pageTs);
     }
 
     /**
