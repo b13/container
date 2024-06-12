@@ -13,6 +13,9 @@ namespace B13\Container\Tca;
  */
 
 use B13\Container\Backend\Grid\ContainerGridColumn;
+use B13\Container\Events\BeforeContainerConfigurationEvent;
+use B13\Container\Events\GetGridEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -23,11 +26,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
+    protected EventDispatcher $eventDispatcher;
+
+    public function __construct(EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * @param ContainerConfiguration $containerConfiguration
      */
     public function configureContainer(ContainerConfiguration $containerConfiguration): void
     {
+        $this->eventDispatcher->dispatch(new BeforeContainerConfigurationEvent($containerConfiguration));
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             ExtensionManagementUtility::addTcaSelectItem(
                 'tt_content',
@@ -171,10 +182,9 @@ class Registry implements SingletonInterface
 
     public function getGrid(string $cType): array
     {
-        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'])) {
-            return [];
-        }
-        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'];
+        $getGridEvent = new GetGridEvent($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? []);
+        $this->eventDispatcher->dispatch($getGridEvent);
+        return $getGridEvent->getGrid();
     }
 
     public function getGridTemplate(string $cType): ?string

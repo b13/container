@@ -18,12 +18,14 @@ use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Service\ContainerService;
+use B13\Container\Events\BeforeContainerPreviewIsRendered;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridRow;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -49,16 +51,23 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
      */
     protected $containerService;
 
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
+
     public function __construct(
         Registry $tcaRegistry,
         ContainerFactory $containerFactory,
         ContainerColumnConfigurationService $containerColumnConfigurationService,
-        ContainerService $containerService
+        ContainerService $containerService,
+        EventDispatcher $eventDispatcher
     ) {
         $this->tcaRegistry = $tcaRegistry;
         $this->containerFactory = $containerFactory;
         $this->containerColumnConfigurationService = $containerColumnConfigurationService;
         $this->containerService = $containerService;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function renderPageModulePreviewContent(GridColumnItem $item): string
@@ -74,7 +83,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
             return $content;
         }
         $containerGrid = $this->tcaRegistry->getGrid($record['CType']);
-        foreach ($containerGrid as $row => $cols) {
+        foreach ($containerGrid as $cols) {
             $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
             foreach ($cols as $col) {
                 $newContentElementAtTopTarget = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $col['colPos']);
@@ -109,6 +118,9 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
         $view->assign('containerRecord', $record);
+        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRendered($container);
+        $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
+        $view->assignMultiple($beforeContainerPreviewIsRendered->getViewVariables());
         $rendered = $view->render();
 
         return $content . $rendered;

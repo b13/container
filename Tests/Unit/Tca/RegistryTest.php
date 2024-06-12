@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Unit\Tca;
  */
 
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -26,7 +27,8 @@ class RegistryTest extends UnitTestCase
      */
     public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured(): void
     {
-        $registry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = $this->getMockBuilder(EventDispatcher::class)->disableOriginalConstructor()->getMock();
+        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher);
         $columns = $registry->getAllAvailableColumns();
         self::assertSame([], $columns);
     }
@@ -39,7 +41,8 @@ class RegistryTest extends UnitTestCase
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 13) {
             self::markTestSkipped('not used in v13');
         }
-        $registry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = $this->getMockBuilder(EventDispatcher::class)->disableOriginalConstructor()->getMock();
+        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher);
         $res = $registry->getPageTsString();
         self::assertSame('', $res, 'empty string should be returned');
     }
