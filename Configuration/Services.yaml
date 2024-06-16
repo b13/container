@@ -50,27 +50,26 @@ services:
     tags:
       - name: event.listener
         identifier: 'tx-container-record-summary-for-localization'
-        event: TYPO3\CMS\Backend\Controller\Event\AfterRecordSummaryForLocalizationEvent
   B13\Container\Listener\ContentUsedOnPage:
     tags:
       - name: event.listener
         identifier: 'tx-container-content-used-on-page'
-        event: TYPO3\CMS\Backend\View\Event\IsContentUsedOnPageLayoutEvent
   B13\Container\Listener\ModifyNewContentElementWizardItems:
     tags:
       - name: event.listener
         identifier: 'tx-container-new-content-element-wizard'
-        event: TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent
+  B13\Container\Listener\LegacyPageTsConfig:
+    tags:
+      - name: event.listener
+        identifier: 'tx-container-legacy-page-ts-config'
   B13\Container\Listener\PageTsConfig:
     tags:
       - name: event.listener
         identifier: 'tx-container-page-ts-config'
-        event: TYPO3\CMS\Core\Configuration\Event\ModifyLoadedPageTsConfigEvent
   B13\Container\Listener\BootCompleted:
     tags:
       - name: event.listener
         identifier: 'tx-container-boot-completed'
-        event: TYPO3\CMS\Core\Core\Event\BootCompletedEvent
   B13\Container\Command\FixLanguageModeCommand:
     tags:
       - name: 'console.command'

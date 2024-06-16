@@ -264,16 +264,20 @@ class Registry implements SingletonInterface
         foreach ($groupedByGroup as $group => $containerConfigurations) {
             $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ?? $group;
 
-            $content = '
+            $content = '';
+            if (!in_array($group, ['common', 'menu', 'special', 'forms', 'plugins'])) {
+                // do not override EXT:backend dummy placeholders for item groups
+                $content .= '
 mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabel . '
-mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 ';
+            }
             foreach ($containerConfigurations as $cType => $containerConfiguration) {
                 array_walk($containerConfiguration['defaultValues'], static function (&$item, $key) {
                     $item = $key . ' = ' . $item;
                 });
                 $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['defaultValues']);
-
+                $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.show := addToList(' . $cType . ')
+';
                 $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
 ' . $cType . ' {
     title = ' . $containerConfiguration['label'] . '
