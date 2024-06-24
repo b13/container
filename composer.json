@@ -5,7 +5,11 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^11.5 || ^12.4 || ^13.0"
+        "typo3/cms-core": "^11.5 || ^12.4 || ^13.0",
+        "typo3/cms-backend": "^11.5 || ^12.4 || ^13.0",
+        "typo3/cms-fluid": "^11.5 || ^12.4 || ^13.0",
+        "typo3/cms-frontend": "^11.5 || ^12.4 || ^13.0",
+        "typo3/cms-install": "^11.5 || ^12.4 || ^13.0"
     },
     "autoload": {
         "psr-4": {
