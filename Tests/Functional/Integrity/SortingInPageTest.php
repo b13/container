@@ -80,6 +80,19 @@ class SortingInPageTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function containerIsSortedAfterChildOfPreviousContainerWithNestedChangedChildrenSorting(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/container_is_sorted_before_child_of_previous_container_with_nested_changed_children_sorting.csv');
+        $errors = $this->sorting->run(false);
+        self::assertTrue(count($errors) === 1, 'should get one error');
+        $rows = $this->getContentsByUid();
+        self::assertTrue($rows[2]['sorting'] > $rows[5]['sorting'], 'container should be sorted after last nested child of previous container');
+        self::assertTrue($rows[3]['sorting'] > $rows[2]['sorting'], 'child should be sorted after its own parent container after resorting');
+    }
+
+    /**
+     * @test
+     */
     public function nothingDoneForAlreadyCorrectSorted(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/correct_sorted.csv');

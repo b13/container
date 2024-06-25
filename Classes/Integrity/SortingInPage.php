@@ -77,7 +77,7 @@ class SortingInPage implements SingletonInterface
                     if (empty($children)) {
                         $sorting = $record['sorting'];
                     } else {
-                        $lastChild = array_pop($children);
+                        $lastChild = $this->containerService->getAfterContainerRecord($container);
                         $sorting = $lastChild['sorting'];
 
                         if ($prevChild === null || $prevContainer === null) {
