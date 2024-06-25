@@ -73,13 +73,10 @@ class SortingInPage implements SingletonInterface
             foreach ($recordsPerPageAndColPos as $record) {
                 if (in_array($record['CType'], $cTypes, true)) {
                     $container = $this->containerFactory->buildContainer($record['uid']);
-                    $children = $container->getChildRecords();
-                    if (empty($children)) {
-                        $sorting = $record['sorting'];
-                    } else {
-                        $lastChild = $this->containerService->getAfterContainerRecord($container);
-                        $sorting = $lastChild['sorting'];
+                    $lastChild = $this->containerService->getAfterContainerRecord($container);
+                    $sorting = $lastChild['sorting'];
 
+                    if ($record['uid'] !== $lastChild['uid']) {
                         if ($prevChild === null || $prevContainer === null) {
                             $prevChild = $lastChild;
                             $prevContainer = $container;
