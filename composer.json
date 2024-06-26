@@ -41,7 +41,8 @@
         "codeception/codeception": "^4.1 || ^5.1",
         "codeception/module-asserts": "^1.0 || ^3.0",
         "codeception/module-webdriver": "^1.0 || ^4.0",
-        "codeception/module-db": "^1.0 || ^3.1"
+        "codeception/module-db": "^1.0 || ^3.1",
+        "phpunit/phpunit": "9.6 || ^10.5"
     },
     "replace": {
         "typo3-ter/container": "self.version"

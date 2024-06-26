@@ -307,12 +307,15 @@ class LayoutCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(1, 200);
         $I->waitForElement('#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
+        if ($typo3Version->getMajorVersion() === 12) {
+            $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(3)';
+        }
         $I->dontSeeElement($selector . ' .t3js-flag[title="english"]');
         $I->click('Content', '#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
             $I->waitForText('Header Only');
             $I->click('Header Only');

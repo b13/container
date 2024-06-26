@@ -12,7 +12,6 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
-use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Events\BeforeContainerConfigurationEvent;
 use B13\Container\Events\GetGridEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
@@ -74,9 +73,6 @@ class Registry implements SingletonInterface
         }
         foreach ($containerConfiguration->getGrid() as $row) {
             foreach ($row as $column) {
-                if (str_contains((string)$column['colPos'], (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12)) {
-                    throw new \InvalidArgumentException('delimiter ' . (string)ContainerGridColumn::CONTAINER_COL_POS_DELIMITER_V12 . ' cannot be used as colPos', 1710970406);
-                }
                 if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
                     $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
                         'label' => $column['name'],
@@ -278,16 +274,20 @@ class Registry implements SingletonInterface
         foreach ($groupedByGroup as $group => $containerConfigurations) {
             $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ?? $group;
 
-            $content = '
+            $content = '';
+            if (!in_array($group, ['common', 'menu', 'special', 'forms', 'plugins'])) {
+                // do not override EXT:backend dummy placeholders for item groups
+                $content .= '
 mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabel . '
-mod.wizards.newContentElement.wizardItems.' . $group . '.show = *
 ';
+            }
             foreach ($containerConfigurations as $cType => $containerConfiguration) {
                 array_walk($containerConfiguration['defaultValues'], static function (&$item, $key) {
                     $item = $key . ' = ' . $item;
                 });
                 $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['defaultValues']);
-
+                $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.show := addToList(' . $cType . ')
+';
                 $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
 ' . $cType . ' {
     title = ' . $containerConfiguration['label'] . '

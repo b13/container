@@ -13,11 +13,11 @@ namespace B13\Container\Listener;
  */
 
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Configuration\Event\ModifyLoadedPageTsConfigEvent;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\TypoScript\IncludeTree\Event\ModifyLoadedPageTsConfigEvent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class PageTsConfig
+class LegacyPageTsConfig
 {
     /**
      * @var Registry
@@ -31,13 +31,11 @@ class PageTsConfig
 
     public function __invoke(ModifyLoadedPageTsConfigEvent $event): void
     {
-        // s. https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/ContentElements/CustomBackendPreview.html#ConfigureCE-Preview-EventListener
-        // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() !== 12) {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() !== 11) {
             return;
         }
         $tsConfig = $event->getTsConfig();
-        $tsConfig = array_merge(['pagesTsConfig-package-container' => $this->tcaRegistry->getPageTsString()], $tsConfig);
+        $tsConfig['default'] = trim($this->tcaRegistry->getPageTsString() . "\n" . ($tsConfig['default'] ?? ''));
         $event->setTsConfig($tsConfig);
     }
 }

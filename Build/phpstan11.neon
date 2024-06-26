@@ -11,6 +11,7 @@ parameters:
     - %currentWorkingDirectory%/Tests/Unit/Listener/ContentUsedOnPageTest.php
     - %currentWorkingDirectory%/Tests/Functional/Listener/ContentUsedOnPageTest.php
     - %currentWorkingDirectory%/Classes/Listener/RecordSummaryForLocalization.php
+    - %currentWorkingDirectory%/Classes/Listener/PageTsConfig.php
 
   ignoreErrors:
     -

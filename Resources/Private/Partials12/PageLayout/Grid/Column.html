@@ -5,7 +5,7 @@
 <f:variable name="colpos" value="{f:if(condition: column.unused, then: 'unused', else: column.columnNumber)}"/>
 
 <td valign="top" colspan="{column.colSpan}" rowspan="{column.rowSpan}"
-    data-colpos="{column.dataColPos}" data-language-uid="{column.context.siteLanguage.languageId}"
+    data-colpos="{column.columnNumber}" data-tx-container-parent="{column.containerUid}" data-language-uid="{column.context.siteLanguage.languageId}"
     class="t3js-page-lang-column-{column.context.siteLanguage.languageId} t3js-page-column t3-grid-cell t3-page-column t3-page-column-{colpos}
         {f:if(condition: column.unassigned, then: 't3-grid-cell-unassigned')}
         {f:if(condition: '!{column.active} && !{column.unused}', then: 't3-grid-cell-restricted')}
@@ -14,7 +14,7 @@
         t3-gridCell-height{column.rowSpan}">
     <f:render partial="PageLayout/Grid/ColumnHeader" arguments="{_all}" />
     <f:if condition="{column.active} || {column.unused}">
-        <div data-colpos="{column.dataColPos}" data-language-uid="{column.context.siteLanguage.languageId}"
+        <div data-colpos="{column.columnNumber}" data-language-uid="{column.context.siteLanguage.languageId}"
              class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-{column.context.siteLanguage.languageId} t3-page-ce-wrapper
             {f:if(condition: column.items, else: 't3-page-ce-empty')}">
             <f:for each="{column.items}" as="item">
