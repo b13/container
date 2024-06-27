@@ -32,6 +32,7 @@ class SortingInPageCommand extends Command
     protected function configure()
     {
         $this->addArgument('pid', InputArgument::OPTIONAL, 'limit to this pid', 0);
+        $this->addArgument('languageId', InputArgument::OPTIONAL, 'limit to this languageId', 0);
         $this->addOption('apply', null, InputOption::VALUE_NONE, 'apply migration');
         $this->addOption(
             'enable-logging',
@@ -51,13 +52,17 @@ class SortingInPageCommand extends Command
     {
         $dryrun = $input->getOption('apply') !== true;
         $pid = (int)$input->getArgument('pid');
+        if ($input->getArgument('languageId') !== 'all') {
+            $languageId = (int)$input->getArgument('languageId');
+        }
 
         Bootstrap::initializeBackendAuthentication();
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         $errors = $this->sorting->run(
             $dryrun,
             $input->getOption('enable-logging'),
-            $pid
+            $pid,
+            $languageId,
         );
         foreach ($errors as $error) {
             $output->writeln($error);
