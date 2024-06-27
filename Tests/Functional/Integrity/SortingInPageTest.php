@@ -86,8 +86,8 @@ class SortingInPageTest extends FunctionalTestCase
         $errors = $this->sorting->run(false);
         self::assertTrue(count($errors) === 1, 'should get one error');
         $rows = $this->getContentsByUid();
-        self::assertTrue($rows[2]['sorting'] > $rows[5]['sorting'], 'container should be sorted after last nested child of previous container');
-        self::assertTrue($rows[3]['sorting'] > $rows[2]['sorting'], 'child should be sorted after its own parent container after resorting');
+        self::assertTrue($rows[4]['sorting'] > $rows[3]['sorting'], 'container should be sorted after last nested child of previous container');
+        self::assertTrue($rows[5]['sorting'] > $rows[4]['sorting'], 'child should be sorted after its own parent container after resorting');
     }
 
     /**
