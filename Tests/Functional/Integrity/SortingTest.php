@@ -13,12 +13,13 @@ namespace B13\Container\Tests\Functional\Integrity;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
 use B13\Container\Integrity\Sorting;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -45,12 +46,13 @@ class SortingTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         $context = GeneralUtility::makeInstance(Context::class);
-        $containerRegistry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        $containerConfigurationService = GeneralUtility::makeInstance(ConfigurationService::class, $eventDispatcher);
         $sortingDatabase = GeneralUtility::makeInstance(Database::class);
         $factoryDatabase = GeneralUtility::makeInstance(\B13\Container\Domain\Factory\Database::class, $context);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class, $factoryDatabase, $containerRegistry, $context);
-        $containerService = GeneralUtility::makeInstance(ContainerService::class, $containerRegistry, $containerFactory);
-        $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
+        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class, $factoryDatabase, $containerConfigurationService, $context);
+        $containerService = GeneralUtility::makeInstance(ContainerService::class, $containerConfigurationService, $containerFactory);
+        $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerConfigurationService, $containerFactory, $containerService);
     }
 
     /**

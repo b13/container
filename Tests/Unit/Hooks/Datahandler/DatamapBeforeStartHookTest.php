@@ -13,10 +13,10 @@ namespace B13\Container\Tests\Unit\Hooks\Datahandler;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
-use B13\Container\Tca\Registry;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DatamapBeforeStartHookTest extends UnitTestCase
@@ -39,13 +39,13 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             ->getMock();
         $database->expects(self::once())->method('fetchOverlayRecords')->with($defaultRecord)->willReturn([['uid' => 3]]);
         $database->expects(self::once())->method('fetchOneRecord')->with(2)->willReturn($defaultRecord);
-        $containerRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
+        $containerConfigurationService = $this->getMockBuilder(ConfigurationService::class)->disableOriginalConstructor()->getMock();
         $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
         $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(DatamapBeforeStartHook::class))
             ->setConstructorArgs([
                 'containerFactory' => $containerFactory,
                 'database' => $database,
-                'tcaRegistry' => $containerRegistry,
+                'configurationService' => $containerConfigurationService,
                 'containerService' => $containerService,
             ])
             ->onlyMethods([])

@@ -255,7 +255,10 @@ class ContainerConfiguration
         return $this;
     }
 
-
+    public function getGridTemplate(): string
+    {
+        return $this->gridTemplate;
+    }
 
     public function applyTca(array $config): void
     {

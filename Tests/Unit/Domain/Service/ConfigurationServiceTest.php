@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace B13\Container\Tests\Unit\Tca;
+namespace B13\Container\Tests\Unit\Domain\Service;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -12,27 +12,23 @@ namespace B13\Container\Tests\Unit\Tca;
  * of the License, or any later version.
  */
 
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class RegistryTest extends UnitTestCase
+class ConfigurationServiceTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
     /**
      * @test
      */
-    public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
+    public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 13) {
-            self::markTestSkipped('not used in v13');
-        }
         $eventDispatcher = $this->getMockBuilder(EventDispatcher::class)->disableOriginalConstructor()->getMock();
-        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher);
-        $res = $registry->getPageTsString();
-        self::assertSame('', $res, 'empty string should be returned');
+        $configurationService = GeneralUtility::makeInstance(ConfigurationService::class, $eventDispatcher);
+        $columns = $configurationService->getAllAvailableColumns();
+        self::assertSame([], $columns);
     }
 }

@@ -12,7 +12,7 @@ namespace B13\Container\Service;
  * of the License, or any later version.
  */
 
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -23,13 +23,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class RecordLocalizeSummaryModifier implements SingletonInterface
 {
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $containerRegistry;
+    protected $containerConfigurationService;
 
-    public function __construct(Registry $containerRegistry)
+    public function __construct(ConfigurationService $containerConfigurationService)
     {
-        $this->containerRegistry = $containerRegistry;
+        $this->containerConfigurationService = $containerConfigurationService;
     }
 
     public function rebuildPayload(array $payload): array
@@ -85,7 +85,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
     public function rebuildColumns(array $columns): array
     {
         // this can be done with AfterPageColumnsSelectedForLocalizationEvent event in v10
-        $containerColumns = $this->containerRegistry->getAllAvailableColumns();
+        $containerColumns = $this->containerConfigurationService->getAllAvailableColumns();
         foreach ($containerColumns as $containerColumn) {
             $columns = [
                 'columns' => array_replace([$containerColumn['colPos'] => 'Container Children (' . $containerColumn['colPos'] . ')'], $columns['columns']),
@@ -99,7 +99,7 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
 
     protected function getContainerUids(array $uids): array
     {
-        $containerCTypes = $this->containerRegistry->getRegisteredCTypes();
+        $containerCTypes = $this->containerConfigurationService->getRegisteredCTypes();
         if (empty($containerCTypes)) {
             return [];
         }

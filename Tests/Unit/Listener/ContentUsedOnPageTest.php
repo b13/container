@@ -14,8 +14,8 @@ namespace B13\Container\Tests\Unit\Listener;
 
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Listener\ContentUsedOnPage;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\Event\IsContentUsedOnPageLayoutEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -35,10 +35,10 @@ class ContentUsedOnPageTest extends UnitTestCase
             self::markTestSkipped('< v12 is tested by Hook UsedRecords');
         }
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
+        $configurationService = $this->getMockBuilder(ConfigurationService::class)->disableOriginalConstructor()->getMock();
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $event = new IsContentUsedOnPageLayoutEvent(['tx_container_parent' => 0], true, $pageLayoutContext);
-        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $registry);
+        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $configurationService);
         $listener($event);
         self::assertTrue($event->isRecordUsed());
         $event = new IsContentUsedOnPageLayoutEvent(['tx_container_parent' => 0], false, $pageLayoutContext);
@@ -66,11 +66,11 @@ class ContentUsedOnPageTest extends UnitTestCase
         $container->expects(self::once())->method('getCType')->willReturn('myCType');
         $container->expects(self::once())->method('hasChildInColPos')->with(2, 3)->willReturn(true);
         $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
-        $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
+        $configurationService = $this->getMockBuilder(ConfigurationService::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
+        $configurationService->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
 
         $event = new IsContentUsedOnPageLayoutEvent(['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0], false, $pageLayoutContext);
-        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $tcaRegistry);
+        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $configurationService);
         $listener($event);
         self::assertTrue($event->isRecordUsed());
     }
@@ -95,11 +95,11 @@ class ContentUsedOnPageTest extends UnitTestCase
         $container->expects(self::once())->method('getCType')->willReturn('myCType');
         $container->expects(self::once())->method('hasChildInColPos')->with(2, 3)->willReturn(false);
         $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
-        $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
+        $configurationService = $this->getMockBuilder(ConfigurationService::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
+        $configurationService->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
 
         $event = new IsContentUsedOnPageLayoutEvent(['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3, 'sys_language_uid' => 0], false, $pageLayoutContext);
-        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $tcaRegistry);
+        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $configurationService);
         $listener($event);
         self::assertFalse($event->isRecordUsed());
     }
@@ -123,11 +123,11 @@ class ContentUsedOnPageTest extends UnitTestCase
             ->getMock();
         $container->expects(self::once())->method('getCType')->willReturn('myCType');
         $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
-        $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 3]]);
+        $configurationService = $this->getMockBuilder(ConfigurationService::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
+        $configurationService->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 3]]);
 
         $event = new IsContentUsedOnPageLayoutEvent(['tx_container_parent' => 1, 'colPos' => 2, 'uid' => 3], false, $pageLayoutContext);
-        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $tcaRegistry);
+        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class, $containerFactory, $configurationService);
         $listener($event);
         self::assertFalse($event->isRecordUsed());
     }

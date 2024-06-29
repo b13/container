@@ -14,6 +14,7 @@ namespace B13\Container\Tca;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
 
 class ItemProcFunc
@@ -29,14 +30,14 @@ class ItemProcFunc
     protected $backendLayoutView;
 
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry, BackendLayoutView $backendLayoutView)
+    public function __construct(ContainerFactory $containerFactory, ConfigurationService $configurationService, BackendLayoutView $backendLayoutView)
     {
         $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->backendLayoutView = $backendLayoutView;
     }
 
@@ -52,7 +53,7 @@ class ItemProcFunc
             try {
                 $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
-                $grid = $this->tcaRegistry->getGrid($cType);
+                $grid = $this->configurationService->getGrid($cType);
                 if (is_array($grid)) {
                     $items = [];
                     foreach ($grid as $rows) {

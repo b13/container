@@ -12,12 +12,8 @@ namespace B13\Container\Domain\Service;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
-use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\ContainerConfiguration;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\SingletonInterface;
 
 class ConfigurationService
 {
@@ -32,7 +28,6 @@ class ConfigurationService
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->containerConfigurations = $this->getConfigurations();
-
     }
 
     /**
@@ -47,5 +42,116 @@ class ConfigurationService
             $configurations[$cType] = $configuration;
         }
         return $configurations;
+    }
+
+    public function getContentDefenderConfiguration(string $cType, int $colPos): array
+    {
+        $contentDefenderConfiguration = [];
+        $rows = $this->getGrid($cType);
+        foreach ($rows as $columns) {
+            foreach ($columns as $column) {
+                if ((int)$column['colPos'] === $colPos) {
+                    $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
+                    $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
+                    $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                }
+            }
+        }
+        return $contentDefenderConfiguration;
+    }
+
+    public function getAllAvailableColumnsColPos(string $cType): array
+    {
+        $columns = $this->getAvailableColumns($cType);
+        $availableColumnsColPos = [];
+        foreach ($columns as $column) {
+            $availableColumnsColPos[] = $column['colPos'];
+        }
+        return $availableColumnsColPos;
+    }
+
+    public function isContainerElement(string $cType): bool
+    {
+        return !empty($this->containerConfigurations[$cType]);
+    }
+
+    public function getRegisteredCTypes(): array
+    {
+        return array_keys($this->containerConfigurations);
+    }
+
+    public function getGrid(string $cType): array
+    {
+        if (!isset($this->containerConfigurations[$cType])) {
+            return [];
+        }
+        $containerConfiguration = $this->containerConfigurations[$cType];
+        return $containerConfiguration->getGrid();
+    }
+
+    public function getGridTemplate(string $cType): ?string
+    {
+        if (!isset($this->containerConfigurations[$cType])) {
+            return null;
+        }
+        $containerConfiguration = $this->containerConfigurations[$cType];
+        return $containerConfiguration->getGridTemplate();
+    }
+
+    public function getGridPartialPaths(string $cType): array
+    {
+        if (!isset($this->containerConfigurations[$cType])) {
+            return [];
+        }
+        $containerConfiguration = $this->containerConfigurations[$cType];
+        return $containerConfiguration->getGridPartialPaths();
+    }
+
+    public function getGridLayoutPaths(string $cType): array
+    {
+        if (!isset($this->containerConfigurations[$cType])) {
+            return [];
+        }
+        $containerConfiguration = $this->containerConfigurations[$cType];
+        return $containerConfiguration->getGridLayoutPaths();
+    }
+
+    public function getColPosName(string $cType, int $colPos): ?string
+    {
+        $grid = $this->getGrid($cType);
+        foreach ($grid as $row) {
+            foreach ($row as $column) {
+                if ($column['colPos'] === $colPos) {
+                    return (string)$column['name'];
+                }
+            }
+        }
+        return null;
+    }
+
+    public function getAvailableColumns(string $cType): array
+    {
+        $columns = [];
+        $grid = $this->getGrid($cType);
+        foreach ($grid as $row) {
+            foreach ($row as $column) {
+                $columns[] = $column;
+            }
+        }
+        return $columns;
+    }
+
+    public function getAllAvailableColumns(): array
+    {
+        $columns = [];
+        foreach ($this->containerConfigurations as $containerConfiguration) {
+            $grid = $containerConfiguration->getGrid();
+            foreach ($grid as $row) {
+                foreach ($row as $column) {
+                    $columns[] = $column;
+                }
+            }
+        }
+        return array_unique($columns);
     }
 }

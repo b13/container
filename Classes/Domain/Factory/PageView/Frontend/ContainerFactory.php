@@ -15,7 +15,7 @@ namespace B13\Container\Domain\Factory\PageView\Frontend;
 use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -30,11 +30,11 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
 
     public function __construct(
         Database $database,
-        Registry $tcaRegistry,
+        ConfigurationService $configurationService,
         Context $context,
         ContentStorage $contentStorage
     ) {
-        parent::__construct($database, $tcaRegistry, $context);
+        parent::__construct($database, $configurationService, $context);
         $this->contentStorage = $contentStorage;
     }
 
@@ -87,7 +87,7 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
         if ($record === null) {
             throw new Exception('cannot fetch record with uid ' . $uid, 1576572852);
         }
-        if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
+        if (!$this->configurationService->isContainerElement($record['CType'])) {
             throw new Exception('not a container element with uid ' . $uid, 1576572853);
         }
 

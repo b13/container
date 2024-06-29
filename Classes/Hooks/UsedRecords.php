@@ -14,25 +14,25 @@ namespace B13\Container\Hooks;
 
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 
 class UsedRecords
 {
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
      */
     protected $containerFactory;
 
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    public function __construct(ContainerFactory $containerFactory, ConfigurationService $configurationService)
     {
         $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
     }
 
     public function addContainerChildren(array $params, PageLayoutView $pageLayoutView): bool
@@ -42,7 +42,7 @@ class UsedRecords
         if (isset($record['tx_container_parent']) && $record['tx_container_parent'] > 0) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$record['tx_container_parent']);
-                $columns = $this->tcaRegistry->getAvailableColumns($container->getCType());
+                $columns = $this->configurationService->getAvailableColumns($container->getCType());
                 foreach ($columns as $column) {
                     if ($column['colPos'] === (int)$record['colPos']) {
                         if ($record['sys_language_uid'] > 0 && $container->isConnectedMode()) {

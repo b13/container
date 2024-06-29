@@ -14,7 +14,7 @@ namespace B13\Container\Tests\Unit\Domain\Factory\PageView;
 
 use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\PageView\ContainerFactory;
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -32,10 +32,10 @@ class ContainerFactoryTest extends UnitTestCase
             ->onlyMethods(['fetchOneRecord'])
             ->getMock();
         $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn(null);
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
+        $configurationService = $this->getMockBuilder(ConfigurationService::class)->disableOriginalConstructor()->getMock();
         $context = $this->getMockBuilder(Context::class)->getMock();
         $containerFactory = $this->getMockBuilder($this->buildAccessibleProxy(ContainerFactory::class))
-            ->setConstructorArgs(['database' => $database, 'tcaRegistry' => $tcaRegistry, 'context' => $context])
+            ->setConstructorArgs(['database' => $database, 'configurationService' => $configurationService, 'context' => $context])
             ->onlyMethods([])
             ->getMock();
         self::assertNull($containerFactory->_call('containerByUid', 1));

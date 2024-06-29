@@ -14,24 +14,23 @@ namespace B13\Container\Domain\Service;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 
 class ContainerService implements SingletonInterface
 {
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
      */
     protected $containerFactory;
 
-    public function __construct(Registry $tcaRegistry, ContainerFactory $containerFactory)
+    public function __construct(ConfigurationService $configurationService, ContainerFactory $containerFactory)
     {
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->containerFactory = $containerFactory;
     }
 
@@ -39,7 +38,7 @@ class ContainerService implements SingletonInterface
     {
         $target = -$container->getUid();
         $previousRecord = null;
-        $allColumns = $this->tcaRegistry->getAllAvailableColumnsColPos($container->getCType());
+        $allColumns = $this->configurationService->getAllAvailableColumnsColPos($container->getCType());
         foreach ($allColumns as $colPos) {
             if ($colPos === $targetColPos && $previousRecord !== null) {
                 $target = -(int)$previousRecord['uid'];
@@ -61,7 +60,7 @@ class ContainerService implements SingletonInterface
             return $target;
         }
         $lastChild = array_pop($childRecords);
-        if (!$this->tcaRegistry->isContainerElement($lastChild['CType'])) {
+        if (!$this->configurationService->isContainerElement($lastChild['CType'])) {
             return -(int)$lastChild['uid'];
         }
         $container = $this->containerFactory->buildContainer((int)$lastChild['uid']);

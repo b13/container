@@ -14,7 +14,7 @@ namespace B13\Container\ContentDefender\Hooks;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use IchHabRecht\ContentDefender\BackendLayout\ColumnConfigurationManipulationInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -22,19 +22,19 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 class ColumnConfigurationManipulationHook implements ColumnConfigurationManipulationInterface
 {
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
      */
     protected $containerFactory;
 
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    public function __construct(ContainerFactory $containerFactory, ConfigurationService $configurationService)
     {
         $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
     }
 
     public function manipulateConfiguration(array $configuration, int $colPos, $recordUid): array
@@ -50,7 +50,7 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
             return $configuration;
         }
         $cType = $container->getCType();
-        $configuration = $this->tcaRegistry->getContentDefenderConfiguration($cType, $colPos);
+        $configuration = $this->configurationService->getContentDefenderConfiguration($cType, $colPos);
         // maxitems needs not to be considered in this case
         // (new content elemment wizard, TcaCTypeItems: new record, TcaCTypeItems: edit record)
         // consider maxitems here leeds to errors, because relation to container gets lost in EXT:content_defender

@@ -14,8 +14,8 @@ namespace B13\Container\Tests\Unit\Domain\Service;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -68,11 +68,11 @@ class ContainerServiceTest extends UnitTestCase
      */
     public function getFirstNewContentElementTargetInColumnTest(array $containerRecord, array $childRecords, int $targetColPos, int $expectedTarget): void
     {
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAllAvailableColumnsColPos'])->getMock();
-        $tcaRegistry->expects(self::any())->method('getAllAvailableColumnsColPos')->willReturn($this->allContainerColumns);
+        $configurationService = $this->getMockBuilder(ConfigurationService::class)->disableOriginalConstructor()->onlyMethods(['getAllAvailableColumnsColPos'])->getMock();
+        $configurationService->expects(self::any())->method('getAllAvailableColumnsColPos')->willReturn($this->allContainerColumns);
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $container = new Container($containerRecord, $childRecords, 0);
-        $service = GeneralUtility::makeInstance(ContainerService::class, $tcaRegistry, $containerFactory);
+        $service = GeneralUtility::makeInstance(ContainerService::class, $configurationService, $containerFactory);
         $target = $service->getNewContentElementAtTopTargetInColumn($container, $targetColPos);
         self::assertSame($expectedTarget, $target);
     }

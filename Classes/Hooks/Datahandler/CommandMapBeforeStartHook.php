@@ -15,17 +15,17 @@ namespace B13\Container\Hooks\Datahandler;
 use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CommandMapBeforeStartHook
 {
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
@@ -44,12 +44,12 @@ class CommandMapBeforeStartHook
 
     public function __construct(
         ContainerFactory $containerFactory,
-        Registry $tcaRegistry,
+        ConfigurationService $configurationService,
         Database $database,
         ContainerService $containerService
     ) {
         $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->database = $database;
         $this->containerService = $containerService;
     }
@@ -137,7 +137,7 @@ class CommandMapBeforeStartHook
                             // should not happen
                             continue;
                         }
-                        if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
+                        if (!$this->configurationService->isContainerElement($record['CType'])) {
                             continue;
                         }
                         try {
@@ -223,7 +223,7 @@ class CommandMapBeforeStartHook
                                     ],
                                 ],
                             ];
-                        } elseif ($this->tcaRegistry->isContainerElement($targetRecordForOperation['CType'])) {
+                        } elseif ($this->configurationService->isContainerElement($targetRecordForOperation['CType'])) {
                             // record will be copied/moved after container
                             $cmd = [
                                 $operation => [

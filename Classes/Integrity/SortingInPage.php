@@ -14,8 +14,8 @@ namespace B13\Container\Integrity;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,9 +28,9 @@ class SortingInPage implements SingletonInterface
     protected $database;
 
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
@@ -44,10 +44,10 @@ class SortingInPage implements SingletonInterface
 
     protected $errors = [];
 
-    public function __construct(Database $database, Registry $tcaRegistry, ContainerFactory $containerFactory, ContainerService $containerService)
+    public function __construct(Database $database, ConfigurationService $configurationService, ContainerFactory $containerFactory, ContainerService $containerService)
     {
         $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->containerFactory = $containerFactory;
         $this->containerService = $containerService;
     }
@@ -57,10 +57,10 @@ class SortingInPage implements SingletonInterface
         $this->unsetContentDefenderConfiguration();
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $dataHandler->enableLogging = $enableLogging;
-        $cTypes = $this->tcaRegistry->getRegisteredCTypes();
+        $cTypes = $this->configurationService->getRegisteredCTypes();
         $containerUsedColPosArray = [];
         foreach ($cTypes as $cType) {
-            $columns = $this->tcaRegistry->getAvailableColumns($cType);
+            $columns = $this->configurationService->getAvailableColumns($cType);
             foreach ($columns as $column) {
                 $containerUsedColPosArray[] = $column['colPos'];
             }

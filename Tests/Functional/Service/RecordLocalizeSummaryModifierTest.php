@@ -12,8 +12,9 @@ namespace B13\Container\Tests\Functional\Service;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Service\RecordLocalizeSummaryModifier;
-use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -33,10 +34,11 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     public function getContainerUidsReturnsAllUids(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/two_container_elements.csv');
-        $containerRegistry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        $containerConfigurationService = GeneralUtility::makeInstance(ConfigurationService::class, $eventDispatcher);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->onlyMethods([])
-            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->setConstructorArgs(['containerConfigurationService' => $containerConfigurationService])
             ->getMock();
         $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [1, 2]);
         self::assertSame(2, count($containerUids));
@@ -48,10 +50,11 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     public function getContainerChildrenReturnsHiddenRecords(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_child_record.csv');
-        $containerRegistry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        $containerConfigurationService = GeneralUtility::makeInstance(ConfigurationService::class, $eventDispatcher);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->onlyMethods([])
-            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->setConstructorArgs(['containerConfigurationService' => $containerConfigurationService])
             ->getMock();
         $containerChildren = $recordLocalizeSummeryModifier->_call('getContainerChildren', [1]);
         self::assertTrue(isset($containerChildren[1]));
@@ -64,10 +67,11 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     public function getContainerUidsReturnsHiddenUids(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_container_record.csv');
-        $containerRegistry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        $containerConfigurationService = GeneralUtility::makeInstance(ConfigurationService::class, $eventDispatcher);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->onlyMethods([])
-            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->setConstructorArgs(['containerConfigurationService' => $containerConfigurationService])
             ->getMock();
         $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [1]);
         self::assertSame([1], $containerUids);
@@ -79,10 +83,11 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
     public function getContainerUidsReturnsAlsoUidsOfL18nParents(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/container_and_translated_container.csv');
-        $containerRegistry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        $containerConfigurationService = GeneralUtility::makeInstance(ConfigurationService::class, $eventDispatcher);
         $recordLocalizeSummeryModifier = $this->getMockBuilder($this->buildAccessibleProxy(RecordLocalizeSummaryModifier::class))
             ->onlyMethods([])
-            ->setConstructorArgs(['containerRegistry' => $containerRegistry])
+            ->setConstructorArgs(['containerConfigurationService' => $containerConfigurationService])
             ->getMock();
         $containerUids = $recordLocalizeSummeryModifier->_call('getContainerUids', [2]);
         self::assertSame([2, 1], $containerUids);

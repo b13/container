@@ -13,7 +13,7 @@ namespace B13\Container\Domain\Factory\PageView\Backend;
  */
 
 use B13\Container\Domain\Factory\Database;
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Core\Context\Context;
 
 class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerFactory
@@ -25,11 +25,11 @@ class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerF
 
     public function __construct(
         Database $database,
-        Registry $tcaRegistry,
+        ConfigurationService $configurationService,
         Context $context,
         ContentStorage $contentStorage
     ) {
-        parent::__construct($database, $tcaRegistry, $context);
+        parent::__construct($database, $configurationService, $context);
         $this->contentStorage = $contentStorage;
     }
 }

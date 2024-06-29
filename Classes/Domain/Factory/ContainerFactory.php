@@ -13,7 +13,7 @@ namespace B13\Container\Domain\Factory;
  */
 
 use B13\Container\Domain\Model\Container;
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -28,19 +28,19 @@ class ContainerFactory implements SingletonInterface
     protected $database;
 
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var int
      */
     protected $workspaceId = 0;
 
-    public function __construct(Database $database, Registry $tcaRegistry, Context $context)
+    public function __construct(Database $database, ConfigurationService $configurationService, Context $context)
     {
         $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
@@ -60,7 +60,7 @@ class ContainerFactory implements SingletonInterface
         if ($record === null) {
             throw new Exception('cannot fetch record with uid ' . $uid, 1576572850);
         }
-        if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
+        if (!$this->configurationService->isContainerElement($record['CType'])) {
             throw new Exception('not a container element with uid ' . $uid, 1576572851);
         }
 

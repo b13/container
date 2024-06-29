@@ -16,16 +16,16 @@ use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
-use B13\Container\Tca\Registry;
+use B13\Container\Domain\Service\ConfigurationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 
 class ContainerColumnConfigurationService implements SingletonInterface
 {
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
@@ -34,10 +34,10 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     protected $copyMapping = [];
 
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    public function __construct(ContainerFactory $containerFactory, ConfigurationService $configurationService)
     {
         $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
     }
 
     protected function getRecord(int $uid): ?array
@@ -105,7 +105,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
     protected function getColumnConfigurationForContainer(Container $container, int $colPos): array
     {
         $cType = $container->getCType();
-        $columnConfiguration = $this->tcaRegistry->getContentDefenderConfiguration($cType, $colPos);
+        $columnConfiguration = $this->configurationService->getContentDefenderConfiguration($cType, $colPos);
         return $columnConfiguration;
     }
 

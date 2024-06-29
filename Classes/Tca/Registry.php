@@ -13,7 +13,6 @@ namespace B13\Container\Tca;
  */
 
 use B13\Container\Events\BeforeContainerConfigurationEvent;
-use B13\Container\Events\GetGridEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
@@ -110,51 +109,25 @@ class Registry implements SingletonInterface
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerConfiguration->getCType()] = $containerConfiguration->toArray();
     }
 
-    public function getContentDefenderConfiguration(string $cType, int $colPos): array
-    {
-        $contentDefenderConfiguration = [];
-        $rows = $this->getGrid($cType);
-        foreach ($rows as $columns) {
-            foreach ($columns as $column) {
-                if ((int)$column['colPos'] === $colPos) {
-                    $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
-                    $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
-                    $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
-                }
-            }
-        }
-        return $contentDefenderConfiguration;
-    }
-
-    public function getAllAvailableColumnsColPos(string $cType): array
-    {
-        $columns = $this->getAvailableColumns($cType);
-        $availableColumnsColPos = [];
-        foreach ($columns as $column) {
-            $availableColumnsColPos[] = $column['colPos'];
-        }
-        return $availableColumnsColPos;
-    }
-
     public function registerIcons(): void
     {
         if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration']) && is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
-            $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+            $iconConfigurationService = GeneralUtility::makeInstance(IconRegistry::class);
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
                 if (file_exists(GeneralUtility::getFileAbsFileName($containerConfiguration['icon']))) {
                     $provider = BitmapIconProvider::class;
                     if (str_contains($containerConfiguration['icon'], '.svg')) {
                         $provider = SvgIconProvider::class;
                     }
-                    $iconRegistry->registerIcon(
+                    $iconConfigurationService->registerIcon(
                         $containerConfiguration['cType'],
                         $provider,
                         ['source' => $containerConfiguration['icon']]
                     );
                 } else {
                     try {
-                        $existingIconConfiguration = $iconRegistry->getIconConfigurationByIdentifier($containerConfiguration['icon']);
-                        $iconRegistry->registerIcon(
+                        $existingIconConfiguration = $iconConfigurationService->getIconConfigurationByIdentifier($containerConfiguration['icon']);
+                        $iconConfigurationService->registerIcon(
                             $containerConfiguration['cType'],
                             $existingIconConfiguration['provider'],
                             $existingIconConfiguration['options']
@@ -164,86 +137,6 @@ class Registry implements SingletonInterface
                 }
             }
         }
-    }
-
-    public function isContainerElement(string $cType): bool
-    {
-        return !empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]);
-    }
-
-    public function getRegisteredCTypes(): array
-    {
-        return array_keys((array)($GLOBALS['TCA']['tt_content']['containerConfiguration'] ?? []));
-    }
-
-    public function getGrid(string $cType): array
-    {
-        $getGridEvent = new GetGridEvent($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? []);
-        $this->eventDispatcher->dispatch($getGridEvent);
-        return $getGridEvent->getGrid();
-    }
-
-    public function getGridTemplate(string $cType): ?string
-    {
-        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridTemplate'])) {
-            return null;
-        }
-        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridTemplate'];
-    }
-
-    public function getGridPartialPaths(string $cType): array
-    {
-        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridPartialPaths'])) {
-            return [];
-        }
-        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridPartialPaths'];
-    }
-
-    public function getGridLayoutPaths(string $cType): array
-    {
-        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridLayoutPaths'] ?? [];
-    }
-
-    public function getColPosName(string $cType, int $colPos): ?string
-    {
-        $grid = $this->getGrid($cType);
-        foreach ($grid as $row) {
-            foreach ($row as $column) {
-                if ($column['colPos'] === $colPos) {
-                    return (string)$column['name'];
-                }
-            }
-        }
-        return null;
-    }
-
-    public function getAvailableColumns(string $cType): array
-    {
-        $columns = [];
-        $grid = $this->getGrid($cType);
-        foreach ($grid as $row) {
-            foreach ($row as $column) {
-                $columns[] = $column;
-            }
-        }
-        return $columns;
-    }
-
-    public function getAllAvailableColumns(): array
-    {
-        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
-            return [];
-        }
-        $columns = [];
-        foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
-            $grid = $containerConfiguration['grid'];
-            foreach ($grid as $row) {
-                foreach ($row as $column) {
-                    $columns[] = $column;
-                }
-            }
-        }
-        return $columns;
     }
 
     public function getPageTsString(): string

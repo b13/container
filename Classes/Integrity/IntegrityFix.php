@@ -12,11 +12,11 @@ namespace B13\Container\Integrity;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Integrity\Error\ChildInTranslatedContainerError;
 use B13\Container\Integrity\Error\NonExistingParentWarning;
 use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Error\WrongPidError;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -30,14 +30,14 @@ class IntegrityFix implements SingletonInterface
     protected $database;
 
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
-    public function __construct(Database $database, Registry $tcaRegistry)
+    public function __construct(Database $database, ConfigurationService $configurationService)
     {
         $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
     }
 
     public function deleteChildrenWithWrongPid(WrongPidError $wrongPidError): void
@@ -82,7 +82,7 @@ class IntegrityFix implements SingletonInterface
      */
     public function languageMode(array $errors): void
     {
-        $cTypes = $this->tcaRegistry->getRegisteredCTypes();
+        $cTypes = $this->configurationService->getRegisteredCTypes();
         $defaultContainerRecords = $this->database->getContainerRecords($cTypes);
         $containerRecords = [];
         // uniq container records
@@ -96,7 +96,7 @@ class IntegrityFix implements SingletonInterface
                 continue;
             }
             $defaultContainerRecord = $defaultContainerRecords[$containerRecord['l18n_parent']];
-            $columns = $this->tcaRegistry->getAvailableColumns($defaultContainerRecord['CType']);
+            $columns = $this->configurationService->getAvailableColumns($defaultContainerRecord['CType']);
             foreach ($columns as $column) {
                 $childRecords = $this->database->getChildrenByContainerAndColPos($containerRecord['uid'], (int)$column['colPos'], $containerRecord['sys_language_uid']);
                 // some children may have corrent container parent set

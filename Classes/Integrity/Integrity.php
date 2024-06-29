@@ -12,6 +12,7 @@ namespace B13\Container\Integrity;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Integrity\Error\ChildInTranslatedContainerError;
 use B13\Container\Integrity\Error\NonExistingParentWarning;
 use B13\Container\Integrity\Error\UnusedColPosWarning;
@@ -19,7 +20,6 @@ use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Error\WrongLanguageWarning;
 use B13\Container\Integrity\Error\WrongParentError;
 use B13\Container\Integrity\Error\WrongPidError;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 
 class Integrity implements SingletonInterface
@@ -30,9 +30,9 @@ class Integrity implements SingletonInterface
     protected $database;
 
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var string[][]
@@ -42,18 +42,18 @@ class Integrity implements SingletonInterface
         'warnings' => [],
     ];
 
-    public function __construct(Database $database, Registry $tcaRegistry)
+    public function __construct(Database $database, ConfigurationService $configurationService)
     {
         $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
     }
 
     public function run(): array
     {
-        $cTypes = $this->tcaRegistry->getRegisteredCTypes();
+        $cTypes = $this->configurationService->getRegisteredCTypes();
         $colPosByCType = [];
         foreach ($cTypes as $cType) {
-            $columns = $this->tcaRegistry->getAvailableColumns($cType);
+            $columns = $this->configurationService->getAvailableColumns($cType);
             $colPosByCType[$cType] = [];
             foreach ($columns as $column) {
                 $colPosByCType[$cType][] = $column['colPos'];

@@ -15,8 +15,8 @@ namespace B13\Container\Integrity;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,9 +29,9 @@ class Sorting implements SingletonInterface
     protected $database;
 
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
@@ -45,22 +45,22 @@ class Sorting implements SingletonInterface
 
     protected $errors = [];
 
-    public function __construct(Database $database, Registry $tcaRegistry, ContainerFactory $containerFactory, ContainerService $containerService)
+    public function __construct(Database $database, ConfigurationService $configurationService, ContainerFactory $containerFactory, ContainerService $containerService)
     {
         $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->containerFactory = $containerFactory;
         $this->containerService = $containerService;
     }
 
     public function run(bool $dryRun = true, bool $enableLogging = false, ?int $pid = null): array
     {
-        $cTypes = $this->tcaRegistry->getRegisteredCTypes();
+        $cTypes = $this->configurationService->getRegisteredCTypes();
         $containerRecords = $this->database->getContainerRecords($cTypes, $pid);
         $containerRecords = array_merge($containerRecords, $this->database->getContainerRecordsFreeMode($cTypes, $pid));
         $colPosByCType = [];
         foreach ($cTypes as $cType) {
-            $columns = $this->tcaRegistry->getAvailableColumns($cType);
+            $columns = $this->configurationService->getAvailableColumns($cType);
             $colPosByCType[$cType] = [];
             foreach ($columns as $column) {
                 $colPosByCType[$cType][] = $column['colPos'];
@@ -96,7 +96,7 @@ class Sorting implements SingletonInterface
                     return true;
                 }
                 $prevSorting = $child['sorting'];
-                if ($this->tcaRegistry->isContainerElement($child['CType'])) {
+                if ($this->configurationService->isContainerElement($child['CType'])) {
                     $childContainer = $this->containerFactory->buildContainer((int)$child['uid']);
                     $targetUid = (-1) * $this->containerService->getAfterContainerElementTarget($childContainer);
                     if ($childContainer->getUid() !== $targetUid) {

@@ -14,8 +14,8 @@ namespace B13\Container\Hooks\Datahandler;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 class DatamapBeforeStartHook
@@ -36,19 +36,19 @@ class DatamapBeforeStartHook
     protected $containerService;
 
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     public function __construct(
         ContainerFactory $containerFactory,
         Database $database,
-        Registry $tcaRegistry,
+        ConfigurationService $configurationService,
         ContainerService $containerService
     ) {
         $this->containerFactory = $containerFactory;
         $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->containerService = $containerService;
     }
 

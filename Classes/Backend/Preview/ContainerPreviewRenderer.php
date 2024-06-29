@@ -17,9 +17,9 @@ use B13\Container\Backend\Grid\ContainerGridColumnItem;
 use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Events\BeforeContainerPreviewIsRendered;
-use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
@@ -32,9 +32,9 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 class ContainerPreviewRenderer extends StandardContentPreviewRenderer
 {
     /**
-     * @var Registry
+     * @var ConfigurationService
      */
-    protected $tcaRegistry;
+    protected $configurationService;
 
     /**
      * @var ContainerFactory
@@ -57,13 +57,13 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
     protected $eventDispatcher;
 
     public function __construct(
-        Registry $tcaRegistry,
+        ConfigurationService $configurationService,
         ContainerFactory $containerFactory,
         ContainerColumnConfigurationService $containerColumnConfigurationService,
         ContainerService $containerService,
         EventDispatcher $eventDispatcher
     ) {
-        $this->tcaRegistry = $tcaRegistry;
+        $this->configurationService = $configurationService;
         $this->containerFactory = $containerFactory;
         $this->containerColumnConfigurationService = $containerColumnConfigurationService;
         $this->containerService = $containerService;
@@ -82,7 +82,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
             // not a container
             return $content;
         }
-        $containerGrid = $this->tcaRegistry->getGrid($record['CType']);
+        $containerGrid = $this->configurationService->getGrid($record['CType']);
         foreach ($containerGrid as $cols) {
             $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
             foreach ($cols as $col) {
@@ -104,9 +104,9 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
             $grid->addRow($rowObject);
         }
 
-        $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
-        $partialRootPaths = $this->tcaRegistry->getGridPartialPaths($record['CType']);
-        $layoutRootPaths = $this->tcaRegistry->getGridLayoutPaths($record['CType']);
+        $gridTemplate = $this->configurationService->getGridTemplate($record['CType']);
+        $partialRootPaths = $this->configurationService->getGridPartialPaths($record['CType']);
+        $layoutRootPaths = $this->configurationService->getGridLayoutPaths($record['CType']);
         $view = GeneralUtility::makeInstance(StandaloneView::class);
         $view->setPartialRootPaths($partialRootPaths);
         $view->setLayoutRootPaths($layoutRootPaths);

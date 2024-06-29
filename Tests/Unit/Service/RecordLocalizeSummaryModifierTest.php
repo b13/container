@@ -12,8 +12,8 @@ namespace B13\Container\Tests\Unit\Service;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Service\ConfigurationService;
 use B13\Container\Service\RecordLocalizeSummaryModifier;
-use B13\Container\Tca\Registry;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class RecordLocalizeSummaryModifierTest extends UnitTestCase
@@ -69,13 +69,13 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
     /**
      * @test
      */
-    public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns(): void
+    public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenConfigurationServiceReturnsRepeatingColumns(): void
     {
-        $tcaRegistry = $this->getMockBuilder(Registry::class)
+        $configurationService = $this->getMockBuilder(ConfigurationService::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getAllAvailableColumns'])
             ->getMock();
-        $tcaRegistry->expects(self::once())->method('getAllAvailableColumns')->willReturn(
+        $configurationService->expects(self::once())->method('getAllAvailableColumns')->willReturn(
             [
                 ['colPos' => 2],
                 ['colPos' => 3],
@@ -86,7 +86,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
         $recordLocalizeSummeryModifier = $this->getAccessibleMock(
             RecordLocalizeSummaryModifier::class,
             ['getContainerUids', 'getContainerChildren'],
-            [$tcaRegistry]
+            [$configurationService]
         );
         $rebuildedColumns = $recordLocalizeSummeryModifier->rebuildColumns($columns);
         self::assertSame([2, 3, 0], $rebuildedColumns['columnList']);
