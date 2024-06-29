@@ -237,6 +237,40 @@ class ContainerConfiguration
         return $this;
     }
 
+    protected function setLabel(string $label): ContainerConfiguration
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    public function setDescription(string $description): ContainerConfiguration
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function setGrid(array $grid): ContainerConfiguration
+    {
+        $this->grid = $grid;
+        return $this;
+    }
+
+
+
+    public function applyTca(array $config): void
+    {
+        $this->setIcon($config['icon'])
+            ->setLabel($config['label'])
+            ->setDescription($config['description'])
+            ->setGrid($config['grid']) // todo object with fixed cols
+            ->setGridTemplate($config['gridTemplate'])
+            ->setGridLayoutPaths($config['gridPartialPaths'])
+            ->setSaveAndCloseInNewContentElementWizard($config['saveAndCloseInNewContentElementWizard'])
+            ->setRegisterInNewContentElementWizard($config['registerInNewContentElementWizard'])
+            ->setGroup($config['group'])
+            ->setDefaultValues($config['defaultValues']);
+    }
+
     /**
      * @return mixed[]
      */
