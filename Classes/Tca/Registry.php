@@ -238,12 +238,6 @@ class Registry implements SingletonInterface
 
     public function getPageTsString(): string
     {
-        // s. https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/ContentElements/CustomBackendPreview.html#ConfigureCE-Preview-EventListener
-        // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() > 12) {
-            throw new \BadMethodCallException('removed with TYPO3 13');
-        }
         if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             return '';
         }
@@ -259,6 +253,17 @@ class Registry implements SingletonInterface
                 }
                 $groupedByGroup[$group][$cType] = $containerConfiguration;
             }
+            if ($containerConfiguration['backendTemplate'] !== null) {
+                $pageTs .= LF . 'mod.web_layout.tt_content.preview {
+' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
+}
+';
+            }
+        }
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() > 12) {
+            // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
+            return $pageTs;
         }
 
         foreach ($groupedByGroup as $group => $containerConfigurations) {

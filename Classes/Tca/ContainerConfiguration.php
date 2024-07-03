@@ -42,10 +42,7 @@ class ContainerConfiguration
      */
     protected $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
 
-    /**
-     * @var string
-     */
-    protected $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html';
+    protected ?string $backendTemplate = null;
 
     /**
      * @var string
