@@ -113,7 +113,8 @@ class LayoutCest
         }
         $I->waitForElementNotVisible('#t3js-ui-block');
         // we have a "Content" Button for new elements with Fluid based page module
-        $I->dontSee('Content', '#element-tt_content-102 .t3-page-ce-body');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->dontSee($newContentElementLabel, '#element-tt_content-102 .t3-page-ce-body');
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
             $I->selectOption('select[name="actionMenu"]', 'Languages');
         } else {
@@ -121,7 +122,7 @@ class LayoutCest
         }
         $I->waitForElementNotVisible('#t3js-ui-block');
         // but not in Language View
-        $I->dontSee('Content', '#element-tt_content-102');
+        $I->dontSee($newContentElementLabel, '#element-tt_content-102');
     }
 
     /**
@@ -132,22 +133,19 @@ class LayoutCest
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $newContentText = 'Create new content';
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
         } else {
             $pageTreeV13->openPath(['home', 'emptyPage']);
         }
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
-            $newContentText = 'Content';
-        }
+        $newContentElementLabel = $I->getNewContentElementLabel();
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForText($newContentText);
+        $I->waitForText($newContentElementLabel);
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
-            $I->click($newContentText);
+            $I->click($newContentElementLabel);
         } else {
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         }
@@ -187,10 +185,11 @@ class LayoutCest
         }
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForText('Content');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->waitForText($newContentElementLabel);
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
-            $I->click('Content');
+            $I->click($newContentElementLabel);
         } else {
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         }
@@ -270,7 +269,8 @@ class LayoutCest
         // header
         $dataColPos = $I->getDataColPos(700, 200);
         $I->waitForElement('#element-tt_content-700 [data-colpos="' . $dataColPos . '"]');
-        $I->click('Content', '#element-tt_content-700 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-700 [data-colpos="' . $dataColPos . '"]');
         // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
@@ -315,7 +315,8 @@ class LayoutCest
         $I->waitForElement($containerColumn);
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         $I->dontSeeElement($contentInContainerColumn);
-        $I->click('Content', $containerColumn);
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, $containerColumn);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if ($typo3Version->getMajorVersion() < 12) {
@@ -372,7 +373,8 @@ class LayoutCest
         $selector = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
         $I->dontSee('german', $selector);
         $dataColPos = $I->getDataColPos($uid, 200);
-        $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);

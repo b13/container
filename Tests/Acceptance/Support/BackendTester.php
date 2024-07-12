@@ -52,4 +52,12 @@ class BackendTester extends \Codeception\Actor
         }
         return (string)($containerId . '-' . $colPos);
     }
+
+    public function getNewContentElementLabel(): string
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
+            return 'Content';
+        }
+        return 'Create new content';
+    }
 }
