@@ -76,11 +76,41 @@ class Registry implements SingletonInterface
             }
         }
 
+        if ($containerConfiguration->getTCAHeaders()) {
+            $tcaHeader = '--palette--;;headers,';
+        } else {
+            $tcaHeader = 'header;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header.ALT.div_formlabel,';
+        }
+
+        if ($containerConfiguration->getTCABodytext()) {
+            $tcaBodytext = 'bodytext;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:bodytext_formlabel,';
+            $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['columnsOverrides']['bodytext']['config'] = [
+                'rows' => 5,
+                'enableRichtext' => true,
+            ];
+        }
+
+        if ($containerConfiguration->getTCAAssets()) {
+            $tcaAssets = '--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.media,
+                            assets,';
+        }
+
+        if (!empty($containerConfiguration->getTCAFlexform())) {
+            $tcaFlexform = '--palette--;;containerSettings,';
+
+            ExtensionManagementUtility::addFieldsToPalette('tt_content', 'containerSettings', 'pi_flexform');
+            ExtensionManagementUtility::addPiFlexFormValue(
+                '*',
+                $containerConfiguration->getTCAFlexform(),
+                $containerConfiguration->getCType()
+            );
+        }
+
         $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$containerConfiguration->getCType()] = $containerConfiguration->getCType();
         $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['showitem'] = '
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
                     --palette--;;general,
-                    header;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header.ALT.div_formlabel,
+                    ' . ($tcaHeader ?? '') . ($tcaBodytext ?? '') . ($tcaAssets ?? '') . '                
                 --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
                     --palette--;;frames,
                     --palette--;;appearanceLinks,
@@ -94,6 +124,7 @@ class Registry implements SingletonInterface
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
                     rowDescription,
                 --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+                ' . ($tcaFlexform ?? '') . '
 ';
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerConfiguration->getCType()] = $containerConfiguration->toArray();

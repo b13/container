@@ -75,6 +75,23 @@ class ContainerConfiguration
     protected $group = 'container';
 
     /**
+     * @var bool
+     */
+    protected $tcaHeaders = false;
+    /**
+     * @var bool
+     */
+    protected $tcaAssets = false;
+    /**
+     * @var bool
+     */
+    protected $tcaBodytext = false;
+    /**
+     * @var string
+     */
+    protected $tcaFlexform = '';
+
+    /**
      * @var array
      */
     protected $defaultValues = [];
@@ -250,6 +267,82 @@ class ContainerConfiguration
     }
 
     /**
+     * @param bool $enable
+     *
+     * @return $this
+     */
+    public function enableTCAHeaders(bool $enable): ContainerConfiguration
+    {
+        $this->tcaHeaders = $enable;
+        return $this;
+    }
+
+    /**
+     * @param bool $enable
+     *
+     * @return $this
+     */
+    public function enableTCABodytext(bool $enable): ContainerConfiguration
+    {
+        $this->tcaBodytext = $enable;
+        return $this;
+    }
+
+    /**
+     * @param bool $enable
+     *
+     * @return $this
+     */
+    public function enableTCAAssets(bool $enable): ContainerConfiguration
+    {
+        $this->tcaAssets = $enable;
+        return $this;
+    }
+
+    /**
+     * @param string $flexformPath
+     *
+     * @return $this
+     */
+    public function setTCAFlexform(string $flexformPath): ContainerConfiguration
+    {
+        $this->tcaFlexform = $flexformPath;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getTCAHeaders(): bool
+    {
+        return $this->tcaHeaders;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getTCABodytext(): bool
+    {
+        return $this->tcaBodytext;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getTCAAssets(): bool
+    {
+        return $this->tcaAssets;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTCAFlexform(): string
+    {
+        return $this->tcaFlexform;
+    }
+
+    /**
      * @return mixed[]
      */
     public function toArray(): array
@@ -268,6 +361,12 @@ class ContainerConfiguration
             'registerInNewContentElementWizard' => $this->registerInNewContentElementWizard,
             'group' => $this->group,
             'defaultValues' => $this->defaultValues,
+            'tca' => [
+                'headers' => $this->tcaHeaders,
+                'bodytext' => $this->tcaBodytext,
+                'assets' => $this->tcaAssets,
+                'flexform' => $this->tcaFlexform,
+            ],
         ];
     }
 }
