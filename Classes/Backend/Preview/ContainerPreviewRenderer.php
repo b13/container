@@ -18,7 +18,7 @@ use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Service\ContainerService;
-use B13\Container\Events\BeforeContainerPreviewIsRendered;
+use B13\Container\Events\BeforeContainerPreviewIsRenderedEvent;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -118,7 +118,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
         $view->assign('containerRecord', $record);
-        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRendered($container, $view);
+        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view);
         $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
         $rendered = $view->render();
 

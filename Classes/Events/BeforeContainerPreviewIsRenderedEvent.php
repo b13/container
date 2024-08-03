@@ -15,7 +15,7 @@ namespace B13\Container\Events;
 use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
-class BeforeContainerPreviewIsRendered
+class BeforeContainerPreviewIsRenderedEvent
 {
     protected Container $container;
 
