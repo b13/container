@@ -116,7 +116,9 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('newContentTitle', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement'));
         $view->assign('newContentTitleShort', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:content'));
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
+        // keep compatibility
         $view->assign('containerGrid', $grid);
+        $view->assign('grid', $grid);
         $view->assign('containerRecord', $record);
         $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view);
         $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);

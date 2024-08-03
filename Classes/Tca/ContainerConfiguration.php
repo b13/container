@@ -218,6 +218,31 @@ class ContainerConfiguration
         return $this->grid;
     }
 
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getIcon(): string
+    {
+        return $this->icon;
+    }
+
+    public function getBackendTemplate(): ?string
+    {
+        return $this->backendTemplate;
+    }
+
+    public function isRegisterInNewContentElementWizard(): bool
+    {
+        return $this->registerInNewContentElementWizard;
+    }
+
+    public function getDefaultValues(): array
+    {
+        return $this->defaultValues;
+    }
+
     /**
      * @return string[]
      */
@@ -247,6 +272,23 @@ class ContainerConfiguration
     {
         $this->defaultValues = $defaultValues;
         return $this;
+    }
+
+    protected function setLabel(string $label): ContainerConfiguration
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    public function setDescription(string $description): ContainerConfiguration
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getGridTemplate(): string
+    {
+        return $this->gridTemplate;
     }
 
     /**
