@@ -169,13 +169,9 @@ With explicit colPos defined use `{children_200|201}` as set in the example abov
 
 ### BeforeContainerConfigurationIsAppliedEvent
 
-* change container configuration for 3rd party extensions container
+* change container configuration for 3rd party extensions container you have installed
 * apply same configuration to all or a set of containers (e.g. ``gridTemplate``)
-
-### ApplyContentDefenderConfigurationEvent
-
-this allowes you to change content_defender configuration at runtime, usefull for multisite installations
-e.g. have different allowed elements on different sites
+* **Note** grid and CType cannot be changed
 
 ### BeforeContainerPreviewIsRendered
 
