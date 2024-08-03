@@ -14,13 +14,24 @@ namespace B13\Container\Events;
 
 use B13\Container\Tca\ContainerConfiguration;
 
-class BeforeContainerConfigurationEvent
+class BeforeContainerConfigurationIsAppliedEvent
 {
     protected ContainerConfiguration $containerConfiguration;
+    protected bool $skip = false;
 
     public function __construct(ContainerConfiguration $containerConfiguration)
     {
         $this->containerConfiguration = $containerConfiguration;
+    }
+
+    public function skip(): void
+    {
+        $this->skip = true;
+    }
+
+    public function shouldBeSkipped(): bool
+    {
+        return $this->skip;
     }
 
     public function getContainerConfiguration(): ContainerConfiguration

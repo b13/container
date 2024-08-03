@@ -12,8 +12,8 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
-use B13\Container\Events\BeforeContainerConfigurationEvent;
-use B13\Container\Events\GetGridEvent;
+use B13\Container\Events\ApplyContentDefenderConfigurationEvent;
+use B13\Container\Events\BeforeContainerConfigurationIsAppliedEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
@@ -37,7 +37,11 @@ class Registry implements SingletonInterface
      */
     public function configureContainer(ContainerConfiguration $containerConfiguration): void
     {
-        $this->eventDispatcher->dispatch(new BeforeContainerConfigurationEvent($containerConfiguration));
+        $beforeContainerConfigurationIsAppliedEvent = new BeforeContainerConfigurationIsAppliedEvent($containerConfiguration);
+        $this->eventDispatcher->dispatch($beforeContainerConfigurationIsAppliedEvent);
+        if ($beforeContainerConfigurationIsAppliedEvent->shouldBeSkipped()) {
+            return;
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             ExtensionManagementUtility::addTcaSelectItem(
                 'tt_content',
@@ -117,9 +121,18 @@ class Registry implements SingletonInterface
         foreach ($rows as $columns) {
             foreach ($columns as $column) {
                 if ((int)$column['colPos'] === $colPos) {
-                    $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
-                    $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
-                    $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                    $applyContentDefenderConfigurationEvent = new ApplyContentDefenderConfigurationEvent(
+                        $cType,
+                        $colPos,
+                        $column['allowed'] ?? [],
+                        $column['disallowed'] ?? [],
+                        $column['maxitems'] ?? 0
+                    );
+                    $this->eventDispatcher->dispatch($applyContentDefenderConfigurationEvent);
+                    $contentDefenderConfiguration['allowed.'] = $applyContentDefenderConfigurationEvent->getAllowed();
+                    $contentDefenderConfiguration['disallowed.'] = $applyContentDefenderConfigurationEvent->getDisallowed();
+                    $contentDefenderConfiguration['maxitems'] = $applyContentDefenderConfigurationEvent->getMaxItems();
+                    return $contentDefenderConfiguration;
                 }
             }
         }
@@ -178,9 +191,7 @@ class Registry implements SingletonInterface
 
     public function getGrid(string $cType): array
     {
-        $getGridEvent = new GetGridEvent($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? []);
-        $this->eventDispatcher->dispatch($getGridEvent);
-        return $getGridEvent->getGrid();
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? [];
     }
 
     public function getGridTemplate(string $cType): ?string

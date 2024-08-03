@@ -13,16 +13,18 @@ namespace B13\Container\Events;
  */
 
 use B13\Container\Domain\Model\Container;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class BeforeContainerPreviewIsRendered
 {
     protected Container $container;
 
-    protected array $viewVariables = [];
+    protected StandaloneView $view;
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, StandaloneView $view)
     {
         $this->container = $container;
+        $this->view = $view;
     }
 
     public function getContainer(): Container
@@ -30,13 +32,8 @@ class BeforeContainerPreviewIsRendered
         return $this->container;
     }
 
-    public function getViewVariables(): array
+    public function getView(): StandaloneView
     {
-        return $this->viewVariables;
-    }
-
-    public function setViewVariables(array $viewVariables): void
-    {
-        $this->viewVariables = $viewVariables;
+        return $this->view;
     }
 }

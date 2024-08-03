@@ -118,9 +118,8 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
         $view->assign('containerGrid', $grid);
         $view->assign('containerRecord', $record);
-        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRendered($container);
+        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRendered($container, $view);
         $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
-        $view->assignMultiple($beforeContainerPreviewIsRendered->getViewVariables());
         $rendered = $view->render();
 
         return $content . $rendered;
