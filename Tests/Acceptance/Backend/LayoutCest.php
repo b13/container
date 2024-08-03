@@ -132,18 +132,22 @@ class LayoutCest
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
+        $newContentText = 'Create new content';
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
         } else {
             $pageTreeV13->openPath(['home', 'emptyPage']);
         }
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
+            $newContentText = 'Content';
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForText('Content');
+        $I->waitForText($newContentText);
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
-            $I->click('Content');
+            $I->click($newContentText);
         } else {
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         }
@@ -306,14 +310,12 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(1, 200);
-        $I->waitForElement('#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
+        $containerColumn = '#element-tt_content-1 [data-colpos="' . $dataColPos . '"]';
+        $contentInContainerColumn = '#element-tt_content-1 div[data-colpos="' . $dataColPos . '"] .t3-page-ce';
+        $I->waitForElement($containerColumn);
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
-        if ($typo3Version->getMajorVersion() === 12) {
-            $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(3)';
-        }
-        $I->dontSeeElement($selector . ' .t3js-flag[title="english"]');
-        $I->click('Content', '#element-tt_content-1 [data-colpos="' . $dataColPos . '"]');
+        $I->dontSeeElement($contentInContainerColumn);
+        $I->click('Content', $containerColumn);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if ($typo3Version->getMajorVersion() < 12) {
@@ -333,7 +335,7 @@ class LayoutCest
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        $I->canSeeElement($selector . ' .t3js-flag[title="english"]');
+        $I->canSeeElement($contentInContainerColumn);
     }
 
     /**
