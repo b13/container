@@ -1,9 +1,14 @@
 .Build/
 Build/phpunit/.phpunit.result.cache
 Build/testing-docker/.env
+Build/testing-docker/docker-compose.yml
 var/
 composer.lock
 .php-cs-fixer.cache
 .env
 config
 .idea
+.cache
+composer.json.orig
+composer.json.testing
+bck-runTests.sh
