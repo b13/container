@@ -28,25 +28,25 @@ jobs:
             php: '8.3'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install testing system
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerInstall
 
       - name: Composer validate
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerValidate
 
       - name: Lint PHP
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s lint
 
       - name: CGL
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s cgl -n
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s cgl -n
 
       - name: phpstan
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s phpstan
 
       - name: Unit Tests
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s unit
 
       - name: Functional Tests v12/v11
         if: matrix.TYPO3 != '13'
@@ -54,18 +54,18 @@ jobs:
 
       - name: Functional Tests v13
         if: matrix.TYPO3 == '13'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -e "--exclude-group=content_defender"
+        run: PHPUNIT_EXCLUDE_GROUPS=content_defender Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
 
       - name: Acceptance Tests v12/v11
         if: matrix.TYPO3 != '13'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e --fail-fast
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
 
       - name: Acceptance Tests v13
         if: matrix.TYPO3 == '13'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e "--fail-fast --skip-group=content_defender"
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast --skip-group=content_defender
 
       - name: Archive acceptance tests results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: acceptance-test-reports-${{ matrix.php }}-${{ matrix.TYPO3 }}
