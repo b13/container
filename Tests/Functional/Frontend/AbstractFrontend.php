@@ -55,7 +55,7 @@ abstract class AbstractFrontend extends FunctionalTestCase
         return $content;
     }
 
-    protected function executeFrontendRequestWrapper(InternalRequest $request, InternalRequestContext $context = null, bool $followRedirects = false): ResponseInterface
+    protected function executeFrontendRequestWrapper(InternalRequest $request, ?InternalRequestContext $context = null, bool $followRedirects = false): ResponseInterface
     {
         return $this->executeFrontendSubRequest($request, $context, $followRedirects);
     }

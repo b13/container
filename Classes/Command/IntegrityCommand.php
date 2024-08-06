@@ -25,7 +25,7 @@ class IntegrityCommand extends Command
      */
     protected $integrity;
 
-    public function __construct(Integrity $integrity, string $name = null)
+    public function __construct(Integrity $integrity, ?string $name = null)
     {
         $this->integrity = $integrity;
         parent::__construct($name);
