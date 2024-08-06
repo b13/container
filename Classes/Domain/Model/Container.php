@@ -112,16 +112,6 @@ class Container
         return $childRecords;
     }
 
-    public function getChildRecordsUids(): array
-    {
-        $uids = [];
-        $childRecords = $this->getChildRecords();
-        foreach ($childRecords as $childRecord) {
-            $uids[] = $childRecord['uid'];
-        }
-        return $uids;
-    }
-
     /**
      * @param int $colPos
      * @return array
