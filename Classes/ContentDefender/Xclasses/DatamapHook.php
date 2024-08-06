@@ -36,9 +36,9 @@ class DatamapHook extends DatamapDataHandlerHook
     protected $mapping = [];
 
     public function __construct(
-        ContentRepository $contentRepository = null,
-        ContainerColumnConfigurationService $containerColumnConfigurationService = null,
-        Database $database = null
+        ?ContentRepository $contentRepository = null,
+        ?ContainerColumnConfigurationService $containerColumnConfigurationService = null,
+        ?Database $database = null
     ) {
         $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
         $this->database = $database ?? GeneralUtility::makeInstance(Database::class);

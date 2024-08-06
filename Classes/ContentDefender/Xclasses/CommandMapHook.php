@@ -30,8 +30,8 @@ class CommandMapHook extends CmdmapDataHandlerHook
     protected $mapping = [];
 
     public function __construct(
-        ContentRepository $contentRepository = null,
-        ContainerColumnConfigurationService $containerColumnConfigurationService = null
+        ?ContentRepository $contentRepository = null,
+        ?ContainerColumnConfigurationService $containerColumnConfigurationService = null
     ) {
         $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
         parent::__construct($contentRepository);
