@@ -31,7 +31,7 @@ class FixLanguageModeCommand extends Command
      */
     protected $integrityFix;
 
-    public function __construct(Integrity $integrity, IntegrityFix $integrityFix, string $name = null)
+    public function __construct(Integrity $integrity, IntegrityFix $integrityFix, ?string $name = null)
     {
         $this->integrity = $integrity;
         $this->integrityFix = $integrityFix;
