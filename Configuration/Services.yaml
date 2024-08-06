@@ -37,13 +37,7 @@ services:
     public: true
   B13\Container\Updates\ContainerDeleteChildrenWithWrongPid:
     public: true
-  B13\Container\Hooks\TableConfigurationPostProcessing:
-    public: true
   B13\Container\Tca\ItemProcFunc:
-    public: true
-
-  B13\Container\View\ContainerLayoutView:
-    shared: false
     public: true
 
   B13\Container\Listener\RecordSummaryForLocalization:
