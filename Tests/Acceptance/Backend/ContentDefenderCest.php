@@ -39,7 +39,8 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(300, 200);
         $I->waitForElement('#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
-        $I->click('Content', '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
@@ -59,7 +60,8 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(800, 200);
         $I->waitForElement('#element-tt_content-800 [data-colpos="' . $dataColPos . '"]');
-        $I->click('Content', '#element-tt_content-800 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-800 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
@@ -78,7 +80,8 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(801, 200);
         $I->waitForElement('#element-tt_content-801 [data-colpos="' . $dataColPos . '"]');
-        $I->click('Content', '#element-tt_content-801 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-801 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
@@ -138,7 +141,8 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(401, 202);
         $I->waitForElement('#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
-        $I->dontSee('Content', '#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->dontSee($newContentElementLabel, '#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
     }
 
     /**
@@ -153,7 +157,8 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
         $I->waitForElement('#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
-        $I->click('Content', '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $I->waitForText('Header Only');
