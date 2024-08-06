@@ -1,5 +1,6 @@
 <?php
 
+/** @see Build/settings.php */
 return [
     'BE' => [
         'debug' => true,

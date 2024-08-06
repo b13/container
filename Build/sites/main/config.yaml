@@ -1,4 +1,4 @@
-base: 'http://localhost/'
+base: '/'
 baseVariants: {  }
 errorHandling: {  }
 languages:

@@ -1,3 +1,6 @@
+includes:
+  - phpstan-baseline-12.neon
+
 parameters:
   level: 5
 
@@ -11,20 +14,4 @@ parameters:
     - %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
     - %currentWorkingDirectory%/Tests/Unit/Hooks/UsedRecordsTest.php
 
-  ignoreErrors:
-    -
-      message: '#Call to protected method getRecordOverlay\(\) of class TYPO3\\CMS\\Core\\Domain\\Repository\\PageRepository.#'
-      path: %currentWorkingDirectory%/Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
-    -
-      message: '#Constant ORIGINAL_ROOT not found.#'
-      path: %currentWorkingDirectory%/Tests
-    -
-      message: '#PHPDoc tag @.*#'
-      path: %currentWorkingDirectory%/Tests/Acceptance/Support/_generated/BackendTesterActions.php
-    -
-      message: '#Property TYPO3\\TestingFramework\\Core\\Acceptance\\Helper\\AbstractPageTree::.*tester .*#'
-      path: %currentWorkingDirectory%/Tests/Acceptance/Support/PageTree.php
-    - '#Constant LF not found.#'
-    -
-      message: '#Class TYPO3\\CMS\\Backend\\View\\PageLayoutContext constructor invoked with 5 parameters, 2 required.#'
-      path: %currentWorkingDirectory%/Tests/Functional/Integrity/IntegrityTest.php
+

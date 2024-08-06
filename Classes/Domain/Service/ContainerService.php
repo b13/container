@@ -53,18 +53,26 @@ class ContainerService implements SingletonInterface
         return $target;
     }
 
-    public function getAfterContainerElementTarget(Container $container): int
+    public function getAfterContainerRecord(Container $container): array
     {
-        $target = -$container->getUid();
         $childRecords = $container->getChildRecords();
         if (empty($childRecords)) {
-            return $target;
+            return $container->getContainerRecord();
         }
+
         $lastChild = array_pop($childRecords);
         if (!$this->tcaRegistry->isContainerElement($lastChild['CType'])) {
-            return -(int)$lastChild['uid'];
+            return $lastChild;
         }
+
         $container = $this->containerFactory->buildContainer((int)$lastChild['uid']);
-        return $this->getAfterContainerElementTarget($container);
+        return $this->getAfterContainerRecord($container);
+    }
+
+    public function getAfterContainerElementTarget(Container $container): int
+    {
+        $target = $this->getAfterContainerRecord($container);
+
+        return -$target['uid'];
     }
 }
