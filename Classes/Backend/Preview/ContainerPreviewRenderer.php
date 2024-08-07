@@ -14,11 +14,12 @@ namespace B13\Container\Backend\Preview;
 
 use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Backend\Grid\ContainerGridColumnItem;
-use B13\Container\ContentDefender\ContainerColumnConfigurationService;
+use B13\Container\Backend\Service\NewContentUrlBuilder;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
-use B13\Container\Domain\Service\ContainerService;
+use B13\Container\Events\BeforeContainerPreviewIsRenderedEvent;
 use B13\Container\Tca\Registry;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
@@ -39,26 +40,23 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
      */
     protected $containerFactory;
 
-    /**
-     * @var ContainerColumnConfigurationService
-     */
-    protected $containerColumnConfigurationService;
+    protected NewContentUrlBuilder $newContentUrlBuilder;
 
     /**
-     * @var ContainerService
+     * @var EventDispatcherInterface
      */
-    protected $containerService;
+    protected $eventDispatcher;
 
     public function __construct(
         Registry $tcaRegistry,
         ContainerFactory $containerFactory,
-        ContainerColumnConfigurationService $containerColumnConfigurationService,
-        ContainerService $containerService
+        NewContentUrlBuilder $newContentUrlBuilder,
+        EventDispatcherInterface $eventDispatcher,
     ) {
+        $this->eventDispatcher = $eventDispatcher;
         $this->tcaRegistry = $tcaRegistry;
         $this->containerFactory = $containerFactory;
-        $this->containerColumnConfigurationService = $containerColumnConfigurationService;
-        $this->containerService = $containerService;
+        $this->newContentUrlBuilder = $newContentUrlBuilder;
     }
 
     public function renderPageModulePreviewContent(GridColumnItem $item): string
@@ -74,20 +72,18 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
             return $content;
         }
         $containerGrid = $this->tcaRegistry->getGrid($record['CType']);
-        foreach ($containerGrid as $row => $cols) {
+        foreach ($containerGrid as $cols) {
             $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
             foreach ($cols as $col) {
-                $newContentElementAtTopTarget = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $col['colPos']);
-                if ($this->containerColumnConfigurationService->isMaxitemsReached($container, $col['colPos'])) {
-                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $newContentElementAtTopTarget, false);
-                } else {
-                    $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $newContentElementAtTopTarget);
-                }
+                $defVals = $this->getDefValsForContentDefenderAllowsOnlyOneSpecificContentType($record['CType'], (int)$col['colPos']);
+                $url = $this->newContentUrlBuilder->getNewContentUrlAtTopOfColumn($context, $container, (int)$col['colPos'], $defVals);
+                $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $url, $defVals !== null);
                 $rowObject->addColumn($columnObject);
                 if (isset($col['colPos'])) {
                     $records = $container->getChildrenByColPos($col['colPos']);
                     foreach ($records as $contentRecord) {
-                        $columnItem = GeneralUtility::makeInstance(ContainerGridColumnItem::class, $context, $columnObject, $contentRecord, $container);
+                        $url = $this->newContentUrlBuilder->getNewContentUrlAfterChild($context, $container, (int)$col['colPos'], (int)$contentRecord['uid'], $defVals);
+                        $columnItem = GeneralUtility::makeInstance(ContainerGridColumnItem::class, $context, $columnObject, $contentRecord, $container, $url);
                         $columnObject->addItem($columnItem);
                     }
                 }
@@ -107,10 +103,30 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('newContentTitle', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement'));
         $view->assign('newContentTitleShort', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:content'));
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
+        // keep compatibility
         $view->assign('containerGrid', $grid);
+        $view->assign('grid', $grid);
         $view->assign('containerRecord', $record);
+        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view);
+        $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
         $rendered = $view->render();
 
         return $content . $rendered;
+    }
+
+    protected function getDefValsForContentDefenderAllowsOnlyOneSpecificContentType(string $cType, int $colPos): ?array
+    {
+        $contentDefefenderConfiguration = $this->tcaRegistry->getContentDefenderConfiguration($cType, $colPos);
+        $allowedCTypes = GeneralUtility::trimExplode(',', $contentDefefenderConfiguration['allowed.']['CType'] ?? '', true);
+        $allowedListTypes = GeneralUtility::trimExplode(',', $contentDefefenderConfiguration['allowed.']['list_type'] ?? '', true);
+        if (count($allowedCTypes) === 1) {
+            if ($allowedCTypes[0] !== 'list') {
+                return ['CType' => $allowedCTypes[0]];
+            }
+            if (count($allowedListTypes) === 1) {
+                return ['CType' => 'list', 'list_type' => $allowedListTypes[0]];
+            }
+        }
+        return null;
     }
 }

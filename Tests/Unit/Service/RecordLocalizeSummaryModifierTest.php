@@ -72,6 +72,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
     public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns(): void
     {
         $tcaRegistry = $this->getMockBuilder(Registry::class)
+            ->disableOriginalConstructor()
             ->onlyMethods(['getAllAvailableColumns'])
             ->getMock();
         $tcaRegistry->expects(self::once())->method('getAllAvailableColumns')->willReturn(

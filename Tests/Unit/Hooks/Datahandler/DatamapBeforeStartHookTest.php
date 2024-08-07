@@ -39,7 +39,7 @@ class DatamapBeforeStartHookTest extends UnitTestCase
             ->getMock();
         $database->expects(self::once())->method('fetchOverlayRecords')->with($defaultRecord)->willReturn([['uid' => 3]]);
         $database->expects(self::once())->method('fetchOneRecord')->with(2)->willReturn($defaultRecord);
-        $containerRegistry = $this->getMockBuilder(Registry::class)->getMock();
+        $containerRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
         $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
         $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(DatamapBeforeStartHook::class))
             ->setConstructorArgs([

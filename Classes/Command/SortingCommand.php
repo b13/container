@@ -41,7 +41,7 @@ class SortingCommand extends Command
         );
     }
 
-    public function __construct(Sorting $sorting, string $name = null)
+    public function __construct(Sorting $sorting, ?string $name = null)
     {
         parent::__construct($name);
         $this->sorting = $sorting;

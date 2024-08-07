@@ -13,20 +13,19 @@ namespace B13\Container\Backend\Grid;
  */
 
 use B13\Container\Domain\Model\Container;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumn;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumnItem extends GridColumnItem
 {
     protected $container;
+    protected ?string $newContentUrl = null;
 
-    public function __construct(PageLayoutContext $context, GridColumn $column, array $record, Container $container)
+    public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, Container $container, ?string $newContentUrl)
     {
         parent::__construct($context, $column, $record);
         $this->container = $container;
+        $this->newContentUrl = $newContentUrl;
     }
 
     public function getAllowNewContent(): bool
@@ -49,16 +48,9 @@ class ContainerGridColumnItem extends GridColumnItem
 
     public function getNewContentAfterUrl(): string
     {
-        $pageId = $this->context->getPageId();
-        $urlParameters = [
-            'id' => $pageId,
-            'sys_language_uid' => $this->container->getLanguage(),
-            'colPos' => $this->column->getColumnNumber(),
-            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
-            'uid_pid' => -$this->record['uid'],
-            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
-        ];
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        if ($this->newContentUrl === null) {
+            return '';
+        }
+        return $this->newContentUrl;
     }
 }
