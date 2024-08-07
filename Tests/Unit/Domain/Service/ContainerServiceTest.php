@@ -68,7 +68,7 @@ class ContainerServiceTest extends UnitTestCase
      */
     public function getFirstNewContentElementTargetInColumnTest(array $containerRecord, array $childRecords, int $targetColPos, int $expectedTarget): void
     {
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['getAllAvailableColumnsColPos'])->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAllAvailableColumnsColPos'])->getMock();
         $tcaRegistry->expects(self::any())->method('getAllAvailableColumnsColPos')->willReturn($this->allContainerColumns);
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $container = new Container($containerRecord, $childRecords, 0);
