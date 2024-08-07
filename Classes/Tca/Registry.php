@@ -12,6 +12,8 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
+use B13\Container\Events\BeforeContainerConfigurationIsAppliedEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -22,11 +24,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
+    protected EventDispatcherInterface $eventDispatcher;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * @param ContainerConfiguration $containerConfiguration
      */
     public function configureContainer(ContainerConfiguration $containerConfiguration): void
     {
+        $beforeContainerConfigurationIsAppliedEvent = new BeforeContainerConfigurationIsAppliedEvent($containerConfiguration);
+        $this->eventDispatcher->dispatch($beforeContainerConfigurationIsAppliedEvent);
+        if ($beforeContainerConfigurationIsAppliedEvent->shouldBeSkipped()) {
+            return;
+        }
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
             ExtensionManagementUtility::addTcaSelectItem(
                 'tt_content',
@@ -109,6 +123,7 @@ class Registry implements SingletonInterface
                     $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
                     $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
                     $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                    return $contentDefenderConfiguration;
                 }
             }
         }
@@ -167,10 +182,7 @@ class Registry implements SingletonInterface
 
     public function getGrid(string $cType): array
     {
-        if (empty($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'])) {
-            return [];
-        }
-        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'];
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? [];
     }
 
     public function getGridTemplate(string $cType): ?string

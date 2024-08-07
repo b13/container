@@ -109,7 +109,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
         return $columnConfiguration;
     }
 
-    public function isMaxitemsReachedByContainenrId(int $containerId, int $colPos, int $childUid = null): bool
+    public function isMaxitemsReachedByContainenrId(int $containerId, int $colPos, ?int $childUid = null): bool
     {
         try {
             $container = $this->containerFactory->buildContainer($containerId);
@@ -120,7 +120,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
         return false;
     }
 
-    public function isMaxitemsReached(Container $container, int $colPos, int $childUid = null): bool
+    public function isMaxitemsReached(Container $container, int $colPos, ?int $childUid = null): bool
     {
         if (isset($this->copyMapping[$container->getUid()])) {
             return false;

@@ -6,6 +6,6 @@
 "tt_content"
 ,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent"
 ,1,1,"b13-2cols-with-header-container","container-language-1",256,0,,,
-,2,1,"header-language-1","header",128,0,200,1,
+,2,1,"header","header-language-1",128,0,200,1,
 ,21,1,"b13-2cols-with-header-container","container-language-1",256,1,,,1
 ,22,1,"header","header-language-1",128,1,200,1,2

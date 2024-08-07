@@ -13,6 +13,8 @@ services:
       - '../Classes/Tca/ContainerConfiguration.php'
       - '../Classes/**/Exception.php'
 
+  B13\Container\Tca\Registry:
+    public: true
   B13\Container\Backend\Preview\ContainerPreviewRenderer:
     public: true
   B13\Container\Hooks\UsedRecords:
@@ -33,17 +35,13 @@ services:
     public: true
   B13\Container\DataProcessing\ContainerProcessor:
     public: true
+    tags:
+      - { name: 'data.processor', identifier: 'container' }
   B13\Container\Updates\ContainerMigrateSorting:
     public: true
   B13\Container\Updates\ContainerDeleteChildrenWithWrongPid:
     public: true
-  B13\Container\Hooks\TableConfigurationPostProcessing:
-    public: true
   B13\Container\Tca\ItemProcFunc:
-    public: true
-
-  B13\Container\View\ContainerLayoutView:
-    shared: false
     public: true
 
   B13\Container\Listener\RecordSummaryForLocalization:

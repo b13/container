@@ -25,7 +25,7 @@ class LocalizationController extends \TYPO3\CMS\Backend\Controller\Page\Localiza
      */
     protected $recordLocalizeSummaryModifier;
 
-    public function __construct(RecordLocalizeSummaryModifier $recordLocalizeSummaryModifier = null)
+    public function __construct(?RecordLocalizeSummaryModifier $recordLocalizeSummaryModifier = null)
     {
         parent::__construct();
         $this->recordLocalizeSummaryModifier = $recordLocalizeSummaryModifier ?? GeneralUtility::makeInstance(RecordLocalizeSummaryModifier::class);

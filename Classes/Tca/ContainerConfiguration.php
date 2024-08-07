@@ -89,10 +89,10 @@ class ContainerConfiguration
         $this->label = $label;
         $this->description = $description;
         $this->grid = $grid;
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 11) {
             $this->gridPartialPaths = [
                 'EXT:backend/Resources/Private/Partials/',
-                'EXT:container/Resources/Private/Partials12/',
+                'EXT:container/Resources/Private/Partials11/',
             ];
         }
     }
@@ -218,6 +218,31 @@ class ContainerConfiguration
         return $this->grid;
     }
 
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getIcon(): string
+    {
+        return $this->icon;
+    }
+
+    public function getBackendTemplate(): ?string
+    {
+        return $this->backendTemplate;
+    }
+
+    public function isRegisterInNewContentElementWizard(): bool
+    {
+        return $this->registerInNewContentElementWizard;
+    }
+
+    public function getDefaultValues(): array
+    {
+        return $this->defaultValues;
+    }
+
     /**
      * @return string[]
      */
@@ -247,6 +272,43 @@ class ContainerConfiguration
     {
         $this->defaultValues = $defaultValues;
         return $this;
+    }
+
+    protected function setLabel(string $label): ContainerConfiguration
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    public function setDescription(string $description): ContainerConfiguration
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getGridTemplate(): string
+    {
+        return $this->gridTemplate;
+    }
+
+    public function changeGridColumnConfiguration(int $colPos, array $override): void
+    {
+        $rows = $this->getGrid();
+        $modRows = [];
+        $columnConfigurationFields = ['name', 'allowed', 'disallowed', 'maxitems', 'colspan'];
+        foreach ($rows as &$columns) {
+            foreach ($columns as &$column) {
+                if ((int)$column['colPos'] === $colPos) {
+                    foreach ($columnConfigurationFields as $field) {
+                        if (isset($override[$field])) {
+                            $column[$field] = $override[$field];
+                        }
+                    }
+                }
+            }
+            $modRows[] = $columns;
+        }
+        $this->grid = $modRows;
     }
 
     /**

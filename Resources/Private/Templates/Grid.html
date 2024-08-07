@@ -3,8 +3,8 @@
     data-namespace-typo3-fluid="true"
 >
 
-<f:if condition="{containerGrid}">
-    <f:render partial="PageLayout/Grid" arguments="{grid: containerGrid, hideRestrictedColumns: hideRestrictedColumns, newContentTitle: newContentTitle, newContentTitleShort: newContentTitleShort, allowEditContent: allowEditContent}" />
+<f:if condition="{grid}">
+    <f:render partial="PageLayout/Grid" arguments="{_all}" />
 </f:if>
 
 </html>
