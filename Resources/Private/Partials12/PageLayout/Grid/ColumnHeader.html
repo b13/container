@@ -23,12 +23,22 @@
 <f:if condition="{allowEditContent} && {column.contentEditable} && {column.allowNewContent} && {column.active}">
     <div class="t3-page-ce t3js-page-ce" data-page="{column.context.pageId}" id="{column.uniqueId}">
         <div class="t3-page-ce-actions t3js-page-new-ce" id="colpos-{column.columnNumber}-page-{column.context.pageId}-{column.uniqueId}">
-            <typo3-backend-new-content-element-wizard-button url="{column.newContentUrl}" subject="{newContentTitle}">
-                <button type="button" class="btn btn-default btn-sm">
-                    <core:icon identifier="actions-add" />
-                    {newContentTitleShort}
-                </button>
-            </typo3-backend-new-content-element-wizard-button>
+            <f:if condition="{column.childAllowedTypesCount} == 1">
+                <f:then>
+                    <a href="{column.newContentUrl}" title="{newContentTitle}" class="btn btn-default btn-sm">
+                        <core:icon identifier="actions-add" />
+                        {newContentTitleShort}
+                    </a>
+                </f:then>
+                <f:else>
+                    <typo3-backend-new-content-element-wizard-button url="{column.newContentUrl}" subject="{newContentTitle}">
+                        <button type="button" class="btn btn-default btn-sm">
+                            <core:icon identifier="actions-add" />
+                            {newContentTitleShort}
+                        </button>
+                    </typo3-backend-new-content-element-wizard-button>
+                </f:else>
+            </f:if>
         </div>
         <div class="t3-page-ce-dropzone t3js-page-ce-dropzone-available"></div>
     </div>

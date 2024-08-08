@@ -13,6 +13,7 @@ namespace B13\Container\Backend\Grid;
  */
 
 use B13\Container\Domain\Model\Container;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumn;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
@@ -49,16 +50,50 @@ class ContainerGridColumnItem extends GridColumnItem
 
     public function getNewContentAfterUrl(): string
     {
-        $pageId = $this->context->getPageId();
+        if (!($this->column->getDefinition()['allowDirectNewLink'] ?? false)) {
+            return parent::getNewContentAfterUrl();
+        }
+
         $urlParameters = [
-            'id' => $pageId,
-            'sys_language_uid' => $this->container->getLanguage(),
-            'colPos' => $this->column->getColumnNumber(),
-            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
-            'uid_pid' => -$this->record['uid'],
-            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
+            'edit' => [
+                'tt_content' => [
+                    -$this->record['uid'] => 'new',
+                ],
+            ],
+            'defVals' => [
+                'tt_content' => [
+                    'colPos' => $this->column->getColumnNumber(),
+                    // @extensionScannerIgnoreLine
+                    'sys_language_uid' => $this->container->getLanguage(),
+                    'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
+                    'uid_pid' => -$this->record['uid'],
+                ],
+            ],
+            // @extensionScannerIgnoreLine
+            'returnUrl' => $this->getRequest()->getAttribute('normalizedParams')->getRequestUri(),
         ];
+        $routeName = 'record_edit';
+
+        $allowed = $this->column->getDefinition()['allowed'] ?? [];
+        if (!empty($allowed)) {
+            $cType = $allowed['CType'] ?? '';
+            if ($cType) {
+                $urlParameters['defVals']['tt_content']['CType'] = $cType;
+            }
+
+            $listType = $allowed['list_type'] ?? '';
+            if ($listType) {
+                $urlParameters['defVals']['tt_content']['list_type'] = $listType;
+            }
+        }
+
+        /** @var UriBuilder $uriBuilder */
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        return (string)$uriBuilder->buildUriFromRoute($routeName, $urlParameters);
+    }
+
+    protected function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }
