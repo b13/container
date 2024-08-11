@@ -13,21 +13,21 @@ namespace B13\Container\Backend\Grid;
  */
 
 use B13\Container\Domain\Model\Container;
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumn;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumnItem extends GridColumnItem
 {
     protected $container;
+    protected ?string $newContentUrl = null;
+    protected ContainerGridColumn $containerGridColumn;
 
-    public function __construct(PageLayoutContext $context, GridColumn $column, array $record, Container $container)
+    public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, Container $container, ?string $newContentUrl)
     {
         parent::__construct($context, $column, $record);
         $this->container = $container;
+        $this->newContentUrl = $newContentUrl;
+        $this->containerGridColumn = $column;
     }
 
     public function getAllowNewContent(): bool
@@ -50,50 +50,14 @@ class ContainerGridColumnItem extends GridColumnItem
 
     public function getNewContentAfterUrl(): string
     {
-        if (!($this->column->getDefinition()['allowDirectNewLink'] ?? false)) {
-            return parent::getNewContentAfterUrl();
+        if ($this->newContentUrl === null) {
+            return '';
         }
-
-        $urlParameters = [
-            'edit' => [
-                'tt_content' => [
-                    -$this->record['uid'] => 'new',
-                ],
-            ],
-            'defVals' => [
-                'tt_content' => [
-                    'colPos' => $this->column->getColumnNumber(),
-                    // @extensionScannerIgnoreLine
-                    'sys_language_uid' => $this->container->getLanguage(),
-                    'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
-                    'uid_pid' => -$this->record['uid'],
-                ],
-            ],
-            // @extensionScannerIgnoreLine
-            'returnUrl' => $this->getRequest()->getAttribute('normalizedParams')->getRequestUri(),
-        ];
-        $routeName = 'record_edit';
-
-        $allowed = $this->column->getDefinition()['allowed'] ?? [];
-        if (!empty($allowed)) {
-            $cType = $allowed['CType'] ?? '';
-            if ($cType) {
-                $urlParameters['defVals']['tt_content']['CType'] = $cType;
-            }
-
-            $listType = $allowed['list_type'] ?? '';
-            if ($listType) {
-                $urlParameters['defVals']['tt_content']['list_type'] = $listType;
-            }
-        }
-
-        /** @var UriBuilder $uriBuilder */
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute($routeName, $urlParameters);
+        return $this->newContentUrl;
     }
 
-    protected function getRequest(): ServerRequestInterface
+    public function getNewContentElementWizardShouldBeSkipped(): bool
     {
-        return $GLOBALS['TYPO3_REQUEST'];
+        return $this->containerGridColumn->getNewContentElementWizardShouldBeSkipped();
     }
 }
