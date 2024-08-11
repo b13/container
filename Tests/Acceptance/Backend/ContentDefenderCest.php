@@ -172,4 +172,27 @@ class ContentDefenderCest
         $I->waitForText('Create new Page Content on page');
         $I->seeElement('#EditDocumentController');
     }
+
+
+    /**
+     * @group content_defender
+     */
+    public function seeEditDocumentWhenAddingChildrenToColposWhereOnlyHeaderIsAllowed(BackendTester $I, PageTree $pageTree)
+    {
+        $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $dataColPos = $I->getDataColPos(300, 201);
+        $I->waitForElement('#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
+        $I->switchToIFrame();
+        $I->switchToContentFrame();
+        $I->wait(0.5);
+        $I->see('header', 'select');
+        $I->dontSee('Table', 'select');
+    }
+
 }
