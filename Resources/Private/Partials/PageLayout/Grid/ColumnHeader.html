@@ -23,7 +23,7 @@
 <f:if condition="{allowEditContent} && {column.contentEditable} && {column.allowNewContent} && {column.active}">
     <div class="t3-page-ce t3js-page-ce" data-page="{column.context.pageId}" id="{column.uniqueId}">
         <div class="t3-page-ce-actions t3js-page-new-ce" id="colpos-{column.columnNumber}-page-{column.context.pageId}-{column.uniqueId}">
-            <f:if condition="{column.childAllowedTypesCount} == 1">
+            <f:if condition="{column.newContentElementWizardShouldBeSkipped}">
                 <f:then>
                     <a href="{column.newContentUrl}" title="{newContentTitle}" class="btn btn-default btn-sm">
                         <core:icon identifier="actions-add" />

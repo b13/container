@@ -15,12 +15,22 @@
     </div>
     <f:if condition="{allowEditContent} && {item.column.contentEditable} && {item.column.allowNewContent} && {column.active}">
         <div class="t3-page-ce-actions t3js-page-new-ce" id="colpos-{item.column.columnNumber}-page-{item.context.pageId}-{item.column.uniqueId}">
-            <typo3-backend-new-content-element-wizard-button url="{item.newContentAfterUrl}" subject="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}">
-                <button type="button" class="btn btn-default btn-sm">
-                    <core:icon identifier="actions-add" />
-                    <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:createNewContent" />
-                </button>
-            </typo3-backend-new-content-element-wizard-button>
+            <f:if condition="{column.newContentElementWizardShouldBeSkipped}">
+                <f:then>
+                    <a href="{item.newContentAfterUrl}" title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}" class="btn btn-default btn-sm">
+                        <core:icon identifier="actions-add" />
+                        <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:createNewContent" />
+                    </a>
+                </f:then>
+                <f:else>
+                    <typo3-backend-new-content-element-wizard-button url="{item.newContentAfterUrl}" subject="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}">
+                        <button type="button" class="btn btn-default btn-sm">
+                            <core:icon identifier="actions-add" />
+                            <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:createNewContent" />
+                        </button>
+                    </typo3-backend-new-content-element-wizard-button>
+                </f:else>
+            </f:if>
         </div>
     </f:if>
     <div class="t3-page-ce-dropzone t3js-page-ce-dropzone-available"></div>
