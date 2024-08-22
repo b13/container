@@ -33,6 +33,8 @@ services:
     public: true
   B13\Container\DataProcessing\ContainerProcessor:
     public: true
+    tags:
+      - { name: 'data.processor', identifier: 'container' }
   B13\Container\Updates\ContainerMigrateSorting:
     public: true
   B13\Container\Updates\ContainerDeleteChildrenWithWrongPid:
