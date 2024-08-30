@@ -196,8 +196,8 @@ bin/typo3 container:deleteChildrenWithWrongPid
 bin/typo3 container:deleteChildrenWithNonExistingParent
 ```
 
-## TODOs / Proofments
-- Integrity proofment
+## TODOs
+- Integrity proofs
 - List module actions
 
 ## Extension Tests and Coding Guidelines
