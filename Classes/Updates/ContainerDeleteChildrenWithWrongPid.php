@@ -23,10 +23,12 @@ use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
+#[UpgradeWizard('container_containerDeleteChildrenWithWrongPid')]
 class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, RepeatableInterface
 {
     public const IDENTIFIER = 'container_deleteChildrenWithWrongPid';
