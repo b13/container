@@ -59,12 +59,3 @@ parameters:
 			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 5 parameters, 2 required\\.$#"
 			count: 1
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
-		-
-			message: "#^Attribute class TYPO3\\\\CMS\\\\Install\\\\Attribute\\\\UpgradeWizard does not exist\\.$#"
-			count: 1
-			path: ../Classes/Updates/ContainerDeleteChildrenWithWrongPid.php
-
-		-
-			message: "#^Attribute class TYPO3\\\\CMS\\\\Install\\\\Attribute\\\\UpgradeWizard does not exist\\.$#"
-			count: 1
-			path: ../Classes/Updates/ContainerMigrateSorting.php
