@@ -51,7 +51,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         Registry $tcaRegistry,
         ContainerFactory $containerFactory,
         NewContentUrlBuilder $newContentUrlBuilder,
-        EventDispatcherInterface $eventDispatcher,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->tcaRegistry = $tcaRegistry;
