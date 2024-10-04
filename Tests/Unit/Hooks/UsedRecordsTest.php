@@ -35,7 +35,7 @@ class UsedRecordsTest extends UnitTestCase
         }
         $pageLayoutView = $this->getMockBuilder(PageLayoutView::class)->disableOriginalConstructor()->getMock();
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $registry = $this->getMockBuilder(Registry::class)->getMock();
+        $registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $registry);
         $params = [
             'used' => true,
@@ -66,7 +66,7 @@ class UsedRecordsTest extends UnitTestCase
         $container->expects(self::once())->method('getCType')->willReturn('myCType');
         $container->expects(self::once())->method('hasChildInColPos')->with(2, 3)->willReturn(true);
         $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['getAvailableColumns'])->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
         $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $tcaRegistry);
         $params = [
@@ -96,7 +96,7 @@ class UsedRecordsTest extends UnitTestCase
         $container->expects(self::once())->method('getCType')->willReturn('myCType');
         $container->expects(self::once())->method('hasChildInColPos')->with(2, 3)->willReturn(false);
         $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['getAvailableColumns'])->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
         $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 2]]);
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $tcaRegistry);
         $params = [
@@ -125,7 +125,7 @@ class UsedRecordsTest extends UnitTestCase
             ->getMock();
         $container->expects(self::once())->method('getCType')->willReturn('myCType');
         $containerFactory->expects(self::once())->method('buildContainer')->with(1)->willReturn($container);
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->onlyMethods(['getAvailableColumns'])->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAvailableColumns'])->getMock();
         $tcaRegistry->expects(self::once())->method('getAvailableColumns')->with('myCType')->willReturn([['colPos' => 3]]);
         $usedRecords = GeneralUtility::makeInstance(UsedRecords::class, $containerFactory, $tcaRegistry);
         $params = [

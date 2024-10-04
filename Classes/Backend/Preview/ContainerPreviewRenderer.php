@@ -17,7 +17,9 @@ use B13\Container\Backend\Grid\ContainerGridColumnItem;
 use B13\Container\Backend\Service\NewContentUrlBuilder;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
+use B13\Container\Events\BeforeContainerPreviewIsRenderedEvent;
 use B13\Container\Tca\Registry;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
@@ -40,11 +42,18 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
 
     protected NewContentUrlBuilder $newContentUrlBuilder;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
     public function __construct(
         Registry $tcaRegistry,
         ContainerFactory $containerFactory,
-        NewContentUrlBuilder $newContentUrlBuilder
+        NewContentUrlBuilder $newContentUrlBuilder,
+        EventDispatcherInterface $eventDispatcher
     ) {
+        $this->eventDispatcher = $eventDispatcher;
         $this->tcaRegistry = $tcaRegistry;
         $this->containerFactory = $containerFactory;
         $this->newContentUrlBuilder = $newContentUrlBuilder;
@@ -94,8 +103,12 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('newContentTitle', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement'));
         $view->assign('newContentTitleShort', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:content'));
         $view->assign('allowEditContent', $this->getBackendUser()->check('tables_modify', 'tt_content'));
+        // keep compatibility
         $view->assign('containerGrid', $grid);
+        $view->assign('grid', $grid);
         $view->assign('containerRecord', $record);
+        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view);
+        $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
         $rendered = $view->render();
 
         return $content . $rendered;

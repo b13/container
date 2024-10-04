@@ -165,6 +165,18 @@ The html template file goes in the folder that you have defined in your TypoScri
 
 With explicit colPos defined use `{children_200|201}` as set in the example above
 
+## PSR-14 Events
+
+### BeforeContainerConfigurationIsAppliedEvent
+
+* change container configuration for 3rd party extensions container you have installed
+* apply same configuration to all or a set of containers (e.g. ``gridTemplate``)
+* **Note** CType and Grid Structure cannot be changed (but Column Properties of the Grid)
+
+### BeforeContainerPreviewIsRendered
+
+change view object, e.g. add variables to view or change paths
+
 ## Concepts
 - Complete registration is done with one PHP call to TCA Registry
 - A container in the TYPO3 backend Page module is rendered like a page itself (see View/ContainerLayoutView)

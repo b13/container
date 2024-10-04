@@ -13,6 +13,8 @@ services:
       - '../Classes/Tca/ContainerConfiguration.php'
       - '../Classes/**/Exception.php'
 
+  B13\Container\Tca\Registry:
+    public: true
   B13\Container\Backend\Preview\ContainerPreviewRenderer:
     public: true
   B13\Container\Hooks\UsedRecords:
