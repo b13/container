@@ -52,7 +52,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => '1-200',
                             'sys_language_uid' => 0,
 
                         ],
@@ -81,7 +81,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -3,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => '1-200',
                             'sys_language_uid' => 0,
 
                         ],
@@ -112,7 +112,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => '1-200',
                             'sys_language_uid' => 0,
 
                         ],
@@ -161,7 +161,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         $datamap = [
             'tt_content' => [
                 $newId => [
-                    'colPos' => 202,
+                    'colPos' => 200,
                     'tx_container_parent' => 1,
                     'pid' => 1,
                     'sys_language_uid' => 0,
@@ -187,7 +187,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         $datamap = [
             'tt_content' => [
                 $newId => [
-                    'colPos' => 202,
+                    'colPos' => 200,
                     'tx_container_parent' => 1,
                     'pid' => 1,
                     'sys_language_uid' => 0,
@@ -212,7 +212,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         $datamap = [
             'tt_content' => [
                 3 => [
-                    'colPos' => 202,
+                    'colPos' => 200,
                     'tx_container_parent' => 1,
                     'pid' => 1,
                     'sys_language_uid' => 0,
@@ -383,7 +383,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -2,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => '1-200',
                             'sys_language_uid' => 0,
                         ],
                     ],
@@ -444,7 +444,7 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         $record = [
            'uid' => 3,
            'pid' => 1,
-           'colPos' => 202,
+           'colPos' => 200,
            'sorting' => 1024,
            'CType' => 'header',
            'tx_container_parent' => 1,
