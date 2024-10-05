@@ -1,0 +1,12 @@
+"pages"
+,"uid","title","pid"
+,1,"page-1",0
+,2,"page-1 (copy 1)",0
+"tt_content"
+,"uid","pid","colPos","CType","tx_container_parent","header"
+,1,1,0,"b13-2cols",0,"container"
+,2,1,200,text,1,"child-in-200"
+,3,1,201,text,1,"child-in-201"
+,4,2,0,"b13-2cols",0,"container"
+,5,2,200,text,4,"child-in-200"
+,6,2,201,text,4,"child-in-201"
