@@ -491,4 +491,40 @@ class LayoutCest
         $I->see('2-cols-left');
         $I->see('2-cols-right');
     }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
+     */
+    public function canSeeDescriptionOfContainerInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    {
+        $I->click('Page');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'emptyPage']);
+        } else {
+            $pageTreeV13->openPath(['home', 'emptyPage']);
+        }
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->waitForText($newContentElementLabel);
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click($newContentElementLabel);
+        } else {
+            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
+        }
+        $I->switchToIFrame();
+        $I->waitForElement('.modal-dialog');
+
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('Container');
+        } else {
+            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('container')");
+            $I->wait(0.5);
+        }
+        $I->see('Some Description of the Container');
+    }
 }
