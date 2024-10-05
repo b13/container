@@ -28,20 +28,12 @@ class DatamapHook extends DatamapDataHandlerHook
      */
     protected $containerColumnConfigurationService;
 
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    protected $mapping = [];
 
     public function __construct(
         ?ContentRepository $contentRepository = null,
-        ?ContainerColumnConfigurationService $containerColumnConfigurationService = null,
-        ?Database $database = null
+        ?ContainerColumnConfigurationService $containerColumnConfigurationService = null
     ) {
         $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
         parent::__construct($contentRepository);
     }
 
@@ -50,7 +42,9 @@ class DatamapHook extends DatamapDataHandlerHook
      */
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
     {
-        if (is_array($dataHandler->datamap['tt_content'] ?? null)) {
+        if (is_array($dataHandler->datamap['tt_content'] ?? null) &&
+            !$this->containerColumnConfigurationService->isContentDefenderContainerDataHandlerHookLooked()
+        ) {
             foreach ($dataHandler->datamap['tt_content'] as $id => $values) {
                 if (
                     isset($values['tx_container_parent']) &&
@@ -58,50 +52,14 @@ class DatamapHook extends DatamapDataHandlerHook
                     isset($values['colPos']) &&
                     $values['colPos'] > 0
                 ) {
-                    // no maxitems check for localized records
-                    if (isset($values['l18n_parent'])) {
-                        if ((int)$values['l18n_parent'] !== 0) {
-                            continue;
-                        }
-                    } elseif (MathUtility::canBeInterpretedAsInteger($id)) {
-                        $record = $this->database->fetchOneRecord((int)$id);
-                        if (isset($record['l18n_parent']) && (int)$record['l18n_parent'] !== 0) {
-                            continue;
-                        }
+                    if (MathUtility::canBeInterpretedAsInteger($id)) {
+                        // edit
+                        continue;
                     }
                     $containerId = (int)$values['tx_container_parent'];
-                    // copyToLanguage case
-                    if ((int)($values['l18n_parent'] ?? 1) === 0 &&
-                        (int)($values['l10n_source'] ?? 0) > 0 &&
-                        (int)($values['sys_language_uid'] ?? 0) > 0
-                    ) {
-                        // free mode language CE used, we have to consider free mode container
-                        $containerRecord = $this->database->fetchContainerRecordLocalizedFreeMode($containerId, (int)$values['sys_language_uid']);
-                        if ($containerRecord !== null) {
-                            $containerId = (int)$containerRecord['uid'];
-                        }
-                    }
-                    $useChildId = null;
-                    $colPos = (int)$values['colPos'];
-                    if (MathUtility::canBeInterpretedAsInteger($id)) {
-                        $this->mapping[(int)$id] = [
-                            'containerId' => (int)$values['tx_container_parent'],
-                            'colPos' => (int)$values['colPos'],
-                        ];
-                        $useChildId = $id;
-                    } else {
-                        // new elements (first created in origin container/colPos, so we check the real target)
-                        $targetColPos = $this->containerColumnConfigurationService->getTargetColPosForNew($containerId, (int)$values['colPos']);
-                        if ($targetColPos !== null) {
-                            $colPos = $targetColPos;
-                        }
-                        $containerIdTarget = $this->containerColumnConfigurationService->getContainerIdForNew($containerId, (int)$values['colPos']);
-                        if ($containerIdTarget !== null) {
-                            $containerId = $containerIdTarget;
-                        }
-                    }
-                    if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId($containerId, $colPos, $useChildId)) {
-                        unset($dataHandler->datamap['tt_content'][$id]);
+
+                    if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId($containerId, (int)$values['colPos'])) {
+                       unset($dataHandler->datamap['tt_content'][$id]);
                         $dataHandler->log(
                             'tt_content',
                             $id,
@@ -127,41 +85,6 @@ class DatamapHook extends DatamapDataHandlerHook
         ) {
             return true;
         }
-        if (isset($this->mapping[$record['uid']])) {
-            $columnConfiguration = $this->containerColumnConfigurationService->override(
-                $columnConfiguration,
-                $this->mapping[$record['uid']]['containerId'],
-                $this->mapping[$record['uid']]['colPos']
-            );
-        } elseif (isset($record['tx_container_parent']) && $record['tx_container_parent'] > 0) {
-            $copyMapping = $this->containerColumnConfigurationService->getCopyMappingBySourceContainerIdAndTargetColPos((int)$record['tx_container_parent'], (int)$record['colPos']);
-            if ($copyMapping !== null) {
-                $columnConfiguration = $this->containerColumnConfigurationService->override(
-                    $columnConfiguration,
-                    $copyMapping['containerId'],
-                    $copyMapping['targetColPos']
-                );
-            } else {
-                $columnConfiguration = $this->containerColumnConfigurationService->override(
-                    $columnConfiguration,
-                    (int)$record['tx_container_parent'],
-                    (int)$record['colPos']
-                );
-            }
-        }
         return parent::isRecordAllowedByRestriction($columnConfiguration, $record);
-    }
-
-    protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record): bool
-    {
-        if (isset($record['tx_container_parent']) &&
-            $record['tx_container_parent'] > 0 &&
-            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$record['tx_container_parent'])) {
-            return true;
-        }
-        if (isset($this->mapping[$record['uid']])) {
-            return true;
-        }
-        return parent::isRecordAllowedByItemsCount($columnConfiguration, $record);
     }
 }

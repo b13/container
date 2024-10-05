@@ -34,6 +34,23 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     protected $copyMapping = [];
 
+    protected $contentDefenderContainerDataHandlerHookIsLocked = false;
+
+    public function startCmdMap(): void
+    {
+        $this->contentDefenderContainerDataHandlerHookIsLocked = true;
+    }
+
+    public function endCmdMap(): void
+    {
+        $this->contentDefenderContainerDataHandlerHookIsLocked = false;
+    }
+
+    public function isContentDefenderContainerDataHandlerHookLooked(): bool
+    {
+        return $this->contentDefenderContainerDataHandlerHookIsLocked;
+    }
+
     public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
     {
         $this->containerFactory = $containerFactory;
@@ -55,40 +72,6 @@ class ContainerColumnConfigurationService implements SingletonInterface
             'sourceColPos' => $sourceColPos,
             'targetColPos' => $targetColpos,
         ];
-    }
-
-    public function getCopyMappingBySourceContainerIdAndTargetColPos(int $containerId, int $targetColpos): ?array
-    {
-        if (isset($this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $targetColpos])) {
-            return $this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $targetColpos];
-        }
-        return null;
-    }
-
-    public function setContainerIsCopied($containerId): void
-    {
-        try {
-            $this->containerFactory->buildContainer($containerId);
-            $this->copyMapping[$containerId] = true;
-        } catch (Exception $e) {
-            // not a container, do not set mapping
-        }
-    }
-
-    public function getTargetColPosForNew(int $containerId, int $colPos): ?int
-    {
-        if (isset($this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos])) {
-            return $this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos]['targetColPos'];
-        }
-        return null;
-    }
-
-    public function getContainerIdForNew(int $containerId, int $colPos): ?int
-    {
-        if (isset($this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos])) {
-            return $this->copyMapping[$containerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $colPos]['containerId'];
-        }
-        return null;
     }
 
     public function override(array $columnConfiguration, int $containerId, int $colPos): array
@@ -122,9 +105,6 @@ class ContainerColumnConfigurationService implements SingletonInterface
 
     public function isMaxitemsReached(Container $container, int $colPos, ?int $childUid = null): bool
     {
-        if (isset($this->copyMapping[$container->getUid()])) {
-            return false;
-        }
         $columnConfiguration = $this->getColumnConfigurationForContainer($container, $colPos);
         if (!isset($columnConfiguration['maxitems']) || (int)$columnConfiguration['maxitems'] === 0) {
             return false;

@@ -40,11 +40,9 @@ class CommandMapHook extends CmdmapDataHandlerHook
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
         if (!empty($dataHandler->cmdmap['tt_content'])) {
+            $this->containerColumnConfigurationService->startCmdMap();
             foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {
                 foreach ($cmds as $cmd => $data) {
-                    if ($cmd === 'copy') {
-                        $this->containerColumnConfigurationService->setContainerIsCopied($id);
-                    }
                     if (
                         ($cmd === 'copy' || $cmd === 'move') &&
                         (!empty($data['update'])) &&
@@ -85,6 +83,13 @@ class CommandMapHook extends CmdmapDataHandlerHook
             }
         }
         parent::processCmdmap_beforeStart($dataHandler);
+    }
+
+    public function processCmdmap_postProcess(string $command, string $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
+    {
+        if (!empty($dataHandler->cmdmap['tt_content'])) {
+            $this->containerColumnConfigurationService->endCmdMap();
+        }
     }
 
     protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record): bool
