@@ -50,6 +50,7 @@ class Registry implements SingletonInterface
                     'value' => $containerConfiguration->getCType(),
                     'icon' => $containerConfiguration->getCType(),
                     'group' => $containerConfiguration->getGroup(),
+                    'description' => $containerConfiguration->getDescription(),
                 ]
             );
         } else {
