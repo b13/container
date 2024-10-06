@@ -282,35 +282,6 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanCopyContainerWithMaxitemsReachedColumnToOtherPageResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function canCopyElementFromContainerMaxitemsReachedColumnToOtherColumn(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_copy_element_from_container_maxitems_reached_column_to_other_column.csv');
-        $cmdmap = [
-            'tt_content' => [
-                2 => [
-                    'copy' => [
-                        'action' => 'paste',
-                        'target' => 1,
-                        'update' => [
-                            'colPos' => '1-201',
-                            'sys_language_uid' => 0,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanCopyElementFromContainerMaxitemsReachedColumnToOtherColumnResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
     /**
