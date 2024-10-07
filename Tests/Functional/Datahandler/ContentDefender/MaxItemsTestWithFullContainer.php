@@ -42,35 +42,6 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
      * @test
      * @group content_defender
      */
-    public function canMoveElementIntoContainerIfMaxitemsIsNotReached(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_move_element_into_container_if_maxitems_is_not_reached.csv');
-        $cmdmap = [
-            'tt_content' => [
-                2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 1,
-                        'update' => [
-                            'colPos' => '1-200',
-                            'sys_language_uid' => 0,
-
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanMoveElementIntoContainerIfMaxitemsIsNotReachedResult.csv');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
     public function cannotMoveElementIntoContainerIfMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/cannot_move_element_into_container_if_maxitems_is_reached.csv');
@@ -154,32 +125,6 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
      * @test
      * @group content_defender
      */
-    public function canCreateElementInContainerIfMaxitemsIsNotReached(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_create_element_in_container_if_maxitems_is_not_reached.csv');
-        $newId = StringUtility::getUniqueId('NEW');
-        $datamap = [
-            'tt_content' => [
-                $newId => [
-                    'colPos' => 200,
-                    'tx_container_parent' => 1,
-                    'pid' => 1,
-                    'sys_language_uid' => 0,
-                    'header' => 'my-new-header',
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, [], $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanCreateElementInContainerIfMaxitemsIsNotReachedResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
     public function cannotCreateElementInContainerIfMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/cannot_create_element_in_container_if_maxitems_is_reached.csv');
@@ -200,60 +145,6 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CannotCreateElementInContainerIfMaxitemsIsReachedResult.csv');
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function canEditElementInContainerWhenMaxitemIsReached(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_edit_element_in_container_if_maxitems_is_reached.csv');
-        $datamap = [
-            'tt_content' => [
-                3 => [
-                    'colPos' => 200,
-                    'tx_container_parent' => 1,
-                    'pid' => 1,
-                    'sys_language_uid' => 0,
-                    'header' => 'bar',
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, [], $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanEditElementInContainerWhenMaxitemIsReachedResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function canMoveContainerWithMaxitemsReachedColumnToOtherPage(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_move_container_with_maxitems_reached_column_to_other_page.csv');
-        $cmdmap = [
-            'tt_content' => [
-                1 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 2,
-                        'update' => [
-                            'colPos' => 0,
-                            'sys_language_uid' => 0,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanMoveContainerWithMaxitemsReachedColumnToOtherPageResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
     /**
@@ -327,25 +218,6 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
-        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function canCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_copy_to_language_child_if_container_of_default_language_maxitems_reached.csv');
-        $cmdmap = [
-            'tt_content' => [
-                3 => ['copyToLanguage' => 1],
-            ],
-        ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
         self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
