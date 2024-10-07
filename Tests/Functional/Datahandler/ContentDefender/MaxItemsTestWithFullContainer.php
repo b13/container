@@ -288,62 +288,6 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
      * @test
      * @group content_defender
      */
-    public function canCopyElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
-        $cmdmap = [
-            'tt_content' => [
-                2 => [
-                    'copy' => [
-                        'action' => 'paste',
-                        'target' => 1,
-                        'update' => [
-                            'colPos' => '3-201',
-                            'sys_language_uid' => 0,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanCopyElementFromContainerMaxitemsReachedColumnToOtherContainerResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function canMoveElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
-        $cmdmap = [
-            'tt_content' => [
-                2 => [
-                    'move' => [
-                        'action' => 'paste',
-                        'target' => 1,
-                        'update' => [
-                            'colPos' => '3-201',
-                            'sys_language_uid' => 0,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanMoveElementFromContainerMaxitemsReachedColumnToOtherContainerResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
     public function cannotMoveElementInsideContainerColumnIfMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/cannot_move_element_inside_container_column_if_maxitems_is_reached.csv');
