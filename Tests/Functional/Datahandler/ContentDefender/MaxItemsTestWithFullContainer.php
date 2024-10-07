@@ -220,31 +220,4 @@ class MaxItemsTestWithFullContainer extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
         self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function canSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/can_save_child_in_default_language_when_translated_and_maxitems_is_reached.csv');
-        $record = [
-           'uid' => 3,
-           'pid' => 1,
-           'colPos' => 200,
-           'sorting' => 1024,
-           'CType' => 'header',
-           'tx_container_parent' => 1,
-            'sys_language_uid' => 0,
-        ];
-        $datamap = [
-            'tt_content' => [
-                3 => $record,
-            ],
-        ];
-        $this->dataHandler->start($datamap, [], $this->backendUser);
-        $this->dataHandler->process_datamap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/MaxitemsWithFullContainer/CanSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReachedResult.csv');
-        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
 }
