@@ -436,15 +436,15 @@ class MaxItemsTest extends AbstractDatahandler
      * @test
      * @group content_defender
      */
-    public function canCopyContainerWithMaxitemsReachedColumnToOtherPage(): void
+    public function canCopyFilledContainerWithMaxitemsReachedColumnToOtherPage(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_filled_container_with_maxitems_reached_column_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/filled_container.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
                     'copy' => [
                         'action' => 'paste',
-                        'target' => 2,
+                        'target' => 1,
                         'update' => [
                             'colPos' => 0,
                             'sys_language_uid' => 0,
