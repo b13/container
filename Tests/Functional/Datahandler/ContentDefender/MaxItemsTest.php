@@ -260,35 +260,6 @@ class MaxItemsTest extends AbstractDatahandler
      * @test
      * @group content_defender
      */
-    public function canCopyContainerWithMaxitemsReachedColumnToOtherPage(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_container_with_maxitems_reached_column_to_other_page.csv');
-        $cmdmap = [
-            'tt_content' => [
-                1 => [
-                    'copy' => [
-                        'action' => 'paste',
-                        'target' => 2,
-                        'update' => [
-                            'colPos' => 0,
-                            'sys_language_uid' => 0,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $this->dataHandler->start([], $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyContainerWithMaxitemsReachedColumnToOtherPageResult.csv');
-        self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
     public function canCopyElementFromContainerMaxitemsReachedColumnToOtherColumn(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_column.csv');
@@ -459,5 +430,33 @@ class MaxItemsTest extends AbstractDatahandler
         $this->dataHandler->process_datamap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReachedResult.csv');
         self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
+    public function canCopyContainerWithMaxitemsReachedColumnToOtherPage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_filled_container_with_maxitems_reached_column_to_other_page.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 2,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyFilledContainerWithMaxitemsReachedColumnToOtherPageResult.csv');
     }
 }
