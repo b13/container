@@ -1,16 +1,16 @@
-From 4e8c22eb07e80cd1e2c458f4bb34e8b429f44aff Mon Sep 17 00:00:00 2001
-From: Achim Fritz <achim.fritz@b13.com>
-Date: Sun, 2 Jun 2024 15:58:42 +0200
-Subject: [PATCH] [PATCH] js-13
+From 2fb0e5b5b10878b804d9845bb7baa186b140396f Mon Sep 17 00:00:00 2001
+From: Achim Fritz <af@achimfritz.de>
+Date: Mon, 14 Oct 2024 14:35:21 +0200
+Subject: [PATCH] [PATCH] js-13-main
 
-Change-Id: I79c575c643026091b31e4d5f8a8b60898fa7f70f
+Change-Id: I1b3ee3edd8fe045185268f6b17f98b150f342001
 ---
  .../backend/layout-module/drag-drop.ts        | 32 +++++++++++++------
  .../TypeScript/backend/layout-module/paste.ts | 23 ++++++++-----
  2 files changed, 37 insertions(+), 18 deletions(-)
 
 diff --git a/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts b/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts
-index 21dbdc58f57..d7aa60fdf40 100644
+index f14320f9dea..56ab0a01fc4 100644
 --- a/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts
 +++ b/Build/Sources/TypeScript/backend/layout-module/drag-drop.ts
 @@ -15,20 +15,20 @@
@@ -40,10 +40,10 @@ index 21dbdc58f57..d7aa60fdf40 100644
    cmd?: { [key: string]: { [key: string]: any } };
    data?: { [key: string]: { [key: string]: any } };
 -  CB?: { paste: string, update: { colPos: number | boolean, sys_language_uid: number } };
-+  CB?: { paste: string, update: { colPos: number | boolean, sys_language_uid: number, txContainerParent: number } };
++  CB?: { paste: string, update: { colPos: number | boolean, sys_language_uid: number , txContainerParent: number } };
  }
  
- type ContentElementDragDropData = {
+ export type ContentElementDragDropData = {
 @@ -175,6 +175,7 @@ class DragDrop {
      }
  

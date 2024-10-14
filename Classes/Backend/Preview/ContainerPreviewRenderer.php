@@ -107,6 +107,7 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $view->assign('containerGrid', $grid);
         $view->assign('grid', $grid);
         $view->assign('containerRecord', $record);
+        $view->assign('context', $context);
         $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view);
         $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
         $rendered = $view->render();
