@@ -1,6 +1,8 @@
 <?php
 
-namespace B13\Container\ContextMenu;
+declare(strict_types=1);
+
+namespace B13\Container\Backend\ContextMenu;
 
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,9 +22,10 @@ class RecordContextMenuItemProvider extends \TYPO3\CMS\Backend\ContextMenu\ItemP
         $attributes = parent::getAdditionalAttributes($itemName);
         if ($itemName === 'newWizard' && $this->table === 'tt_content'
             && isset($this->record['tx_container_parent']) && $this->record['tx_container_parent'] > 0) {
+            $languageField = method_exists($this, 'getLanguageField') ? $this->getLanguageField() : $GLOBALS['TCA']['tt_content']['ctrl']['languageField'];
             $urlParameters = [
                 'id' => $this->record['pid'],
-                'sys_language_uid' => $this->record[$this->getLanguageField()] ?? null,
+                'sys_language_uid' => $this->record[$languageField] ?? null,
                 'colPos' => $this->record['colPos'],
                 'uid_pid' => -$this->record['uid'],
                 'tx_container_parent' => $this->record['tx_container_parent'],
