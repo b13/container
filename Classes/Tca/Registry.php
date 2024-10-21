@@ -283,7 +283,7 @@ class Registry implements SingletonInterface
             $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ?? $group;
 
             $content = '';
-            if (!in_array($group, ['common', 'menu', 'special', 'forms', 'plugins'])) {
+            if (!in_array($group, ['common', 'default', 'menu', 'special', 'forms', 'plugins'])) {
                 // do not override EXT:backend dummy placeholders for item groups
                 $content .= '
 mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabel . '
@@ -294,9 +294,9 @@ mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabe
                     $item = $key . ' = ' . $item;
                 });
                 $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['defaultValues']);
-                $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.show := addToList(' . $cType . ')
+                $content .= 'mod.wizards.newContentElement.wizardItems.' . ($group === 'default' ? 'common' : $group) . '.show := addToList(' . $cType . ')
 ';
-                $content .= 'mod.wizards.newContentElement.wizardItems.' . $group . '.elements {
+                $content .= 'mod.wizards.newContentElement.wizardItems.' . ($group === 'default' ? 'common' : $group) . '.elements {
 ' . $cType . ' {
     title = ' . $containerConfiguration['label'] . '
     description = ' . $containerConfiguration['description'] . '
