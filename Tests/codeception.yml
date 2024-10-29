@@ -43,6 +43,15 @@ env:
   #      capabilities:
   #        goog:chromeOptions:
   #          args: ["headless", "no-sandbox", "disable-gpu"]
+  local:
+    modules:
+      config:
+        WebDriver:
+          path: /wd/hub
+          url: 'http://0.0.0.0:8888/'
+          capabilities:
+            goog:chromeOptions:
+              args: ["no-sandbox", "disable-gpu"]
 params:
   - parameters.yml
   - env
