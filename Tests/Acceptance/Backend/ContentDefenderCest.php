@@ -71,6 +71,42 @@ class ContentDefenderCest
     /**
      * @group content_defender
      */
+    public function doNotSeeNotAllowedContentElementsInNewContentElementWizardTriggeredByContextMenu(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->click('Page');
+        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->waitForElement('#element-tt_content-810 a.t3js-contextmenutrigger');
+            $I->click('#element-tt_content-810 a.t3js-contextmenutrigger');
+        } else {
+            $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
+            $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
+        }
+        $I->waitForText('More options...');
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('.list-group-item-submenu');
+        } else {
+            $I->click('.context-menu-item-submenu');
+        }
+        $I->waitForText('\'Create New\' wizard');
+        if ($typo3Version->getMajorVersion() < 12) {
+            $I->click('#contentMenu1 [data-callback-action="newContentWizard"]');
+        } else {
+            $I->click('#contentMenu1');
+        }
+        $I->switchToIFrame();
+        $I->waitForElement('.modal-dialog');
+        $I->waitForText('Header Only');
+        $I->dontSee('Table');
+    }
+
+    /**
+     * @group content_defender
+     */
     public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenCreateNewElement(BackendTester $I, PageTree $pageTree)
     {
         $I->click('Page');
