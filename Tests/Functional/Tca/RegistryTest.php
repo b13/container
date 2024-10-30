@@ -79,6 +79,31 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
     /**
      * @test
      */
+    public function tcaDefaultGroupIsAddedToNewContentElementCommonGroup(): void
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+            // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
+            self::markTestSkipped('new content element wizards removed');
+        }
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
+            (
+            new ContainerConfiguration(
+                'b13-container', // CType
+                'foo', // label
+                'bar', // description
+                [] // grid configuration
+            )
+            )->setGroup('default')
+        );
+        $registry = GeneralUtility::makeInstance(Registry::class);
+        $pageTs = $registry->getPageTsString();
+        $expected = 'mod.wizards.newContentElement.wizardItems.common.show := addToList(b13-container)';
+        self::assertStringContainsString($expected, $pageTs);
+    }
+
+    /**
+     * @test
+     */
     public function originalPageTsIsNotOverriden(): void
     {
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
