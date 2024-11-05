@@ -13,18 +13,18 @@ namespace B13\Container\Events;
  */
 
 use B13\Container\Domain\Model\Container;
+use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
+use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 final class BeforeContainerPreviewIsRenderedEvent
 {
-    protected Container $container;
-
-    protected StandaloneView $view;
-
-    public function __construct(Container $container, StandaloneView $view)
-    {
-        $this->container = $container;
-        $this->view = $view;
+    public function __construct(
+        protected Container $container,
+        protected StandaloneView $view,
+        protected Grid $grid,
+        protected GridColumnItem $item,
+    ) {
     }
 
     public function getContainer(): Container
@@ -35,5 +35,15 @@ final class BeforeContainerPreviewIsRenderedEvent
     public function getView(): StandaloneView
     {
         return $this->view;
+    }
+
+    public function getGrid(): Grid
+    {
+        return $this->grid;
+    }
+
+    public function getItem(): GridColumnItem
+    {
+        return $this->item;
     }
 }
