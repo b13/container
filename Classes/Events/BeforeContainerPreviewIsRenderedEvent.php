@@ -23,7 +23,7 @@ final class BeforeContainerPreviewIsRenderedEvent
         protected Container $container,
         protected StandaloneView $view,
         protected Grid $grid,
-        protected GridColumnItem $item,
+        protected GridColumnItem $item
     ) {
     }
 
