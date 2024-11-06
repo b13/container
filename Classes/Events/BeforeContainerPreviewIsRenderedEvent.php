@@ -19,12 +19,20 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 
 final class BeforeContainerPreviewIsRenderedEvent
 {
-    public function __construct(
-        protected Container $container,
-        protected StandaloneView $view,
-        protected Grid $grid,
-        protected GridColumnItem $item
-    ) {
+    protected Container $container;
+
+    protected StandaloneView $view;
+
+    protected Grid $grid;
+    
+    protected GridColumnItem $item;
+
+    public function __construct(Container $container, StandaloneView $view, Grid $grid, GridColumnItem $item)
+    {
+        $this->container = $container;
+        $this->view = $view;
+        $this->grid = $grid;
+        $this->item = $item;
     }
 
     public function getContainer(): Container
