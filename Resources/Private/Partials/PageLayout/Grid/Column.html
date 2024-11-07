@@ -15,6 +15,7 @@
     <f:render partial="PageLayout/Grid/ColumnHeader" arguments="{_all}" />
     <f:if condition="{column.active} || {column.unused}">
         <div data-colpos="{column.columnNumber}" data-language-uid="{column.context.siteLanguage.languageId}"
+             data-tx-container-parent="{column.containerUid}"
              class="t3js-sortable t3js-sortable-lang t3js-sortable-lang-{column.context.siteLanguage.languageId} t3-page-ce-wrapper
             {f:if(condition: column.items, else: 't3-page-ce-empty')}">
             <f:for each="{column.items}" as="item">
