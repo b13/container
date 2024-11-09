@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendWorkspaceRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -56,6 +57,9 @@ class Database implements SingletonInterface
                 $queryBuilder->getRestrictions()
                     ->removeByType(FrontendWorkspaceRestriction::class)
                     ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
+            }
+            if ($this->workspaceId > 0) {
+                $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
             }
         } else {
             $queryBuilder->getRestrictions()
