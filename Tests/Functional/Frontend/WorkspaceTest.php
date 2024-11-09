@@ -108,6 +108,22 @@ class WorkspaceTest extends AbstractFrontend
      * @test
      * @group frontend
      */
+    public function childInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/child_in_ws_whith_hidden_live_version.csv');
+        $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('live-container-header', $body);
+        self::assertStringContainsString('ws-child-header', $body);
+        self::assertStringNotContainsString('live-child-header', $body);
+    }
+
+    /**
+     * @test
+     * @group frontend
+     */
     public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
