@@ -13,6 +13,8 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerTest extends AbstractDatahandler
 {
@@ -340,5 +342,29 @@ class ContainerTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElementResult.csv');
+    }
+
+    /**
+     * @test
+     */
+    public function copyContainerWithDataHandlerLoggingDisabled(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerWithDataHandlerLoggingDisabled.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [],
+                    ],
+                ],
+            ],
+        ];
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->enableLogging = false;
+        $dataHandler->start([], $cmdmap, $this->backendUser);
+        $dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerWithDataHandlerLoggingDisabledSysLogResult.csv');
     }
 }
