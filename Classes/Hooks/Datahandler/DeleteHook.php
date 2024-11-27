@@ -33,7 +33,7 @@ class DeleteHook
     public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, DataHandler $dataHandler): void
     {
         if ($table === 'tt_content') {
-            $this->deleteChildren($id, $dataHandler->BE_USER);
+            $this->deleteChildren($id, $dataHandler->BE_USER, $dataHandler->enableLogging);
         }
     }
 
@@ -44,7 +44,7 @@ class DeleteHook
         }
     }
 
-    protected function deleteChildren(int $id, ?BackendUserAuthentication $backendUser): void
+    protected function deleteChildren(int $id, ?BackendUserAuthentication $backendUser, ?bool $enableLogging = null): void
     {
         try {
             $container = $this->containerFactory->buildContainer($id);
@@ -56,6 +56,9 @@ class DeleteHook
             if (!empty($toDelete)) {
                 $cmd = ['tt_content' => $toDelete];
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                if ($enableLogging !== null) {
+                    $localDataHandler->enableLogging = $enableLogging;
+                }
                 $localDataHandler->start([], $cmd, $backendUser);
                 $localDataHandler->process_cmdmap();
             }

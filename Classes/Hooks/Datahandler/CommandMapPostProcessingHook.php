@@ -58,6 +58,7 @@ class CommandMapPostProcessingHook
             }
             if (count($cmd['tt_content']) > 0) {
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
             }
@@ -107,6 +108,7 @@ class CommandMapPostProcessingHook
                     $cmd['tt_content'][$record['uid']][$command]['update']['sys_language_uid'] = $origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'];
                 }
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
             }

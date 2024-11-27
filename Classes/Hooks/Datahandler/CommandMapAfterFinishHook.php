@@ -80,6 +80,7 @@ class CommandMapAfterFinishHook
                     continue;
                 }
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start($data, [], $dataHandler->BE_USER);
                 $localDataHandler->process_datamap();
             }
