@@ -48,25 +48,10 @@ class Database implements SingletonInterface
     protected function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        if ($this->getServerRequest() instanceof ServerRequestInterface
-            && ApplicationType::fromRequest($this->getServerRequest())->isFrontend()
-        ) {
-            $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
-            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-                // do not use FrontendWorkspaceRestriction
-                $queryBuilder->getRestrictions()
-                    ->removeByType(FrontendWorkspaceRestriction::class)
-                    ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
-            }
-            if ($this->workspaceId > 0) {
-                $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
-            }
-        } else {
-            $queryBuilder->getRestrictions()
-                ->removeAll()
-                ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-                ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
-        }
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
         return $queryBuilder;
     }
 
