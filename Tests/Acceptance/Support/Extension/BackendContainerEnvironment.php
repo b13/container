@@ -78,22 +78,4 @@ class BackendContainerEnvironment extends BackendEnvironment
         }
         parent::_initialize();
     }
-
-    public function bootstrapTypo3Environment(SuiteEvent $suiteEvent): void
-    {
-        parent::bootstrapTypo3Environment($suiteEvent);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 13) {
-            return;
-        }
-        $content = "<?php
-
-call_user_func(static function () {
-    \$classLoader = require __DIR__ . '/../../../../../..' . '/vendor/autoload.php';
-    \TYPO3\TestingFramework\Core\SystemEnvironmentBuilder::run(1, \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_BE);
-    \TYPO3\CMS\Core\Core\Bootstrap::init(\$classLoader)->get(\TYPO3\CMS\Backend\Http\Application::class)->run();
-});";
-        $instancePath = ORIGINAL_ROOT . 'typo3temp/var/tests/acceptance';
-        file_put_contents($instancePath . '/typo3/index.php', $content);
-    }
 }

@@ -36,16 +36,6 @@ parameters:
 			path: ../Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
 
 		-
-			message: "#^Call to an undefined static method TYPO3\\\\TestingFramework\\\\Core\\\\Acceptance\\\\Extension\\\\BackendEnvironment\\:\\:bootstrapTypo3Environment\\(\\)\\.$#"
-			count: 1
-			path: ../Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
-
-		-
-			message: "#^Constant ORIGINAL_ROOT not found\\.$#"
-			count: 1
-			path: ../Tests/Acceptance/Support/Extension/BackendContainerEnvironment.php
-
-		-
 			message: "#^Property TYPO3\\\\TestingFramework\\\\Core\\\\Acceptance\\\\Helper\\\\AbstractPageTree\\:\\:\\$tester \\(AcceptanceTester\\) does not accept B13\\\\Container\\\\Tests\\\\Acceptance\\\\Support\\\\BackendTester\\.$#"
 			count: 1
 			path: ../Tests/Acceptance/Support/PageTree.php
