@@ -27,12 +27,12 @@ class BackendTester extends \Codeception\Actor
     {
         $I = $this;
         if ($I->loadSessionSnapshot($username . 'Login')) {
-            $I->amOnPage('/typo3/index.php');
+            $I->amOnPage('/typo3');
         } else {
-            $I->amOnPage('/typo3/index.php');
+            $I->amOnPage('/typo3');
             $I->waitForElement('body[data-typo3-login-ready]');
             // logging in
-            $I->amOnPage('/typo3/index.php');
+            $I->amOnPage('/typo3');
             $I->submitForm('#typo3-login-form', [
                 'username' => $username,
                 'p_field' => 'password',
