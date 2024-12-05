@@ -38,9 +38,9 @@ class BackendContainerEnvironment extends BackendEnvironment
             'typo3conf/ext/container/Build/sites' => 'typo3conf/sites',
         ],
         'testExtensionsToLoad' => [
-            'typo3conf/ext/container',
-            'typo3conf/ext/container_example',
-            'typo3conf/ext/content_defender',
+            'b13/container',
+            'b13/container-example',
+            'ichhabrecht/content-defender',
         ],
         'csvDatabaseFixtures' => [
             __DIR__ . '/../../Fixtures/be_users.csv',
@@ -72,8 +72,8 @@ class BackendContainerEnvironment extends BackendEnvironment
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() === 13) {
             $this->localConfig['testExtensionsToLoad'] = [
-                'typo3conf/ext/container',
-                'typo3conf/ext/container_example',
+                'b13/container',
+                'b13/container-example',
             ];
         }
         parent::_initialize();
