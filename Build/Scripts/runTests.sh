@@ -306,6 +306,8 @@ USERSET=""
 SUFFIX=$(echo $RANDOM)
 NETWORK="b13-container-${SUFFIX}"
 PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS:-}"
+# @todo Remove USE_APACHE option when TF7 has been dropped (along with TYPO3 v11 support).
+USE_APACHE=0
 
 # Option parsing updates above default vars
 # Reset in case getopts has been used previously in the shell
@@ -338,6 +340,8 @@ while getopts "a:b:s:d:i:t:p:xy:o:nhug" OPT; do
             if ! [[ ${TYPO3} =~ ^(11|12|13)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
+            # @todo Remove USE_APACHE option when TF7 has been dropped (along with TYPO3 v11 support).
+            [[ "${TYPO3}" -eq 13 ]] && USE_APACHE=1
           ;;
         p)
             PHP_VERSION=${OPTARG}
@@ -481,17 +485,34 @@ case ${TEST_SUITE} in
         if [ "${ACCEPTANCE_HEADLESS}" -eq 0 ]; then
             SELENIUM_GRID="-p 7900:7900 -e SE_VNC_NO_PASSWORD=1 -e VNC_NO_PASSWORD=1"
         fi
+        APACHE_OPTIONS="-e APACHE_RUN_USER=#${HOST_UID} -e APACHE_RUN_SERVERNAME=web -e APACHE_RUN_GROUP=#${HOST_PID} -e APACHE_RUN_DOCROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e PHPFPM_HOST=phpfpm -e PHPFPM_PORT=9000 -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance"
         ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d ${SELENIUM_GRID} --name ac-chrome-${SUFFIX} --network ${NETWORK} --network-alias chrome --tmpfs /dev/shm:rw,nosuid,nodev,noexec ${IMAGE_SELENIUM} >/dev/null
         if [ ${CONTAINER_BIN} = "docker" ]; then
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
+          if [[ "${USE_APACHE}" -eq 1 ]]; then
+            ${CONTAINER_BIN} run --rm -d --name ac-phpfpm-${SUFFIX} --network ${NETWORK} --network-alias phpfpm --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -e PHPFPM_USER=${HOST_UID} -e PHPFPM_GROUP=${HOST_PID} -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -v ${CORE_ROOT}:${CORE_ROOT} ${IMAGE_PHP} php-fpm ${PHP_FPM_OPTIONS} >/dev/null
+            ${CONTAINER_BIN} run --rm -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web --add-host "${CONTAINER_HOST}:host-gateway" -v ${CORE_ROOT}:${CORE_ROOT} ${APACHE_OPTIONS} ${IMAGE_APACHE} >/dev/null
+          else
+            # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e typo3TestingAcceptanceBaseUrl=http://web:8000/ -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
+          fi
         else
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
+          if [[ "${USE_APACHE}" -eq 1 ]]; then
+            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-phpfpm-${SUFFIX} --network ${NETWORK} --network-alias phpfpm ${USERSET} -e PHPFPM_USER=0 -e PHPFPM_GROUP=0 -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -v ${CORE_ROOT}:${CORE_ROOT} ${IMAGE_PHP} php-fpm -R ${PHP_FPM_OPTIONS} >/dev/null
+            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web -v ${CORE_ROOT}:${CORE_ROOT} ${APACHE_OPTIONS} ${IMAGE_APACHE} >/dev/null
+          else
+            # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e typo3TestingAcceptanceBaseUrl=http://web:8000/ -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
+          fi
         fi
         waitFor chrome 4444
         if [ "${ACCEPTANCE_HEADLESS}" -eq 0 ]; then
             waitFor chrome 7900
         fi
-        waitFor web 8000
+        if [[ "${USE_APACHE}" -eq 1 ]]; then
+          waitFor web 80
+        else
+          waitFor web 8000
+        fi
         if [ "${ACCEPTANCE_HEADLESS}" -eq 0 ] && type "xdg-open" >/dev/null; then
             xdg-open http://localhost:7900/?autoconnect=1 >/dev/null
         elif [ "${ACCEPTANCE_HEADLESS}" -eq 0 ] && type "open" >/dev/null; then
@@ -502,7 +523,12 @@ case ${TEST_SUITE} in
                 ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name mariadb-ac-${SUFFIX} --network ${NETWORK} -d -e MYSQL_ROOT_PASSWORD=funcp --tmpfs /var/lib/mysql/:rw,noexec,nosuid ${IMAGE_MARIADB} >/dev/null
                 DATABASE_IP=$(${CONTAINER_BIN} inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mariadb-ac-${SUFFIX})
                 waitFor mariadb-ac-${SUFFIX} 3306
-                CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
+                if [[ "${USE_APACHE}" -eq 1 ]]; then
+                  CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
+                else
+                  # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+                  CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP} -e typo3TestingAcceptanceBaseUrl=http://web:8000"
+                fi
                 ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-mariadb ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
                 SUITE_EXIT_CODE=$?
                 ;;
@@ -510,7 +536,12 @@ case ${TEST_SUITE} in
                 ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name mysql-ac-${SUFFIX} --network ${NETWORK} -d -e MYSQL_ROOT_PASSWORD=funcp --tmpfs /var/lib/mysql/:rw,noexec,nosuid ${IMAGE_MYSQL} >/dev/null
                 DATABASE_IP=$(${CONTAINER_BIN} inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-ac-${SUFFIX})
                 waitFor mysql-ac-${SUFFIX} 3306 2
-                CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
+                if [[ "${USE_APACHE}" -eq 1 ]]; then
+                  CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
+                else
+                  # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+                  CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP} -e typo3TestingAcceptanceBaseUrl=http://web:8000"
+                fi
                 ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-mysql ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
                 SUITE_EXIT_CODE=$?
                 ;;
@@ -518,14 +549,24 @@ case ${TEST_SUITE} in
                 ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name postgres-ac-${SUFFIX} --network ${NETWORK} -d -e POSTGRES_PASSWORD=funcp -e POSTGRES_USER=funcu --tmpfs /var/lib/postgresql/data:rw,noexec,nosuid ${IMAGE_POSTGRES} >/dev/null
                 DATABASE_IP=$(${CONTAINER_BIN} inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres-ac-${SUFFIX})
                 waitFor postgres-ac-${SUFFIX} 5432
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_pgsql -e typo3DatabaseName=func_test -e typo3DatabaseUsername=funcu -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
+                if [[ "${USE_APACHE}" -eq 1 ]]; then
+                  CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_pgsql -e typo3DatabaseName=func_test -e typo3DatabaseUsername=funcu -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
+                else
+                  # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+                  CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_pgsql -e typo3DatabaseName=func_test -e typo3DatabaseUsername=funcu -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP} -e typo3TestingAcceptanceBaseUrl=http://web:8000"
+                fi
                 ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-postgres ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
                 SUITE_EXIT_CODE=$?
                 ;;
             sqlite)
                 rm -rf "${CORE_ROOT}/typo3temp/var/tests/acceptance-sqlite-dbs/"
                 mkdir -p "${CORE_ROOT}/typo3temp/var/tests/acceptance-sqlite-dbs/"
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite"
+                if [[ "${USE_APACHE}" -eq 1 ]]; then
+                  CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite"
+                else
+                  # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+                  CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite -e typo3TestingAcceptanceBaseUrl=http://web:8000"
+                fi
                 ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-sqlite ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
                 SUITE_EXIT_CODE=$?
                 ;;
