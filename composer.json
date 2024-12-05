@@ -34,7 +34,7 @@
         "typo3/cms-fluid-styled-content": "^11.5 || ^12.4 || ^13.4",
         "typo3/cms-info": "^11.5 || ^12.4 || ^13.4",
         "typo3/cms-workspaces": "^11.5 || ^12.4 || ^13.4",
-        "typo3/testing-framework": "^7.0 || ^8.0",
+        "typo3/testing-framework": "^7.1.1 || ^8.2.7",
         "phpstan/phpstan": "^1.10",
         "typo3/coding-standards": "^0.5.5",
         "friendsofphp/php-cs-fixer": "^3.51",
