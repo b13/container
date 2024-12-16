@@ -15,19 +15,19 @@ namespace B13\Container\Events;
 use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewInterface;
 
 final class BeforeContainerPreviewIsRenderedEvent
 {
     protected Container $container;
 
-    protected StandaloneView $view;
+    protected ViewInterface $view;
 
     protected Grid $grid;
-    
+
     protected GridColumnItem $item;
 
-    public function __construct(Container $container, StandaloneView $view, Grid $grid, GridColumnItem $item)
+    public function __construct(Container $container, ViewInterface $view, Grid $grid, GridColumnItem $item)
     {
         $this->container = $container;
         $this->view = $view;
@@ -40,7 +40,7 @@ final class BeforeContainerPreviewIsRenderedEvent
         return $this->container;
     }
 
-    public function getView(): StandaloneView
+    public function getView(): ViewInterface
     {
         return $this->view;
     }
