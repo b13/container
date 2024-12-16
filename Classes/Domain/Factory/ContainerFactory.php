@@ -107,7 +107,7 @@ class ContainerFactory implements SingletonInterface
         $filtered = [];
         foreach ($records as $row) {
             BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
-            if ($row && !VersionState::cast($row['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
+            if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
                 $filtered[] = $row;
             }
         }
