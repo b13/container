@@ -48,21 +48,11 @@ jobs:
       - name: Unit Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s unit
 
-      - name: Functional Tests v12/v11
-        if: matrix.TYPO3 != '13'
+      - name: Functional Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
 
-      - name: Functional Tests v13
-        if: matrix.TYPO3 == '13'
-        run: PHPUNIT_EXCLUDE_GROUPS=content_defender Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
-
-      - name: Acceptance Tests v12/v11
-        if: matrix.TYPO3 != '13'
+      - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
-
-      - name: Acceptance Tests v13
-        if: matrix.TYPO3 == '13'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast --skip-group=content_defender
 
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v4

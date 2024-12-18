@@ -598,7 +598,7 @@ case ${TEST_SUITE} in
               composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
-              composer require typo3/cms-core:^13.4 --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
               composer require typo3/cms-core:^12.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
@@ -620,7 +620,7 @@ case ${TEST_SUITE} in
               composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
-              composer require typo3/cms-core:^13.0 --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
               composer require typo3/cms-core:^12.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction

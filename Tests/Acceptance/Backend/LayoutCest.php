@@ -155,9 +155,9 @@ class LayoutCest
             $I->click('Container');
             $I->click('2 Column Container With Header');
         } else {
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('container')");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
             $I->wait(0.5);
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
         }
         $I->switchToContentFrame();
         $I->click('Save');
@@ -200,21 +200,13 @@ class LayoutCest
             // b13-2cols
             $I->click('2 Column Some Description of the Container');
         } else {
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('container')");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
             $I->wait(0.5);
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
         }
         $I->switchToContentFrame();
         $I->waitForText('2-cols-left');
         $I->canSee('2-cols-left', '.t3-grid-container');
-    }
-
-    protected function getNewRecordWizardSelector(): string
-    {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
-            return 'typo3-backend-new-content-element-wizard';
-        }
-        return 'typo3-backend-new-record-wizard';
     }
 
     /**
@@ -279,12 +271,12 @@ class LayoutCest
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('header ')");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
             if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
-                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
             }
         }
         $I->switchToContentFrame();
@@ -323,12 +315,12 @@ class LayoutCest
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('header ')");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
             if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
-                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
             }
         }
         $I->switchToContentFrame();
@@ -382,12 +374,12 @@ class LayoutCest
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('header ')");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
             if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
-                $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
             }
         }
         $I->switchToContentFrame();
@@ -522,7 +514,7 @@ class LayoutCest
         if ($typo3Version->getMajorVersion() < 12) {
             $I->click('Container');
         } else {
-            $I->executeJS("document.querySelector('" . $this->getNewRecordWizardSelector() . "').filter('container')");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
             $I->wait(0.5);
         }
         $I->see('Some Description of the Container');
