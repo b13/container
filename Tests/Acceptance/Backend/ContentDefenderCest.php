@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use B13\Container\Tests\Acceptance\Support\PageTreeV13;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,32 +31,44 @@ class ContentDefenderCest
     /**
      * @group content_defender
      */
-    public function canCreateChildIn2ColsContainerWithNoContentDefenderRestrictionsDefined(BackendTester $I, PageTree $pageTree): void
+    public function canCreateChildIn2ColsContainerWithNoContentDefenderRestrictionsDefined(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithDifferentContainers']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(300, 200);
         $I->waitForElement('#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
         $newContentElementLabel = $I->getNewContentElementLabel();
+
         $I->click($newContentElementLabel, '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        }
         $I->waitForText('Header Only');
         $I->see('Header Only');
-        $I->see('Table');
+        $I->see('Images Only');
     }
 
     /**
      * @group content_defender
      */
-    public function doNotSeeNotAllowedContentElementsInNewContentElementWizard(BackendTester $I, PageTree $pageTree): void
+    public function doNotSeeNotAllowedContentElementsInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainer-3']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainer-3']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(800, 200);
@@ -64,18 +77,25 @@ class ContentDefenderCest
         $I->click($newContentElementLabel, '#element-tt_content-800 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        }
         $I->waitForText('Header Only');
-        $I->dontSee('Table');
+        $I->dontSee('Images Only');
     }
 
     /**
      * @group content_defender
      */
-    public function doNotSeeNotAllowedContentElementsInNewContentElementWizardTriggeredByContextMenu(BackendTester $I, PageTree $pageTree): void
+    public function doNotSeeNotAllowedContentElementsInNewContentElementWizardTriggeredByContextMenu(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainer-3']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainer-3']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
@@ -100,18 +120,25 @@ class ContentDefenderCest
         }
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        }
         $I->waitForText('Header Only');
-        $I->dontSee('Table');
+        $I->dontSee('Images Only');
     }
 
     /**
      * @group content_defender
      */
-    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenCreateNewElement(BackendTester $I, PageTree $pageTree)
+    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenCreateNewElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainer-4']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainer-4']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainer-4']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(801, 200);
@@ -120,44 +147,59 @@ class ContentDefenderCest
         $I->click($newContentElementLabel, '#element-tt_content-801 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        }
         $I->waitForText('Header Only');
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            if ($typo3Version->getMajorVersion() < 13) {
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            } else {
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+            }
         }
         $I->switchToContentFrame();
         $I->wait(0.5);
         $I->see('textmedia', 'select');
-        $I->dontSee('Table', 'select');
+        $I->dontSee('Images Only', 'select');
     }
 
     /**
      * @group content_defender
      */
-    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenEditAnElement(BackendTester $I, PageTree $pageTree)
+    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenEditAnElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'contentTCASelectCtype']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'contentTCASelectCtype']);
+        } else {
+            $pageTreeV13->openPath(['home', 'contentTCASelectCtype']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $I->waitForElement('#element-tt_content-502 a[title="Edit"]');
         $I->click('#element-tt_content-502 a[title="Edit"]');
         $I->waitForElement('#EditDocumentController');
         $I->see('textmedia', 'select');
-        $I->dontSee('Table', 'select');
+        $I->dontSee('Images Only', 'select');
     }
 
     /**
      * @group content_defender
      */
-    public function canSeeNewContentButtonIfMaxitemsIsNotReached(BackendTester $I, PageTree $pageTree)
+    public function canSeeNewContentButtonIfMaxitemsIsNotReached(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        } else {
+            $pageTreeV13->openPath(['home', 'contentDefenderMaxitems']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
@@ -168,11 +210,15 @@ class ContentDefenderCest
     /**
      * @group content_defender
      */
-    public function canNotSeeNewContentButtonIfMaxitemsIsReached(BackendTester $I, PageTree $pageTree)
+    public function canNotSeeNewContentButtonIfMaxitemsIsReached(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        } else {
+            $pageTreeV13->openPath(['home', 'contentDefenderMaxitems']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(401, 202);
@@ -184,11 +230,15 @@ class ContentDefenderCest
     /**
      * @group content_defender
      */
-    public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree)
+    public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        } else {
+            $pageTreeV13->openPath(['home', 'contentDefenderMaxitems']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
@@ -197,12 +247,19 @@ class ContentDefenderCest
         $I->click($newContentElementLabel, '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        }
         $I->waitForText('Header Only');
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() < 12) {
             $I->click('Header Only');
         } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            if ($typo3Version->getMajorVersion() < 13) {
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
+            } else {
+                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+            }
         }
         $I->switchToContentFrame();
         $I->waitForText('Create new Page Content on page');
@@ -213,11 +270,15 @@ class ContentDefenderCest
     /**
      * @group content_defender
      */
-    public function seeEditDocumentWhenAddingChildrenToColposWhereOnlyHeaderIsAllowed(BackendTester $I, PageTree $pageTree)
+    public function seeEditDocumentWhenAddingChildrenToColposWhereOnlyHeaderIsAllowed(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->click('Page');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithDifferentContainers']);
+        }
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(300, 201);
@@ -228,7 +289,7 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $I->wait(0.5);
         $I->see('header', 'select');
-        $I->dontSee('Table', 'select');
+        $I->dontSee('Images Only', 'select');
     }
 
 }

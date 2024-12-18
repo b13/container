@@ -60,4 +60,12 @@ class BackendTester extends \Codeception\Actor
         }
         return 'Create new content';
     }
+
+    public function getNewRecordWizardSelector(): string
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            return 'typo3-backend-new-content-element-wizard';
+        }
+        return 'typo3-backend-new-record-wizard';
+    }
 }

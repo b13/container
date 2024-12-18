@@ -12,12 +12,9 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
-class MaxItemsTest extends AbstractDatahandler
+class MaxItemsTest extends AbstractContentDefender
 {
     /**
      * @var non-empty-string[]
@@ -31,10 +28,6 @@ class MaxItemsTest extends AbstractDatahandler
     protected function setUp(): void
     {
         parent::setUp();
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
-            // content_defender calls FormDataCompiler which wants access global variable TYPO3_REQUEST
-            $GLOBALS['TYPO3_REQUEST'] = null;
-        }
         $this->linkSiteConfigurationIntoTestInstance();
     }
 

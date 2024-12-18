@@ -12,11 +12,7 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-class LocalizationTest extends AbstractDatahandler
+class LocalizationTest extends AbstractContentDefender
 {
     /**
      * @var non-empty-string[]
@@ -30,10 +26,6 @@ class LocalizationTest extends AbstractDatahandler
     protected function setUp(): void
     {
         parent::setUp();
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
-            // content_defender calls FormDataCompiler which wants access global variable TYPO3_REQUEST
-            $GLOBALS['TYPO3_REQUEST'] = null;
-        }
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localization/setup.csv');
     }
 

@@ -66,16 +66,4 @@ class BackendContainerEnvironment extends BackendEnvironment
             __DIR__ . '/../../Fixtures/be_groups.csv',
         ],
     ];
-
-    public function _initialize(): void
-    {
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() === 13) {
-            $this->localConfig['testExtensionsToLoad'] = [
-                'b13/container',
-                'b13/container-example',
-            ];
-        }
-        parent::_initialize();
-    }
 }
