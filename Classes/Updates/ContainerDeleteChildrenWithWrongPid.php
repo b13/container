@@ -59,7 +59,7 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, Rep
      */
     public function getTitle(): string
     {
-        return 'EXT:container: Delete "container" children whith wrong pid';
+        return 'EXT:container: Delete "container" children with wrong pid';
     }
 
     /**
