@@ -48,7 +48,7 @@ env:
       config:
         WebDriver:
           path: /wd/hub
-          url: 'http://0.0.0.0:80/'
+          url: 'http://0.0.0.0:8080/'
           capabilities:
             goog:chromeOptions:
               args: ["no-sandbox", "disable-gpu"]
