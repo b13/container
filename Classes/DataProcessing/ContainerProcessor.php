@@ -117,14 +117,7 @@ class ContainerProcessor implements DataProcessorInterface
         $languageAspect = $this->context->getAspect('language');
         foreach ($children as &$child) {
             if (!isset($processorConfiguration['skipRenderingChildContent']) || (int)$processorConfiguration['skipRenderingChildContent'] === 0) {
-                if ($child['l18n_parent'] > 0 && $languageAspect->doOverlays()) {
-                    $conf['source'] = $child['l18n_parent'];
-                } else {
-                    $conf['source'] = $child['uid'];
-                }
-                if ($child['t3ver_oid'] > 0) {
-                    $conf['source'] = $child['t3ver_oid'];
-                }
+                $conf['source'] = $child['uid'];
                 $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
             }
             /** @var ContentObjectRenderer $recordContentObjectRenderer */
