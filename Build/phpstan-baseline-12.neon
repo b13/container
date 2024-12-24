@@ -1,9 +1,5 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Call to protected method getRecordOverlay\\(\\) of class TYPO3\\\\CMS\\\\Core\\\\Domain\\\\Repository\\\\PageRepository\\.$#"
-			count: 1
-			path: ../Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
 
 		-
 			message: "#^Constant LF not found\\.$#"

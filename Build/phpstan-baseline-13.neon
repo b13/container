@@ -1,24 +1,5 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Database\\\\Query\\\\Restriction\\\\FrontendWorkspaceRestriction not found\\.$#"
-			count: 1
-			path: ../Classes/Domain/Factory/Database.php
-
-		-
-			message: "#^Call to protected method getRecordOverlay\\(\\) of class TYPO3\\\\CMS\\\\Core\\\\Domain\\\\Repository\\\\PageRepository\\.$#"
-			count: 1
-			path: ../Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
-
-		-
-			message: "#^Method TYPO3\\\\CMS\\\\Core\\\\Domain\\\\Repository\\\\PageRepository\\:\\:getRecordOverlay\\(\\) invoked with 4 parameters, 3 required\\.$#"
-			count: 1
-			path: ../Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
-
-		-
-			message: "#^Parameter \\#3 \\$languageAspect of method TYPO3\\\\CMS\\\\Core\\\\Domain\\\\Repository\\\\PageRepository\\:\\:getRecordOverlay\\(\\) expects TYPO3\\\\CMS\\\\Core\\\\Context\\\\LanguageAspect, int given\\.$#"
-			count: 1
-			path: ../Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
 
 		-
 			message: "#^Constant LF not found\\.$#"
