@@ -12,18 +12,12 @@ namespace B13\Container\Domain\Factory;
  * of the License, or any later version.
  */
 
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
-use TYPO3\CMS\Core\Database\Query\Restriction\FrontendWorkspaceRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
-use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -48,31 +42,11 @@ class Database implements SingletonInterface
     protected function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        if ($this->getServerRequest() instanceof ServerRequestInterface
-            && ApplicationType::fromRequest($this->getServerRequest())->isFrontend()
-        ) {
-            $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
-            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-                // do not use FrontendWorkspaceRestriction
-                $queryBuilder->getRestrictions()
-                    ->removeByType(FrontendWorkspaceRestriction::class)
-                    ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
-            }
-            if ($this->workspaceId > 0) {
-                $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
-            }
-        } else {
-            $queryBuilder->getRestrictions()
-                ->removeAll()
-                ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-                ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
-        }
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
         return $queryBuilder;
-    }
-
-    protected function getServerRequest(): ?ServerRequestInterface
-    {
-        return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 
     public function fetchRecordsByPidAndLanguage(int $pid, int $language): array
@@ -186,28 +160,5 @@ class Database implements SingletonInterface
             ->executeQuery()
             ->fetchAllAssociative();
         return $rows;
-    }
-
-    public function fetchOneOverlayRecord(int $uid, int $language): ?array
-    {
-        $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'l18n_parent',
-                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-        if ($record === false) {
-            return null;
-        }
-        return $record;
     }
 }
