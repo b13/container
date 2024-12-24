@@ -1,9 +1,5 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Method TYPO3\\\\CMS\\\\Core\\\\Domain\\\\Repository\\\\PageRepository\\:\\:getLanguageOverlay\\(\\) invoked with 3 parameters, 2 required\\.$#"
-			count: 1
-			path: ../Classes/Domain/Factory/PageView/Frontend/ContainerFactory.php
 
 		-
 			message: "#^Constant LF not found\\.$#"

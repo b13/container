@@ -13,11 +13,10 @@ namespace B13\Container\DataProcessing;
  */
 
 use B13\Container\Domain\Factory\Exception;
-use B13\Container\Domain\Factory\PageView\Frontend\ContainerFactory;
+use B13\Container\Domain\Factory\FrontendContainerFactory;
 use B13\Container\Domain\Model\Container;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -25,10 +24,6 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 class ContainerProcessor implements DataProcessorInterface
 {
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
 
     /**
      * @var ContentDataProcessor
@@ -36,12 +31,13 @@ class ContainerProcessor implements DataProcessorInterface
     protected $contentDataProcessor;
 
     protected Context $context;
+    protected FrontendContainerFactory $frontendContainerFactory;
 
-    public function __construct(ContainerFactory $containerFactory, ContentDataProcessor $contentDataProcessor, Context $context)
+    public function __construct(ContentDataProcessor $contentDataProcessor, Context $context, FrontendContainerFactory $frontendContainerFactory)
     {
-        $this->containerFactory = $containerFactory;
         $this->contentDataProcessor = $contentDataProcessor;
         $this->context = $context;
+        $this->frontendContainerFactory = $frontendContainerFactory;
     }
 
     public function process(
@@ -53,16 +49,15 @@ class ContainerProcessor implements DataProcessorInterface
         if (isset($processorConfiguration['if.']) && !$cObj->checkIf($processorConfiguration['if.'])) {
             return $processedData;
         }
+        $contentId = null;
         if ($processorConfiguration['contentId.'] ?? false) {
             $contentId = (int)$cObj->stdWrap($processorConfiguration['contentId'], $processorConfiguration['contentId.']);
         } elseif ($processorConfiguration['contentId'] ?? false) {
             $contentId = (int)$processorConfiguration['contentId'];
-        } else {
-            $contentId = (int)$cObj->data['uid'];
         }
 
         try {
-            $container = $this->containerFactory->buildContainer($contentId);
+            $container = $this->frontendContainerFactory->buildContainer($cObj, $this->context, $contentId);
         } catch (Exception $e) {
             // do nothing
             return $processedData;
@@ -109,22 +104,12 @@ class ContainerProcessor implements DataProcessorInterface
         if ($contentRecordRenderer === null) {
             throw new ContainerDataProcessingFailedException('RECORDS content object not available.', 1691483526);
         }
-
         $conf = [
             'tables' => 'tt_content',
         ];
-        /** @var LanguageAspect $languageAspect */
-        $languageAspect = $this->context->getAspect('language');
         foreach ($children as &$child) {
             if (!isset($processorConfiguration['skipRenderingChildContent']) || (int)$processorConfiguration['skipRenderingChildContent'] === 0) {
-                if ($child['l18n_parent'] > 0 && $languageAspect->doOverlays()) {
-                    $conf['source'] = $child['l18n_parent'];
-                } else {
-                    $conf['source'] = $child['uid'];
-                }
-                if ($child['t3ver_oid'] > 0) {
-                    $conf['source'] = $child['t3ver_oid'];
-                }
+                $conf['source'] = $child['uid'];
                 $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
             }
             /** @var ContentObjectRenderer $recordContentObjectRenderer */
