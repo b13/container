@@ -17,7 +17,6 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DatamapPreProcessFieldArrayHook
@@ -61,11 +60,9 @@ class DatamapPreProcessFieldArrayHook
             // new elements in container have already correct target
             return $incomingFieldArray;
         }
-        if ((int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
-            return $incomingFieldArray;
-        }
-        if ((int)($incomingFieldArray['tx_container_parent'] ?? 0) > 0 &&
-            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$incomingFieldArray['tx_container_parent'])
+        if (
+            (int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0) ||
+            (isset($record['t3_origuid']) && $record['t3_origuid'] > 0 && (int)$record['t3_origuid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0))
         ) {
             return $incomingFieldArray;
         }
