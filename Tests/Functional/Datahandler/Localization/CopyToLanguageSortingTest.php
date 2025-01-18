@@ -84,4 +84,22 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAfterContainerChildResult.csv');
     }
+
+    /**
+     * @test
+     */
+    public function localizeWithNestedElements(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeWithNestedElements.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copyToLanguage' => 4,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeWithNestedElementsResult.csv');
+    }
 }

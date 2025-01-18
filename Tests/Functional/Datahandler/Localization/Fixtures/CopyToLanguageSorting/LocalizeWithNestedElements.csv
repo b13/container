@@ -1,0 +1,11 @@
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent","l10n_source"
+,"1","1","b13-2cols-with-header-container","container-1","256","0","0","0","0","0"
+,"2","1","b13-2cols-with-header-container","container-2","512","0","201","1","0","0"
+,"3","1","header","child-2-1","768","0","201","2","0","0"
+,"4","1","header","child-2-2","1024","0","201","2","0","0"
+"pages"
+,"uid","pid","title","sys_language_uid","l10n_parent"
+,"1","0","page-1","0","0"
+,"2","0","page-1-language-1","1","1"
+
