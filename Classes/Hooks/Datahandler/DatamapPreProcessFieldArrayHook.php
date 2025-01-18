@@ -64,7 +64,7 @@ class DatamapPreProcessFieldArrayHook
         if ((int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
             return $incomingFieldArray;
         }
-        if (($record['t3_origuid'] ?? 0) > 0 && (int)$record['t3_origuid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0))
+        if (($record['l10n_source'] ?? 0) > 0 && (int)$record['l10n_source'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0))
         {
             return $incomingFieldArray;
         }
