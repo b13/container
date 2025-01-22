@@ -71,7 +71,7 @@ This is an example to create a 2 column container. The code snippet goes into a 
 | Method name | Description | Parameters | Default |
 | ----------- | ----------- | ---------- | ---------- |
 | `setIcon` | icon file, or existing icon identifier | `string $icon` | `'EXT:container/Resources/Public/Icons/Extension.svg'` |
-| `setBackendTemplate` | Template for backend view| `string $backendTemplate` | `null'` |
+| `setBackendTemplate` | Template for backend view| `string $backendTemplate` | `EXT:container/Resources/Private/Templates/Container.html'` |
 | `setGridTemplate` | Template for grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
 | `setGridPartialPaths` / `addGridPartialPath` | Partial root paths for grid | `array $gridPartialPaths` / `string $gridPartialPath` | `['EXT:backend/Resources/Private/Partials/', 'EXT:container/Resources/Private/Partials/']` |
 | `setGridLayoutPaths` | Layout root paths for grid | `array $gridLayoutPaths` | `[]` |

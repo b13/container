@@ -15,4 +15,5 @@ parameters:
     - %currentWorkingDirectory%/Tests/Functional/Listener/ContentUsedOnPageTest.php
     - %currentWorkingDirectory%/Classes/Listener/RecordSummaryForLocalization.php
     - %currentWorkingDirectory%/Classes/Listener/PageTsConfig.php
+    - %currentWorkingDirectory%/Classes/Listener/PageContentPreviewRendering.php
 
