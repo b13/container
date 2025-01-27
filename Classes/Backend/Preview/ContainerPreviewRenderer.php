@@ -26,7 +26,8 @@ use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridRow;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
 class ContainerPreviewRenderer extends StandardContentPreviewRenderer
 {
@@ -47,16 +48,20 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
      */
     protected $eventDispatcher;
 
+    protected ViewFactoryInterface $viewFactory;
+
     public function __construct(
         Registry $tcaRegistry,
         ContainerFactory $containerFactory,
         NewContentUrlBuilder $newContentUrlBuilder,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        ViewFactoryInterface $viewFactory
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->tcaRegistry = $tcaRegistry;
         $this->containerFactory = $containerFactory;
         $this->newContentUrlBuilder = $newContentUrlBuilder;
+        $this->viewFactory = $viewFactory;
     }
 
     public function renderPageModulePreviewContent(GridColumnItem $item): string
@@ -94,10 +99,12 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
         $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
         $partialRootPaths = $this->tcaRegistry->getGridPartialPaths($record['CType']);
         $layoutRootPaths = $this->tcaRegistry->getGridLayoutPaths($record['CType']);
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setPartialRootPaths($partialRootPaths);
-        $view->setLayoutRootPaths($layoutRootPaths);
-        $view->setTemplatePathAndFilename($gridTemplate);
+
+        $view = $this->viewFactory->create(new ViewFactoryData(
+            partialRootPaths: $partialRootPaths,
+            layoutRootPaths: $layoutRootPaths,
+            templatePathAndFilename: $gridTemplate
+        ));
 
         $view->assign('hideRestrictedColumns', (bool)(BackendUtility::getPagesTSconfig($context->getPageId())['mod.']['web_layout.']['hideRestrictedCols'] ?? false));
         $view->assign('newContentTitle', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement'));
