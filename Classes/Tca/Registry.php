@@ -64,9 +64,6 @@ class Registry implements SingletonInterface
                     $containerConfiguration->getGroup(),
                 ]
             );
-        }
-
-        if ($containerConfiguration->getBackendTemplate() === null || (GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 11) {
             $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['previewRenderer'] = \B13\Container\Backend\Preview\ContainerPreviewRenderer::class;
         }
 
@@ -268,12 +265,10 @@ class Registry implements SingletonInterface
                 }
                 $groupedByGroup[$group][$cType] = $containerConfiguration;
             }
-            if ($containerConfiguration['backendTemplate'] !== null) {
-                $pageTs .= LF . 'mod.web_layout.tt_content.preview {
+            $pageTs .= LF . 'mod.web_layout.tt_content.preview {
 ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
 ';
-            }
         }
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() > 12) {
