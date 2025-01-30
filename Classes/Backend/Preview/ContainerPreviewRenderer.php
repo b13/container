@@ -26,8 +26,9 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
 
     public function renderPageModulePreviewContent(GridColumnItem $item): string
     {
-        $content = parent::renderPageModulePreviewContent($item);
-        $grid = $this->gridRenderer->renderGrid($item->getRecord(), $item->getContext(), $item);
-        return $content . $grid;
+        $record = $item->getRecord();
+        $record['tx_container_grid'] = $this->gridRenderer->renderGrid($record, $item->getContext(), $item);
+        $item->setRecord($record);
+        return parent::renderPageModulePreviewContent($item);
     }
 }
