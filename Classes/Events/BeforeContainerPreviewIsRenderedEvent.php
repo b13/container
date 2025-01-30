@@ -25,9 +25,9 @@ final class BeforeContainerPreviewIsRenderedEvent
 
     protected Grid $grid;
     
-    protected GridColumnItem $item;
+    protected ?GridColumnItem $item;
 
-    public function __construct(Container $container, StandaloneView $view, Grid $grid, GridColumnItem $item)
+    public function __construct(Container $container, StandaloneView $view, Grid $grid, ?GridColumnItem $item)
     {
         $this->container = $container;
         $this->view = $view;
@@ -50,7 +50,7 @@ final class BeforeContainerPreviewIsRenderedEvent
         return $this->grid;
     }
 
-    public function getItem(): GridColumnItem
+    public function getItem(): ?GridColumnItem
     {
         return $this->item;
     }

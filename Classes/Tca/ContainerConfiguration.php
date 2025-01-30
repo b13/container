@@ -42,7 +42,7 @@ class ContainerConfiguration
      */
     protected $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
 
-    protected ?string $backendTemplate = null;
+    protected string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html';
 
     /**
      * @var string
@@ -228,7 +228,7 @@ class ContainerConfiguration
         return $this->icon;
     }
 
-    public function getBackendTemplate(): ?string
+    public function getBackendTemplate(): string
     {
         return $this->backendTemplate;
     }

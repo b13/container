@@ -68,6 +68,11 @@ services:
     tags:
       - name: event.listener
         identifier: 'tx-container-boot-completed'
+  B13\Container\Listener\PageContentPreviewRendering:
+    tags:
+      - name: event.listener
+        identifier: 'tx-container-page-content-preview-rendering'
+        before: 'typo3-backend/fluid-preview/content'
   B13\Container\Command\FixLanguageModeCommand:
     tags:
       - name: 'console.command'
