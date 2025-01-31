@@ -50,6 +50,7 @@ class CommandMapPostProcessingHook
     {
         try {
             $container = $this->containerFactory->buildContainer($uid);
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->startContainerProcess($uid);
             $children = $container->getChildRecords();
             $children = array_reverse($children);
             $cmd = ['tt_content' => []];
@@ -62,6 +63,7 @@ class CommandMapPostProcessingHook
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
             }
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->endContainerProcess($uid);
         } catch (Exception $e) {
             // nothing todo
         }
