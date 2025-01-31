@@ -14,6 +14,7 @@ namespace B13\Container\Hooks\Datahandler;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Service\ContainerService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -50,17 +51,37 @@ class CommandMapPostProcessingHook
     {
         try {
             $container = $this->containerFactory->buildContainer($uid);
-            $children = $container->getChildRecords();
-            $children = array_reverse($children);
-            $cmd = ['tt_content' => []];
-            foreach ($children as $colPos => $record) {
-                $cmd['tt_content'][$record['uid']] = [$command => $language];
+            $last = $dataHandler->copyMappingArray['tt_content'][$uid] ?? null;
+            if ($command === 'copyToLanguage') {
+                $containerId = $last;
+            } else {
+                $containerId = $container->getUid();
             }
-            if (count($cmd['tt_content']) > 0) {
+            $children = $container->getChildRecords();
+            foreach ($children as $colPos => $record) {
+                $cmd = ['tt_content' => [$record['uid'] => [$command => $language]]];
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
                 $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
+                $newId = $localDataHandler->copyMappingArray['tt_content'][$record['uid']] ?? null;
+                if ($newId === null) {
+                    continue;
+                }
+                $cmd = ['tt_content' => [$newId=> [
+                    'move' => [
+                        'target' => -$last,
+                        'action' => 'paste',
+                        'update' => [
+                            'tx_container_parent' => $containerId,
+                        ]
+                    ]
+                ]]];
+                $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->enableLogging = $dataHandler->enableLogging;
+                $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
+                $localDataHandler->process_cmdmap();
+                $last = $newId;
             }
         } catch (Exception $e) {
             // nothing todo

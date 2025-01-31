@@ -64,9 +64,6 @@ class DatamapPreProcessFieldArrayHook
         if ((int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
             return $incomingFieldArray;
         }
-        if (($record['l10n_source'] ?? 0) > 0 && (int)$record['l10n_source'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
-            return $incomingFieldArray;
-        }
         if ((int)($incomingFieldArray['tx_container_parent'] ?? 0) > 0 &&
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$incomingFieldArray['tx_container_parent'])
         ) {
