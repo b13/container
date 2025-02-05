@@ -34,16 +34,16 @@ class FrontendContainerFactory implements SingletonInterface
         if ($uid === null) {
             $record = $cObj->data;
         } else {
-            $records = $cObj->getRecords('tt_content', ['where' => 'uid=' . $uid]);
+            $records = $cObj->getRecords('tt_content', ['uidInList' => $uid, 'pidInList' => 0]);
             if (empty($records)) {
                 throw new Exception('no record ' . $uid, 1734946029);
             }
             $record = $records[0];
         }
-        if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
+        if (!$this->tcaRegistry->isContainerElement($record['CType'] ?? '')) {
             throw new Exception('not a container element with uid ' . $uid, 1734946028);
         }
-        $conf = ['where' => 'tx_container_parent=' . $record['uid'], 'orderBy' => 'sorting'];
+        $conf = ['where' => 'tx_container_parent=' . $record['uid'], 'orderBy' => 'sorting', 'pidInList' => $record['pid']];
         /** @var LanguageAspect $languageAspect */
         $languageAspect = $context->getAspect('language');
         if ($languageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF && $record['l18n_parent'] > 0) {

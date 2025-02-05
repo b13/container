@@ -66,6 +66,29 @@ class DefaultLanguageTest extends AbstractFrontend
      * @test
      * @group frontend
      */
+    public function canRenderContainerFromOtherPage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerFromOtherPage.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/container_from_other_page.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h2>left side (201)</h2><div class="left-children"><h6 class="left-children">child</h6><div id="c2"', $body);
+
+    }
+
+    /**
+     * @test
+     * @group frontend
+     */
     public function childrenAreNotRenderedIfSkipOptionIsSet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
