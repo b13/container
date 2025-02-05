@@ -43,7 +43,7 @@ class FrontendContainerFactory implements SingletonInterface
         if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
             throw new Exception('not a container element with uid ' . $uid, 1734946028);
         }
-        $conf = ['where' => 'tx_container_parent=' . $record['uid']];
+        $conf = ['where' => 'tx_container_parent=' . $record['uid'], 'orderBy' => 'sorting'];
         /** @var LanguageAspect $languageAspect */
         $languageAspect = $context->getAspect('language');
         if ($languageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF && $record['l18n_parent'] > 0) {
