@@ -43,6 +43,29 @@ class DefaultLanguageTest extends AbstractFrontend
      * @test
      * @group frontend
      */
+    public function childrenAreRenderedAsSorted(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerWithTwoChildren.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/container_with_two_children.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h6>first child</h6><h6>second child</h6>', $body);
+    }
+
+    /**
+     * @test
+     * @group frontend
+     */
     public function childrenAreNotRenderedIfSkipOptionIsSet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
