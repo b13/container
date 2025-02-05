@@ -1,0 +1,7 @@
+@import 'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript'
+@import 'EXT:container_example/Configuration/TypoScript/setup.typoscript'
+
+page = PAGE
+page.config.disableAllHeaderCode = 1
+page.20 < tt_content.b13-2cols-with-header-container
+page.20.dataProcessing.200.contentId = 1
