@@ -15,8 +15,13 @@ services:
 
   B13\Container\Tca\Registry:
     public: true
+  B13\Container\Backend\Preview\GridRenderer:
+    arguments:
+      $runtimeCache: '@cache.runtime'
   B13\Container\Backend\Preview\ContainerPreviewRenderer:
     public: true
+    arguments:
+      $runtimeCache: '@cache.runtime'
   B13\Container\Hooks\UsedRecords:
     public: true
   B13\Container\Hooks\Datahandler\CommandMapAfterFinishHook:

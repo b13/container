@@ -26,6 +26,7 @@ use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridRow;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -37,20 +38,23 @@ class GridRenderer
     protected ContainerFactory $containerFactory;
     protected NewContentUrlBuilder $newContentUrlBuilder;
     protected EventDispatcherInterface $eventDispatcher;
+    protected FrontendInterface $runtimeCache;
 
     public function __construct(
         Registry $tcaRegistry,
         ContainerFactory $containerFactory,
         NewContentUrlBuilder $newContentUrlBuilder,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        FrontendInterface $runtimeCache
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->tcaRegistry = $tcaRegistry;
         $this->containerFactory = $containerFactory;
         $this->newContentUrlBuilder = $newContentUrlBuilder;
+        $this->runtimeCache = $runtimeCache;
     }
 
-    public function renderGrid(array $record, PageLayoutContext $context, ?GridColumnItem $parentGridColumnItem = null): string
+    public function renderGrid(array $record, PageLayoutContext $context): string
     {
         $grid = GeneralUtility::makeInstance(Grid::class, $context);
         try {
@@ -96,6 +100,7 @@ class GridRenderer
         $view->assign('grid', $grid);
         $view->assign('containerRecord', $record);
         $view->assign('context', $context);
+        $parentGridColumnItem = $this->runtimeCache->get('tx_container_current_gridColumItem');
         $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view, $grid, $parentGridColumnItem);
         $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
         $rendered = $view->render();
