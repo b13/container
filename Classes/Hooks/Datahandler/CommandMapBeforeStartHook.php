@@ -18,6 +18,7 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CommandMapBeforeStartHook
@@ -301,14 +302,20 @@ class CommandMapBeforeStartHook
 
     protected function logAndUnsetCmd(int $id, string $cmd, string $message, DataHandler $dataHandler): void
     {
+        $recpid = null;
+        $details = null;
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 13) {
+            $recpid = 0;
+            $details = 28;
+        }
         $dataHandler->log(
             'tt_content',
             $id,
             1,
-            0,
+            $recpid,
             1,
             $cmd . ' ' . $message,
-            28
+            $details
         );
         unset($dataHandler->cmdmap['tt_content'][$id][$cmd]);
         if (!empty($dataHandler->cmdmap['tt_content'][$id])) {

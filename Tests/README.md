@@ -20,7 +20,7 @@
     cp Build/LocalConfiguration.php .Build/Web/typo3conf/
     .Build/bin/typo3 extension:setup
     # run php webserver and chromedriver
-    php -S 0.0.0.0:8888 -t .Build/Web/ &
+    php -S 0.0.0.0:8080 -t .Build/Web/ &
     chromedriver --url-base=/wd/hub  --port=9515 &
     # create database with "_at" postfix
     mysql -e 'CREATE DATABASE IF NOT EXISTS foox_at;'
