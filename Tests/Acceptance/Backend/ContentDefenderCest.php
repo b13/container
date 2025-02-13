@@ -106,18 +106,29 @@ class ContentDefenderCest
             $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
             $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
         }
-        $I->waitForText('More options...');
-        if ($typo3Version->getMajorVersion() < 12) {
-            $I->click('.list-group-item-submenu');
-        } else {
-            $I->click('.context-menu-item-submenu');
+        switch ($typo3Version->getMajorVersion()) {
+            case 11:
+                $I->waitForText('More options...');
+                $I->click('.list-group-item-submenu');
+                $I->waitForText('\'Create New\' wizard');
+                $I->click('#contentMenu1 [data-callback-action="newContentWizard"]');
+                break;
+            case 12:
+                $I->waitForText('More options...');
+                $I->click('.context-menu-item-submenu');
+                $I->waitForText('\'Create New\' wizard');
+                $I->click('#contentMenu1');
+                break;
+            default:
+                // v13
+                $I->switchToMainFrame();
+                $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more"]', 5);
+                $I->click('button[data-contextmenu-id="root_more"]', 'typo3-backend-context-menu');
+                $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more_newWizard"]', 5);
+                $I->click('button[data-contextmenu-id="root_more_newWizard"]', 'typo3-backend-context-menu');
+                break;
         }
-        $I->waitForText('\'Create New\' wizard');
-        if ($typo3Version->getMajorVersion() < 12) {
-            $I->click('#contentMenu1 [data-callback-action="newContentWizard"]');
-        } else {
-            $I->click('#contentMenu1');
-        }
+
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
