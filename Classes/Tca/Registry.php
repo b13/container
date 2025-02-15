@@ -65,8 +65,8 @@ class Registry implements SingletonInterface
                 ]
             );
         }
-
         $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['previewRenderer'] = \B13\Container\Backend\Preview\ContainerPreviewRenderer::class;
+
 
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 13) {
             if (!isset($GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions'])) {
@@ -266,12 +266,10 @@ class Registry implements SingletonInterface
                 }
                 $groupedByGroup[$group][$cType] = $containerConfiguration;
             }
-            if ($containerConfiguration['backendTemplate'] !== null) {
-                $pageTs .= LF . 'mod.web_layout.tt_content.preview {
+            $pageTs .= LF . 'mod.web_layout.tt_content.preview {
 ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
 ';
-            }
         }
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if ($typo3Version->getMajorVersion() > 12) {

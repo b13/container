@@ -52,6 +52,7 @@ final class BeforeContainerPreviewIsRenderedEvent
 
     public function getItem(): GridColumnItem
     {
+        trigger_error('gridColumItem property will be removed on next major release', E_USER_DEPRECATED);
         return $this->item;
     }
 }
