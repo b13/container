@@ -484,6 +484,21 @@ class LayoutCest
         $I->see('2-cols-right');
     }
 
+    public function canSeeCustomBackendTemplate(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
+    {
+        $I->click('Page');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithDifferentContainers']);
+        }
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->waitForElement('#tx-container-example-custom-backend-template');
+        $I->see('custom backend template');
+    }
+
     /**
      * @param BackendTester $I
      * @param PageTree $pageTree
