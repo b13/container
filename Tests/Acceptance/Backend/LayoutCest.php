@@ -198,10 +198,14 @@ class LayoutCest
         if ($typo3Version->getMajorVersion() < 12) {
             $I->click('Container');
             // b13-2cols
-            $I->click('2 Column Some Description of the Container');
+            // this also tests container-example eventListener
+            // https://github.com/b13/container-example/commit/df2560e75966a73754b5d4ea091d14727c16f024
+            $I->click('2 Column mod -- Some Description of the Container');
         } else {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
             $I->wait(0.5);
+            // test event listener
+            $I->see('mod -- Some Description of the Container');
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
         }
         $I->switchToContentFrame();
