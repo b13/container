@@ -471,6 +471,63 @@ else
     PHP_FPM_OPTIONS="-d xdebug.mode=debug -d xdebug.start_with_request=yes -d xdebug.client_host=${CONTAINER_HOST} -d xdebug.client_port=${PHP_XDEBUG_PORT} -d memory_limit=256M"
 fi
 
+runPlaywright() {
+       # rm -rf ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/AcceptanceReports
+       # mkdir -p ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance
+                  APACHE_OPTIONS="-e APACHE_RUN_USER=#${HOST_UID} -e APACHE_RUN_SERVERNAME=web -e APACHE_RUN_GROUP=#${HOST_PID} -e APACHE_RUN_DOCROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e PHPFPM_HOST=phpfpm -e PHPFPM_PORT=9000 -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance"
+
+                  #APACHE_OPTIONS="-e APACHE_RUN_USER=#${HOST_UID} -e APACHE_RUN_SERVERNAME=web -e APACHE_RUN_GROUP=#${HOST_PID} -e APACHE_RUN_DOCROOT=${CORE_ROOT}/typo3temp/var/tests/playwright-composer/public -e PHPFPM_HOST=phpfpm -e PHPFPM_PORT=9000"
+                  #if [[ ${PLAYWRIGHT_PREPARE_ONLY} -eq 1 ]]; then
+                      APACHE_OPTIONS="${APACHE_OPTIONS} -p 127.0.0.1::80"
+                  #fi
+
+
+                ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d ${SELENIUM_GRID} --name ac-chrome-${SUFFIX} --network ${NETWORK} --network-alias chrome --tmpfs /dev/shm:rw,nosuid,nodev,noexec ${IMAGE_SELENIUM} >/dev/null
+                if [ ${CONTAINER_BIN} = "docker" ]; then
+                  if [[ "${USE_APACHE}" -eq 1 ]]; then
+                    ${CONTAINER_BIN} run --rm -d --name ac-phpfpm-${SUFFIX} --network ${NETWORK} --network-alias phpfpm --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -e PHPFPM_USER=${HOST_UID} -e PHPFPM_GROUP=${HOST_PID} -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -v ${CORE_ROOT}:${CORE_ROOT} ${IMAGE_PHP} php-fpm ${PHP_FPM_OPTIONS} >/dev/null
+                    ${CONTAINER_BIN} run --rm -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web --add-host "${CONTAINER_HOST}:host-gateway" -v ${CORE_ROOT}:${CORE_ROOT} ${APACHE_OPTIONS} ${IMAGE_APACHE} >/dev/null
+                  else
+                    # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+                    ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e typo3TestingAcceptanceBaseUrl=http://web:8000/ -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
+                  fi
+                else
+                  if [[ "${USE_APACHE}" -eq 1 ]]; then
+                    ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-phpfpm-${SUFFIX} --network ${NETWORK} --network-alias phpfpm ${USERSET} -e PHPFPM_USER=0 -e PHPFPM_GROUP=0 -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -v ${CORE_ROOT}:${CORE_ROOT} ${IMAGE_PHP} php-fpm -R ${PHP_FPM_OPTIONS} >/dev/null
+                    ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web -v ${CORE_ROOT}:${CORE_ROOT} ${APACHE_OPTIONS} ${IMAGE_APACHE} >/dev/null
+                  else
+                    # @todo Remove fallback when TF7 has been dropped (along with TYPO3 v11 support).
+                    ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e typo3TestingAcceptanceBaseUrl=http://web:8000/ -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
+                  fi
+                fi
+                        if [[ "${USE_APACHE}" -eq 1 ]]; then
+                          waitFor web 80
+                        else
+                          waitFor web 8000
+                        fi
+              PLAYWRIGHT_BASE_URL="http://$(${CONTAINER_BIN} port ac-web-${SUFFIX} 80/tcp)/"
+                                echo
+                                echo -en "\033[32m✓\033[0m "
+                                echo "Environment prepared. You can now press Enter to run all tests or run playwright locally with one of the following commands."
+                                echo
+                                echo "  Run with local playwright (headless):"
+                                echo -n "    "
+                                echo "PLAYWRIGHT_BASE_URL=${PLAYWRIGHT_BASE_URL}typo3 ${COMMAND}"
+                                echo
+                                echo "  Open local playwright UI:"
+                                echo -n "    "
+                                echo "PLAYWRIGHT_BASE_URL=${PLAYWRIGHT_BASE_URL}typo3 ${COMMAND_UI}"
+                                echo
+                                echo -e "(Press \033[31mControl-C\033[0m to quit, \033[32mEnter\033[0m to run tests in container)"
+                                # maybe use https://stackoverflow.com/a/58508884/4223467
+                                while read -r _; do
+                                    ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name accessibility-${SUFFIX} -e CHROME_SANDBOX=false -e CI=1 ${IMAGE_PLAYWRIGHT} ${COMMAND}
+                                    SUITE_EXIT_CODE=$?
+                                    echo
+                                    echo -e "(Press \033[31mControl-C\033[0m to quit, \033[32mEnter\033[0m to re-run tests in container)"
+                                done </dev/tty
+}
+
 # Suite execution
 case ${TEST_SUITE} in
     acceptance)
@@ -675,6 +732,19 @@ case ${TEST_SUITE} in
             loadHelp
             echo "${HELP}"
             exit 0
+        ;;
+    e2e)
+        PLAYWRIGHT_PROJECT="--project e2e"
+        PLAYWRIGHT_PREPARE_ONLY=0
+        #echo "${CONTAINER_BIN}";
+        runPlaywright
+        #echo "foo";
+        #ls .Build/;
+        ;;
+    e2e-prepare)
+        PLAYWRIGHT_PROJECT="--project e2e"
+        PLAYWRIGHT_PREPARE_ONLY=1
+        runPlaywright
         ;;
     lint)
         COMMAND='php -v | grep '^PHP'; find . -name \\*.php ! -path "./.Build/\\*" -print0 | xargs -0 -n1 -P4 php -dxdebug.mode=off -l >/dev/null'
