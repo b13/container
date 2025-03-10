@@ -94,6 +94,11 @@ class ContainerConfiguration
                 'EXT:backend/Resources/Private/Partials/',
                 'EXT:container/Resources/Private/Partials11/',
             ];
+        } elseif ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12) {
+            $this->gridPartialPaths = [
+                'EXT:backend/Resources/Private/Partials/',
+                'EXT:container/Resources/Private/Partials12/',
+            ];
         }
     }
 
