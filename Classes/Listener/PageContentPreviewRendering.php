@@ -29,8 +29,12 @@ class PageContentPreviewRendering
 
     public function __invoke(PageContentPreviewRenderingEvent $event): void
     {
+        if ($event->getTable() !== 'tt_content') {
+            return;
+        }
+
         $record = $event->getRecord();
-        if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
+        if (!$this->tcaRegistry->isContainerElement( (string) $record['CType'])) {
             return;
         }
         $record['tx_container_grid'] = $this->gridRenderer->renderGrid($record, $event->getPageLayoutContext());
