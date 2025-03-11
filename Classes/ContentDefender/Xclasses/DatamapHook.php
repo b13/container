@@ -18,6 +18,7 @@ use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook;
 use IchHabRecht\ContentDefender\Repository\ContentRepository;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -60,14 +61,20 @@ class DatamapHook extends DatamapDataHandlerHook
 
                     if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId($containerId, (int)$values['colPos'])) {
                         unset($dataHandler->datamap['tt_content'][$id]);
+                        $recpid = null;
+                        $detailsNumber = null;
+                        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 13) {
+                            $recpid = 0;
+                            $detailsNumber = 28;
+                        }
                         $dataHandler->log(
                             'tt_content',
                             $id,
                             1,
-                            0,
+                            $recpid,
                             1,
                             'The command couldn\'t be executed due to reached maxitems configuration',
-                            28
+                            $detailsNumber
                         );
                     }
                 }

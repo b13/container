@@ -303,10 +303,10 @@ class CommandMapBeforeStartHook
     protected function logAndUnsetCmd(int $id, string $cmd, string $message, DataHandler $dataHandler): void
     {
         $recpid = null;
-        $details = null;
+        $detailsNumber = null;
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 13) {
             $recpid = 0;
-            $details = 28;
+            $detailsNumber = 28;
         }
         $dataHandler->log(
             'tt_content',
@@ -315,7 +315,7 @@ class CommandMapBeforeStartHook
             $recpid,
             1,
             $cmd . ' ' . $message,
-            $details
+            $detailsNumber
         );
         unset($dataHandler->cmdmap['tt_content'][$id][$cmd]);
         if (!empty($dataHandler->cmdmap['tt_content'][$id])) {
