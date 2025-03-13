@@ -9,7 +9,6 @@ parameters:
     - %currentWorkingDirectory%/Tests
 
   excludePaths:
-    - %currentWorkingDirectory%/Classes/Hooks/TableConfigurationPostProcessing.php
     - %currentWorkingDirectory%/Classes/Hooks/UsedRecords.php
     - %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
     - %currentWorkingDirectory%/Tests/Unit/Hooks/UsedRecordsTest.php
