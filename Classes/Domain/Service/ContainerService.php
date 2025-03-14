@@ -71,8 +71,8 @@ class ContainerService implements SingletonInterface
 
     public function getAfterContainerElementTarget(Container $container): int
     {
-        $target = $this->getAfterContainerRecord($container);
+        // $target = $this->getAfterContainerRecord($container);
 
-        return -$target['uid'];
+        return -$this->containerFactory->buildContainer((int)$lastChild['uid']);
     }
 }
