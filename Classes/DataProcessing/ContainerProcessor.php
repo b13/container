@@ -51,7 +51,7 @@ class ContainerProcessor implements DataProcessorInterface
         }
         $contentId = null;
         if ($processorConfiguration['contentId.'] ?? false) {
-            $contentId = (int)$cObj->stdWrap($processorConfiguration['contentId'], $processorConfiguration['contentId.']);
+            $contentId = (int)$cObj->stdWrap($processorConfiguration['contentId'] ?? '', $processorConfiguration['contentId.']);
         } elseif ($processorConfiguration['contentId'] ?? false) {
             $contentId = (int)$processorConfiguration['contentId'];
         }
