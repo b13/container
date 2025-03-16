@@ -56,6 +56,7 @@ class DatamapPreProcessFieldArrayHook
 
     protected function newElementAfterContainer(array $incomingFieldArray): array
     {
+       # var_dump($incomingFieldArray['pid']);
         $record = $this->database->fetchOneRecord(-(int)$incomingFieldArray['pid']);
         if ($record === null) {
             // new elements in container have already correct target
@@ -75,7 +76,10 @@ class DatamapPreProcessFieldArrayHook
         try {
             $container = $this->containerFactory->buildContainer((int)$record['uid']);
             if ($container->getLanguage() === 0 || !$container->isConnectedMode()) {
-                $incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
+                #$incomingFieldArray['pid'] = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $incomingFieldArray['colPos']);
+                #$incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
+                #  var_dump('datamp ' . $incomingFieldArray['pid']);
+                #$incomingFieldArray['pid'] = -2;
             }
         } catch (Exception $e) {
         }
@@ -116,6 +120,8 @@ class DatamapPreProcessFieldArrayHook
 
     public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, string $table, $id, DataHandler $dataHandler): void
     {
+       # return;
+        #var_dump($dataHandler->cmdmap);
         if ($table !== 'tt_content') {
             return;
         }

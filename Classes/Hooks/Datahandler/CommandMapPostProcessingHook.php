@@ -27,9 +27,12 @@ class CommandMapPostProcessingHook
      */
     protected $containerFactory;
 
-    public function __construct(ContainerFactory $containerFactory)
+    protected ContainerService $containerService;
+
+    public function __construct(ContainerFactory $containerFactory, ContainerService $containerService)
     {
         $this->containerFactory = $containerFactory;
+        $this->containerService = $containerService;
     }
 
     public function processCmdmap_postProcess(string $command, string $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
@@ -54,6 +57,19 @@ class CommandMapPostProcessingHook
             $last = $dataHandler->copyMappingArray['tt_content'][$uid] ?? null;
             if ($command === 'copyToLanguage') {
                 $containerId = $last;
+                $pos = $this->containerService->getAfterContainerElementTarget($container);
+                // move next record after last child
+                $cmd = ['tt_content' => [$last => [
+                    'move' => [
+                        'target' => $pos,
+                        'action' => 'paste',
+                        'update' => [],
+                    ]
+                ]]];
+                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                 $localDataHandler->enableLogging = $dataHandler->enableLogging;
+                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
+                 $localDataHandler->process_cmdmap();
             } else {
                 $containerId = $container->getUid();
             }

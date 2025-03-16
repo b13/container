@@ -46,7 +46,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function copyContainerToLanguageCopiesChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/copy_container_to_language.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyContainerToLanguageCopiesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -65,7 +65,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function localizeContainerLocalizeChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerLocalizeChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -101,7 +101,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/copy_to_language_container_from_non_default_language.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyToLanguageContainerFromNonDefaultLanguageLocalizeChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 21 => [
@@ -119,7 +119,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenWhenCopiedFromFreeMode(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/copy_to_language_container_from_non_default_language_free_mode.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenWhenCopiedFromFreeMode.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
