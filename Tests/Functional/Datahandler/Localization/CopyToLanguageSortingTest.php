@@ -54,7 +54,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
      */
     public function localizeChildAtTopOfContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/localize_child_at_top.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAtTopOfContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [

@@ -27,7 +27,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function copyChildToLanguageFixContainerParent(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/copy_child_to_language.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyChildToLanguageFixContainerParent.csv');
         $cmdmap = [
             'tt_content' => [
                 72 => [
