@@ -128,7 +128,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function cannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElement(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterIntoContainer.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElement.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
