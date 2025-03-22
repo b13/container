@@ -12,6 +12,7 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -22,9 +23,12 @@ class CommandMapAfterFinishHook
      */
     protected $database;
 
-    public function __construct(Database $database)
+    protected FrontendInterface $runtimeCache;
+
+    public function __construct(Database $database, FrontendInterface $runtimeCache)
     {
         $this->database = $database;
+        $this->runtimeCache = $runtimeCache;
     }
 
     public function processCmdmap_afterFinish(DataHandler $dataHandler): void
@@ -85,5 +89,11 @@ class CommandMapAfterFinishHook
                 $localDataHandler->process_datamap();
             }
         }
+        /** @var DatahandlerProcess $datahandlerProcess */
+        $datahandlerProcess = $this->runtimeCache->get('tx-container-datahander-process');
+        foreach ($dataHandler->cmdmap['tt_content'] ?? [] as $id => $cmd) {
+            $datahandlerProcess->stopCommand($id);
+        }
+        $this->runtimeCache->set('tx-container-datahander-process', $datahandlerProcess);
     }
 }

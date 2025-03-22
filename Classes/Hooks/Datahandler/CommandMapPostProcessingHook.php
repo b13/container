@@ -16,6 +16,7 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -29,10 +30,13 @@ class CommandMapPostProcessingHook
 
     protected ContainerService $containerService;
 
-    public function __construct(ContainerFactory $containerFactory, ContainerService $containerService)
+    protected FrontendInterface $runtimeCache;
+
+    public function __construct(ContainerFactory $containerFactory, ContainerService $containerService, FrontendInterface $runtimeCache)
     {
         $this->containerFactory = $containerFactory;
         $this->containerService = $containerService;
+        $this->runtimeCache = $runtimeCache;
     }
 
     public function processCmdmap_postProcess(string $command, string $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void

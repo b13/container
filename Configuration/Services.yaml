@@ -26,14 +26,24 @@ services:
     public: true
   B13\Container\Hooks\Datahandler\CommandMapAfterFinishHook:
     public: true
+    arguments:
+      $runtimeCache: '@cache.runtime'
   B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook:
     public: true
+    arguments:
+      $runtimeCache: '@cache.runtime'
   B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook:
     public: true
+    arguments:
+      $runtimeCache: '@cache.runtime'
   B13\Container\Hooks\Datahandler\DatamapBeforeStartHook:
     public: true
+    arguments:
+      $runtimeCache: '@cache.runtime'
   B13\Container\Hooks\Datahandler\DatamapPreProcessFieldArrayHook:
     public: true
+    arguments:
+      $runtimeCache: '@cache.runtime'
   B13\Container\Hooks\Datahandler\DeleteHook:
     public: true
   B13\Container\ContentDefender\Hooks\ColumnConfigurationManipulationHook:

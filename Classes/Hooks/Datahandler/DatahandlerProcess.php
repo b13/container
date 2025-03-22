@@ -17,6 +17,33 @@ use TYPO3\CMS\Core\SingletonInterface;
 class DatahandlerProcess implements SingletonInterface
 {
     protected $containerInProcess = [];
+    protected array $commands = [];
+
+    public function startCommand(int $id, array $command): void
+    {
+        if (isset($this->commands[$id])) {
+            throw new \RuntimeException('already started');
+        }
+        $this->commands[$id] = $command;
+    }
+
+    public function stopCommand(int $id): void
+    {
+        if (!isset($this->commands[$id])) {
+            throw new \RuntimeException('not started');
+        }
+        unset($this->commands[$id]);
+    }
+
+    public function getCommand(int $id): ?string
+    {
+        return $this->commands[$id] ?? null;
+    }
+
+    public function isRunning(): bool
+    {
+        return !empty($this->commands);
+    }
 
     public function isContainerInProcess(int $containerId): bool
     {

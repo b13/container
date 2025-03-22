@@ -16,6 +16,7 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -42,21 +43,24 @@ class DatamapPreProcessFieldArrayHook
      */
     protected $tcaRegistry;
 
+    protected FrontendInterface $runtimeCache;
+
     public function __construct(
         ContainerFactory $containerFactory,
         Database $database,
         Registry $tcaRegistry,
-        ContainerService $containerService
+        ContainerService $containerService,
+        FrontendInterface $runtimeCache
     ) {
         $this->containerFactory = $containerFactory;
         $this->database = $database;
         $this->tcaRegistry = $tcaRegistry;
         $this->containerService = $containerService;
+        $this->runtimeCache = $runtimeCache;
     }
 
     protected function newElementAfterContainer(array $incomingFieldArray): array
     {
-       # var_dump($incomingFieldArray['pid']);
         $record = $this->database->fetchOneRecord(-(int)$incomingFieldArray['pid']);
         if ($record === null) {
             // new elements in container have already correct target
@@ -76,10 +80,14 @@ class DatamapPreProcessFieldArrayHook
         try {
             $container = $this->containerFactory->buildContainer((int)$record['uid']);
             if ($container->getLanguage() === 0 || !$container->isConnectedMode()) {
-                #$incomingFieldArray['pid'] = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $incomingFieldArray['colPos']);
-                #$incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
-                #  var_dump('datamp ' . $incomingFieldArray['pid']);
-                #$incomingFieldArray['pid'] = -2;
+                if ($this->runtimeCache->has('tx-container-datahander-process')) {
+                    /** @var DatahandlerProcess $datahandlerProcess */
+                    $datahandlerProcess = $this->runtimeCache->get('tx-container-datahander-process');
+                    if ($datahandlerProcess->isRunning()) {
+                        return $incomingFieldArray;
+                    }
+                }
+                $incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
             }
         } catch (Exception $e) {
         }
@@ -120,8 +128,6 @@ class DatamapPreProcessFieldArrayHook
 
     public function processDatamap_preProcessFieldArray(array &$incomingFieldArray, string $table, $id, DataHandler $dataHandler): void
     {
-       # return;
-        #var_dump($dataHandler->cmdmap);
         if ($table !== 'tt_content') {
             return;
         }

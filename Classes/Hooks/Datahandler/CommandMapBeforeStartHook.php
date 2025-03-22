@@ -17,6 +17,7 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,16 +44,20 @@ class CommandMapBeforeStartHook
      */
     protected $containerService;
 
+    protected FrontendInterface $runtimeCache;
+
     public function __construct(
         ContainerFactory $containerFactory,
         Registry $tcaRegistry,
         Database $database,
-        ContainerService $containerService
+        ContainerService $containerService,
+        FrontendInterface $runtimeCache
     ) {
         $this->containerFactory = $containerFactory;
         $this->tcaRegistry = $tcaRegistry;
         $this->database = $database;
         $this->containerService = $containerService;
+        $this->runtimeCache = $runtimeCache;
     }
 
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
@@ -65,6 +70,15 @@ class CommandMapBeforeStartHook
         // but this leeds to wrong sorting in page context (e.g. List-Module)
         $dataHandler->cmdmap = $this->rewriteCommandMapTargetForTopAtContainer($dataHandler->cmdmap);
         $dataHandler->cmdmap = $this->rewriteCommandMapTargetForAfterContainer($dataHandler->cmdmap);
+        if ($this->runtimeCache->has('tx-container-datahander-process')) {
+            $datahandlerProcess = $this->runtimeCache->get('tx-container-datahander-process');
+        } else {
+            $datahandlerProcess = new DataHandlerProcess();
+        }
+        foreach ($dataHandler->cmdmap['tt_content'] ?? [] as $id => $cmd) {
+            $datahandlerProcess->startCommand($id, $cmd);
+        }
+        $this->runtimeCache->set('tx-container-datahander-process', $datahandlerProcess);
     }
 
     protected function unsetInconsistentCopyOrMoveCommands(DataHandler $dataHandler): void
@@ -233,7 +247,6 @@ class CommandMapBeforeStartHook
                                     'update' => [
                                         'colPos' => (int)$targetRecordForOperation['colPos'],
                                         'sys_language_uid' => $targetRecordForOperation['sys_language_uid'],
-
                                     ],
                                 ],
                             ];

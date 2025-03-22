@@ -16,6 +16,7 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 class DatamapBeforeStartHook
@@ -40,16 +41,20 @@ class DatamapBeforeStartHook
      */
     protected $tcaRegistry;
 
+    protected FrontendInterface $runtimeCache;
+
     public function __construct(
         ContainerFactory $containerFactory,
         Database $database,
         Registry $tcaRegistry,
-        ContainerService $containerService
+        ContainerService $containerService,
+        FrontendInterface $runtimeCache
     ) {
         $this->containerFactory = $containerFactory;
         $this->database = $database;
         $this->tcaRegistry = $tcaRegistry;
         $this->containerService = $containerService;
+        $this->runtimeCache = $runtimeCache;
     }
 
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
