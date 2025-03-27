@@ -83,7 +83,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function localizeContainerFromNonDefaultLanguageLocalizeChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_container_from_non_default_language.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerFromNonDefaultLanguageLocalizeChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 21 => [
@@ -137,7 +137,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function localizeChildFailedIfContainerIsInFreeMode(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_child_failed_if_container_is_in_free_mode.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeChildFailedIfContainerIsInFreeMode.csv');
         $cmdmap = [
             'tt_content' => [
                 72 => [
@@ -156,7 +156,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function localizeChildFailedIfContainerIsNotTranslated(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_child_failed_if_container_is_not_translated.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeChildFailedIfContainerIsNotTranslated.csv');
         $cmdmap = [
             'tt_content' => [
                 72 => [
@@ -175,7 +175,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function localizeChildKeepsRelationsIfContainerIsInConnectedMode(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_child_keeps_relation_if_container_is_in_connected_mode.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeChildKeepsRelationsIfContainerIsInConnectedMode.csv');
         $cmdmap = [
             'tt_content' => [
                 82 => [
@@ -215,7 +215,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function localizeTwoContainerKeepsParentIndependedOnOrder(array $cmdmap, string $dataset): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_container_keeps_parent_indepented_on_order.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeTwoContainerKeepsParentIndependedOnOrder.csv');
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeTwoContainerKeepsParentIndependedOnOrder' . $dataset . 'Result.csv');
@@ -248,7 +248,7 @@ class LocalizeTest extends AbstractDatahandler
      */
     public function localizeWithCopyTwoContainerChangeParentIndependedOnOrder(array $cmdmap, string $dataset): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_container_keeps_parent_indepented_on_order.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeWithCopyTwoContainerChangeParentIndependedOnOrder.csv');
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeWithCopyTwoContainerChangeParentIndependedOnOrder' . $dataset . 'Result.csv');

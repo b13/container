@@ -5,6 +5,7 @@
 "tt_content"
 ,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent","l10n_source"
 ,81,1,"b13-2cols-with-header-container","container-language-1",256,0,0,0,0,0
-,82,1,"header","header-language-1",128,0,200,81,0,0
-,83,1,"b13-2cols-with-header-container","container-language-1",256,1,0,0,81,81
-,84,1,"header","[Translate to german:] header-language-1",192,1,200,81,82,82
+,82,1,"header","header-language-1",384,0,200,81,0,0
+,83,1,"b13-2cols-with-header-container","container-language-1",512,1,0,0,81,81
+,84,1,"header","[Translate to german:] header-language-1",448,1,200,81,82,82
+# NOTE localized container childrens sorting is after localized container
