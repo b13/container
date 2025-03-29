@@ -109,11 +109,12 @@ class CommandMapHook extends CmdmapDataHandlerHook
         ) {
             return true;
         }
-        if (isset($this->mapping[$record['uid']])) {
+        $recordOrigUid = (int)($record['uid'] ?? 0);
+        if (isset($this->mapping[$recordOrigUid])) {
             $columnConfiguration = $this->containerColumnConfigurationService->override(
                 $columnConfiguration,
-                $this->mapping[$record['uid']]['containerId'],
-                $this->mapping[$record['uid']]['colPos']
+                $this->mapping[$recordOrigUid]['containerId'],
+                $this->mapping[$recordOrigUid]['colPos']
             );
         }
         return parent::isRecordAllowedByRestriction($columnConfiguration, $record);
