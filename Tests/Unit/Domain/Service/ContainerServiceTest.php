@@ -28,7 +28,7 @@ class ContainerServiceTest extends UnitTestCase
     /**
      * @return array
      */
-    public function setupDataProvider()
+    public static function setupDataProvider()
     {
         return [
             [

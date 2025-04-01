@@ -151,11 +151,12 @@ Options:
             - 8.3: use PHP 8.3
             - 8.4: use PHP 8.4
 
-    -t <11|12|13>
+    -t <11|12|13|14>
         Specifies the TYPO3 Core version to be used - Only with -s composerInstall|phpstan|acceptance
           - 11: Use TYPO3 v11.5
           - 12 (default): Use TYPO3 v12.4
           - 13: Use TYPO3 v13.x
+          - 14: Use TYPO3 14.0.x-dev
 
     -a <mysqli|pdo_mysql>
         Only with -s functional|functionalDeprecated
@@ -337,7 +338,7 @@ while getopts "a:b:s:d:i:t:p:xy:o:nhug" OPT; do
             ;;
         t)
             TYPO3=${OPTARG}
-            if ! [[ ${TYPO3} =~ ^(11|12|13)$ ]]; then
+            if ! [[ ${TYPO3} =~ ^(11|12|13|14)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             # @todo Remove USE_APACHE option when TF7 has been dropped (along with TYPO3 v11 support).
@@ -598,10 +599,13 @@ case ${TEST_SUITE} in
               composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
-              composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^13.4 typo3/testing-framework:^8.2 phpunit/phpunit:^10.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
+              composer prepare-tests
+            elif [ ${TYPO3} -eq 14 ]; then
+              composer require typo3/cms-core:14.0.x-dev --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
-              composer require typo3/cms-core:^12.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^12.4 typo3/testing-framework:^8.2 phpunit/phpunit:^10.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             fi
           "
@@ -618,6 +622,9 @@ case ${TEST_SUITE} in
             php -v | grep '^PHP';
             if [ ${TYPO3} -eq 11 ]; then
               composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
+              composer prepare-tests
+            elif [ ${TYPO3} -eq 14 ]; then
+              composer require typo3/cms-core:14.0.x-dev --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction

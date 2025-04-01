@@ -37,35 +37,45 @@ parameters:
 			path: ../Tests/Functional/Datahandler/AbstractDatahandler.php
 
 		-
-			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 5 parameters, 2 required\\.$#"
+			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 2 parameters, 5 required\\.$#"
 			count: 1
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
 		-
-			message: "#^Attribute class TYPO3\\\\CMS\\\\Install\\\\Attribute\\\\UpgradeWizard does not exist\\.$#"
-			count: 1
-			path: ../Classes/Updates/ContainerDeleteChildrenWithWrongPid.php
+			message: "#^Call to method assign\\(\\) on an unknown class TYPO3\\\\CMS\\\\Fluid\\\\View\\\\StandaloneView\\.$#"
+			count: 8
+			path: ../Classes/Backend/Preview/GridRenderer.php
 
 		-
-			message: "#^Attribute class TYPO3\\\\CMS\\\\Install\\\\Attribute\\\\UpgradeWizard does not exist\\.$#"
-			count: 1
-			path: ../Classes/Updates/ContainerMigrateSorting.php
-
-		-
-			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\View\\\\ViewFactoryInterface not found\\.$#"
+			message: "#^Call to method render\\(\\) on an unknown class TYPO3\\\\CMS\\\\Fluid\\\\View\\\\StandaloneView\\.$#"
 			count: 1
 			path: ../Classes/Backend/Preview/GridRenderer.php
 
 		-
-			message: "#^Instantiated class TYPO3\\\\CMS\\\\Core\\\\View\\\\ViewFactoryData not found\\.$#"
+			message: "#^Call to method setLayoutRootPaths\\(\\) on an unknown class TYPO3\\\\CMS\\\\Fluid\\\\View\\\\StandaloneView\\.$#"
 			count: 1
 			path: ../Classes/Backend/Preview/GridRenderer.php
 
 		-
-			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:tryFrom\\(\\)\\.$#"
+			message: "#^Call to method setPartialRootPaths\\(\\) on an unknown class TYPO3\\\\CMS\\\\Fluid\\\\View\\\\StandaloneView\\.$#"
+			count: 1
+			path: ../Classes/Backend/Preview/GridRenderer.php
+
+		-
+			message: "#^Call to method setTemplatePathAndFilename\\(\\) on an unknown class TYPO3\\\\CMS\\\\Fluid\\\\View\\\\StandaloneView\\.$#"
+			count: 1
+			path: ../Classes/Backend/Preview/GridRenderer.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Fluid\\\\View\\\\StandaloneView not found\\.$#"
+			count: 1
+			path: ../Classes/Backend/Preview/GridRenderer.php
+
+		-
+			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:cast\\(\\)\\.$#"
 			count: 1
 			path: ../Classes/Domain/Factory/ContainerFactory.php
 
 		-
-			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:tryFrom\\(\\)\\.$#"
+			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:cast\\(\\)\\.$#"
 			count: 2
 			path: ../Classes/Domain/Factory/PageView/Backend/ContentStorage.php
