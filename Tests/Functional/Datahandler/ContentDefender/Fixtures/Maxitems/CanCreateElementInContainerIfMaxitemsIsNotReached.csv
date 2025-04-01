@@ -2,5 +2,5 @@
 ,"uid","pid"
 ,1,0
 "tt_content"
-,"uid","pid","colPos","CType"
-,1,1,0,"b13-2cols-with-header-container"
+,"uid","pid","colPos","CType","sorting"
+,1,1,0,"b13-2cols-with-header-container",256

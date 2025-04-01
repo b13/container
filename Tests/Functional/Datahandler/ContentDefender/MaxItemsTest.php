@@ -154,9 +154,9 @@ class MaxItemsTest extends AbstractContentDefender
         $datamap = [
             'tt_content' => [
                 $newId => [
-                    'colPos' => 202,
+                    'colPos' => '202',
                     'tx_container_parent' => 1,
-                    'pid' => 1,
+                    'pid' => -1,
                     'sys_language_uid' => 0,
                     'header' => 'my-new-header',
                 ],

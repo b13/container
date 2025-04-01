@@ -21,7 +21,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function deleteContainerDeleteChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -39,7 +39,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function moveContainerToOtherPageMovesChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -65,7 +65,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyContainerCopiesChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerCopiesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -89,7 +89,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyContainerToOtherLanguageCopiesChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -114,7 +114,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyContainerToOtherLanguageCopiesNestedChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesNestedChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 55 => [
@@ -139,7 +139,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function moveContainerToOtherLanguageMovesChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
