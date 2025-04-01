@@ -15,6 +15,8 @@ namespace B13\Container\Domain\Factory\PageView\Backend;
 use B13\Container\Domain\Factory\Database;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
 
 class ContentStorage
@@ -85,8 +87,14 @@ class ContentStorage
         $filtered = [];
         foreach ($records as $row) {
             BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
-            if ($row && !VersionState::cast($row['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
-                $filtered[] = $row;
+            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 12) {
+                if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
+                    $filtered[] = $row;
+                }
+            } else {
+                if ($row && !VersionState::cast($row['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
+                    $filtered[] = $row;
+                }
             }
         }
         return $filtered;
@@ -95,8 +103,14 @@ class ContentStorage
     public function containerRecordWorkspaceOverlay(array $record): ?array
     {
         BackendUtility::workspaceOL('tt_content', $record, $this->workspaceId, false);
-        if ($record && !VersionState::cast($record['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
-            return $record;
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 12) {
+            if ($record && VersionState::tryFrom($record['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
+                return $record;
+            }
+        } else {
+            if ($record && !VersionState::cast($record['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
+                return $record;
+            }
         }
         return null;
     }
