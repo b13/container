@@ -98,7 +98,7 @@ class ContainerTest extends AbstractDatahandler
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 0,
+                            'sys_language_uid' => 1,
                         ],
                     ],
                 ],
@@ -107,6 +107,31 @@ class ContainerTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildrenResult.csv');
+    }
+
+    /**
+     * @test
+     */
+    public function copyContainerToDefaultLanguage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToDefaultLanguage.csv');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToDefaultLanguageResult.csv');
     }
 
     /**
@@ -148,7 +173,7 @@ class ContainerTest extends AbstractDatahandler
                         'target' => 3,
                         'update' => [
                             'colPos' => 0,
-                            'sys_language_uid' => 0,
+                            'sys_language_uid' => 1,
 
                         ],
                     ],
@@ -158,5 +183,31 @@ class ContainerTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageMovesChildrenResult.csv');
+    }
+
+    /**
+     * @test
+     */
+    public function moveContainerToDefaultLanguage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToDefaultLanguage.csv');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToDefaultLanguageResult.csv');
     }
 }
