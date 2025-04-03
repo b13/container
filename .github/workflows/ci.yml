@@ -26,6 +26,10 @@ jobs:
             php: '8.2'
           - TYPO3: '13'
             php: '8.3'
+          - TYPO3: '14'
+            php: '8.2'
+          - TYPO3: '14'
+            php: '8.3'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,9 +54,11 @@ jobs:
 
       - name: Functional Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
+        if: matrix.TYPO3 != '14'
 
       - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
+        if: matrix.TYPO3 != '14'
 
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v4

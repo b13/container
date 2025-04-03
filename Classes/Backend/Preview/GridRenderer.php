@@ -18,17 +18,20 @@ use B13\Container\Backend\Service\NewContentUrlBuilder;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Events\BeforeContainerPreviewIsRenderedEvent;
+use B13\Container\Events\BeforeContainerPreviewIsRenderedEventV12;
 use B13\Container\Tca\Registry;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
-use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridRow;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class GridRenderer
@@ -86,10 +89,20 @@ class GridRenderer
         $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
         $partialRootPaths = $this->tcaRegistry->getGridPartialPaths($record['CType']);
         $layoutRootPaths = $this->tcaRegistry->getGridLayoutPaths($record['CType']);
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setPartialRootPaths($partialRootPaths);
-        $view->setLayoutRootPaths($layoutRootPaths);
-        $view->setTemplatePathAndFilename($gridTemplate);
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() <= 13) {
+            $view = GeneralUtility::makeInstance(StandaloneView::class);
+            $view->setPartialRootPaths($partialRootPaths);
+            $view->setLayoutRootPaths($layoutRootPaths);
+            $view->setTemplatePathAndFilename($gridTemplate);
+        } else {
+            $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
+            $view = $viewFactory->create(new ViewFactoryData(
+                null,
+                $partialRootPaths,
+                $layoutRootPaths,
+                $gridTemplate
+            ));
+        }
 
         $view->assign('hideRestrictedColumns', (bool)(BackendUtility::getPagesTSconfig($context->getPageId())['mod.']['web_layout.']['hideRestrictedCols'] ?? false));
         $view->assign('newContentTitle', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement'));
@@ -101,8 +114,12 @@ class GridRenderer
         $view->assign('containerRecord', $record);
         $view->assign('context', $context);
         $parentGridColumnItem = $this->runtimeCache->get('tx_container_current_gridColumItem');
-        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view, $grid, $parentGridColumnItem);
-        $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() <= 13) {
+            // cannot be used for v14 / dev-main branch
+            // needs adaption in next major version
+            $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view, $grid, $parentGridColumnItem);
+            $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
+        }
         $rendered = $view->render();
         return $rendered;
     }
