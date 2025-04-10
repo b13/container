@@ -3,8 +3,8 @@
 ,1,0,"page-1"
 ,2,0,"page-1-language-1"
 "tt_content"
-,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent","l10n_source"
-,1,1,"b13-2cols-with-header-container","container-default",256,0,0,0,0,0
-,2,1,"header","header-default",128,0,200,1,0,0
-,21,1,"b13-2cols-with-header-container","container-language-1",256,1,0,0,1,0
-,22,1,"header","header-language-1",128,1,200,1,2,0
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent","l10n_source","deleted"
+,1,1,"b13-2cols-with-header-container","container-default",256,0,0,0,0,0,1
+,2,1,"header","header-default",512,0,200,1,0,0,1
+,21,1,"b13-2cols-with-header-container","container-language-1",384,1,0,0,1,0,1
+,22,1,"header","header-language-1",768,1,200,1,2,0,1

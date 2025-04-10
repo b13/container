@@ -1,0 +1,9 @@
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent"
+,1,1,"b13-2cols-with-header-container","container-default",128,0,0,0
+,2,1,"header","header-default",256,0,200,1
+,5,1,"header","second element",512,0,200,1
+,3,1,"header","left-side-default",786,0,201,1
+,4,1,"header","outside",1024,0,0,0
+,91,1,"b13-2cols-with-header-container","second-container",2048,0,0,0
+,92,1,"header","child-in-second-container",4096,0,200,91

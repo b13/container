@@ -21,7 +21,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function deleteContainerDeleteTranslatedChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/delete_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteTranslatedChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -39,7 +39,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function moveContainerToOtherPageMovesChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/move_container_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [

@@ -43,7 +43,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
      */
     public function localizeKeepsSorting(array $cmdmap, string $dataset): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/localize_containers.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeKeepsSorting.csv');
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeKeepsSorting' . $dataset . 'Result.csv');
@@ -54,7 +54,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
      */
     public function localizeChildAtTopOfContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/localize_child_at_top.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAtTopOfContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
