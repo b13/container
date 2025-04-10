@@ -209,7 +209,7 @@ class DefaultLanguageTest extends AbstractContentDefender
      */
     public function copyChildFromOtherContainerIntoColposWhereTargetElementInOtherColposHasRestrictionIsAllowd(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/copy_child_from_other_container_into_colpos_where_target_element_in_other_colpos_has_restriction.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyChildFromOtherContainerIntoColposWhereTargetElementInOtherColposHasRestrictionIsAllowed.csv');
         $cmdmap = [
             'tt_content' => [
                 73 => [

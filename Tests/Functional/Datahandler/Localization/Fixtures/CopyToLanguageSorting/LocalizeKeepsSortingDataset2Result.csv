@@ -10,7 +10,7 @@
 ,4,1,"b13-2cols-with-header-container","container-2",1024,0,0,0,0
 ,5,1,"header","child-2-1",2048,0,200,4,0
 ,6,1,"b13-2cols-with-header-container","[Translate to german:] container-1",768,1,0,0,0
-,8,1,"header","[Translate to german:] child-1-2",880,1,200,6,0
 ,7,1,"header","[Translate to german:] child-1-1",832,1,200,6,0
-,9,1,"b13-2cols-with-header-container","[Translate to german:] container-2",952,1,0,0,0
-,10,1,"header","[Translate to german:] child-2-1",970,1,200,9,0
+,8,1,"header","[Translate to german:] child-1-2",880,1,200,6,0
+,9,1,"b13-2cols-with-header-container","[Translate to german:] container-2",2304,1,0,0,0
+,10,1,"header","[Translate to german:] child-2-1",2432,1,200,9,0
