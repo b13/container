@@ -56,17 +56,12 @@ class DatamapPreProcessFieldArrayHook
 
     protected function newElementAfterContainer(array $incomingFieldArray): array
     {
+        if (isset($incomingFieldArray['sorting'])) {
+            return $incomingFieldArray;
+        }
         $record = $this->database->fetchOneRecord(-(int)$incomingFieldArray['pid']);
         if ($record === null) {
             // new elements in container have already correct target
-            return $incomingFieldArray;
-        }
-        if ((int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
-            return $incomingFieldArray;
-        }
-        if ((int)($incomingFieldArray['tx_container_parent'] ?? 0) > 0 &&
-            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$incomingFieldArray['tx_container_parent'])
-        ) {
             return $incomingFieldArray;
         }
         if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
