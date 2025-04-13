@@ -18,9 +18,28 @@ class DatahandlerProcess implements SingletonInterface
 {
     protected $containerInProcess = [];
     protected array $commands = [];
+    protected bool $pageIsCopied = false;
+
+    public function startPageCopy(): void
+    {
+        $this->pageIsCopied = true;
+    }
+
+    public function stopPageCopy(): void
+    {
+        $this->pageIsCopied = false;
+    }
+
+    public function isPageCopied(): bool
+    {
+        return $this->pageIsCopied;
+    }
 
     public function startCommand(int $id, array $command): void
     {
+        if (!isset($command['copy'])) {
+           # return;
+        }
         if (isset($this->commands[$id])) {
             throw new \RuntimeException('already started');
         }
@@ -30,19 +49,30 @@ class DatahandlerProcess implements SingletonInterface
     public function stopCommand(int $id): void
     {
         if (!isset($this->commands[$id])) {
+            return;
             throw new \RuntimeException('not started');
         }
         unset($this->commands[$id]);
     }
 
-    public function getCommand(int $id): ?string
+    public function getCommand(int $id): ?array
     {
         return $this->commands[$id] ?? null;
+    }
+
+    public function hasCommand(int $id): bool
+    {
+        return isset($this->commands[$id]);
     }
 
     public function isRunning(): bool
     {
         return !empty($this->commands);
+    }
+
+    public function getCommands(): array
+    {
+        return $this->commands;
     }
 
     public function isContainerInProcess(int $containerId): bool

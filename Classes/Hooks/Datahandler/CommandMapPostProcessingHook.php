@@ -97,6 +97,7 @@ class CommandMapPostProcessingHook
                         ]
                     ]
                 ]]];
+                #var_dump($cmd);
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
                 $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
@@ -152,6 +153,19 @@ class CommandMapPostProcessingHook
                 $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
+                if (!isset($origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'])) {
+                    continue;
+                }
+                if ($origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'] === $record['sys_language_uid']) {
+                    continue;
+                }
+               # continue;
+                $target = -$record['uid'];
+                // copy case
+                $newId = $localDataHandler->copyMappingArray['tt_content'][$record['uid']] ?? null;
+                if ($newId !== null) {
+                    $target = -$newId;
+                }
             }
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->endContainerProcess($origUid);
         } catch (Exception $e) {

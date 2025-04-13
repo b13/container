@@ -66,12 +66,22 @@ class DatamapPreProcessFieldArrayHook
             // new elements in container have already correct target
             return $incomingFieldArray;
         }
-        if ((int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
-            return $incomingFieldArray;
+
+        if ($this->runtimeCache->has('tx-container-datahander-process')) {
+            /** @var DatahandlerProcess $datahandlerProcess */
+            $datahandlerProcess = $this->runtimeCache->get('tx-container-datahander-process');
+            if ($datahandlerProcess->isRunning()) {
+                #var_dump($datahandlerProcess->getCommands());
+                return $incomingFieldArray;
+            }
         }
+
         if ((int)($incomingFieldArray['tx_container_parent'] ?? 0) > 0 &&
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$incomingFieldArray['tx_container_parent'])
         ) {
+            return $incomingFieldArray;
+        }
+        if ((int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
             return $incomingFieldArray;
         }
         if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
@@ -80,13 +90,6 @@ class DatamapPreProcessFieldArrayHook
         try {
             $container = $this->containerFactory->buildContainer((int)$record['uid']);
             if ($container->getLanguage() === 0 || !$container->isConnectedMode()) {
-                if ($this->runtimeCache->has('tx-container-datahander-process')) {
-                    /** @var DatahandlerProcess $datahandlerProcess */
-                    $datahandlerProcess = $this->runtimeCache->get('tx-container-datahander-process');
-                    if ($datahandlerProcess->isRunning()) {
-                        return $incomingFieldArray;
-                    }
-                }
                 $incomingFieldArray['pid'] = $this->containerService->getAfterContainerElementTarget($container);
             }
         } catch (Exception $e) {

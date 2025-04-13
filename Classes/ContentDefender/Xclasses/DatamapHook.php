@@ -17,6 +17,8 @@ use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook;
 use IchHabRecht\ContentDefender\Repository\ContentRepository;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -28,12 +30,16 @@ class DatamapHook extends DatamapDataHandlerHook
      */
     protected $containerColumnConfigurationService;
 
+    protected FrontendInterface $runtimeCache;
+
 
     public function __construct(
         ?ContentRepository $contentRepository = null,
         ?ContainerColumnConfigurationService $containerColumnConfigurationService = null
     ) {
         $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+        $this->runtimeCache = $cacheManager->getCache('runtime');
         parent::__construct($contentRepository);
     }
 
@@ -42,34 +48,46 @@ class DatamapHook extends DatamapDataHandlerHook
      */
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
     {
-        if (is_array($dataHandler->datamap['tt_content'] ?? null) &&
-            !$this->containerColumnConfigurationService->isContentDefenderContainerDataHandlerHookLooked()
-        ) {
-            foreach ($dataHandler->datamap['tt_content'] as $id => $values) {
-                if (
-                    isset($values['tx_container_parent']) &&
-                    $values['tx_container_parent'] > 0 &&
-                    isset($values['colPos']) &&
-                    $values['colPos'] > 0
-                ) {
-                    if (MathUtility::canBeInterpretedAsInteger($id)) {
-                        // edit
-                        continue;
-                    }
-                    $containerId = (int)$values['tx_container_parent'];
+        if (!is_array($dataHandler->datamap['tt_content'] ?? null)) {
+            parent::processDatamap_beforeStart($dataHandler);
+            return;
+        }
+        if ($this->containerColumnConfigurationService->isContentDefenderContainerDataHandlerHookLooked()) {
+            parent::processDatamap_beforeStart($dataHandler);
+            return;
+        }
+        if ($this->runtimeCache->has('tx-container-datahander-process')) {
+            /** @var DatahandlerProcess $datahandlerProcess */
+            $datahandlerProcess = $this->runtimeCache->get('tx-container-datahander-process');
+            if ($datahandlerProcess->isRunning()) {
+               # parent::processDatamap_beforeStart($dataHandler);
+               # return;
+            }
+        }
+        foreach ($dataHandler->datamap['tt_content'] as $id => $values) {
+            if (
+                isset($values['tx_container_parent']) &&
+                $values['tx_container_parent'] > 0 &&
+                isset($values['colPos']) &&
+                $values['colPos'] > 0
+            ) {
+                if (MathUtility::canBeInterpretedAsInteger($id)) {
+                    // edit
+                    continue;
+                }
+                $containerId = (int)$values['tx_container_parent'];
 
-                    if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId($containerId, (int)$values['colPos'])) {
-                        unset($dataHandler->datamap['tt_content'][$id]);
-                        $dataHandler->log(
-                            'tt_content',
-                            $id,
-                            1,
-                            0,
-                            1,
-                            'The command couldn\'t be executed due to reached maxitems configuration',
-                            28
-                        );
-                    }
+                if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId($containerId, (int)$values['colPos'])) {
+                    unset($dataHandler->datamap['tt_content'][$id]);
+                    $dataHandler->log(
+                        'tt_content',
+                        $id,
+                        1,
+                        0,
+                        1,
+                        'The command couldn\'t be executed due to reached maxitems configuration',
+                        28
+                    );
                 }
             }
         }

@@ -73,10 +73,17 @@ class CommandMapBeforeStartHook
         if ($this->runtimeCache->has('tx-container-datahander-process')) {
             $datahandlerProcess = $this->runtimeCache->get('tx-container-datahander-process');
         } else {
-            $datahandlerProcess = new DataHandlerProcess();
+            $datahandlerProcess = new DatahandlerProcess();
         }
+        #var_dump($dataHandler->cmdmap);
         foreach ($dataHandler->cmdmap['tt_content'] ?? [] as $id => $cmd) {
+            if ($cmd !== 'copy') {
+               # continue;
+            }
             $datahandlerProcess->startCommand($id, $cmd);
+        }
+        if (isset($dataHandler->cmdmap['pages'])) {
+
         }
         $this->runtimeCache->set('tx-container-datahander-process', $datahandlerProcess);
     }
