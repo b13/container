@@ -5,7 +5,7 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^11.5 || ^12.4 || ^13.4"
+        "typo3/cms-backend": "^11.5 || ^12.4 || ^13.4 || 14.0.x-dev"
     },
     "autoload": {
         "psr-4": {
@@ -30,11 +30,11 @@
     },
     "require-dev": {
         "b13/container-example": "dev-master",
-        "typo3/cms-install": "^11.5 || ^12.4 || ^13.4",
-        "typo3/cms-fluid-styled-content": "^11.5 || ^12.4 || ^13.4",
-        "typo3/cms-info": "^11.5 || ^12.4 || ^13.4",
-        "typo3/cms-workspaces": "^11.5 || ^12.4 || ^13.4",
-        "typo3/testing-framework": "^7.1.1 || ^8.2.7",
+        "typo3/cms-install": "^11.5 || ^12.4 || ^13.4 || 14.0.x-dev",
+        "typo3/cms-fluid-styled-content": "^11.5 || ^12.4 || ^13.4 || 14.0.x-dev",
+        "typo3/cms-info": "^11.5 || ^12.4 || ^13.4 || 14.0.x-dev",
+        "typo3/cms-workspaces": "^11.5 || ^12.4 || ^13.4 || 14.0.x-dev",
+        "typo3/testing-framework": "^7.1.1 || ^8.2.7 || ^9.1",
         "phpstan/phpstan": "^1.10",
         "typo3/coding-standards": "^0.5.5",
         "friendsofphp/php-cs-fixer": "^3.51",
@@ -42,7 +42,7 @@
         "codeception/module-asserts": "^1.0 || ^3.0",
         "codeception/module-webdriver": "^1.0 || ^4.0",
         "codeception/module-db": "^1.0 || ^3.1",
-        "phpunit/phpunit": "9.6 || ^10.5"
+        "phpunit/phpunit": "9.6 || ^10.5 || ^11.3"
     },
     "replace": {
         "typo3-ter/container": "self.version"

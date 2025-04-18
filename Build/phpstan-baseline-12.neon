@@ -40,3 +40,27 @@ parameters:
 			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 5 parameters, 2 required\\.$#"
 			count: 1
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
+		-
+			message: "#^Call to method create\\(\\) on an unknown class TYPO3\\\\CMS\\\\Core\\\\View\\\\ViewFactoryInterface\\.$#"
+			count: 1
+			path: ../Classes/Backend/Preview/GridRenderer.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\View\\\\ViewFactoryInterface not found\\.$#"
+			count: 1
+			path: ../Classes/Backend/Preview/GridRenderer.php
+
+		-
+			message: "#^Instantiated class TYPO3\\\\CMS\\\\Core\\\\View\\\\ViewFactoryData not found\\.$#"
+			count: 1
+			path: ../Classes/Backend/Preview/GridRenderer.php
+
+		-
+			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:tryFrom\\(\\)\\.$#"
+			count: 1
+			path: ../Classes/Domain/Factory/ContainerFactory.php
+
+		-
+			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:tryFrom\\(\\)\\.$#"
+			count: 2
+			path: ../Classes/Domain/Factory/PageView/Backend/ContentStorage.php
