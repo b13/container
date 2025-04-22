@@ -64,6 +64,9 @@ class DatamapPreProcessFieldArrayHook
             // new elements in container have already correct target
             return $incomingFieldArray;
         }
+        if ((int)$record['uid'] === (int)($incomingFieldArray['tx_container_parent'] ?? 0)) {
+            return $incomingFieldArray;
+        }
         if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
             return $incomingFieldArray;
         }
