@@ -22,7 +22,7 @@ class NewElementTest extends AbstractDatahandler
      */
     public function newElementAfterContainerSortElementAfterLastChild(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterContainerSortElementAfterLastChild.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [
@@ -42,7 +42,7 @@ class NewElementTest extends AbstractDatahandler
      */
     public function newElementAfterNestedContainerSortElementAfterLastChild(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/nested_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterNestedContainerSortElementAfterLastChild.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [
@@ -57,5 +57,77 @@ class NewElementTest extends AbstractDatahandler
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterNestedContainerSortElementAfterLastChildResult.csv');
+    }
+
+    /**
+     * @test
+     */
+    public function newElementAtTop(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAtTop.csv');
+        $newId = StringUtility::getUniqueId('NEW');
+        $datamap = [
+            'tt_content' => [
+                $newId => [
+                    'pid' => -1,
+                    'CType' => 'header',
+                    'header' => 'child-at-top',
+                    'colPos' => 200,
+                    'tx_container_parent' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start($datamap, [], $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAtTopResult.csv');
+    }
+
+    /**
+     * @test
+     */
+    public function newElementAfterChild(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterChild.csv');
+        $newId = StringUtility::getUniqueId('NEW');
+        $datamap = [
+            'tt_content' => [
+                $newId => [
+                    'pid' => -2,
+                    'CType' => 'header',
+                    'header' => 'child-after-child',
+                    'colPos' => 200,
+                    'tx_container_parent' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start($datamap, [], $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterChildResult.csv');
+    }
+
+    /**
+     * @test
+     */
+    public function newElementInNexCol(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementInNextCol.csv');
+        $newId = StringUtility::getUniqueId('NEW');
+        $datamap = [
+            'tt_content' => [
+                $newId => [
+                    'pid' => -2,
+                    'CType' => 'header',
+                    'header' => 'child-in-next-col',
+                    'colPos' => 201,
+                    'tx_container_parent' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start($datamap, [], $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementInNextColResult.csv');
     }
 }
