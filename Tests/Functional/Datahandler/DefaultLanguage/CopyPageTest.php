@@ -21,7 +21,7 @@ class CopyPageTest extends AbstractDatahandler
      */
     public function copyPageCopiesChildrenOfContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyPage/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyPage/CopyPageCopiesChildrenOfContainer.csv');
         $cmdmap = [
             'pages' => [
                 1 => [

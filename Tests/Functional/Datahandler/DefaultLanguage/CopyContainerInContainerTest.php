@@ -21,7 +21,7 @@ class CopyContainerInContainerTest extends AbstractDatahandler
      */
     public function copyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerInContainer/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerInContainer/CopyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [

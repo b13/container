@@ -4,10 +4,10 @@
 ,3,0,""
 "tt_content"
 ,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent"
-,1,1,"b13-2cols-with-header-container","container",256,0,0,0,0
+,1,1,"b13-2cols-with-header-container","container",64,0,0,0,0
 ,2,1,"header","col1-first",128,0,200,1,0
 ,3,1,"header","col1-second",256,0,200,1,0
-,4,1,"header","col2-first",512,0,201,1,0
+,4,1,"header","col2-first",386,0,201,1,0
 ,10,3,"header","outside",512,0,0,0,0
 ,11,3,"b13-2cols-with-header-container","container",256,0,0,0,0
 ,12,3,"header","col1-second",384,0,200,11,0

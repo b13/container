@@ -23,7 +23,6 @@ class ContainerTest extends AbstractDatahandler
     {
         parent::setUp();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_workspace.csv');
         $this->backendUser->setWorkspace(1);
         $context = GeneralUtility::makeInstance(Context::class);
@@ -36,10 +35,10 @@ class ContainerTest extends AbstractDatahandler
      */
     public function deleteContainerDeleteChildren(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_container_with_child_in_workspace.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerDeleteChildren.csv');
         $cmdmap = [
             'tt_content' => [
-                11 => [
+                1 => [
                     'delete' => 1,
                 ],
             ],
@@ -54,6 +53,8 @@ class ContainerTest extends AbstractDatahandler
      */
     public function newVersionDoesNotCreateNewVersionsOfChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/NewVersionDoesNotCreateNewVersionsOfChildren.csv');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/NewVersionDoesNotCreateNewVersionsOfChildren.csv');
         $datamap = [
             'tt_content' => [
                 1 => [
@@ -72,6 +73,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function moveChildsColPosInContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -96,6 +98,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function moveChildOutsideContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveChildOutsideContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -121,6 +124,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function moveChildsColPosInOtherContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInOtherContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -146,6 +150,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyChildsColPosInContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -171,6 +176,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyChildOutsideContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyChildOutsideContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -197,6 +203,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyChildsColPosInOtherContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInOtherContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -222,6 +229,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -245,6 +253,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function moveRecordInColPosCreatesWorkspaceElementInContainer()
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveRecordInColPosCreatesWorkspaceElementInContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 5 => [
@@ -270,7 +279,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function copyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChild(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_deleted_placeholder.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChild.csv');
         $cmdmap = [
             'tt_content' => [
                 10 => [
@@ -294,7 +303,7 @@ class ContainerTest extends AbstractDatahandler
      */
     public function deleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChild(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/tt_content_deleted_placeholder.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChild.csv');
         $cmdmap = [
             'tt_content' => [
                 10 => [

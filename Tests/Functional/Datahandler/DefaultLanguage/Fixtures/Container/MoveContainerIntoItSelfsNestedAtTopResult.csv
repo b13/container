@@ -3,6 +3,6 @@
 ,2,0,"page-1"
 "tt_content"
 ,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent"
-,1,2,"b13-2cols-with-header-container","",0,0,0,0,0
-,2,2,"b13-2cols-with-header-container","",0,0,202,1,0
-,3,2,"header","",0,0,202,2,0
+,1,2,"b13-2cols-with-header-container","",64,0,0,0,0
+,2,2,"b13-2cols-with-header-container","",128,0,202,1,0
+,3,2,"header","",256,0,202,2,0

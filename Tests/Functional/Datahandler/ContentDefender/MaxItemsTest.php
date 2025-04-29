@@ -37,7 +37,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canMoveElementIntoContainerIfMaxitemsIsNotReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_move_element_into_container_if_maxitems_is_not_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanMoveElementIntoContainerIfMaxitemsIsNotReached.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -66,7 +66,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function cannotMoveElementIntoContainerIfMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_move_element_into_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotMoveElementIntoContainerIfMaxitemsIsReached.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -96,7 +96,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function cannotCopyElementIntoContainerIfMaxitemsIsReachedAfterIntoContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_copy_element_into_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterIntoContainer.csv');
 
         $cmdmap = [
             'tt_content' => [
@@ -128,7 +128,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function cannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElement(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_copy_element_into_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElement.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -149,14 +149,14 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canCreateElementInContainerIfMaxitemsIsNotReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_create_element_in_container_if_maxitems_is_not_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCreateElementInContainerIfMaxitemsIsNotReached.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [
                 $newId => [
-                    'colPos' => 202,
+                    'colPos' => '202',
                     'tx_container_parent' => 1,
-                    'pid' => 1,
+                    'pid' => -1,
                     'sys_language_uid' => 0,
                     'header' => 'my-new-header',
                 ],
@@ -175,7 +175,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function cannotCreateElementInContainerIfMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_create_element_in_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCreateElementInContainerIfMaxitemsIsReached.csv');
         $newId = StringUtility::getUniqueId('NEW');
         $datamap = [
             'tt_content' => [
@@ -200,7 +200,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canEditElementInContainerWhenMaxitemIsReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_edit_element_in_container_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanEditElementInContainerWhenMaxitemIsReached.csv');
         $datamap = [
             'tt_content' => [
                 3 => [
@@ -225,7 +225,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canMoveContainerWithMaxitemsReachedColumnToOtherPage(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_move_container_with_maxitems_reached_column_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanMoveContainerWithMaxitemsReachedColumnToOtherPage.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -254,7 +254,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canCopyElementFromContainerMaxitemsReachedColumnToOtherColumn(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_column.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyElementFromContainerMaxitemsReachedColumnToOtherColumn.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -282,7 +282,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canCopyElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyElementFromContainerMaxitemsReachedColumnToOtherContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -310,7 +310,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canMoveElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_element_from_container_maxitems_reached_column_to_other_container.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanMoveElementFromContainerMaxitemsReachedColumnToOtherContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -338,7 +338,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function cannotMoveElementInsideContainerColumnIfMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/cannot_move_element_inside_container_column_if_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotMoveElementInsideContainerColumnIfMaxitemsIsReached.csv');
         $cmdmap = [
             'tt_content' => [
                 2 => [
@@ -365,7 +365,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_translate_child_if_container_of_default_language_maxitems_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReached.csv');
         $cmdmap = [
             'tt_content' => [
                 3 => ['localize' => 1],
@@ -384,7 +384,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_copy_to_language_child_if_container_of_default_language_maxitems_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReached.csv');
         $cmdmap = [
             'tt_content' => [
                 3 => ['copyToLanguage' => 1],
@@ -403,7 +403,7 @@ class MaxItemsTest extends AbstractContentDefender
      */
     public function canSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/can_save_child_in_default_language_when_translated_and_maxitems_is_reached.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached.csv');
         $record = [
            'uid' => 3,
            'pid' => 1,
