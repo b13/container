@@ -4,7 +4,7 @@
 
 ## Features
 - Simple amazing containers (grids) as custom TYPO3 Content Elements
-- No default containers, everything will be built the way its needed for a project
+- No default containers; everything will be built the way it is needed for a project
 - Supports multilanguage (connected or free mode (mixed mode not supported))
 - Supports workspaces
 - Supports colPos-restrictions if EXT:content_defender >= 3.1.0 is installed
@@ -12,28 +12,28 @@
 
 ## Why did we create another "Grid" extension?
 
-At b13 we've been long supporters and fans of gridelements, which we are thankful for and we used it in the past with great pleasure.
+At b13, we've long supported gridelements, for which we are thankful, and have used this extension with great pleasure in the past.
 
-However, we had our pain points in the past with all solutions we've evaluted and worked with. These are our reasons:
+However, we had our pain points in the past with all the solutions we've evaluated and worked with. These are our reasons:
 
-- We wanted an extension that works with multiple versions of TYPO3 Core with the same extension, to support our company's [TYPO3 upgrade strategy](https://b13.com/solutions/typo3-upgrades).
-- We wanted to overcome issues when dealing with `colPos` field and dislike any fixed value which isn't fully compatible with TYPO3 Core.
-- We wanted an extension that is fully tested with multilingual and workspaces functionality.
-- We wanted an extension that only does one thing: EXT:container ONLY adds tools to create and render container elements, and nothing else. No FlexForms, no permission handling or custom rendering.
-- We wanted an extension where every grid has its own Content Type (CType) making it as close to TYPO3 Core functionality as possible.
-- We wanted an extension where the configuration of a grid container element is located at one single place to make creation of custom containers easy.
-- We wanted an extension that has a progressive development workflow: We were working with new projects in TYPO3 v10 sprint releases and needed custom container elements and did not want to wait until TYPO3 v10 LTS.
+- We wanted an extension that works with multiple versions of TYPO3 Core with the same extension to support our company's [TYPO3 upgrade strategy](https://b13.com/solutions/typo3-upgrades).
+- We wanted to overcome issues when dealing with the `colPos` field and dislike any fixed value that isn't fully compatible with TYPO3 Core.
+- We wanted a thoroughly tested extension with multilingual and workspaces functionality.
+- We wanted an extension that only does one thing: EXT:container ONLY adds tools to create and render container elements. There are no FlexForms, no permission handling, or custom rendering.
+- We wanted an extension in which every grid has its own Content Type (CType), making it as close as possible to TYPO3 Core functionality.
+- We wanted an extension where the configuration of a grid container element is located in one single place, making it easy to create custom containers.
+- We wanted an extension with a progressive development workflow. We were working on new projects in TYPO3 v10 sprint releases, needed custom container elements, and did not want to wait until TYPO3 v10 LTS.
 
 ## Installation
 
 Install this extension via `composer req b13/container` or download it from the [TYPO3 Extension Repository](https://extensions.typo3.org/extension/container/) and activate
 the extension in the Extension Manager of your TYPO3 installation.
 
-Once installed, add a custom content element to your sitepackage or theme extension (see "Adding your own container element").
+Once installed, add a custom content element to your site package or theme extension (see "Adding your container element").
 
-## Adding your own container element
+## Adding your container element
 
-1. Register your custom container in your sitepackage or theme extension in `Configuration/TCA/Overrides/tt_content.php` as new Content Type
+1. Register your custom container in your site package or theme extension in `Configuration/TCA/Overrides/tt_content.php` as new Content Type
 2. Add TypoScript and your Fluid Template for frontend rendering
 3. Add an icon in Resources/Public/Icons/`<CType>`.svg
 
@@ -41,7 +41,7 @@ See [EXT:container_example](https://github.com/b13/container-example) for a simp
 
 ### Registration of Container Elements
 
-This is an example to create a 2 column container. The code snippet goes into a file in your sitepackage or theme extension in the folder `Configuration/TCA/Overrides/`. The file can have any name but it is good practice to name it according to the database table it relates to. In this case this would be `tt_content.php`.
+This is an example of creating a two-column container. The code snippet goes into a file in your site package or theme extension in the folder `Configuration/TCA/Overrides/`. The file can have any name, but it is good practice to name it according to the database table it relates to. In this case, this would be `tt_content.php`.
 
 ```php
 \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class)->configureContainer(
@@ -72,23 +72,23 @@ This is an example to create a 2 column container. The code snippet goes into a 
 | ----------- | ----------- | ---------- | ---------- |
 | `setIcon` | icon file, or existing icon identifier | `string $icon` | `'EXT:container/Resources/Public/Icons/Extension.svg'` |
 | `setBackendTemplate` | Template for backend view| `string $backendTemplate` | `EXT:container/Resources/Private/Templates/Container.html'` |
-| `setGridTemplate` | Template for grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Container.html'` |
+| `setGridTemplate` | Template for grid | `string $gridTemplate` | `'EXT:container/Resources/Private/Templates/Grid.html'` |
 | `setGridPartialPaths` / `addGridPartialPath` | Partial root paths for grid | `array $gridPartialPaths` / `string $gridPartialPath` | `['EXT:backend/Resources/Private/Partials/', 'EXT:container/Resources/Private/Partials/']` |
 | `setGridLayoutPaths` | Layout root paths for grid | `array $gridLayoutPaths` | `[]` |
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard | `bool $saveAndCloseInNewContentElementWizard` | `true` |
-| `setRegisterInNewContentElementWizard` |register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
-| `setGroup` | Custom Group (used as optgroup for CType select, and as tab in New Content Element Wizard). If empty "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
+| `setRegisterInNewContentElementWizard` | register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
+| `setGroup` | Custom Group (used as optgroup for CType select, and as tab in New Content Element Wizard). If empty, "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
 | `setDefaultValues` | Default values for the newContentElement.wizardItems | `array $defaultValues` | `[]` |
 
 __Notes:__
-- If EXT:content_defender >= 3.1.0 is installed you can use `allowed`, `disallowed` and `maxitems` in the column configuration
+- If EXT:content_defender >= 3.1.0 is installed, you can use `allowed`, `disallowed`, and `maxitems` in the column configuration
 - The container registry does multiple things:
   - Adds CType to TCA select items
   - Registers your icon
   - Adds PageTSconfig for `newContentElement.wizardItems`
   - Sets ``showitem`` for this CType (`sys_language_uid,CType,tx_container_parent,colPos,hidden`)
   - Saves the configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
-- We provide some default icons you can use, see `Resources/Public/Icons`
+- We provide some default icons you can use; see `Resources/Public/Icons`
   - container-1col
   - container-2col
   - container-2col-left
@@ -98,8 +98,8 @@ __Notes:__
 
 ### TypoScript
 
-The TypoScript is necessary to define the rendering of the container in the frontend. Normally you will place it in your sitepackage or theme extension near the place where you define other stuff regarding your content elements.
-`templateRootPaths` must be adapted to reflect the path of the html files in your sitepackage or theme extension.
+The TypoScript is necessary to define the rendering of the container in the frontend. Normally, you will place it in your site package or theme extension near where you define other stuff regarding your content elements.
+`templateRootPaths` must be adapted to reflect the path of the HTML files in your site package or theme extension.
 
     // default/general configuration (will add 'children_<colPos>' variable to processedData for each colPos in container
     tt_content.b13-2cols-with-header-container < lib.contentElement
@@ -113,7 +113,7 @@ The TypoScript is necessary to define the rendering of the container in the fron
         }
     }
 
-    // if needed you can use ContainerProcessor with explicitly set colPos/variable values
+    // if needed, you can use ContainerProcessor with explicitly set colPos/variable values
     tt_content.b13-2cols-with-header-container < lib.contentElement
     tt_content.b13-2cols-with-header-container {
         templateName = 2ColsWithHeader
@@ -145,7 +145,7 @@ The TypoScript is necessary to define the rendering of the container in the fron
 
 ### Template
 
-The html template file goes in the folder that you have defined in your TypoScript above (see `templateRootPaths`). It's important to name it exacly as defined in `templateName` in TypoScript, in this case `2ColsWithHeader.html`. The file name is case-sensitive!
+The HTML template file goes in the folder you defined in your TypoScript above (see `templateRootPaths`). It's important to name it exactly as defined in `templateName` in TypoScript, in this case, `2ColsWithHeader.html`. The file name is case-sensitive!
 
 ```html
 <f:for each="{children_200}" as="record">
@@ -169,27 +169,27 @@ With explicit colPos defined use `{children_200|201}` as set in the example abov
 
 ### BeforeContainerConfigurationIsAppliedEvent
 
-* change container configuration for 3rd party extensions container you have installed
-* apply same configuration to all or a set of containers (e.g. ``gridTemplate``)
+* change container configuration for 3rd-party extensions container you have installed
+* apply the same configuration to all or a set of containers (e.g. ``gridTemplate``)
 * **Note** CType and Grid Structure cannot be changed (but Column Properties of the Grid)
 
 ### BeforeContainerPreviewIsRendered
 
-change view object, e.g. add variables to view or change paths
+Change view object, e.g., add variables to view or change paths
 
 ## Concepts
 - Complete registration is done with one PHP call to TCA Registry
 - A container in the TYPO3 backend Page module is rendered like a page itself (see View/ContainerLayoutView)
 - For backend clipboard and drag & drop `<tx_container_parent>_<colPos>` used in the data-colpos attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
 - The `<tx_container_parent>_<colPos>` parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler hooks
-- When translating a container, all child elements get also translated (the child elements are not explicit listed during the translation dialog)
+- When translating a container, all child elements also get translated (the child elements are not explicitly listed during the translation dialog)
 - Copying or moving children of a container copies or moves translations as well
 - Custom definitions make use of custom `colPos` values so site owners build their own elements, no fixed `colPos` given, so no interference with existing solutions
 - Each container type is just a definition for its own `CType`
 
 ## CLI commands
 
-There's several CLI commands to check/fix the integrity of the containers and their children.
+There are several CLI commands to check/fix the integrity of the containers and their children.
 
 ```bash
 # Check the sorting of container children
@@ -221,7 +221,7 @@ You can run our test suite for this extension yourself:
 - run `Build/Scripts/runTests.sh -s functional`
 - run `Build/Scripts/runTests.sh -s acceptance`
 
-See Tests/README.md how to run the tests local (like github-actions runs the tests).
+See Tests/README.md on how to run the tests locally (like how github-actions runs the tests).
 
 To assure coding guidelines are fullfilled:
 
@@ -232,6 +232,6 @@ To assure coding guidelines are fullfilled:
 
 This extension was created by Achim Fritz in 2020 for [b13 GmbH, Stuttgart](https://b13.com).
 
-Find examples, use cases and best practices for this extension in our [container blog series on b13.com](https://b13.com/blog/flexible-containers-and-grids-for-typo3).
+Find examples, use cases, and best practices for this extension in our [container blog series on b13.com](https://b13.com/blog/flexible-containers-and-grids-for-typo3).
 
-[Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of the way we work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code.
+[Find more TYPO3 extensions we have developed](https://b13.com/useful-typo3-extensions-from-b13-to-you) that help us deliver value in client projects. As part of our work, we focus on testing and best practices to ensure long-term performance, reliability, and results in all our code.
