@@ -178,6 +178,37 @@ class DefaultLanguageTest extends AbstractContentDefender
      * @test
      * @group content_defender
      */
+    public function copyContentElementIntoContainerWhenCTypeIsNotAllowedInBackendLayoutColumn(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyContentElementIntoContainerWhenCTypeIsNotAllowedInBackendLayoutColumn.csv');
+        // 12 -> 11 colpos 200
+        $cmdmap = [
+            'tt_content' => [
+                12 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 1,
+                        'update' => [
+                            'colPos' => 200,
+                            'sys_language_uid' => 0,
+                            'tx_container_parent' => 11,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyContentElementIntoContainerWhenCTypeIsNotAllowedInBackendLayoutColumnResult.csv');
+    }
+
+    /**
+     * @test
+     * @group content_defender
+     */
     public function copyElementIntoContainerAtTopCopyAllowedCTypeElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/allowed_content_element.csv');

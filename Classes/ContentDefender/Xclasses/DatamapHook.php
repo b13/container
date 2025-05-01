@@ -79,8 +79,8 @@ class DatamapHook extends DatamapDataHandlerHook
                     }
                 }
             }
+            parent::processDatamap_beforeStart($dataHandler);
         }
-        parent::processDatamap_beforeStart($dataHandler);
     }
 
     protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record): bool
