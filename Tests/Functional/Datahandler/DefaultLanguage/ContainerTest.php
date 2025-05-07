@@ -367,4 +367,29 @@ class ContainerTest extends AbstractDatahandler
         $dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerWithDataHandlerLoggingDisabledSysLogResult.csv');
     }
+
+    /**
+     * @test
+     */
+    public function copyContainerWithLanguageAsStringKeepsCopiedChildrenSorting(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => '0',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildrenResult.csv');
+    }
 }

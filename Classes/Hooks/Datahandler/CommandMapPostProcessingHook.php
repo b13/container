@@ -151,7 +151,7 @@ class CommandMapPostProcessingHook
                 if (!isset($origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'])) {
                     continue;
                 }
-                if ($origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'] === $record['sys_language_uid']) {
+                if ((int)$origCmdMap['tt_content'][$origUid][$command]['update']['sys_language_uid'] === $record['sys_language_uid']) {
                     continue;
                 }
                 $target = -$record['uid'];
