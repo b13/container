@@ -52,7 +52,7 @@ class SortingInPage implements SingletonInterface
         $this->containerService = $containerService;
     }
 
-    public function run(bool $dryRun = true, bool $enableLogging = false, ?int $pid = null): array
+    public function run(bool $dryRun = true, bool $enableLogging = false, ?int $pid = null, ?int $languageId = null): array
     {
         $this->unsetContentDefenderConfiguration();
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
@@ -65,7 +65,7 @@ class SortingInPage implements SingletonInterface
                 $containerUsedColPosArray[] = $column['colPos'];
             }
         }
-        $rows = $this->database->getNonContainerChildrenPerColPos($containerUsedColPosArray, $pid);
+        $rows = $this->database->getNonContainerChildrenPerColPos($containerUsedColPosArray, $pid, $languageId);
         foreach ($rows as $recordsPerPageAndColPos) {
             $prevSorting = 0;
             $prevContainer = null;
