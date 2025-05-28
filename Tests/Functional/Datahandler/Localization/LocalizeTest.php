@@ -81,6 +81,24 @@ class LocalizeTest extends AbstractDatahandler
     /**
      * @test
      */
+    public function localizeNestedContainerKeepsDefaultLanguageParent(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeNestedContainerKeepsDefaultLanguageParent.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'localize' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeNestedContainerKeepsDefaultLanguageParentResult.csv');
+    }
+
+    /**
+     * @test
+     */
     public function localizeContainerFromNonDefaultLanguageLocalizeChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerFromNonDefaultLanguageLocalizeChildren.csv');

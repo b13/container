@@ -45,36 +45,34 @@ class CommandMapPostProcessingHook
             $this->copyOrMoveChildren($id, (int)$value, (int)$dataHandler->copyMappingArray['tt_content'][$id], 'copy', $dataHandler);
         } elseif ($table === 'tt_content' && $command === 'move') {
             $this->copyOrMoveChildren($id, (int)$value, $id, 'move', $dataHandler);
-        } elseif ($table === 'tt_content' && ($command === 'localize' || $command === 'copyToLanguage')) {
-            $this->localizeOrCopyToLanguage($id, (int)$value, $command, $dataHandler);
+        } elseif ($table === 'tt_content' && $command === 'localize') {
+            $this->localizeChildren($id, (int)$value, $command, $dataHandler);
+        } elseif ($table === 'tt_content' && $command === 'copyToLanguage') {
+            $this->copyToLanguageChildren($id, (int)$value, $command, $dataHandler);
         }
     }
 
-    protected function localizeOrCopyToLanguage(int $uid, int $language, string $command, DataHandler $dataHandler): void
+    protected function copyToLanguageChildren(int $uid, int $language, string $command, DataHandler $dataHandler): void
     {
         try {
             $container = $this->containerFactory->buildContainer($uid);
             $last = $dataHandler->copyMappingArray['tt_content'][$uid] ?? null;
-            if ($command === 'copyToLanguage') {
-                $containerId = $last;
-                $pos = $this->containerService->getAfterContainerElementTarget($container);
-                // move next record after last child
-                $cmd = ['tt_content' => [$last => [
-                    'move' => [
-                        'target' => $pos,
-                        'action' => 'paste',
-                        'update' => [],
-                    ]
-                ]]];
-                $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
-                $localDataHandler->enableLogging = $dataHandler->enableLogging;
-                $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
-                $localDataHandler->process_cmdmap();
-            } else {
-                $containerId = $container->getUid();
-            }
+            $containerId = $last;
+            $pos = $this->containerService->getAfterContainerElementTarget($container);
+            // move next record after last child
+            $cmd = ['tt_content' => [$last => [
+                'move' => [
+                    'target' => $pos,
+                    'action' => 'paste',
+                    'update' => [],
+                ]
+            ]]];
+            $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+            $localDataHandler->enableLogging = $dataHandler->enableLogging;
+            $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
+            $localDataHandler->process_cmdmap();
             $children = $container->getChildRecords();
-            foreach ($children as $colPos => $record) {
+            foreach ($children as $record) {
                 $cmd = ['tt_content' => [$record['uid'] => [$command => $language]]];
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
                 $localDataHandler->enableLogging = $dataHandler->enableLogging;
@@ -98,6 +96,23 @@ class CommandMapPostProcessingHook
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
                 $last = $newId;
+            }
+        } catch (Exception $e) {
+            // nothing todo
+        }
+    }
+
+    protected function localizeChildren(int $uid, int $language, string $command, DataHandler $dataHandler): void
+    {
+        try {
+            $container = $this->containerFactory->buildContainer($uid);
+            $children = $container->getChildRecords();
+            foreach ($children as $record) {
+                $cmd = ['tt_content' => [$record['uid'] => [$command => $language]]];
+                $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->enableLogging = $dataHandler->enableLogging;
+                $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
+                $localDataHandler->process_cmdmap();
             }
         } catch (Exception $e) {
             // nothing todo
