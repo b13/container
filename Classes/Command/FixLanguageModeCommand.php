@@ -40,14 +40,18 @@ class FixLanguageModeCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $exitCode = 0;
+        // this fetches all errors / warnings, including unrelated
         $res = $this->integrity->run();
         $errors = [];
         foreach ($res['errors'] as $error) {
             if ($error instanceof WrongL18nParentError) {
+                $exitCode = 1;
                 $errors[] = $error;
             }
         }
         $this->integrityFix->languageMode($errors);
-        return 0;
+        // return with exit code !0 if errors found
+        return $exitCode;
     }
 }

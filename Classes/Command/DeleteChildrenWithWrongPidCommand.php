@@ -43,14 +43,18 @@ class DeleteChildrenWithWrongPidCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $exitCode = 0;
         Bootstrap::initializeBackendAuthentication();
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
+        // this fetches all errors / warnings, including unrelated
         $res = $this->integrity->run();
         foreach ($res['errors'] as $error) {
             if ($error instanceof WrongPidError) {
+                $exitCode = 1;
                 $this->integrityFix->deleteChildrenWithWrongPid($error);
             }
         }
-        return 0;
+        // return with exit code !0 if errors found
+        return $exitCode;
     }
 }

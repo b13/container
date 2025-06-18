@@ -65,6 +65,7 @@ class SortingInPageCommand extends Command
         if (empty($errors)) {
             $output->writeln('migration finished');
         }
-        return 0;
+        // return with exit code !0 if errors found
+        return count($errors) > 0 ? 1 : 0;
     }
 }
