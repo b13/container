@@ -208,6 +208,9 @@ bin/typo3 container:deleteChildrenWithWrongPid
 bin/typo3 container:deleteChildrenWithNonExistingParent
 ```
 
+Commands will generally exit with 0 on non-error and exit with !0 if an error was found, regardless of whether the
+problems were fixed or not.
+
 ## TODOs
 - Integrity proofs
 - List module actions
