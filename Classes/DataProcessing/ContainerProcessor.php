@@ -24,7 +24,6 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 class ContainerProcessor implements DataProcessorInterface
 {
-
     /**
      * @var ContentDataProcessor
      */

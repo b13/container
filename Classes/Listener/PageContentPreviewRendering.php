@@ -34,7 +34,7 @@ class PageContentPreviewRendering
         }
 
         $record = $event->getRecord();
-        if (!$this->tcaRegistry->isContainerElement( (string) $record['CType'])) {
+        if (!$this->tcaRegistry->isContainerElement((string)$record['CType'])) {
             return;
         }
         $record['tx_container_grid'] = $this->gridRenderer->renderGrid($record, $event->getPageLayoutContext());

@@ -17,7 +17,6 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DatamapPreProcessFieldArrayHook

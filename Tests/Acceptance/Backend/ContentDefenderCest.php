@@ -277,7 +277,6 @@ class ContentDefenderCest
         $I->seeElement('#EditDocumentController');
     }
 
-
     /**
      * @group content_defender
      */
@@ -302,5 +301,4 @@ class ContentDefenderCest
         $I->see('header', 'select');
         $I->dontSee('Images Only', 'select');
     }
-
 }

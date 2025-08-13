@@ -40,8 +40,7 @@ class CommandMapHook extends CmdmapDataHandlerHook
 
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
-        if (isset($dataHandler->cmdmap['pages']))
-        {
+        if (isset($dataHandler->cmdmap['pages'])) {
             $this->containerColumnConfigurationService->startCmdMap();
         }
         if (!empty($dataHandler->cmdmap['tt_content'])) {

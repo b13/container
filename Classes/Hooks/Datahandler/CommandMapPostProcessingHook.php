@@ -65,7 +65,7 @@ class CommandMapPostProcessingHook
                     'target' => $pos,
                     'action' => 'paste',
                     'update' => [],
-                ]
+                ],
             ]]];
             $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
             $localDataHandler->enableLogging = $dataHandler->enableLogging;
@@ -88,8 +88,8 @@ class CommandMapPostProcessingHook
                         'action' => 'paste',
                         'update' => [
                             'tx_container_parent' => $containerId,
-                        ]
-                    ]
+                        ],
+                    ],
                 ]]];
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
                 $localDataHandler->enableLogging = $dataHandler->enableLogging;

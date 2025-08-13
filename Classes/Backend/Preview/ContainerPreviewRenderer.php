@@ -12,7 +12,6 @@ namespace B13\Container\Backend\Preview;
  * of the License, or any later version.
  */
 
-
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -24,7 +23,8 @@ class ContainerPreviewRenderer extends StandardContentPreviewRenderer
     protected GridRenderer $gridRenderer;
     protected FrontendInterface $runtimeCache;
 
-    public function __construct(GridRenderer $gridRenderer, FrontendInterface $runtimeCache) {
+    public function __construct(GridRenderer $gridRenderer, FrontendInterface $runtimeCache)
+    {
         $this->gridRenderer = $gridRenderer;
         $this->runtimeCache = $runtimeCache;
     }

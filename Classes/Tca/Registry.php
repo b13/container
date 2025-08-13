@@ -67,7 +67,6 @@ class Registry implements SingletonInterface
         }
         $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['previewRenderer'] = \B13\Container\Backend\Preview\ContainerPreviewRenderer::class;
 
-
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 13) {
             if (!isset($GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions'])) {
                 $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions'] = [];

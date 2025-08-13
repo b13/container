@@ -2,7 +2,7 @@
 
 $config = \TYPO3\CodingStandards\CsFixerConfig::create();
 $config->getFinder()->exclude(['var'])->in(__DIR__ . '/..');
-$config->setRules([
+$config->addRules([
     'nullable_type_declaration' => [
         'syntax' => 'question_mark',
     ],
