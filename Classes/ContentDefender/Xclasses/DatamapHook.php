@@ -13,7 +13,6 @@ namespace B13\Container\ContentDefender\Xclasses;
  */
 
 use B13\Container\ContentDefender\ContainerColumnConfigurationService;
-use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use IchHabRecht\ContentDefender\Hooks\DatamapDataHandlerHook;
 use IchHabRecht\ContentDefender\Repository\ContentRepository;
@@ -28,7 +27,6 @@ class DatamapHook extends DatamapDataHandlerHook
      * @var ContainerColumnConfigurationService
      */
     protected $containerColumnConfigurationService;
-
 
     public function __construct(
         ?ContentRepository $contentRepository = null,

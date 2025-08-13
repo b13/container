@@ -24,7 +24,7 @@ final class BeforeContainerPreviewIsRenderedEvent
     protected StandaloneView $view;
 
     protected Grid $grid;
-    
+
     protected GridColumnItem $item;
 
     public function __construct(Container $container, StandaloneView $view, Grid $grid, GridColumnItem $item)

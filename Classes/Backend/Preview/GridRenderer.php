@@ -18,7 +18,6 @@ use B13\Container\Backend\Service\NewContentUrlBuilder;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Events\BeforeContainerPreviewIsRenderedEvent;
-use B13\Container\Events\BeforeContainerPreviewIsRenderedEventV12;
 use B13\Container\Tca\Registry;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -36,7 +35,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class GridRenderer
 {
-
     protected Registry $tcaRegistry;
     protected ContainerFactory $containerFactory;
     protected NewContentUrlBuilder $newContentUrlBuilder;

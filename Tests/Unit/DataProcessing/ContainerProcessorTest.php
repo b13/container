@@ -31,12 +31,14 @@ class ContainerProcessorTest extends UnitTestCase
     {
         $processorConfiguration = ['contentId' => 1];
         $contentObjectRenderer = $this->getMockBuilder(ContentObjectRenderer::class)->disableOriginalConstructor()->getMock();
-        $contentObjectRenderer->expects($this->never())->method('stdWrap');
+        $contentObjectRenderer->expects(self::never())->method('stdWrap');
         $context = $this->getMockBuilder(Context::class)->getMock();
         $contentDataProcessor = $this->getMockBuilder(ContentDataProcessor::class)->disableOriginalConstructor()->getMock();
         $frontendContainerFactory = $this->getMockBuilder(FrontendContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $frontendContainerFactory->expects($this->once())->method('buildContainer')->with(
-            $contentObjectRenderer, $context, 1
+        $frontendContainerFactory->expects(self::once())->method('buildContainer')->with(
+            $contentObjectRenderer,
+            $context,
+            1
         )->willReturn(new Container([], []));
         $containerProcessor = new ContainerProcessor($contentDataProcessor, $context, $frontendContainerFactory);
         $containerProcessor->process($contentObjectRenderer, [], $processorConfiguration, []);
@@ -49,12 +51,14 @@ class ContainerProcessorTest extends UnitTestCase
     {
         $processorConfiguration = ['contentId' => 1, 'contentId.' => 'foo'];
         $contentObjectRenderer = $this->getMockBuilder(ContentObjectRenderer::class)->disableOriginalConstructor()->getMock();
-        $contentObjectRenderer->expects($this->once())->method('stdWrap')->with(1, 'foo')->willReturn(2);
+        $contentObjectRenderer->expects(self::once())->method('stdWrap')->with(1, 'foo')->willReturn(2);
         $context = $this->getMockBuilder(Context::class)->getMock();
         $contentDataProcessor = $this->getMockBuilder(ContentDataProcessor::class)->disableOriginalConstructor()->getMock();
         $frontendContainerFactory = $this->getMockBuilder(FrontendContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $frontendContainerFactory->expects($this->once())->method('buildContainer')->with(
-            $contentObjectRenderer, $context, 2
+        $frontendContainerFactory->expects(self::once())->method('buildContainer')->with(
+            $contentObjectRenderer,
+            $context,
+            2
         )->willReturn(new Container([], []));
         $containerProcessor = new ContainerProcessor($contentDataProcessor, $context, $frontendContainerFactory);
         $containerProcessor->process($contentObjectRenderer, [], $processorConfiguration, []);
@@ -67,12 +71,14 @@ class ContainerProcessorTest extends UnitTestCase
     {
         $processorConfiguration = ['contentId.' => 'foo'];
         $contentObjectRenderer = $this->getMockBuilder(ContentObjectRenderer::class)->disableOriginalConstructor()->getMock();
-        $contentObjectRenderer->expects($this->once())->method('stdWrap')->with('', 'foo')->willReturn(2);
+        $contentObjectRenderer->expects(self::once())->method('stdWrap')->with('', 'foo')->willReturn(2);
         $context = $this->getMockBuilder(Context::class)->getMock();
         $contentDataProcessor = $this->getMockBuilder(ContentDataProcessor::class)->disableOriginalConstructor()->getMock();
         $frontendContainerFactory = $this->getMockBuilder(FrontendContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $frontendContainerFactory->expects($this->once())->method('buildContainer')->with(
-            $contentObjectRenderer, $context, 2
+        $frontendContainerFactory->expects(self::once())->method('buildContainer')->with(
+            $contentObjectRenderer,
+            $context,
+            2
         )->willReturn(new Container([], []));
         $containerProcessor = new ContainerProcessor($contentDataProcessor, $context, $frontendContainerFactory);
         $containerProcessor->process($contentObjectRenderer, [], $processorConfiguration, []);
@@ -85,15 +91,16 @@ class ContainerProcessorTest extends UnitTestCase
     {
         $processorConfiguration = [];
         $contentObjectRenderer = $this->getMockBuilder(ContentObjectRenderer::class)->disableOriginalConstructor()->getMock();
-        $contentObjectRenderer->expects($this->never())->method('stdWrap');
+        $contentObjectRenderer->expects(self::never())->method('stdWrap');
         $context = $this->getMockBuilder(Context::class)->getMock();
         $contentDataProcessor = $this->getMockBuilder(ContentDataProcessor::class)->disableOriginalConstructor()->getMock();
         $frontendContainerFactory = $this->getMockBuilder(FrontendContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $frontendContainerFactory->expects($this->once())->method('buildContainer')->with(
-            $contentObjectRenderer, $context, null
+        $frontendContainerFactory->expects(self::once())->method('buildContainer')->with(
+            $contentObjectRenderer,
+            $context,
+            null
         )->willReturn(new Container([], []));
         $containerProcessor = new ContainerProcessor($contentDataProcessor, $context, $frontendContainerFactory);
         $containerProcessor->process($contentObjectRenderer, [], $processorConfiguration, []);
     }
-
 }

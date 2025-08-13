@@ -82,7 +82,6 @@ class DefaultLanguageTest extends AbstractFrontend
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h2>left side (201)</h2><div class="left-children"><h6 class="left-children">child</h6><div id="c2"', $body);
-
     }
 
     /**

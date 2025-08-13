@@ -21,7 +21,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class FrontendContainerFactory implements SingletonInterface
 {
-
     protected Registry $tcaRegistry;
 
     public function __construct(Registry $tcaRegistry)

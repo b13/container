@@ -60,7 +60,7 @@ call_user_func(static function () {
             = B13\Container\Updates\ContainerDeleteChildrenWithWrongPid::class;
     }
 
-    if(TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Core\Information\Typo3Version::class)->getMajorVersion() < 12) {
+    if (TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Core\Information\Typo3Version::class)->getMajorVersion() < 12) {
         $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1729106358] = \B13\Container\Backend\ContextMenu\RecordContextMenuItemProvider::class;
     }
 });
