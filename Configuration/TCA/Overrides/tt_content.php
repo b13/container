@@ -31,7 +31,11 @@ call_user_func(static function () {
 
     $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups']['container'] = 'LLL:EXT:container/Resources/Private/Language/locallang.xlf:container';
 
-    $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['itemsProcFunc'] = \B13\Container\Tca\ItemProcFunc::class . '->colPos';
+    \FluidTYPO3\Flux\Integration\MultipleItemsProcFunc::register(
+        'tt_content',
+        'colPos',
+        \B13\Container\Tca\ItemProcFunc::class . '->colPos'
+    );
 
     // copyAfterDuplFields colPos,sys_language_uid
     // useColumnsForDefaultValues colPos,sys_language_uid,CType

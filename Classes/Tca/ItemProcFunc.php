@@ -15,6 +15,9 @@ namespace B13\Container\Tca;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class ItemProcFunc
 {
@@ -47,6 +50,18 @@ class ItemProcFunc
      */
     public function colPos(array &$parameters): void
     {
+        if (ExtensionManagementUtility::isLoaded('flux')) {
+            $recordService = GeneralUtility::makeInstance(\FluidTYPO3\Flux\Service\WorkspacesAwareRecordService::class);
+            $providerResolver = GeneralUtility::makeInstance(\FluidTYPO3\Flux\Provider\ProviderResolver::class);
+            $parentRecordUid = \FluidTYPO3\Flux\Utility\ColumnNumberUtility::calculateParentUid((int)$parameters['row']['colPos']);
+            $parentRecord = $recordService->getSingle('tt_content', '*', $parentRecordUid);
+            $provider = $providerResolver->resolvePrimaryConfigurationProvider('tt_content', null, $parentRecord);
+
+            if ($parentRecord && $provider instanceof \FluidTYPO3\Flux\Provider\Interfaces\GridProviderInterface) {
+                return;
+            }
+        }
+
         $row = $parameters['row'];
         if (($row['tx_container_parent'] ?? 0) > 0) {
             try {
