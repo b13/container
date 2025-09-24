@@ -257,6 +257,10 @@ class Registry implements SingletonInterface
         // group containers by group
         $groupedByGroup = [];
         $defaultGroup = 'container';
+
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        $cTypesExcludedInNewContentElementWizard = [];
+
         foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {
             if ($containerConfiguration['registerInNewContentElementWizard'] === true) {
                 $group = $containerConfiguration['group'] !== '' ? $containerConfiguration['group'] : $defaultGroup;
@@ -269,10 +273,19 @@ class Registry implements SingletonInterface
 ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
 ';
-        }
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() > 12) {
             // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
+            if ($typo3Version->getMajorVersion() > 12) {
+                if ($containerConfiguration['registerInNewContentElementWizard'] === false) {
+                    $group = $containerConfiguration['group'] !== '' ? $containerConfiguration['group'] : $defaultGroup;
+                    $cTypesExcludedInNewContentElementWizard[$group][] = $cType;
+                }
+            }
+        }
+
+        if ($typo3Version->getMajorVersion() > 12 && !empty($cTypesExcludedInNewContentElementWizard)) {
+            foreach ($cTypesExcludedInNewContentElementWizard as $group => $ctypes) {
+                $pageTs .= LF . 'mod.wizards.newContentElement.wizardItems.' . $group . '.removeItems := addToList(' . implode(',', $ctypes) . ')';
+            }
             return $pageTs;
         }
 
