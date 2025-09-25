@@ -14,6 +14,7 @@ namespace B13\Container\Integrity;
 
 use B13\Container\Integrity\Error\ChildInTranslatedContainerError;
 use B13\Container\Integrity\Error\NonExistingParentWarning;
+use B13\Container\Integrity\Error\UnusedColPosWarning;
 use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
@@ -55,6 +56,16 @@ class IntegrityFix implements SingletonInterface
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $dataHandler->enableLogging = false;
         $childRecord = $nonExistingParentWarning->getChildRecord();
+        $cmd = ['tt_content' => [$childRecord['uid'] => ['delete' => 1]]];
+        $dataHandler->start([], $cmd);
+        $dataHandler->process_cmdmap();
+    }
+
+    public function deleteChildrenWithUnusedColPos(UnusedColPosWarning $unusedColPosWarning): void
+    {
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->enableLogging = false;
+        $childRecord = $unusedColPosWarning->getChildRecord();
         $cmd = ['tt_content' => [$childRecord['uid'] => ['delete' => 1]]];
         $dataHandler->start([], $cmd);
         $dataHandler->process_cmdmap();

@@ -102,6 +102,12 @@ services:
         command: 'container:deleteChildrenWithNonExistingParent'
         schedulable: false
         description: delete all child records with a non existing parent record (they are displayed as unsued)
+  B13\Container\Command\DeleteChildrenWithUnusedColPosCommand:
+    tags:
+      - name: 'console.command'
+        command: 'container:deleteChildrenWithUnusedColPos'
+        schedulable: false
+        description: delete all child records with a colPos that is not available for the parent CType (they are displayed as unsued)
   B13\Container\Command\IntegrityCommand:
     tags:
       - name: 'console.command'
