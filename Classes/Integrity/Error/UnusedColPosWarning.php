@@ -47,6 +47,14 @@ class UnusedColPosWarning implements ErrorInterface
     }
 
     /**
+     * @return array
+     */
+    public function getChildRecord(): array
+    {
+        return $this->childRecord;
+    }
+
+    /**
      * @return string
      */
     public function getErrorMessage(): string

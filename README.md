@@ -206,6 +206,7 @@ bin/typo3 container:fixLanguageMode
 bin/typo3 container:fixContainerParentForConnectedMode
 bin/typo3 container:deleteChildrenWithWrongPid
 bin/typo3 container:deleteChildrenWithNonExistingParent
+bin/typo3 container:deleteChildrenWithUnusedColPos
 ```
 
 ## TODOs
