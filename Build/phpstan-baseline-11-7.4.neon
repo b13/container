@@ -3,7 +3,7 @@ parameters:
 
 		-
 			message: "#^Constant LF not found\\.$#"
-			count: 4
+			count: 5
 			path: ../Classes/Tca/Registry.php
 
 		-
