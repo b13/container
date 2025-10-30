@@ -40,3 +40,12 @@ parameters:
 			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 2 parameters, 5 required\\.$#"
 			count: 1
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
+		-
+			message: "#^Cannot call method getRecordType\\(\\) on array\\.$#"
+			count: 1
+			path: ../Classes/Listener/PageContentPreviewRendering.php
+
+		-
+			message: "#^Cannot call method toArray\\(\\) on array\\.$#"
+			count: 1
+			path: ../Classes/Listener/PageContentPreviewRendering.php
