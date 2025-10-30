@@ -79,3 +79,12 @@ parameters:
 			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:cast\\(\\)\\.$#"
 			count: 2
 			path: ../Classes/Domain/Factory/PageView/Backend/ContentStorage.php
+		-
+			message: "#^Parameter \\#1 \\$record of method B13\\\\Container\\\\Backend\\\\Preview\\\\GridRenderer\\:\\:renderGrid\\(\\) expects array, TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordInterface given\\.$#"
+			count: 1
+			path: ../Classes/Backend/Preview/ContainerPreviewRenderer.php
+
+		-
+			message: "#^Parameter \\#1 \\$record of method B13\\\\Container\\\\Backend\\\\Preview\\\\GridRenderer\\:\\:renderGrid\\(\\) expects array, TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordInterface given\\.$#"
+			count: 1
+			path: ../Classes/Listener/PageContentPreviewRendering.php

@@ -15,6 +15,9 @@ namespace B13\Container\Backend\Grid;
 use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
+use TYPO3\CMS\Core\Domain\RecordFactory;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumnItem extends GridColumnItem
 {
@@ -23,6 +26,10 @@ class ContainerGridColumnItem extends GridColumnItem
 
     public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, Container $container, ?string $newContentUrl)
     {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 13) {
+            $recordFactory = GeneralUtility::makeInstance(RecordFactory::class);
+            $record = $recordFactory->createFromDatabaseRow('tt_content', $record);
+        }
         parent::__construct($context, $column, $record);
         $this->container = $container;
         $this->newContentUrl = $newContentUrl;

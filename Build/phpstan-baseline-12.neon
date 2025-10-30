@@ -64,3 +64,21 @@ parameters:
 			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:tryFrom\\(\\)\\.$#"
 			count: 2
 			path: ../Classes/Domain/Factory/PageView/Backend/ContentStorage.php
+		-
+			message: "#^Cannot call method getRecordType\\(\\) on array\\.$#"
+			count: 1
+			path: ../Classes/Listener/PageContentPreviewRendering.php
+
+		-
+			message: "#^Cannot call method toArray\\(\\) on array\\.$#"
+			count: 1
+			path: ../Classes/Listener/PageContentPreviewRendering.php
+		-
+			message: "#^Call to method createFromDatabaseRow\\(\\) on an unknown class TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordFactory\\.$#"
+			count: 1
+			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordFactory not found\\.$#"
+			count: 1
+			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
