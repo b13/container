@@ -43,10 +43,8 @@ class ContentDefenderCest
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(300, 200);
-        $I->waitForElement('#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
-        $newContentElementLabel = $I->getNewContentElementLabel();
-
-        $I->click($newContentElementLabel, '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
+        $colPosSelector = '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
@@ -72,9 +70,8 @@ class ContentDefenderCest
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(800, 200);
-        $I->waitForElement('#element-tt_content-800 [data-colpos="' . $dataColPos . '"]');
-        $newContentElementLabel = $I->getNewContentElementLabel();
-        $I->click($newContentElementLabel, '#element-tt_content-800 [data-colpos="' . $dataColPos . '"]');
+        $colPosSelector = '#element-tt_content-800 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
@@ -153,9 +150,8 @@ class ContentDefenderCest
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(801, 200);
-        $I->waitForElement('#element-tt_content-801 [data-colpos="' . $dataColPos . '"]');
-        $newContentElementLabel = $I->getNewContentElementLabel();
-        $I->click($newContentElementLabel, '#element-tt_content-801 [data-colpos="' . $dataColPos . '"]');
+        $colPosSelector = '#element-tt_content-801 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
@@ -253,9 +249,8 @@ class ContentDefenderCest
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
-        $I->waitForElement('#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
-        $newContentElementLabel = $I->getNewContentElementLabel();
-        $I->click($newContentElementLabel, '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
+        $colPosSelector = '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
