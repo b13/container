@@ -264,9 +264,8 @@ class LayoutCest
         $I->switchToContentFrame();
         // header
         $dataColPos = $I->getDataColPos(700, 200);
-        $I->waitForElement('#element-tt_content-700 [data-colpos="' . $dataColPos . '"]');
-        $newContentElementLabel = $I->getNewContentElementLabel();
-        $I->click($newContentElementLabel, '#element-tt_content-700 [data-colpos="' . $dataColPos . '"]');
+        $colPosSelector = '#element-tt_content-700 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
@@ -311,8 +310,7 @@ class LayoutCest
         $I->waitForElement($containerColumn);
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         $I->dontSeeElement($contentInContainerColumn);
-        $newContentElementLabel = $I->getNewContentElementLabel();
-        $I->click($newContentElementLabel, $containerColumn);
+        $I->clickNewContentElement($containerColumn);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         if ($typo3Version->getMajorVersion() < 12) {
@@ -369,8 +367,8 @@ class LayoutCest
         $selector = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
         $I->dontSee('german', $selector);
         $dataColPos = $I->getDataColPos($uid, 200);
-        $newContentElementLabel = $I->getNewContentElementLabel();
-        $I->click($newContentElementLabel, '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]');
+        $colPosSelector = '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForElement('.modal-dialog');
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);

@@ -53,6 +53,16 @@ class BackendTester extends \Codeception\Actor
         return (string)($containerId . '-' . $colPos);
     }
 
+    public function clickNewContentElement(string $colPosSelector): void
+    {
+        $this->waitForElement($colPosSelector);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
+            $this->click('Content', $colPosSelector);
+            return;
+        }
+        $this->click($colPosSelector . ' typo3-backend-new-content-element-wizard-button');
+    }
+
     public function getNewContentElementLabel(): string
     {
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
