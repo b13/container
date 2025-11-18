@@ -24,7 +24,10 @@ modules:
       port: 9515
       path: /
       # @todo: adapt tests to not break with a defined window size (as in v12/v13)
-      #window_size: 1280x1024
+      window_size: 1280x1024
+      capabilities:
+        goog:chromeOptions:
+          args: ["window-size=1280,1024"]
 
 env:
   ci:
