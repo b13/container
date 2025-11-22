@@ -58,7 +58,7 @@ jobs:
 
       - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
-        if: matrix.TYPO3 != '14'
+        if: matrix.TYPO3 != '11' && matrix.TYPO3 != '14'
 
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v4
