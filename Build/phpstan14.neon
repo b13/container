@@ -17,4 +17,5 @@ parameters:
     - %currentWorkingDirectory%/Classes/ContentDefender
     - %currentWorkingDirectory%/Classes/Events/BeforeContainerPreviewIsRenderedEvent.php
     - %currentWorkingDirectory%/Tests/Functional/Integrity/IntegrityTest.php
+    - %currentWorkingDirectory%/Classes/Xclasses/LocalizationController.php
 
