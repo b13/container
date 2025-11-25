@@ -156,7 +156,7 @@ Options:
           - 11: Use TYPO3 v11.5
           - 12 (default): Use TYPO3 v12.4
           - 13: Use TYPO3 v13.x
-          - 14: Use TYPO3 14.0.x-dev
+          - 14: Use TYPO3 v14.x
 
     -a <mysqli|pdo_mysql>
         Only with -s functional|functionalDeprecated
@@ -603,7 +603,7 @@ case ${TEST_SUITE} in
               composer require typo3/cms-core:^13.4 typo3/testing-framework:^8.2 phpunit/phpunit:^10.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 14 ]; then
-              composer require typo3/cms-core:14.0.x-dev --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^14.0 --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
               composer require typo3/cms-core:^12.4 typo3/testing-framework:^8.2 phpunit/phpunit:^10.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
@@ -625,7 +625,7 @@ case ${TEST_SUITE} in
               composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 14 ]; then
-              composer require typo3/cms-core:14.0.x-dev --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^14.0 --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
