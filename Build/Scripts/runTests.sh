@@ -641,10 +641,7 @@ case ${TEST_SUITE} in
           mv composer.json.orig composer.json
         ;;
     functional)
-        PHPUNIT_EXCLUDE_GROUPS+=",not-${DBMS}"
-        PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS#,}"
-        PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS%,}"
-        COMMAND=(.Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml --exclude-group ${PHPUNIT_EXCLUDE_GROUPS} "$@")
+        COMMAND=(.Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml --exclude-group not-${DBMS} "$@")
         case ${DBMS} in
             mariadb)
                 echo "Using driver: ${DATABASE_DRIVER}"

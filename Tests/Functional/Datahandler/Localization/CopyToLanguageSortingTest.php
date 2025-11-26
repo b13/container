@@ -27,13 +27,13 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
                     4 => ['copyToLanguage' => 1],
                     1 => ['copyToLanguage' => 1],
                 ],
-            ], 'Dataset1'],
+            ], 'dataset' => 'Dataset1'],
             ['cmdmap' => [
                 'tt_content' => [
                     1 => ['copyToLanguage' => 1],
                     4 => ['copyToLanguage' => 1],
                 ],
-            ], 'Dataset2'],
+            ], 'dataset' => 'Dataset2'],
         ];
     }
 

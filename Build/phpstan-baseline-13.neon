@@ -49,3 +49,32 @@ parameters:
 			message: "#^Cannot call method toArray\\(\\) on array\\.$#"
 			count: 1
 			path: ../Classes/Listener/PageContentPreviewRendering.php
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 4 parameters, 5 required\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Instantiated class TYPO3\\\\CMS\\\\Backend\\\\Context\\\\PageContext not found\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Instantiated class TYPO3\\\\CMS\\\\Backend\\\\Domain\\\\Model\\\\Language\\\\PageLanguageInformation not found\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$pageRecord of class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor expects array, TYPO3\\\\CMS\\\\Backend\\\\Context\\\\PageContext given\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Parameter \\#3 \\$site of class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor expects TYPO3\\\\CMS\\\\Core\\\\Site\\\\Entity\\\\SiteInterface, PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&TYPO3\\\\CMS\\\\Backend\\\\View\\\\Drawing\\\\DrawingConfiguration given\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Parameter \\#4 \\$drawingConfiguration of class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor expects TYPO3\\\\CMS\\\\Backend\\\\View\\\\Drawing\\\\DrawingConfiguration, PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&TYPO3\\\\CMS\\\\Core\\\\Http\\\\ServerRequest given\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
