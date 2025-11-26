@@ -50,6 +50,10 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
         if: matrix.TYPO3 != '14'
 
+      - name: Functional Tests 14
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --exclude-group content_defender
+        if: matrix.TYPO3 == '14'
+
       - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
         if: matrix.TYPO3 != '14'
