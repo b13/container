@@ -212,18 +212,24 @@ class LocalizeTest extends AbstractDatahandler
     public static function localizeTwoContainerKeepsParentIndependedOnOrderDataProvider(): array
     {
         return [
-            ['cmdmap' => [
-                'tt_content' => [
-                    91 => ['localize' => 1],
-                    1 => ['localize' => 1],
+            [
+                'cmdmap' => [
+                    'tt_content' => [
+                        91 => ['localize' => 1],
+                        1 => ['localize' => 1],
+                    ],
                 ],
-            ], 'Dataset1'],
-            ['cmdmap' => [
-                'tt_content' => [
-                    1 => ['localize' => 1],
-                    91 => ['localize' => 1],
+                'dataset' => 'Dataset1',
+            ],
+            [
+                'cmdmap' => [
+                    'tt_content' => [
+                        1 => ['localize' => 1],
+                        91 => ['localize' => 1],
+                    ],
                 ],
-            ], 'Dataset2'],
+                'dataset' => 'Dataset2',
+            ],
         ];
     }
 
@@ -245,18 +251,24 @@ class LocalizeTest extends AbstractDatahandler
     public static function localizeWithCopyTwoContainerChangeParentIndependedOnOrderDataProvider(): array
     {
         return [
-            ['cmdmap' => [
-                'tt_content' => [
-                    91 => ['copyToLanguage' => 1],
-                    1 => ['copyToLanguage' => 1],
+            [
+                'cmdmap' => [
+                    'tt_content' => [
+                        91 => ['copyToLanguage' => 1],
+                        1 => ['copyToLanguage' => 1],
+                    ],
                 ],
-            ], 'Dataset1'],
-            ['cmdmap' => [
-                'tt_content' => [
-                    1 => ['copyToLanguage' => 1],
-                    91 => ['copyToLanguage' => 1],
+                'dataset' => 'Dataset1',
+            ],
+            [
+                'cmdmap' => [
+                    'tt_content' => [
+                        1 => ['copyToLanguage' => 1],
+                        91 => ['copyToLanguage' => 1],
+                    ],
                 ],
-            ], 'Dataset2'],
+                'dataset' => 'Dataset2',
+            ],
         ];
     }
 

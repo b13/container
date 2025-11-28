@@ -15,6 +15,8 @@ namespace B13\Container\Tests\Functional\Integrity;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use TYPO3\CMS\Backend\Context\PageContext;
+use TYPO3\CMS\Backend\Domain\Model\Language\PageLanguageInformation;
 use TYPO3\CMS\Backend\View\BackendLayout\BackendLayout;
 use TYPO3\CMS\Backend\View\BackendLayout\ContentFetcher;
 use TYPO3\CMS\Backend\View\Drawing\DrawingConfiguration;
@@ -25,6 +27,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -86,14 +89,43 @@ class IntegrityTest extends FunctionalTestCase
             ->fetchAssociative();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
             $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout);
+            $contentFetcher = new ContentFetcher($pageLayoutContext);
+            $unusedRecords = $contentFetcher->getUnusedRecords();
         } else {
             $site = $this->getMockBuilder(Site::class)->disableOriginalConstructor()->getMock();
             $drawingConfiguration = $this->getMockBuilder(DrawingConfiguration::class)->disableOriginalConstructor()->getMock();
             $serverRequest = $this->getMockBuilder(ServerRequest::class)->disableOriginalConstructor()->getMock();
-            $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout, $site, $drawingConfiguration, $serverRequest);
+            if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 14) {
+                $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout, $site, $drawingConfiguration, $serverRequest);
+                $contentFetcher = new ContentFetcher($pageLayoutContext);
+                $unusedRecords = $contentFetcher->getUnusedRecords();
+            } else {
+                $pageLanguageInformation = new PageLanguageInformation(
+                    $pageRecord['uid'],
+                    [],
+                    [],
+                    [],
+                    [0],
+                    false,
+                    []
+                );
+                $pageContext = new PageContext(
+                    $pageRecord['uid'],
+                    $pageRecord,
+                    $site,
+                    [],
+                    [],
+                    [],
+                    $pageLanguageInformation,
+                    new Permission()
+                );
+                $pageLayoutContext = new PageLayoutContext($pageContext, $backendLayout, $drawingConfiguration, $serverRequest);
+                $container = $this->get('service_container');
+                $contentFetcher = $container->get(ContentFetcher::class);
+                $unusedRecords = $contentFetcher->getUnusedRecords($pageLayoutContext);
+            }
         }
-        $contentFetcher = new ContentFetcher($pageLayoutContext);
-        $unusedRecords = $contentFetcher->getUnusedRecords();
+
         $unusedRecordsArr = [];
         foreach ($unusedRecords as $unusedRecord) {
             $unusedRecordsArr[] = $unusedRecord;

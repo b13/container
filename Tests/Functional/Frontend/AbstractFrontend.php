@@ -11,12 +11,25 @@ namespace B13\Container\Tests\Functional\Frontend;
  */
 
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractFrontend extends FunctionalTestCase
 {
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'caching' => [
+                'cacheConfigurations' => [
+                    'fluid_template' => [
+                        'backend' => NullBackend::class,
+                    ],
+                ],
+            ],
+        ],
+    ];
+
     /**
      * @var non-empty-string[]
      */

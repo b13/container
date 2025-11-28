@@ -82,3 +82,22 @@ parameters:
 			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordFactory not found\\.$#"
 			count: 1
 			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 4 parameters, 2 required\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Instantiated class TYPO3\\\\CMS\\\\Backend\\\\Context\\\\PageContext not found\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Instantiated class TYPO3\\\\CMS\\\\Backend\\\\Domain\\\\Model\\\\Language\\\\PageLanguageInformation not found\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$pageRecord of class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor expects array, TYPO3\\\\CMS\\\\Backend\\\\Context\\\\PageContext given\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
