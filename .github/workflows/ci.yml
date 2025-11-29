@@ -64,3 +64,10 @@ jobs:
         with:
           name: acceptance-test-reports-${{ matrix.php }}-${{ matrix.TYPO3 }}
           path: .Build/Web/typo3temp/var/tests/_output
+
+      - name: Archive composer.lock
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: composer.lock-${{ matrix.php }}-${{ matrix.TYPO3 }}
+          path: composer.lock
