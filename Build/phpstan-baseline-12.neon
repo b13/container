@@ -74,7 +74,7 @@ parameters:
 			count: 1
 			path: ../Classes/Listener/PageContentPreviewRendering.php
 		-
-			message: "#^Call to method createFromDatabaseRow\\(\\) on an unknown class TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordFactory\\.$#"
+			message: "#^Call to method createResolvedRecordFromDatabaseRow\\(\\) on an unknown class TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordFactory\\.$#"
 			count: 1
 			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
 
