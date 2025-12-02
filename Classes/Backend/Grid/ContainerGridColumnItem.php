@@ -28,7 +28,7 @@ class ContainerGridColumnItem extends GridColumnItem
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 13) {
             $recordFactory = GeneralUtility::makeInstance(RecordFactory::class);
-            $record = $recordFactory->createFromDatabaseRow('tt_content', $record);
+            $record = $recordFactory->createResolvedRecordFromDatabaseRow('tt_content', $record);
         }
         parent::__construct($context, $column, $record);
         $this->container = $container;
