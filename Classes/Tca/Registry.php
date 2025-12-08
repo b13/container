@@ -282,7 +282,7 @@ class Registry implements SingletonInterface
             }
         }
 
-        if ($typo3Version->getMajorVersion() > 12 && !empty($cTypesExcludedInNewContentElementWizard)) {
+        if ($typo3Version->getMajorVersion() > 12) {
             foreach ($cTypesExcludedInNewContentElementWizard as $group => $ctypes) {
                 $pageTs .= LF . 'mod.wizards.newContentElement.wizardItems.' . $group . '.removeItems := addToList(' . implode(',', $ctypes) . ')';
             }
