@@ -46,6 +46,12 @@ class InfoModuleCest
         $I->selectOption('select[name="' . $selectbox1Name . '"]', 'Page TSconfig');
         $I->waitForElement('select[name="' . $selectbox2Name . '"]');
         $I->selectOption('select[name="' . $selectbox2Name . '"]', 99);
-        $I->see('b13-2cols-with-header-container');
+        if ($typo3Version->getMajorVersion() >= 12) {
+            $I->dontSee('b13-2cols-with-header-container');
+            $I->see('b13-1col');
+        } else {
+            $I->see('b13-2cols-with-header-container');
+            $I->dontSee('b13-1col');
+        }
     }
 }
