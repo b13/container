@@ -536,4 +536,31 @@ class LayoutCest
         }
         $I->see('Some Description of the Container');
     }
+
+    /**
+     * @param BackendTester $I
+     * @param PageTree $pageTree
+     * @throws \Exception
+     */
+    public function canDisableContainerContentElementInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    {
+        $I->click('Page');
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'emptyPage']);
+        } else {
+            $pageTreeV13->openPath(['home', 'emptyPage']);
+        }
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->waitForText($newContentElementLabel);
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
+        $I->switchToIFrame();
+        $I->waitForElement('.modal-dialog');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
+        $I->wait(0.5);
+        $I->see('2 Column Container With Header');
+        $I->dontSee('1 Column');
+    }
 }
