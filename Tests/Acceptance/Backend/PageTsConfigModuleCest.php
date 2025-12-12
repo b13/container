@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use B13\Container\Tests\Acceptance\Support\PageTreeV13;
 use Codeception\Scenario;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
@@ -27,28 +28,40 @@ class PageTsConfigModuleCest
         $I->loginAs('admin');
     }
 
-    public function canSeeContainerPageTsConfig(BackendTester $I, PageTree $pageTree, Scenario $scenario)
+    public function canSeeContainerPageTsConfig(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13, Scenario $scenario)
     {
         $typo3Version = new Typo3Version();
         if ($typo3Version->getMajorVersion() < 12) {
             $scenario->skip('InfoModuleCest is used');
         }
-        if ($typo3Version->getMajorVersion() > 12) {
-            $scenario->skip('(no PageTsConfig required');
-        }
         $I->click('Page TSconfig');
-        $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-        $pageTree->openPath(['home', 'pageWithContainer-6']);
+        if ($typo3Version->getMajorVersion() < 13) {
+            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
+            $pageTree->openPath(['home', 'pageWithContainer-6']);
+        } else {
+            $pageTreeV13->openPath(['home', 'pageWithContainer-6']);
+        }
         $I->wait(0.2);
         $I->switchToContentFrame();
 
         $I->waitForElement('select[name="moduleMenu"]');
         $I->selectOption('select[name="moduleMenu"]', 'Active page TSconfig');
         $I->waitForElement('input[name="searchValue"]');
-        $I->fillField('searchValue', 'b13-2cols-with-header-container');
+        if ($typo3Version->getMajorVersion() < 13) {
+            $I->fillField('searchValue', 'b13-2cols-with-header-container');
+        } else {
+            $I->fillField('searchValue', 'b13-1col');
+        }
         $I->waitForText('Configuration');
         $I->click('Configuration');
-        $I->waitForText('b13-2cols-with-header-container');
-        $I->see('b13-2cols-with-header-container');
+        if ($typo3Version->getMajorVersion() > 12) {
+            $I->waitForText('b13-1col');
+            $I->dontSee('show = b13-2cols-with-header-container');
+            $I->see('removeItems = b13-1col');
+        } else {
+            $I->waitForText('b13-2cols-with-header-container');
+            $I->see('show = b13-2cols-with-header-container');
+            $I->dontSee('removeItems = b13-1col');
+        }
     }
 }
