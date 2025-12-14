@@ -164,6 +164,7 @@ class LayoutCest
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->canSee('my-default-value-header', '.element-preview-header-header');
         $I->canSee('header', '.t3-grid-container');
         $I->canSee('left side', '.t3-grid-container');
         $I->canSee('right side', '.t3-grid-container');
