@@ -30,19 +30,19 @@
         </f:if>
     </div>
     <f:if condition="{allowEditContent} && {item.column.contentEditable} && {item.column.allowNewContent} && {column.active}">
-        <div class="t3-page-ce-actions t3js-page-new-ce" id="colpos-{item.column.columnNumber}-page-{item.context.pageId}-{item.column.uniqueId}">
-            <f:if condition="{column.newContentElementWizardShouldBeSkipped}">
-                <f:then>
+        <f:if condition="{column.newContentElementWizardShouldBeSkipped}">
+            <f:then>
+                <div class="t3-page-ce-actions t3js-page-new-ce">
                     <a href="{item.newContentAfterUrl}" title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}" class="btn btn-default btn-sm">
                         <core:icon identifier="actions-plus" />
                         <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:createNewContent" />
                     </a>
-                </f:then>
-                <f:else>
-                    <f:render partial="PageLayout/ActionControls" arguments="{url: item.newContentAfterUrl}" />
-                </f:else>
-            </f:if>
-        </div>
+                </div>
+            </f:then>
+            <f:else>
+                <f:render partial="PageLayout/ActionControls" arguments="{url: item.newContentAfterUrl}" />
+            </f:else>
+        </f:if>
     </f:if>
     <div class="t3-page-ce-dropzone t3js-page-ce-dropzone-available" hidden></div>
 </div>
