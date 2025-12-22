@@ -85,7 +85,7 @@ class ItemProcFunc
                 $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
                 $items[] = [
-                    $cType,
+                    $container->getContainerRecord()['header'] ?? $cType,
                     $row['tx_container_parent'],
                 ];
             } catch (Exception $e) {
