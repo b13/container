@@ -206,6 +206,11 @@ class Registry implements SingletonInterface
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridLayoutPaths'] ?? [];
     }
 
+    public function getContainerLabel(string $cType): string
+    {
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['label'] ?? $cType;
+    }
+
     public function getColPosName(string $cType, int $colPos): ?string
     {
         $grid = $this->getGrid($cType);

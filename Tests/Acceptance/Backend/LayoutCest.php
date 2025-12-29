@@ -284,7 +284,7 @@ class LayoutCest
         }
         $I->switchToContentFrame();
         $I->see('header [200]');
-        $I->see('b13-2cols-with-header-container [700]');
+        $I->see('2 Column Container With Header [700]');
     }
 
     /**
