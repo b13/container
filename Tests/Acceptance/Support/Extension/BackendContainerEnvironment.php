@@ -12,6 +12,9 @@ namespace B13\Container\Tests\Acceptance\Support\Extension;
  * of the License, or any later version.
  */
 
+use Codeception\Event\SuiteEvent;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Acceptance\Extension\BackendEnvironment;
 
 class BackendContainerEnvironment extends BackendEnvironment
@@ -63,4 +66,15 @@ class BackendContainerEnvironment extends BackendEnvironment
             __DIR__ . '/../../Fixtures/be_groups.csv',
         ],
     ];
+
+    public function bootstrapTypo3Environment(SuiteEvent $suiteEvent)
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() >= 14) {
+            $this->config['testExtensionsToLoad'] = [
+                'b13/container',
+                'b13/container-example',
+            ];
+        }
+        parent::bootstrapTypo3Environment($suiteEvent);
+    }
 }
