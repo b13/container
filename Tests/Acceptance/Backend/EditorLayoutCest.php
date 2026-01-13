@@ -30,7 +30,7 @@ class EditorLayoutCest
 
     public function canSeeNewContentButton(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer-5']);

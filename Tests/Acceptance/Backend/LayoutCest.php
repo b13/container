@@ -35,7 +35,7 @@ class LayoutCest
      */
     public function connectedModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithLocalization']);
@@ -93,7 +93,7 @@ class LayoutCest
      */
     public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithLocalization']);
@@ -132,7 +132,7 @@ class LayoutCest
      */
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
@@ -177,7 +177,7 @@ class LayoutCest
      */
     public function canCreateContainerContentElementSaveAndClose(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
@@ -221,7 +221,7 @@ class LayoutCest
      */
     public function canDragAndDropElementOutsideIntoContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13, Scenario $scenario)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
@@ -254,7 +254,7 @@ class LayoutCest
      */
     public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer-2']);
@@ -296,7 +296,7 @@ class LayoutCest
     public function canCreateContentElementInContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         //@depends canCreateContainer
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer']);
@@ -342,7 +342,7 @@ class LayoutCest
     public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         //@depends canCreateContainer
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
@@ -401,7 +401,7 @@ class LayoutCest
     public function canTranslateChildWithTranslationModule(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         // test must be before canTranslateChild
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
@@ -444,7 +444,7 @@ class LayoutCest
      */
     public function canTranslateChild(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithTranslatedContainer-2']);
@@ -468,7 +468,7 @@ class LayoutCest
      */
     public function canSeeContainerColumnTitleForDifferentContainers(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithDifferentContainers']);
@@ -489,7 +489,7 @@ class LayoutCest
 
     public function canSeeCustomBackendTemplate(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithDifferentContainers']);
@@ -509,7 +509,7 @@ class LayoutCest
      */
     public function canSeeDescriptionOfContainerInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
@@ -545,7 +545,7 @@ class LayoutCest
      */
     public function canDisableContainerContentElementInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);

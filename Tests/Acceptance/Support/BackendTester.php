@@ -53,6 +53,16 @@ class BackendTester extends \Codeception\Actor
         return (string)($containerId . '-' . $colPos);
     }
 
+    public function clickLayoutModuleButton(): void
+    {
+        //$this->wait(3);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 14) {
+            $this->click('Page');
+        } else {
+            $this->click('Layout');
+        }
+    }
+
     public function clickNewContentElement(string $colPosSelector): void
     {
         $this->waitForElement($colPosSelector);

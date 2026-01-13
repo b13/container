@@ -43,7 +43,7 @@ class WorkspaceCest
      */
     public function liveWorkspaceShowsLiveElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithWorkspace']);
@@ -65,7 +65,7 @@ class WorkspaceCest
      */
     public function testWorkspaceShowsWorkspaceElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $this->switchToTestWs($I);
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
@@ -89,7 +89,7 @@ class WorkspaceCest
      */
     public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithWorkspace']);
@@ -119,7 +119,7 @@ class WorkspaceCest
      */
     public function testWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $this->switchToTestWs($I);
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
@@ -150,7 +150,7 @@ class WorkspaceCest
      */
     public function testWorkspaceShowsLiveContainerUidForContainerParentFieldWhenContainerIsAlreadyMoved(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $this->switchToTestWs($I);
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
