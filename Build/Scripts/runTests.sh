@@ -343,6 +343,7 @@ while getopts "a:b:s:d:i:t:p:xy:o:nhug" OPT; do
             fi
             # @todo Remove USE_APACHE option when TF7 has been dropped (along with TYPO3 v11 support).
             [[ "${TYPO3}" -eq 13 ]] && USE_APACHE=1
+            [[ "${TYPO3}" -eq 14 ]] && USE_APACHE=1
           ;;
         p)
             PHP_VERSION=${OPTARG}
