@@ -51,9 +51,15 @@ class LayoutCest
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
             $I->waitForElement('select[name="languageMenu"]');
             $I->selectOption('select[name="languageMenu"]', 'german');
-        } else {
+        } elseif ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 14) {
             $I->waitForText('Language');
             $I->click('Language');
+            $I->waitForText('german');
+            $I->click('german');
+        } else {
+            $I->waitForText('english');
+            //$I->click('english');
+            $I->click('.module-docheader-bar-column button');
             $I->waitForText('german');
             $I->click('german');
         }
@@ -66,8 +72,13 @@ class LayoutCest
 
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
             $I->selectOption('select[name="actionMenu"]', 'Languages');
-        } else {
+        } elseif ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 14) {
             $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
+        } else {
+            $I->waitForElementVisible('.module-docheader-buttons .btn-group button.dropdown-toggle');
+            $I->click('.module-docheader-buttons .btn-group button.dropdown-toggle');
+            $I->waitForElementVisible('.module-docheader-buttons .dropdown-menu');
+            $I->click('Language Comparison', '.module-docheader-buttons .dropdown-menu');
         }
         $I->waitForElementNotVisible('#t3js-ui-block');
 
