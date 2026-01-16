@@ -601,7 +601,7 @@ case ${TEST_SUITE} in
               composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
-              composer require typo3/cms-core:^13.4 typo3/testing-framework:^8.2 phpunit/phpunit:^10.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^13.4 typo3/testing-framework:^9 phpunit/phpunit:^11 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 14 ]; then
               composer require typo3/cms-core:^14.0 --dev -W --no-progress --no-interaction

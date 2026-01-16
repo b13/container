@@ -46,7 +46,7 @@ class ContentDefenderCest
         $colPosSelector = '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]';
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
@@ -73,7 +73,7 @@ class ContentDefenderCest
         $colPosSelector = '#element-tt_content-800 [data-colpos="' . $dataColPos . '"]';
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
@@ -127,7 +127,7 @@ class ContentDefenderCest
         }
 
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
@@ -153,7 +153,7 @@ class ContentDefenderCest
         $colPosSelector = '#element-tt_content-801 [data-colpos="' . $dataColPos . '"]';
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
@@ -252,7 +252,7 @@ class ContentDefenderCest
         $colPosSelector = '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]';
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
