@@ -42,7 +42,7 @@ parameters:
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
 		-
 			message: "#^Call to method assign\\(\\) on an unknown class TYPO3\\\\CMS\\\\Fluid\\\\View\\\\StandaloneView\\.$#"
-			count: 8
+			count: 9
 			path: ../Classes/Backend/Preview/GridRenderer.php
 
 		-
