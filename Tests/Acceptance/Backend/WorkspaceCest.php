@@ -90,7 +90,7 @@ class WorkspaceCest
     public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithWorkspace']);
         } else {
@@ -98,16 +98,12 @@ class WorkspaceCest
         }
         $I->wait(0.2);
         $I->switchToContentFrame();
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            $I->waitForElement('select[name="languageMenu"]');
-            $I->selectOption('select[name="languageMenu"]', 'german');
-        } else {
-            $I->waitForText('Language');
-            $I->click('Language');
-            $I->waitForText('german');
-            $I->click('german');
+        $I->selectLanguageComparisonMode();
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->selectGermanInLanguageMenu();
         }
         $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->waitForText('translation-live');
         $I->see('translation-live');
         $I->dontSee('translation-ws');
     }
@@ -129,17 +125,8 @@ class WorkspaceCest
         }
         $I->wait(0.2);
         $I->switchToContentFrame();
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            $I->waitForElement('select[name="languageMenu"]');
-            $I->selectOption('select[name="languageMenu"]', 'german');
-        } else {
-            $I->waitForText('Language');
-            $I->click('Language');
-            $I->waitForText('german');
-            $I->click('german');
-        }
+        $I->selectGermanInLanguageMenu();
         $I->waitForElementNotVisible('#t3js-ui-block');
-
         $I->dontSee('translation-live');
         $I->see('translation-ws');
         $this->switchToLiveWs($I);
@@ -152,7 +139,7 @@ class WorkspaceCest
     {
         $I->clickLayoutModuleButton();
         $this->switchToTestWs($I);
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithWorkspace-movedContainer']);
         } else {
