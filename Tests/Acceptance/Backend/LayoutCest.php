@@ -429,7 +429,7 @@ class LayoutCest
      * @param PageTree $pageTree
      * @throws \Exception
      */
-    public function canTranslateChildX(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
+    public function canTranslateChild(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
