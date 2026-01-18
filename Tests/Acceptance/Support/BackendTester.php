@@ -13,7 +13,6 @@ namespace B13\Container\Tests\Acceptance\Support;
  */
 
 use B13\Container\Tests\Acceptance\Support\_generated\BackendTesterActions;
-use Codeception\Scenario;
 use Codeception\Util\Locator;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Acceptance\Step\FrameSteps;
@@ -23,16 +22,9 @@ class BackendTester extends \Codeception\Actor
     use BackendTesterActions;
     use FrameSteps;
 
-    protected int $typo3MajorVersion;
-
-    public function __construct(protected readonly Scenario $scenario)
-    {
-        $this->typo3MajorVersion = (new Typo3Version())->getMajorVersion();
-    }
-
     public function getTypo3MajorVersion(): int
     {
-        return $this->typo3MajorVersion;
+        return (new Typo3Version())->getMajorVersion();
     }
 
     public function loginAs(string $username): void
@@ -59,7 +51,7 @@ class BackendTester extends \Codeception\Actor
 
     public function getDataColPos(int $containerId, int $colPos): string
     {
-        if ($this->typo3MajorVersion > 11) {
+        if ($this->getTypo3MajorVersion() > 11) {
             return (string)$colPos;
         }
         return (string)($containerId . '-' . $colPos);
@@ -67,8 +59,7 @@ class BackendTester extends \Codeception\Actor
 
     public function clickLayoutModuleButton(): void
     {
-        //$this->wait(3);
-        if ($this->typo3MajorVersion < 14) {
+        if ($this->getTypo3MajorVersion() < 14) {
             $this->click('Page');
         } else {
             $this->click('Layout');
@@ -78,7 +69,7 @@ class BackendTester extends \Codeception\Actor
     public function clickNewContentElement(string $colPosSelector): void
     {
         $this->waitForElement($colPosSelector);
-        if ($this->typo3MajorVersion < 12) {
+        if ($this->getTypo3MajorVersion() < 12) {
             $this->click('Content', $colPosSelector);
             return;
         }
@@ -87,7 +78,7 @@ class BackendTester extends \Codeception\Actor
 
     public function getNewContentElementLabel(): string
     {
-        if ($this->typo3MajorVersion < 12) {
+        if ($this->getTypo3MajorVersion() < 12) {
             return 'Content';
         }
         return 'Create new content';
@@ -95,7 +86,7 @@ class BackendTester extends \Codeception\Actor
 
     public function getNewRecordWizardSelector(): string
     {
-        if ($this->typo3MajorVersion < 13) {
+        if ($this->getTypo3MajorVersion() < 13) {
             return 'typo3-backend-new-content-element-wizard';
         }
         return 'typo3-backend-new-record-wizard';
@@ -103,7 +94,7 @@ class BackendTester extends \Codeception\Actor
 
     public function waitForModal(): void
     {
-        if ($this->typo3MajorVersion < 14) {
+        if ($this->getTypo3MajorVersion() < 14) {
             $this->waitForElement('.modal-dialog');
         } else {
             $this->waitForElement('dialog.t3js-modal');
@@ -112,10 +103,10 @@ class BackendTester extends \Codeception\Actor
 
     public function selectGermanInLanguageMenu(): void
     {
-        if ($this->typo3MajorVersion < 12) {
+        if ($this->getTypo3MajorVersion() < 12) {
             $this->waitForElement('select[name="languageMenu"]');
             $this->selectOption('select[name="languageMenu"]', 'german');
-        } elseif ($this->typo3MajorVersion < 14) {
+        } elseif ($this->getTypo3MajorVersion() < 14) {
             $this->waitForText('Language');
             $this->click('Language');
             $this->waitForText('german');
@@ -131,10 +122,10 @@ class BackendTester extends \Codeception\Actor
 
     public function selectLanguageComparisonMode(): void
     {
-        if ($this->typo3MajorVersion < 12) {
+        if ($this->getTypo3MajorVersion() < 12) {
             $this->waitForElement('select[name="actionMenu"]');
             $this->selectOption('select[name="actionMenu"]', 'Languages');
-        } elseif ($this->typo3MajorVersion < 14) {
+        } elseif ($this->getTypo3MajorVersion() < 14) {
             $this->waitForElement('select[name="actionMenu"]');
             $this->selectOption('select[name="actionMenu"]', 'Language Comparison');
         } else {
