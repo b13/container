@@ -16,8 +16,6 @@ use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use B13\Container\Tests\Acceptance\Support\PageTreeV13;
 use Codeception\Scenario;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LayoutCest
 {
@@ -36,7 +34,7 @@ class LayoutCest
     public function connectedModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithLocalization']);
         } else {
@@ -55,16 +53,7 @@ class LayoutCest
         $I->dontSee('2cols-header-0');
         $I->dontSee('header-header-0');
 
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            $I->selectOption('select[name="actionMenu"]', 'Languages');
-        } elseif ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 14) {
-            $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
-        } else {
-            $I->waitForElementVisible('.module-docheader-buttons .btn-group button.dropdown-toggle');
-            $I->click('.module-docheader-buttons .btn-group button.dropdown-toggle');
-            $I->waitForElementVisible('.module-docheader-buttons .dropdown-menu');
-            $I->click('Language Comparison', '.module-docheader-buttons .dropdown-menu');
-        }
+        $I->selectLanguageComparisonMode();
         $I->waitForElementNotVisible('#t3js-ui-block');
 
         // td.t3-grid-cell:nth-child(1)
@@ -90,7 +79,7 @@ class LayoutCest
     public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithLocalization']);
         } else {
@@ -103,9 +92,9 @@ class LayoutCest
         // we have a "Content" Button for new elements with Fluid based page module
         $newContentElementLabel = $I->getNewContentElementLabel();
         $I->dontSee($newContentElementLabel, '#element-tt_content-102 .t3-page-ce-body');
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->selectOption('select[name="actionMenu"]', 'Languages');
-        } elseif ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 14) {
+        } elseif ($I->getTypo3MajorVersion() < 14) {
             $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
         } else {
             $I->waitForElementVisible('.module-docheader-buttons .btn-group button.dropdown-toggle');
@@ -126,7 +115,7 @@ class LayoutCest
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
         } else {
@@ -136,20 +125,19 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText($newContentElementLabel);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click($newContentElementLabel);
         } else {
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         }
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click('Container');
             $I->click('2 Column Container With Header');
         } else {
             $I->wait(0.5);
-            if ($typo3Version->getMajorVersion() > 13) {
+            if ($I->getTypo3MajorVersion() > 13) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
@@ -176,7 +164,7 @@ class LayoutCest
     public function canCreateContainerContentElementSaveAndClose(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
         } else {
@@ -186,22 +174,21 @@ class LayoutCest
         $I->switchToContentFrame();
         $newContentElementLabel = $I->getNewContentElementLabel();
         $I->waitForText($newContentElementLabel);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click($newContentElementLabel);
         } else {
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         }
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click('Container');
             // b13-2cols
             // this also tests container-example eventListener
             // https://github.com/b13/container-example/commit/df2560e75966a73754b5d4ea091d14727c16f024
             $I->click('2 Column mod -- Some Description of the Container');
         } else {
-            if ($typo3Version->getMajorVersion() > 13) {
+            if ($I->getTypo3MajorVersion() > 13) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
@@ -224,7 +211,7 @@ class LayoutCest
     public function canDragAndDropElementOutsideIntoContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13, Scenario $scenario)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
         } else {
@@ -239,7 +226,7 @@ class LayoutCest
         $I->waitForElement('#element-tt_content-900 [data-colpos="' . $dataColPos . '"] .t3js-page-ce-dropzone-available');
         $I->dontSeeElement('#element-tt_content-900 #element-tt_content-901');
         $I->dragAndDrop('#element-tt_content-901 .t3js-page-ce-draghandle', '#element-tt_content-900 [data-colpos="' . $dataColPos . '"] .t3js-page-ce-dropzone-available');
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $pageTree->openPath(['home', 'pageWithContainerAndElementOutsice']);
         } else {
             $pageTreeV13->openPath(['home', 'pageWithContainerAndElementOutsice']);
@@ -257,7 +244,7 @@ class LayoutCest
     public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer-2']);
         } else {
@@ -272,14 +259,13 @@ class LayoutCest
         // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForModal();
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
-            if ($typo3Version->getMajorVersion() < 13) {
+            if ($I->getTypo3MajorVersion() < 13) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
@@ -299,7 +285,7 @@ class LayoutCest
     {
         //@depends canCreateContainer
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer']);
         } else {
@@ -311,18 +297,17 @@ class LayoutCest
         $containerColumn = '#element-tt_content-1 [data-colpos="' . $dataColPos . '"]';
         $contentInContainerColumn = '#element-tt_content-1 div[data-colpos="' . $dataColPos . '"] .t3-page-ce';
         $I->waitForElement($containerColumn);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         $I->dontSeeElement($contentInContainerColumn);
         $I->clickNewContentElement($containerColumn);
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion()) {
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
-            if ($typo3Version->getMajorVersion() < 13) {
+            if ($I->getTypo3MajorVersion()) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
@@ -345,7 +330,7 @@ class LayoutCest
     {
         //@depends canCreateContainer
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
         } else {
@@ -365,14 +350,13 @@ class LayoutCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
-            if ($typo3Version->getMajorVersion() < 13) {
+            if ($I->getTypo3MajorVersion() < 13) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
@@ -395,7 +379,7 @@ class LayoutCest
     {
         // test must be before canTranslateChild
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
         } else {
@@ -417,7 +401,7 @@ class LayoutCest
         }
 
         $I->switchToIFrame();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('.t3js-localization-option');
             $I->waitForElement('div[data-bs-slide="localize-summary"]');
         }
@@ -432,7 +416,7 @@ class LayoutCest
     public function canTranslateChild(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithTranslatedContainer-2']);
         } else {
@@ -469,7 +453,7 @@ class LayoutCest
     public function canSeeContainerColumnTitleForDifferentContainers(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         } else {
@@ -490,7 +474,7 @@ class LayoutCest
     public function canSeeCustomBackendTemplate(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13, Scenario $scenario): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         } else {
@@ -513,7 +497,7 @@ class LayoutCest
     public function canSeeDescriptionOfContainerInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
         } else {
@@ -523,8 +507,7 @@ class LayoutCest
         $I->switchToContentFrame();
         $newContentElementLabel = $I->getNewContentElementLabel();
         $I->waitForText($newContentElementLabel);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click($newContentElementLabel);
         } else {
             $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
@@ -532,7 +515,7 @@ class LayoutCest
         $I->switchToIFrame();
         $I->waitForModal();
 
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click('Container');
         } else {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
@@ -549,7 +532,7 @@ class LayoutCest
     public function canDisableContainerContentElementInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'emptyPage']);
         } else {

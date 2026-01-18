@@ -15,8 +15,6 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use B13\Container\Tests\Acceptance\Support\PageTreeV13;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EditorLayoutCest
 {
@@ -31,7 +29,7 @@ class EditorLayoutCest
     public function canSeeNewContentButton(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer-5']);
         } else {
