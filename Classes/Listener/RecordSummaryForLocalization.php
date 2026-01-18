@@ -14,6 +14,7 @@ namespace B13\Container\Listener;
 
 use B13\Container\Service\RecordLocalizeSummaryModifier;
 use TYPO3\CMS\Backend\Controller\Event\AfterRecordSummaryForLocalizationEvent;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class RecordSummaryForLocalization
 {
@@ -31,9 +32,14 @@ class RecordSummaryForLocalization
     {
         $records = $event->getRecords();
         $columns = $event->getColumns();
+        DebuggerUtility::var_dump($records);
+        DebuggerUtility::var_dump($columns);
         $records = $this->recordLocalizeSummaryModifier->filterRecords($records);
         $columns = $this->recordLocalizeSummaryModifier->rebuildColumns($columns);
         $event->setColumns($columns);
         $event->setRecords($records);
+        DebuggerUtility::var_dump($records);
+        DebuggerUtility::var_dump($columns);
+        die();
     }
 }

@@ -127,6 +127,7 @@ class Registry implements SingletonInterface
                     $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
                     $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
                     $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                    $contentDefenderConfiguration['allowedContentTypes'] = $contentDefenderConfiguration['allowed.']['CType'] ?? '';
                     return $contentDefenderConfiguration;
                 }
             }
