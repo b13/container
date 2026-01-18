@@ -16,7 +16,6 @@ use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use B13\Container\Tests\Acceptance\Support\PageTreeV13;
 use Codeception\Scenario;
-use TYPO3\CMS\Core\Information\Typo3Version;
 
 class PageTsConfigModuleCest
 {
