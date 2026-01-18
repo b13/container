@@ -96,10 +96,7 @@ class WorkspaceCest
         }
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->selectLanguageComparisonMode();
-        if ($I->getTypo3MajorVersion() > 13) {
-            $I->selectGermanInLanguageMenu();
-        }
+        $I->selectGermanInLanguageMenu();
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->waitForText('translation-live');
         $I->see('translation-live');
