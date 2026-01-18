@@ -301,13 +301,13 @@ class LayoutCest
         $I->clickNewContentElement($containerColumn);
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion()) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->waitForText('Header Only');
             $I->click('Header Only');
         } else {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
             $I->waitForText('Header Only');
-            if ($I->getTypo3MajorVersion()) {
+            if ($I->getTypo3MajorVersion() < 13) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
