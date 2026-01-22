@@ -15,6 +15,7 @@ namespace B13\Container\Updates;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
@@ -24,12 +25,13 @@ use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Attribute\UpgradeWizard;
+use TYPO3\CMS\Install\Updates\ChattyInterface;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 #[UpgradeWizard('container_containerDeleteChildrenWithWrongPid')]
-class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, RepeatableInterface
+class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, RepeatableInterface, ChattyInterface
 {
     public const IDENTIFIER = 'container_deleteChildrenWithWrongPid';
 
@@ -43,10 +45,17 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, Rep
      */
     protected $integrityFix;
 
+    private OutputInterface $output;
+
     public function __construct(Integrity $integrity, IntegrityFix $integrityFix)
     {
         $this->integrity = $integrity;
         $this->integrityFix = $integrityFix;
+    }
+
+    public function setOutput(OutputInterface $output): void
+    {
+        $this->output = $output;
     }
 
     public function getIdentifier(): string
@@ -91,6 +100,12 @@ class ContainerDeleteChildrenWithWrongPid implements UpgradeWizardInterface, Rep
                 Bootstrap::initializeBackendUser(BackendUserAuthentication::class, $request);
             } else {
                 Bootstrap::initializeBackendUser();
+            }
+            if ($GLOBALS['BE_USER'] === null || $GLOBALS['BE_USER']->user === null) {
+                $this->output->writeln(
+                    '<error>EXT:container Migrations need a valid Backend User, Login to the Backend to execute Wizard, or use CLI</error>'
+                );
+                return false;
             }
             Bootstrap::initializeBackendAuthentication();
             $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
