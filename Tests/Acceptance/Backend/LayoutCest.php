@@ -482,9 +482,6 @@ class LayoutCest
         }
         $I->wait(0.2);
         $I->switchToContentFrame();
-        if ($I->getTypo3MajorVersion() > 13) {
-            $scenario->skip('need more work, PageContentPreviewRendering');
-        }
         $I->waitForElement('#tx-container-example-custom-backend-template');
         $I->see('custom backend template');
     }
