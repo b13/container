@@ -83,8 +83,3 @@ parameters:
 			message: "#^Parameter \\#1 \\$record of method B13\\\\Container\\\\Backend\\\\Preview\\\\GridRenderer\\:\\:renderGrid\\(\\) expects array, TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordInterface given\\.$#"
 			count: 1
 			path: ../Classes/Backend/Preview/ContainerPreviewRenderer.php
-
-		-
-			message: "#^Parameter \\#1 \\$record of method B13\\\\Container\\\\Backend\\\\Preview\\\\GridRenderer\\:\\:renderGrid\\(\\) expects array, TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordInterface given\\.$#"
-			count: 1
-			path: ../Classes/Listener/PageContentPreviewRendering.php

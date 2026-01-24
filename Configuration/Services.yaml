@@ -73,6 +73,11 @@ services:
     tags:
       - name: event.listener
         identifier: 'tx-container-boot-completed'
+  B13\Container\Listener\LegacyPageContentPreviewRendering:
+    tags:
+      - name: event.listener
+        identifier: 'tx-container-legacy-page-content-preview-rendering'
+        before: 'typo3-backend/fluid-preview/content'
   B13\Container\Listener\PageContentPreviewRendering:
     tags:
       - name: event.listener
