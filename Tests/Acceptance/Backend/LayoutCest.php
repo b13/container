@@ -395,9 +395,7 @@ class LayoutCest
             $I->click('a.t3js-localize');
         } else {
             $I->waitForText('Translate');
-            $I->executeJS("document.querySelector('typo3-backend-localization-button').click()");
-            // AfterRecordSummaryForLocalizationEvent
-            $scenario->skip('need more work, AfterRecordSummaryForLocalizationEvent needs refactoring');
+            $I->executeJS("document.querySelector('#PageLayoutController typo3-backend-localization-button').click()");
         }
 
         $I->switchToIFrame();
@@ -405,7 +403,11 @@ class LayoutCest
             $I->waitForElement('.t3js-localization-option');
             $I->waitForElement('div[data-bs-slide="localize-summary"]');
         }
-        $I->waitForText('(212) headerOfChild');
+        if ($I->getTypo3MajorVersion() < 14) {
+            $I->waitForText('(212) headerOfChild');
+        } else {
+            $I->waitForText('headerOfChild');
+        }
     }
 
     /**
