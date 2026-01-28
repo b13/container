@@ -15,8 +15,6 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use B13\Container\Tests\Acceptance\Support\PageTreeV13;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContentDefenderCest
 {
@@ -34,7 +32,7 @@ class ContentDefenderCest
     public function canCreateChildIn2ColsContainerWithNoContentDefenderRestrictionsDefined(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         } else {
@@ -47,7 +45,7 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+        if ($I->getTypo3MajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
         $I->waitForText('Header Only');
@@ -61,7 +59,7 @@ class ContentDefenderCest
     public function doNotSeeNotAllowedContentElementsInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer-3']);
         } else {
@@ -74,7 +72,7 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+        if ($I->getTypo3MajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
         $I->waitForText('Header Only');
@@ -87,7 +85,7 @@ class ContentDefenderCest
     public function doNotSeeNotAllowedContentElementsInNewContentElementWizardTriggeredByContextMenu(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer-3']);
         } else {
@@ -95,15 +93,14 @@ class ContentDefenderCest
         }
         $I->wait(0.5);
         $I->switchToContentFrame();
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->waitForElement('#element-tt_content-810 a.t3js-contextmenutrigger');
             $I->click('#element-tt_content-810 a.t3js-contextmenutrigger');
         } else {
             $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
             $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
         }
-        switch ($typo3Version->getMajorVersion()) {
+        switch ($I->getTypo3MajorVersion()) {
             case 11:
                 $I->waitForText('More options...');
                 $I->click('.list-group-item-submenu');
@@ -128,7 +125,7 @@ class ContentDefenderCest
 
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+        if ($I->getTypo3MajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
         $I->waitForText('Header Only');
@@ -141,7 +138,7 @@ class ContentDefenderCest
     public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenCreateNewElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithContainer-4']);
         } else {
@@ -154,15 +151,14 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+        if ($I->getTypo3MajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
         $I->waitForText('Header Only');
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click('Header Only');
         } else {
-            if ($typo3Version->getMajorVersion() < 13) {
+            if ($I->getTypo3MajorVersion() < 13) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
@@ -180,7 +176,7 @@ class ContentDefenderCest
     public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenEditAnElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'contentTCASelectCtype']);
         } else {
@@ -201,7 +197,7 @@ class ContentDefenderCest
     public function canSeeNewContentButtonIfMaxitemsIsNotReached(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'contentDefenderMaxitems']);
         } else {
@@ -220,7 +216,7 @@ class ContentDefenderCest
     public function canNotSeeNewContentButtonIfMaxitemsIsReached(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'contentDefenderMaxitems']);
         } else {
@@ -240,7 +236,7 @@ class ContentDefenderCest
     public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'contentDefenderMaxitems']);
         } else {
@@ -250,18 +246,18 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
         $colPosSelector = '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]';
+        $I->scrollTo($colPosSelector);
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
+        if ($I->getTypo3MajorVersion() > 12) {
             $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         }
         $I->waitForText('Header Only');
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
+        if ($I->getTypo3MajorVersion() < 12) {
             $I->click('Header Only');
         } else {
-            if ($typo3Version->getMajorVersion() < 13) {
+            if ($I->getTypo3MajorVersion() < 13) {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
             } else {
                 $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
@@ -278,7 +274,7 @@ class ContentDefenderCest
     public function seeEditDocumentWhenAddingChildrenToColposWhereOnlyHeaderIsAllowed(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 13) {
+        if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');
             $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         } else {

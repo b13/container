@@ -15,4 +15,6 @@ parameters:
     - %currentWorkingDirectory%/Classes/Hooks/WizardItems.php
     - %currentWorkingDirectory%/Classes/Listener/LegacyPageTsConfig.php
     - %currentWorkingDirectory%/Classes/Listener/PageContentPreviewRendering.php
+    - %currentWorkingDirectory%/Classes/Listener/ManipulateBackendLayoutColPosConfigurationForPage.php
+    - %currentWorkingDirectory%/Classes/Hooks/Datahandler/ContentElementRestriction
 

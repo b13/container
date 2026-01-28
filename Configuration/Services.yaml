@@ -57,6 +57,10 @@ services:
     tags:
       - name: event.listener
         identifier: 'tx-container-content-used-on-page'
+  B13\Container\Listener\ManipulateBackendLayoutColPosConfigurationForPage:
+    tags:
+      - name: event.listener
+        identifier: 'tx-container-ManipulateBackendLayoutColPosConfigurationForPage'
   B13\Container\Listener\ModifyNewContentElementWizardItems:
     tags:
       - name: event.listener
