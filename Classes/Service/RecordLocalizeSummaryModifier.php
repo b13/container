@@ -17,10 +17,8 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class RecordLocalizeSummaryModifier implements SingletonInterface
 {
@@ -88,20 +86,12 @@ class RecordLocalizeSummaryModifier implements SingletonInterface
     {
         // this can be done with AfterPageColumnsSelectedForLocalizationEvent event in v10
         $containerColumns = $this->containerRegistry->getAllAvailableColumns();
-        if ((new Typo3Version())->getMajorVersion() < 14) {
-            foreach ($containerColumns as $containerColumn) {
-                $columns = [
-                    'columns' => array_replace([$containerColumn['colPos'] => 'Container Children (' . $containerColumn['colPos'] . ')'], $columns['columns']),
-                    'columnList' => array_values(array_unique(array_merge([$containerColumn['colPos']], $columns['columnList']))),
-                ];
-            }
-        } else {
-            foreach ($containerColumns as $containerColumn) {
-                $columns[$containerColumn['colPos']] = 'Container Children (' . $containerColumn['colPos'] . ')';
-            }
+        foreach ($containerColumns as $containerColumn) {
+            $columns = [
+                'columns' => array_replace([$containerColumn['colPos'] => 'Container Children (' . $containerColumn['colPos'] . ')'], $columns['columns']),
+                'columnList' => array_values(array_unique(array_merge([$containerColumn['colPos']], $columns['columnList']))),
+            ];
         }
-        //DebuggerUtility::var_dump($columns);
-        //DebuggerUtility::var_dump($containerColumns);
         return $columns;
     }
 
