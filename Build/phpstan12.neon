@@ -14,5 +14,6 @@ parameters:
     - %currentWorkingDirectory%/Tests/Unit/Hooks/UsedRecordsTest.php
     - %currentWorkingDirectory%/Classes/Domain/Core/RecordWithRenderedGrid.php
     - %currentWorkingDirectory%/Classes/Listener/PageContentPreviewRendering.php
+    - %currentWorkingDirectory%/Classes/Listener/ManipulateBackendLayoutColPosConfigurationForPage.php
 
 
