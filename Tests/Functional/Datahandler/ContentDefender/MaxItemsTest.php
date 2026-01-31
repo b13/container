@@ -12,6 +12,7 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 class MaxItemsTest extends AbstractContentDefender
@@ -22,11 +23,13 @@ class MaxItemsTest extends AbstractContentDefender
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender',
     ];
 
     protected function setUp(): void
     {
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            $this->testExtensionsToLoad[] = 'typo3conf/ext/content_defender';
+        }
         parent::setUp();
         $this->linkSiteConfigurationIntoTestInstance();
     }
