@@ -51,7 +51,9 @@ class Registry implements SingletonInterface
                     'icon' => $containerConfiguration->getCType(),
                     'group' => $containerConfiguration->getGroup(),
                     'description' => $containerConfiguration->getDescription(),
-                ]
+                ],
+                $containerConfiguration->getRelativeToField(),
+                $containerConfiguration->getRelativePosition(),
             );
         } else {
             ExtensionManagementUtility::addTcaSelectItem(
@@ -62,7 +64,9 @@ class Registry implements SingletonInterface
                     $containerConfiguration->getCType(),
                     $containerConfiguration->getCType(),
                     $containerConfiguration->getGroup(),
-                ]
+                ],
+                $containerConfiguration->getRelativeToField(),
+                $containerConfiguration->getRelativePosition(),
             );
         }
         $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['previewRenderer'] = \B13\Container\Backend\Preview\ContainerPreviewRenderer::class;

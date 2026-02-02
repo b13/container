@@ -75,6 +75,16 @@ class ContainerConfiguration
     protected $group = 'container';
 
     /**
+     * @var string
+     */
+    protected $relativeToField = '';
+
+    /**
+     * @var string
+     */
+    protected $relativePosition = '';
+
+    /**
      * @var array
      */
     protected $defaultValues = [];
@@ -200,6 +210,26 @@ class ContainerConfiguration
     }
 
     /**
+     * @param string $relativeToField
+     * @return ContainerConfiguration
+     */
+    public function setRelativeToField(string $relativeToField): ContainerConfiguration
+    {
+        $this->relativeToField = $relativeToField;
+        return $this;
+    }
+
+    /**
+     * @param string $relativePosition
+     * @return ContainerConfiguration
+     */
+    public function setRelativePosition(string $relativePosition): ContainerConfiguration
+    {
+        $this->relativePosition = $relativePosition;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getCType(): string
@@ -267,6 +297,22 @@ class ContainerConfiguration
     public function getGroup(): string
     {
         return $this->group;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelativeToField(): string
+    {
+        return $this->relativeToField;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelativePosition(): string
+    {
+        return $this->relativePosition;
     }
 
     /**
