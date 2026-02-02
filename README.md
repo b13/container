@@ -78,6 +78,8 @@ This is an example of creating a two-column container. The code snippet goes int
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard | `bool $saveAndCloseInNewContentElementWizard` | `true` |
 | `setRegisterInNewContentElementWizard` | register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
 | `setGroup` | Custom Group (used as optgroup for CType select, and as tab in New Content Element Wizard). If empty, "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
+| `setRelativeToField` | Add item relative to existing field. | `string $relativeToField` | `''` |
+| `setRelativePosition` | Valid keywords: `'before'`, `'after'`, `'replace'`. | `string $relativeToField` | `''` |
 | `setDefaultValues` | Default values for the newContentElement.wizardItems | `array $defaultValues` | `[]` |
 
 __Notes:__
