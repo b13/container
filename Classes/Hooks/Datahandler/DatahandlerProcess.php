@@ -18,6 +18,27 @@ class DatahandlerProcess implements SingletonInterface
 {
     protected $containerInProcess = [];
 
+    protected $contentElementRestrictionsLook = false;
+    protected $stack = 0;
+
+    public function areContentElementRestrictionsLooked(): bool
+    {
+        return $this->stack > 0;
+        //return $this->contentElementRestrictionsLook;
+    }
+
+    public function unlockContentElementRestrictions(): void
+    {
+        $this->stack--;
+        $this->contentElementRestrictionsLook = false;
+    }
+
+    public function lockContentElementRestrictions(): void
+    {
+        $this->stack++;
+        $this->contentElementRestrictionsLook = true;
+    }
+
     public function isContainerInProcess(int $containerId): bool
     {
         return in_array($containerId, $this->containerInProcess, true);

@@ -39,24 +39,55 @@ class DataHandlerHook
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
         $cmdmap = $dataHandler->cmdmap;
+        if (isset($cmdmap['pages'])) {
+            $this->lockDatamapHook = true;
+        }
         if (empty($cmdmap['tt_content']) || $dataHandler->bypassAccessCheckForRecords) {
             return;
         }
         $this->lockDatamapHook = true;
+        if ($this->datahandlerProcess->areContentElementRestrictionsLooked()) {
+            return;
+        }
         foreach ($cmdmap['tt_content'] as $id => $incomingFieldArray) {
             foreach ($incomingFieldArray as $command => $value) {
                 if (!in_array($command, ['copy', 'move'], true)) {
                     continue;
                 }
                 $currentRecord = BackendUtility::getRecord('tt_content', $id);
+
+                // EXT:container start
+                if (
+                    (!empty($value['update'])) &&
+                    isset($value['update']['colPos']) &&
+                    $value['update']['colPos'] > 0 &&
+                    isset($value['update']['tx_container_parent']) &&
+                    $value['update']['tx_container_parent'] > 0 &&
+                    MathUtility::canBeInterpretedAsInteger($id)
+                ) {
+                    $colPos = (int)$value['update']['colPos'];
+                    if (!empty($currentRecord['CType'])) {
+                        if ($this->checkContainerCType((int)$value['update']['tx_container_parent'], $currentRecord['CType'], (int)$value['update']['colPos']) === false) {
+                            // Not allowed to move or copy to target. Unset this command and create a log entry which may be turned into a notification when called by BE.
+                            unset($dataHandler->cmdmap['tt_content'][$id]);
+                            $dataHandler->log('tt_content', $id, 1, null, 1, 'The command "%s" for record "tt_content:%s" with CType "%s" to colPos "%s" couldn\'t be executed due to disallowed value(s).', null, [$command, $id, $currentRecord['CType'], $colPos]);
+                        }
+                    }
+                    $useChildId = null;
+                    if ($command === 'move') {
+                        $useChildId = $id;
+                    }
+                    if ($this->checkContainerMaxItems((int)$value['update']['tx_container_parent'], (int)$value['update']['colPos'], $useChildId)) {
+                        unset($dataHandler->cmdmap['tt_content'][$id]);
+                        $dataHandler->log('tt_content', $id, 1, null, 1, 'The command "%s" for record "tt_content:%s" to colPos "%s" couldn\'t be executed due to maxitems reached.', null, [$command, $id, $colPos]);
+                    }
+                    return;
+                }
+                // EXT:container end
+
                 if (empty($currentRecord['CType'] ?? '')) {
                     continue;
                 }
-                // EXT:container start
-                if ((int)($currentRecord['tx_container_parent'] ?? 0) > 0 && $this->datahandlerProcess->isContainerInProcess((int)($currentRecord['tx_container_parent']))) {
-                    continue;
-                }
-                // EXT:container end
                 if (is_array($value) && !empty($value['action']) && $value['action'] === 'paste' && isset($value['update']['colPos'])) {
                     // Moving / pasting to a new colPos on a potentially different page
                     $pageId = (int)$value['target'];
@@ -70,31 +101,7 @@ class DataHandlerHook
                     $pageId = (int)$targetRecord['pid'];
                     $colPos = (int)$targetRecord['colPos'];
                 }
-                // EXT:container start
-                if (
-                    (!empty($value['update'])) &&
-                    isset($value['update']['colPos']) &&
-                    $value['update']['colPos'] > 0 &&
-                    isset($value['update']['tx_container_parent']) &&
-                    $value['update']['tx_container_parent'] > 0 &&
-                    MathUtility::canBeInterpretedAsInteger($id)
-                ) {
-                    if ($this->checkContainerCType((int)$value['update']['tx_container_parent'], $currentRecord['CType'], (int)$value['update']['colPos']) === false) {
-                        // Not allowed to move or copy to target. Unset this command and create a log entry which may be turned into a notification when called by BE.
-                        unset($dataHandler->cmdmap['tt_content'][$id]);
-                        $dataHandler->log('tt_content', $id, 1, null, 1, 'The command "%s" for record "tt_content:%s" with CType "%s" to colPos "%s" couldn\'t be executed due to disallowed value(s).', null, [$command, $id, $currentRecord['CType'], $colPos]);
-                    }
-                    $useChildId = null;
-                    if ($command === 'move') {
-                        $useChildId = $id;
-                    }
-                    if ($this->checkContainerMaxItems((int)$value['update']['tx_container_parent'], (int)$value['update']['colPos'], $useChildId)) {
-                        //unset($dataHandler->cmdmap['tt_content'][$id]);
-                        //$dataHandler->log('tt_content', $id, 1, null, 1, 'The command "%s" for record "tt_content:%s" to colPos "%s" couldn\'t be executed due to maxitems reached.', null, [$command, $id, $colPos]);
-                    }
-                    return;
-                }
-                // EXT:container end
+
                 $backendLayout = $this->backendLayoutView->getBackendLayoutForPage($pageId);
                 $columnConfiguration = $this->backendLayoutView->getColPosConfigurationForPage($backendLayout, $colPos, $pageId);
                 $allowedContentElementsInTargetColPos = GeneralUtility::trimExplode(',', $columnConfiguration['allowedContentTypes'] ?? '', true);
@@ -116,7 +123,7 @@ class DataHandlerHook
             $container = $this->containerFactory->buildContainer($containerId);
             $columnConfiguration = $this->registry->getContentDefenderConfiguration($container->getCType(), $colPos);
             if (($columnConfiguration['maxitems'] ?? 0) === 0) {
-                return true;
+                return false;
             }
             $childrenOfColumn = $container->getChildrenByColPos($colPos);
             $count = count($childrenOfColumn);
@@ -127,7 +134,7 @@ class DataHandlerHook
         } catch (Exception) {
             // not a container;
         }
-        return true;
+        return false;
     }
 
     protected function checkContainerCType(int $containerId, string $cType, int $colPos): bool
@@ -173,15 +180,22 @@ class DataHandlerHook
             } else {
                 $recordData = array_merge($dataHandler->defaultValues['tt_content'] ?? [], $incomingFieldArray);
             }
+            // EXT:container start
+            if ((int)($recordData['tx_container_parent'] ?? 0) > 0 && (int)($recordData['colPos'] ?? 0) > 0) {
+                if ($this->checkContainerMaxItems((int)$recordData['tx_container_parent'], (int)$recordData['colPos'])) {
+                    if (MathUtility::canBeInterpretedAsInteger($id)) {
+                        // edit
+                        continue;
+                    }
+                    unset($dataHandler->datamap['tt_content'][$id]);
+                    $dataHandler->log('tt_content', $id, 1, null, 1, 'The command "%s" for record "tt_content:%s" to colPos "%s" couldn\'t be executed due to maxitems reached.', null, [$id, $recordData['colPos']]);
+                }
+            }
+            // EXT:container end
             if (empty($recordData['CType']) || !array_key_exists('colPos', $recordData)) {
                 // No idea what happened here, but we stop with this record if there is no CType or colPos
                 continue;
             }
-            // EXT:container start
-            if ((int)($recordData['tx_container_parent'] ?? 0) > 0 && $this->datahandlerProcess->isContainerInProcess((int)($recordData['tx_container_parent']))) {
-                continue;
-            }
-            // EXT:container end
             $pageId = (int)$recordData['pid'];
             if ($pageId < 0) {
                 $previousRecord = BackendUtility::getRecord('tt_content', abs($pageId), 'pid');
