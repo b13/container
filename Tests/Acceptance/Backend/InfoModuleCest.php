@@ -15,7 +15,6 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use Codeception\Scenario;
-use TYPO3\CMS\Core\Information\Typo3Version;
 
 class InfoModuleCest
 {
@@ -29,8 +28,7 @@ class InfoModuleCest
 
     public function canSeeContainerPageTsConfig(BackendTester $I, PageTree $pageTree, Scenario $scenario)
     {
-        $typo3Version = new Typo3Version();
-        if ($typo3Version->getMajorVersion() >= 12) {
+        if ($I->getTypo3MajorVersion() >= 12) {
             $scenario->skip('PageTsConfigModuleCest is used');
         }
         $I->click('Info');
@@ -46,6 +44,7 @@ class InfoModuleCest
         $I->selectOption('select[name="' . $selectbox1Name . '"]', 'Page TSconfig');
         $I->waitForElement('select[name="' . $selectbox2Name . '"]');
         $I->selectOption('select[name="' . $selectbox2Name . '"]', 99);
-        $I->see('b13-2cols-with-header-container');
+        $I->see('show = b13-2cols-with-header-container');
+        $I->dontSee('removeItems = b13-1col');
     }
 }

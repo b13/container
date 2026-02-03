@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Unit\Service;
 
 use B13\Container\Service\RecordLocalizeSummaryModifier;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class RecordLocalizeSummaryModifierTest extends UnitTestCase
@@ -25,6 +26,9 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
      */
     public function filterRecordsRemovesContainerChildrenIfParentContainerIsTranslatedAsWell(): void
     {
+        if ((new Typo3Version())->getMajorVersion() >= 14) {
+            self::markTestSkipped('not used in v14');
+        }
         $recordLocalizeSummeryModifier = $this->getAccessibleMock(
             RecordLocalizeSummaryModifier::class,
             ['getContainerUids', 'getContainerChildren'],
@@ -48,6 +52,9 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
      */
     public function filterRecordsKeepsContainerChildrenIfParentContainerIsNotTranslated(): void
     {
+        if ((new Typo3Version())->getMajorVersion() >= 14) {
+            self::markTestSkipped('not used in v14');
+        }
         $recordLocalizeSummeryModifier = $this->getAccessibleMock(
             RecordLocalizeSummaryModifier::class,
             ['getContainerUids', 'getContainerChildren'],
@@ -71,6 +78,9 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
      */
     public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns(): void
     {
+        if ((new Typo3Version())->getMajorVersion() >= 14) {
+            self::markTestSkipped('not used in v14');
+        }
         $tcaRegistry = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getAllAvailableColumns'])

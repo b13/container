@@ -13,13 +13,11 @@ namespace B13\Container\Listener;
  */
 
 use B13\Container\Backend\Preview\GridRenderer;
-use B13\Container\Domain\Core\RecordWithRenderedGrid;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
-use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
-class PageContentPreviewRendering
+class LegacyPageContentPreviewRendering
 {
     protected GridRenderer $gridRenderer;
     protected Registry $tcaRegistry;
@@ -35,19 +33,16 @@ class PageContentPreviewRendering
         if ($event->getTable() !== 'tt_content') {
             return;
         }
-        if ((new Typo3Version())->getMajorVersion() < 14) {
+        if ((new Typo3Version())->getMajorVersion() > 13) {
             return;
         }
 
         $record = $event->getRecord();
-        $recordType = $record->getRecordType();
+        $recordType = $record['CType'];
         if (!$this->tcaRegistry->isContainerElement($recordType)) {
             return;
         }
-        if ($record instanceof Record) {
-            $previewContent = $this->gridRenderer->renderGrid($record->toArray(), $event->getPageLayoutContext());
-            $recordWithRenderedGrid = new RecordWithRenderedGrid($record, $previewContent);
-            $event->setRecord($recordWithRenderedGrid);
-        }
+        $record['tx_container_grid'] = $this->gridRenderer->renderGrid($record, $event->getPageLayoutContext());
+        $event->setRecord($record);
     }
 }

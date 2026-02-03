@@ -226,8 +226,8 @@ See Tests/README.md on how to run the tests locally (like how github-actions run
 
 To assure coding guidelines are fullfilled:
 
-- run ``.Build/bin/phpstan analyse -c Build/phpstan10.neon``
-- run ``.Build/bin/php-cs-fixer fix --config=Build/php-cs-fixer.php --dry-run --stop-on-violation --using-cache=no``
+- run ``php -d memory_limit=2G .Build/bin/phpstan analyse -c Build/phpstan14.neon``
+- run ``php -d memory_limit=2G .Build/bin/php-cs-fixer fix --config=Build/php-cs-fixer.php --dry-run --stop-on-violation --using-cache=no``
 
 ## Credits
 

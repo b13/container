@@ -11,13 +11,9 @@
     composer install
     # prepare functional tests
     # prepare acceptance tests
-    composer require helhum/dotenv-connector
-    cp Build/envs/.env.local .env
     mkdir -p config/system
     cd config && ln -s ../Build/sites && cd -
     cp Build/settings.php config/system
-    # 11
-    cp Build/LocalConfiguration.php .Build/Web/typo3conf/
     .Build/bin/typo3 extension:setup
     # run php webserver and chromedriver
     php -S 0.0.0.0:8080 -t .Build/Web/ &

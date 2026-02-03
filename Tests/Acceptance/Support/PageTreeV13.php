@@ -19,7 +19,7 @@ use Facebook\WebDriver\Remote\RemoteWebElement;
 class PageTreeV13
 {
     // Selectors
-    public static $treeSelector = '#typo3-pagetree-treeContainer';
+    public static $treeSelector = '#typo3-pagetree-tree';
     public static $treeItemSelector = '.nodes-list > [role="treeitem"]';
     public static $treeItemAnchorSelector = '.node-contentlabel';
 

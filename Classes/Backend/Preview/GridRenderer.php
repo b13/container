@@ -109,6 +109,7 @@ class GridRenderer
         // keep compatibility
         $view->assign('containerGrid', $grid);
         $view->assign('grid', $grid);
+        $view->assign('gridColumns', array_fill(1, $grid->getSpan(), null));
         $view->assign('containerRecord', $record);
         $view->assign('context', $context);
         $parentGridColumnItem = $this->runtimeCache->get('tx_container_current_gridColumItem');

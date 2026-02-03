@@ -2,5 +2,13 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
-<f:format.raw>{tx_container_grid}</f:format.raw>
+
+<f:if condition="{record.tx_container_grid}">
+  <f:then>
+    <f:format.raw>{record.tx_container_grid}</f:format.raw>
+  </f:then>
+  <f:else>
+    <f:format.raw>{tx_container_grid}</f:format.raw>
+  </f:else>
+</f:if>
 </html>

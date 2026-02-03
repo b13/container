@@ -73,6 +73,10 @@ class Registry implements SingletonInterface
             }
             $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions']['saveAndClose'] =
                 $containerConfiguration->getSaveAndCloseInNewContentElementWizard();
+            if ($containerConfiguration->getDefaultValues() !== []) {
+                $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions']['defaultValues'] =
+                    $containerConfiguration->getDefaultValues();
+            }
         }
         foreach ($containerConfiguration->getGrid() as $row) {
             foreach ($row as $column) {
@@ -204,6 +208,11 @@ class Registry implements SingletonInterface
     public function getGridLayoutPaths(string $cType): array
     {
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['gridLayoutPaths'] ?? [];
+    }
+
+    public function getContainerLabel(string $cType): string
+    {
+        return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['label'] ?? $cType;
     }
 
     public function getColPosName(string $cType, int $colPos): ?string
