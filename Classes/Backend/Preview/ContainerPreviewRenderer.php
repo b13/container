@@ -13,6 +13,9 @@ namespace B13\Container\Backend\Preview;
  */
 
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
+use TYPO3\CMS\Backend\Preview\RecordFieldPreviewProcessor;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
+use TYPO3\CMS\Backend\Domain\Repository\Localization\LocalizationRepository;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -20,13 +23,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerPreviewRenderer extends StandardContentPreviewRenderer
 {
-    protected GridRenderer $gridRenderer;
-    protected FrontendInterface $runtimeCache;
 
-    public function __construct(GridRenderer $gridRenderer, FrontendInterface $runtimeCache)
+    public function __construct(
+        RecordFieldPreviewProcessor $recordFieldPreviewProcessor,
+        TcaSchemaFactory $tcaSchemaFactory,
+        LocalizationRepository $localizationRepository,
+        private readonly GridRenderer $gridRenderer,
+        #[Autowire(service: 'cache.runtime')]
+        private readonly FrontendInterface $runtimeCache,
+    )
     {
-        $this->gridRenderer = $gridRenderer;
-        $this->runtimeCache = $runtimeCache;
+        parent::__construct(
+            $recordFieldPreviewProcessor,
+            $tcaSchemaFactory,
+            $localizationRepository
+        );
     }
 
     public function renderPageModulePreviewHeader(GridColumnItem $item): string
