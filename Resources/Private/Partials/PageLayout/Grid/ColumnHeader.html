@@ -33,13 +33,15 @@
     <div class="t3-page-ce t3js-page-ce" data-page="{column.context.pageId}">
         <f:if condition="{column.newContentElementWizardShouldBeSkipped}">
             <f:then>
-                <a href="{column.newContentUrl}" title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}" class="btn btn-default btn-sm">
-                    <core:icon identifier="actions-plus" />
-                    <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:createNewContent" />
-                </a>
+                <div class="t3-page-ce-actions t3js-page-new-ce">
+                    <a href="{column.newContentUrl}" title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement')}" class="btn btn-default btn-sm">
+                        <core:icon identifier="actions-plus" />
+                        <f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:createNewContent" />
+                    </a>
+                </div>
             </f:then>
             <f:else>
-                    <f:render partial="PageLayout/ActionControls" arguments="{url: column.newContentUrl}" />
+                <f:render partial="PageLayout/ActionControls" arguments="{url: column.newContentUrl}" />
             </f:else>
         </f:if>
         <div class="t3-page-ce-dropzone t3js-page-ce-dropzone-available" hidden></div>
