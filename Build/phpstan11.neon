@@ -17,4 +17,6 @@ parameters:
     - %currentWorkingDirectory%/Classes/Listener/PageTsConfig.php
     - %currentWorkingDirectory%/Classes/Listener/PageContentPreviewRendering.php
     - %currentWorkingDirectory%/Classes/Domain/Core/RecordWithRenderedGrid.php
+    - %currentWorkingDirectory%/Classes/Listener/ManipulateBackendLayoutColPosConfigurationForPage.php
+    - %currentWorkingDirectory%/Classes/Hooks/Datahandler/ContentElementRestriction
 

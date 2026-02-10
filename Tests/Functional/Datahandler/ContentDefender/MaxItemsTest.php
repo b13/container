@@ -12,6 +12,7 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 class MaxItemsTest extends AbstractContentDefender
@@ -22,11 +23,13 @@ class MaxItemsTest extends AbstractContentDefender
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender',
     ];
 
     protected function setUp(): void
     {
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            $this->testExtensionsToLoad[] = 'typo3conf/ext/content_defender';
+        }
         parent::setUp();
         $this->linkSiteConfigurationIntoTestInstance();
     }
@@ -87,7 +90,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotMoveElementIntoContainerIfMaxitemsIsReachedResult.csv');
-        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        } else {
+            self::assertTrue($this->dataHandler->errorLog !== [], 'dataHander error log is not empty');
+        }
     }
 
     /**
@@ -119,7 +126,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterIntoContainerResult.csv');
-        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        } else {
+            self::assertTrue($this->dataHandler->errorLog !== [], 'dataHander error log is not empty');
+        }
     }
 
     /**
@@ -140,7 +151,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElementResult.csv');
-        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        } else {
+            self::assertTrue($this->dataHandler->errorLog !== [], 'dataHander error log is not empty');
+        }
     }
 
     /**
@@ -356,7 +371,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        } else {
+            self::assertTrue($this->dataHandler->errorLog !== [], 'dataHander error log is not empty');
+        }
     }
 
     /**
@@ -375,7 +394,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
-        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        } else {
+            self::assertTrue($this->dataHandler->errorLog === [], 'dataHander error log is not empty');
+        }
     }
 
     /**
@@ -394,7 +417,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
-        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        } else {
+            self::assertTrue($this->dataHandler->errorLog === [], 'dataHander error log is not empty');
+        }
     }
 
     /**
@@ -421,7 +448,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->start($datamap, [], $this->backendUser);
         $this->dataHandler->process_datamap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReachedResult.csv');
-        self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
+        } else {
+            self::assertTrue($this->dataHandler->errorLog === [], 'dataHander error log is not empty');
+        }
     }
 
     /**
