@@ -10,6 +10,8 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class LanguageFallbackTest extends AbstractFrontend
@@ -27,10 +29,8 @@ class LanguageFallbackTest extends AbstractFrontend
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function nothingTranslated(): void
     {
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
@@ -45,10 +45,8 @@ class LanguageFallbackTest extends AbstractFrontend
         self::assertStringContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function bothTranslated(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_both_translated.csv');
@@ -64,10 +62,8 @@ class LanguageFallbackTest extends AbstractFrontend
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function fallbackForStrictLanguageToOtherTranslationFreeMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_fallback_for_strict_language_to_other_translation_free_mode.csv');
@@ -83,10 +79,8 @@ class LanguageFallbackTest extends AbstractFrontend
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function bothTranslatedTranslatedChildHidden(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.csv');
@@ -102,10 +96,8 @@ class LanguageFallbackTest extends AbstractFrontend
         self::assertStringContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childTranslated(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_child_translated.csv');
@@ -121,10 +113,8 @@ class LanguageFallbackTest extends AbstractFrontend
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function containerTranslated(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_container_translated.csv');

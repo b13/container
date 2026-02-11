@@ -16,19 +16,9 @@ class WrongParentError implements ErrorInterface
 {
     private const IDENTIFIER = 'WrongParentError';
 
-    /**
-     * @var array
-     */
-    protected $containerRecord;
+    protected array $containerRecord;
+    protected string $errorMessage;
 
-    /**
-     * @var string
-     */
-    protected $errorMessage;
-
-    /**
-     * @param array $containerRecord
-     */
     public function __construct(array $containerRecord)
     {
         $this->containerRecord = $containerRecord;
@@ -37,25 +27,16 @@ class WrongParentError implements ErrorInterface
             ' has tx_container_parent ' . $containerRecord['tx_container_parent'];
     }
 
-    /**
-     * @return string
-     */
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getSeverity(): int
     {
         return ErrorInterface::ERROR;
     }
 
-    /**
-     * @return array
-     */
     public function getContainerRecord(): array
     {
         return $this->containerRecord;

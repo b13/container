@@ -10,6 +10,8 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class DataProcessorWithIrreTest extends AbstractFrontend
@@ -30,10 +32,8 @@ class DataProcessorWithIrreTest extends AbstractFrontend
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function relationIsRendered(): void
     {
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
@@ -42,10 +42,8 @@ class DataProcessorWithIrreTest extends AbstractFrontend
         self::assertStringContainsString('irre-title-default', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function translatedRelationIsRendered(): void
     {
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));

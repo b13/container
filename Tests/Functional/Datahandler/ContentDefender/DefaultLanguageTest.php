@@ -12,11 +12,11 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+
 class DefaultLanguageTest extends AbstractContentDefender
 {
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
@@ -29,10 +29,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/setup.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function moveElementIntoContainerAtTopDoNotMoveDisallowedCTypeElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/disallowed_content_element.csv');
@@ -58,10 +56,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/MoveElementIntoContainerAtTopDoNotMoveDisallowedCTypeElementResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function moveElementIntoContainerAfterOtherElemenDoNotMoveDisallowedCTypeElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/disallowed_content_element.csv');
@@ -87,10 +83,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/MoveElementIntoContainerAfterOtherElemenDoNotMoveDisallowedCTypeElementResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyElementIntoContainerAtTopDoNotCopyDisallowedCTypeElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/disallowed_content_element.csv');
@@ -116,10 +110,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyElementIntoContainerAtTopDoNotCopyDisallowedCTypeElementResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function moveElementIntoContainerAtTopMoveAisallowedCTypeElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/allowed_content_element.csv');
@@ -145,10 +137,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/MoveElementIntoContainerAtTopMoveAisallowedCTypeElementResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function moveElementIntoContainerAfterOtherElemenMoveAllowedCTypeElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/allowed_content_element.csv');
@@ -174,10 +164,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/MoveElementIntoContainerAfterOtherElemenMoveAllowedCTypeElementResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyContentElementIntoContainerWhenCTypeIsNotAllowedInBackendLayoutColumn(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyContentElementIntoContainerWhenCTypeIsNotAllowedInBackendLayoutColumn.csv');
@@ -205,10 +193,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyContentElementIntoContainerWhenCTypeIsNotAllowedInBackendLayoutColumnResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyElementIntoContainerAtTopCopyAllowedCTypeElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/allowed_content_element.csv');
@@ -234,10 +220,8 @@ class DefaultLanguageTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyElementIntoContainerAtTopCopyAllowedCTypeElementResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyChildFromOtherContainerIntoColposWhereTargetElementInOtherColposHasRestrictionIsAllowd(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/CopyChildFromOtherContainerIntoColposWhereTargetElementInOtherColposHasRestrictionIsAllowed.csv');

@@ -17,15 +17,14 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DatamapBeforeStartHookTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datamapForLocalizationsExtendsDatamapWithLocalizations(): void
     {
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();

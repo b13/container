@@ -15,28 +15,18 @@ namespace B13\Container\DataProcessing;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\FrontendContainerFactory;
 use B13\Container\Domain\Model\Container;
-use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
+#[Autoconfigure(public: true)]
 class ContainerProcessor implements DataProcessorInterface
 {
-    /**
-     * @var ContentDataProcessor
-     */
-    protected $contentDataProcessor;
-
-    protected Context $context;
-    protected FrontendContainerFactory $frontendContainerFactory;
-
-    public function __construct(ContentDataProcessor $contentDataProcessor, Context $context, FrontendContainerFactory $frontendContainerFactory)
+    public function __construct(protected ContentDataProcessor $contentDataProcessor, protected Context $context, protected FrontendContainerFactory $frontendContainerFactory)
     {
-        $this->contentDataProcessor = $contentDataProcessor;
-        $this->context = $context;
-        $this->frontendContainerFactory = $frontendContainerFactory;
     }
 
     public function process(
@@ -118,10 +108,5 @@ class ContainerProcessor implements DataProcessorInterface
         }
         $processedData[$as] = $children;
         return $processedData;
-    }
-
-    protected function getRequest(): ServerRequestInterface
-    {
-        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

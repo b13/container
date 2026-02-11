@@ -22,21 +22,12 @@ use TYPO3\CMS\Backend\View\PageLayoutContext;
 
 class NewContentUrlBuilder
 {
-    protected Registry $tcaRegistry;
-    protected ContainerColumnConfigurationService $containerColumnConfigurationService;
-    protected ContainerService $containerService;
-    protected UriBuilder $uriBuilder;
-
     public function __construct(
-        Registry $tcaRegistry,
-        ContainerColumnConfigurationService $containerColumnConfigurationService,
-        ContainerService $containerService,
-        UriBuilder $uriBuilder
+        protected Registry $tcaRegistry,
+        protected ContainerColumnConfigurationService $containerColumnConfigurationService,
+        protected ContainerService $containerService,
+        protected UriBuilder $uriBuilder
     ) {
-        $this->tcaRegistry = $tcaRegistry;
-        $this->containerColumnConfigurationService = $containerColumnConfigurationService;
-        $this->containerService = $containerService;
-        $this->uriBuilder = $uriBuilder;
     }
 
     public function getNewContentUrlAfterChild(PageLayoutContext $context, Container $container, int $columnNumber, int $recordUid, ?array $defVals): string

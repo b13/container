@@ -18,19 +18,13 @@ use TYPO3\CMS\Core\Context\Context;
 
 class ContainerFactory extends \B13\Container\Domain\Factory\ContainerFactory
 {
-    /**
-     * @var ContentStorage
-     */
-    protected $contentStorage;
-
     public function __construct(
         Database $database,
         Registry $tcaRegistry,
         Context $context,
-        ContentStorage $contentStorage
+        protected ContentStorage $contentStorage
     ) {
         parent::__construct($database, $tcaRegistry, $context);
-        $this->contentStorage = $contentStorage;
     }
 
     protected function children(array $containerRecord, int $language): array

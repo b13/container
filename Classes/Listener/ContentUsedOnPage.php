@@ -16,23 +16,13 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\Event\IsContentUsedOnPageLayoutEvent;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
+#[AsEventListener(identifier: 'tx-container-content-used-on-page')]
 class ContentUsedOnPage
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    public function __construct(protected ContainerFactory $containerFactory, protected Registry $tcaRegistry)
     {
-        $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function __invoke(IsContentUsedOnPageLayoutEvent $event): void

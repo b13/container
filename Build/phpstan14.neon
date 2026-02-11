@@ -9,14 +9,7 @@ parameters:
     - %currentWorkingDirectory%/Tests
 
   excludePaths:
-    - %currentWorkingDirectory%/Classes/Hooks/UsedRecords.php
-    - %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
-    - %currentWorkingDirectory%/Tests/Unit/Hooks/UsedRecordsTest.php
-    - %currentWorkingDirectory%/Classes/Hooks/WizardItems.php
-    - %currentWorkingDirectory%/Classes/Listener/LegacyPageTsConfig.php
     - %currentWorkingDirectory%/Classes/Listener/LegacyPageContentPreviewRendering.php
     - %currentWorkingDirectory%/Classes/ContentDefender
-    - %currentWorkingDirectory%/Classes/Events/BeforeContainerPreviewIsRenderedEvent.php
     - %currentWorkingDirectory%/Tests/Functional/Integrity/IntegrityTest.php
-    - %currentWorkingDirectory%/Classes/Xclasses/LocalizationController.php
 

@@ -15,6 +15,7 @@ namespace B13\Container\Command;
 use B13\Container\Integrity\Error\UnusedColPosWarning;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,22 +23,14 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsCommand(
+    name: 'container:deleteChildrenWithUnusedColPos',
+    description: 'delete all child records with a colPos that is not available for the parent CType (they are displayed as unsued)'
+)]
 class DeleteChildrenWithUnusedColPosCommand extends Command
 {
-    /**
-     * @var Integrity
-     */
-    protected $integrity;
-
-    /**
-     * @var IntegrityFix
-     */
-    protected $integrityFix;
-
-    public function __construct(Integrity $integrity, IntegrityFix $integrityFix, ?string $name = null)
+    public function __construct(protected Integrity $integrity, protected IntegrityFix $integrityFix, ?string $name = null)
     {
-        $this->integrity = $integrity;
-        $this->integrityFix = $integrityFix;
         parent::__construct($name);
     }
 
@@ -51,6 +44,6 @@ class DeleteChildrenWithUnusedColPosCommand extends Command
                 $this->integrityFix->deleteChildrenWithUnusedColPos($warning);
             }
         }
-        return 0;
+        return Command::SUCCESS;
     }
 }

@@ -17,6 +17,7 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
 use B13\Container\Integrity\SortingInPage;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -25,14 +26,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class SortingInPageTest extends FunctionalTestCase
 {
-    /**
-     * @var SortingInPage
-     */
-    protected $sorting;
+    protected ?SortingInPage $sorting = null;
 
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
@@ -53,9 +48,7 @@ class SortingInPageTest extends FunctionalTestCase
         $this->sorting = GeneralUtility::makeInstance(SortingInPage::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerIsSortedAfterChildOfPreviousContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/container_is_sorted_before_child_of_previous_container.csv');
@@ -65,9 +58,7 @@ class SortingInPageTest extends FunctionalTestCase
         self::assertTrue($rows[2]['sorting'] > $rows[3]['sorting'], 'container should be sorted after child of previous container');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerIsSortedAfterChildOfPreviousContainerWithChangedChildrenSorting(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/container_is_sorted_before_child_of_previous_container_with_changed_children_sorting.csv');
@@ -77,9 +68,7 @@ class SortingInPageTest extends FunctionalTestCase
         self::assertTrue($rows[2]['sorting'] > $rows[3]['sorting'], 'container should be sorted after child of previous container');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerIsSortedAfterChildOfPreviousContainerWithNestedChangedChildrenSorting(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/container_is_sorted_before_child_of_previous_container_with_nested_changed_children_sorting.csv');
@@ -90,9 +79,7 @@ class SortingInPageTest extends FunctionalTestCase
         self::assertTrue($rows[5]['sorting'] > $rows[4]['sorting'], 'child should be sorted after its own parent container after resorting');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nothingDoneForAlreadyCorrectSorted(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/correct_sorted.csv');

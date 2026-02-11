@@ -13,17 +13,8 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php: [ '8.1', '8.2', '8.3']
-        TYPO3: [ '12' ]
-        include:
-          - TYPO3: '13'
-            php: '8.2'
-          - TYPO3: '13'
-            php: '8.3'
-          - TYPO3: '14'
-            php: '8.2'
-          - TYPO3: '14'
-            php: '8.3'
+        php: [ '8.2', '8.3', '8.4', '8.5']
+        TYPO3: [ '13', '14', '14-dev' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,19 +38,19 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s unit
 
       - name: Functional Tests
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
-        if: matrix.TYPO3 != '14'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --do-not-fail-on-deprecation
+        if: matrix.TYPO3 == '13'
 
       - name: Functional Tests 14
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --exclude-group content_defender
-        if: matrix.TYPO3 == '14'
+        if: matrix.TYPO3 != '13'
 
       - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
-        if: matrix.TYPO3 != '14'
+        if: matrix.TYPO3 == '13'
       - name: Acceptance Tests 14
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast --skip-group=content_defender
-        if: matrix.TYPO3 == '14'
+        if: matrix.TYPO3 != '13'
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v4
         if: always()

@@ -14,36 +14,10 @@ namespace B13\Container\Domain\Model;
 
 class Container
 {
-    /**
-     * @var array
-     */
-    protected $containerRecord;
-
-    /**
-     * @var array
-     */
-    protected $childRecords;
-
-    /**
-     * @var int
-     */
-    protected $language = 0;
-
-    /**
-     * @param array $containerRecord
-     * @param array $childRecords
-     * @param int $language
-     */
-    public function __construct(array $containerRecord, array $childRecords, $language = 0)
+    public function __construct(protected array $containerRecord, protected array $childRecords, protected $language = 0)
     {
-        $this->containerRecord = $containerRecord;
-        $this->childRecords = $childRecords;
-        $this->language = $language;
     }
 
-    /**
-     * @return int
-     */
     public function getUid(): int
     {
         return (int)$this->containerRecord['uid'];
@@ -57,9 +31,6 @@ class Container
         return $this->getUid();
     }
 
-    /**
-     * @return int
-     */
     public function getPid(): int
     {
         if (!empty($this->containerRecord['_ORIG_pid'])) {
@@ -68,41 +39,26 @@ class Container
         return (int)$this->containerRecord['pid'];
     }
 
-    /**
-     * @return bool
-     */
     public function isConnectedMode(): bool
     {
         return (int)$this->containerRecord['sys_language_uid'] === 0;
     }
 
-    /**
-     * @return int
-     */
     public function getLanguage(): int
     {
         return $this->language;
     }
 
-    /**
-     * @return string
-     */
     public function getCType(): string
     {
         return $this->containerRecord['CType'];
     }
 
-    /**
-     * @return array
-     */
     public function getContainerRecord(): array
     {
         return $this->containerRecord;
     }
 
-    /**
-     * @return array
-     */
     public function getChildRecords(): array
     {
         $childRecords = [];
@@ -112,10 +68,6 @@ class Container
         return $childRecords;
     }
 
-    /**
-     * @param int $colPos
-     * @return array
-     */
     public function getChildrenByColPos(int $colPos): array
     {
         if (empty($this->childRecords[$colPos])) {
@@ -137,9 +89,6 @@ class Container
         return false;
     }
 
-    /**
-     * @return array
-     */
     public function getChildrenColPos(): array
     {
         return array_keys($this->childRecords);

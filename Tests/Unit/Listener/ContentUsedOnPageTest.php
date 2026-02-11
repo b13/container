@@ -16,9 +16,9 @@ use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Listener\ContentUsedOnPage;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\View\Event\IsContentUsedOnPageLayoutEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -26,14 +26,9 @@ class ContentUsedOnPageTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsUsedOfParamsIfTxContainerParentIsZero(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $registry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
@@ -46,14 +41,9 @@ class ContentUsedOnPageTest extends UnitTestCase
         self::assertFalse($event->isRecordUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsTrueIfChildrenInContainerColPos(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)
             ->disableOriginalConstructor()
@@ -75,14 +65,9 @@ class ContentUsedOnPageTest extends UnitTestCase
         self::assertTrue($event->isRecordUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenIsNotInContainerColPos(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)
             ->disableOriginalConstructor()
@@ -104,14 +89,9 @@ class ContentUsedOnPageTest extends UnitTestCase
         self::assertFalse($event->isRecordUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenIsNotInRegisterdGrid(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)
             ->disableOriginalConstructor()
