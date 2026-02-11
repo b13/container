@@ -15,26 +15,19 @@ namespace B13\Container\Command;
 use B13\Container\Integrity\Error\ChildInTranslatedContainerError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: 'container:fixContainerParentForConnectedMode',
+    description: 'tx_container_parent of children in connected mode should point to default language container'
+)]
 class FixContainerParentForConnectedModeCommand extends Command
 {
-    /**
-     * @var Integrity
-     */
-    protected $integrity;
-
-    /**
-     * @var IntegrityFix
-     */
-    protected $integrityFix;
-
-    public function __construct(Integrity $integrity, IntegrityFix $integrityFix, ?string $name = null)
+    public function __construct(protected Integrity $integrity, protected IntegrityFix $integrityFix, ?string $name = null)
     {
-        $this->integrity = $integrity;
-        $this->integrityFix = $integrityFix;
         parent::__construct($name);
     }
 
@@ -46,6 +39,6 @@ class FixContainerParentForConnectedModeCommand extends Command
                 $this->integrityFix->changeContainerParentToDefaultLanguageContainer($error);
             }
         }
-        return 0;
+        return Command::SUCCESS;
     }
 }

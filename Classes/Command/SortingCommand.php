@@ -13,6 +13,7 @@ namespace B13\Container\Command;
  */
 
 use B13\Container\Integrity\Sorting;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,13 +23,12 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsCommand(
+    name: 'container:sorting',
+    description: 'Resort Content Elements'
+)]
 class SortingCommand extends Command
 {
-    /**
-     * @var Sorting
-     */
-    protected $sorting;
-
     protected function configure()
     {
         $this->addArgument('pid', InputArgument::OPTIONAL, 'limit to this pid', 0);
@@ -41,10 +41,9 @@ class SortingCommand extends Command
         );
     }
 
-    public function __construct(Sorting $sorting, ?string $name = null)
+    public function __construct(protected Sorting $sorting, ?string $name = null)
     {
         parent::__construct($name);
-        $this->sorting = $sorting;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -70,6 +69,6 @@ class SortingCommand extends Command
             }
         }
 
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }

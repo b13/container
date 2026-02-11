@@ -13,6 +13,7 @@ namespace B13\Container\Command;
  */
 
 use B13\Container\Integrity\SortingInPage;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,13 +23,12 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsCommand(
+    name: 'container:sorting-in-page',
+    description: 'Resort Content Elements'
+)]
 class SortingInPageCommand extends Command
 {
-    /**
-     * @var SortingInPage
-     */
-    protected $sorting;
-
     protected function configure()
     {
         $this->addArgument('pid', InputArgument::OPTIONAL, 'limit to this pid', 0);
@@ -41,10 +41,9 @@ class SortingInPageCommand extends Command
         );
     }
 
-    public function __construct(SortingInPage $sorting, ?string $name = null)
+    public function __construct(protected SortingInPage $sorting, ?string $name = null)
     {
         parent::__construct($name);
-        $this->sorting = $sorting;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -65,6 +64,6 @@ class SortingInPageCommand extends Command
         if (empty($errors)) {
             $output->writeln('migration finished');
         }
-        return 0;
+        return Command::SUCCESS;
     }
 }

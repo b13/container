@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
-
     public function __construct(protected EventDispatcherInterface $eventDispatcher, protected IconRegistry $iconRegistry)
     {
     }
@@ -242,7 +241,7 @@ class Registry implements SingletonInterface
                 }
                 $groupedByGroup[$group][$cType] = $containerConfiguration;
             }
-            $pageTs .= LF . 'mod.web_layout.tt_content.preview {
+            $pageTs .= chr(10) . 'mod.web_layout.tt_content.preview {
 ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
 ';
@@ -254,7 +253,7 @@ class Registry implements SingletonInterface
         }
 
         foreach ($cTypesExcludedInNewContentElementWizard as $group => $ctypes) {
-            $pageTs .= LF . 'mod.wizards.newContentElement.wizardItems.' . $group . '.removeItems := addToList(' . implode(',', $ctypes) . ')';
+            $pageTs .= chr(10) . 'mod.wizards.newContentElement.wizardItems.' . $group . '.removeItems := addToList(' . implode(',', $ctypes) . ')';
         }
         return $pageTs;
     }

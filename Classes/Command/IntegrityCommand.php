@@ -13,21 +13,20 @@ namespace B13\Container\Command;
  */
 
 use B13\Container\Integrity\Integrity;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: 'container:integrity',
+    description: 'Checks integrity of containers'
+)]
 class IntegrityCommand extends Command
 {
-    /**
-     * @var Integrity
-     */
-    protected $integrity;
-
-    public function __construct(Integrity $integrity, ?string $name = null)
+    public function __construct(protected Integrity $integrity, ?string $name = null)
     {
-        $this->integrity = $integrity;
         parent::__construct($name);
     }
 
@@ -52,6 +51,6 @@ class IntegrityCommand extends Command
         if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
             $io->success('Good Job, no errors/warnings!');
         }
-        return 0;
+        return Command::SUCCESS;
     }
 }
