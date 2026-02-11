@@ -65,6 +65,57 @@ class SortingInPageTest extends FunctionalTestCase
         self::assertTrue($rows[2]['sorting'] > $rows[3]['sorting'], 'container should be sorted after child of previous container');
     }
 
+    public static function getPossibleTranslations(): iterable
+    {
+        yield 'with language id 1' => [
+            'languageId' => 1,
+            'expected' => [
+                'errors' => 1,
+                'sortings' => [
+                    2 => 3,
+                ]
+            ]
+        ];
+        yield 'with language id 2' => [
+            'languageId' => 2,
+            'expected' => [
+                'errors' => 1,
+                'sortings' => [
+                    6 => 7,
+                ]
+            ]
+        ];
+        yield 'with all languages' => [
+            'languageId' => null,
+            'expected' => [
+                'errors' => 2,
+                'sortings' => [
+                    2 => 3,
+                    6 => 7,
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider getPossibleTranslations
+     */
+    public function containerIsSortedAfterChildOfPreviousContainerOnTranslatedPage(?int $languageId = null, array $expected): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingInPage/container_is_sorted_before_child_of_previous_container_on_translated_page.csv');
+        $errors = $this->sorting->run(false, false, null, 0);
+        self::assertTrue(count($errors) === 0, 'different number of errors for default language');
+
+        $errors = $this->sorting->run(false, false, null, $languageId);
+        self::assertTrue(count($errors) === $expected['errors'], 'different number of errors for given language');
+
+        $rows = $this->getContentsByUid();
+        foreach ($expected['sortings'] as $before => $after) {
+            self::assertTrue($rows[$before]['sorting'] > $rows[$after]['sorting'], 'container should be sorted after child of previous container');
+        }
+    }
+
     /**
      * @test
      */
