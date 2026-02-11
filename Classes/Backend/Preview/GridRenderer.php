@@ -31,33 +31,23 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
+use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class GridRenderer
 {
-    protected Registry $tcaRegistry;
-    protected ContainerFactory $containerFactory;
-    protected NewContentUrlBuilder $newContentUrlBuilder;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected FrontendInterface $runtimeCache;
-
     public function __construct(
-        Registry $tcaRegistry,
-        ContainerFactory $containerFactory,
-        NewContentUrlBuilder $newContentUrlBuilder,
-        EventDispatcherInterface $eventDispatcher,
-        FrontendInterface $runtimeCache
+        protected Registry $tcaRegistry,
+        protected ContainerFactory $containerFactory,
+        protected NewContentUrlBuilder $newContentUrlBuilder,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected ViewFactoryInterface $viewFactory
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->tcaRegistry = $tcaRegistry;
-        $this->containerFactory = $containerFactory;
-        $this->newContentUrlBuilder = $newContentUrlBuilder;
-        $this->runtimeCache = $runtimeCache;
     }
 
     public function renderGrid(array $record, PageLayoutContext $context): string
     {
-        $grid = GeneralUtility::makeInstance(Grid::class, $context);
+        $grid = new Grid($context);
         try {
             $container = $this->containerFactory->buildContainer((int)$record['uid']);
         } catch (Exception $e) {
@@ -66,17 +56,17 @@ class GridRenderer
         }
         $containerGrid = $this->tcaRegistry->getGrid($record['CType']);
         foreach ($containerGrid as $cols) {
-            $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
+            $rowObject = new GridRow($context);
             foreach ($cols as $col) {
                 $defVals = $this->getDefValsForContentDefenderAllowsOnlyOneSpecificContentType($record['CType'], (int)$col['colPos']);
                 $url = $this->newContentUrlBuilder->getNewContentUrlAtTopOfColumn($context, $container, (int)$col['colPos'], $defVals);
-                $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $url, $defVals !== null);
+                $columnObject = new ContainerGridColumn($context, $col, $container, $url, $defVals !== null);
                 $rowObject->addColumn($columnObject);
                 if (isset($col['colPos'])) {
                     $records = $container->getChildrenByColPos($col['colPos']);
                     foreach ($records as $contentRecord) {
                         $url = $this->newContentUrlBuilder->getNewContentUrlAfterChild($context, $container, (int)$col['colPos'], (int)$contentRecord['uid'], $defVals);
-                        $columnItem = GeneralUtility::makeInstance(ContainerGridColumnItem::class, $context, $columnObject, $contentRecord, $container, $url);
+                        $columnItem = new ContainerGridColumnItem($context, $columnObject, $contentRecord, $container, $url);
                         $columnObject->addItem($columnItem);
                     }
                 }
@@ -87,20 +77,12 @@ class GridRenderer
         $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
         $partialRootPaths = $this->tcaRegistry->getGridPartialPaths($record['CType']);
         $layoutRootPaths = $this->tcaRegistry->getGridLayoutPaths($record['CType']);
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() <= 13) {
-            $view = GeneralUtility::makeInstance(StandaloneView::class);
-            $view->setPartialRootPaths($partialRootPaths);
-            $view->setLayoutRootPaths($layoutRootPaths);
-            $view->setTemplatePathAndFilename($gridTemplate);
-        } else {
-            $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
-            $view = $viewFactory->create(new ViewFactoryData(
-                null,
-                $partialRootPaths,
-                $layoutRootPaths,
-                $gridTemplate
-            ));
-        }
+        $view = $this->viewFactory->create(new ViewFactoryData(
+            null,
+            $partialRootPaths,
+            $layoutRootPaths,
+            $gridTemplate
+        ));
 
         $view->assign('hideRestrictedColumns', (bool)(BackendUtility::getPagesTSconfig($context->getPageId())['mod.']['web_layout.']['hideRestrictedCols'] ?? false));
         $view->assign('newContentTitle', $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:newContentElement'));
@@ -112,29 +94,17 @@ class GridRenderer
         $view->assign('gridColumns', array_fill(1, $grid->getSpan(), null));
         $view->assign('containerRecord', $record);
         $view->assign('context', $context);
-        $parentGridColumnItem = $this->runtimeCache->get('tx_container_current_gridColumItem');
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() <= 13) {
-            // cannot be used for v14 / dev-main branch
-            // needs adaption in next major version
-            $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view, $grid, $parentGridColumnItem);
-            $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
-        }
+        $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view, $grid);
+        $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
         $rendered = $view->render();
         return $rendered;
     }
 
     protected function getDefValsForContentDefenderAllowsOnlyOneSpecificContentType(string $cType, int $colPos): ?array
     {
-        $contentDefefenderConfiguration = $this->tcaRegistry->getContentDefenderConfiguration($cType, $colPos);
-        $allowedCTypes = GeneralUtility::trimExplode(',', $contentDefefenderConfiguration['allowed.']['CType'] ?? '', true);
-        $allowedListTypes = GeneralUtility::trimExplode(',', $contentDefefenderConfiguration['allowed.']['list_type'] ?? '', true);
+        $allowedCTypes = (array)$this->tcaRegistry->getAllowedCTypesInColumn($cType, $colPos);
         if (count($allowedCTypes) === 1) {
-            if ($allowedCTypes[0] !== 'list') {
-                return ['CType' => $allowedCTypes[0]];
-            }
-            if (count($allowedListTypes) === 1) {
-                return ['CType' => 'list', 'list_type' => $allowedListTypes[0]];
-            }
+            return ['CType' => $allowedCTypes[0]];
         }
         return null;
     }

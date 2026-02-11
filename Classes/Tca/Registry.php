@@ -17,23 +17,17 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
-    protected EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(protected EventDispatcherInterface $eventDispatcher, protected IconRegistry $iconRegistry)
     {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param ContainerConfiguration $containerConfiguration
-     */
     public function configureContainer(ContainerConfiguration $containerConfiguration): void
     {
         $beforeContainerConfigurationIsAppliedEvent = new BeforeContainerConfigurationIsAppliedEvent($containerConfiguration);
@@ -41,60 +35,34 @@ class Registry implements SingletonInterface
         if ($beforeContainerConfigurationIsAppliedEvent->shouldBeSkipped()) {
             return;
         }
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-            ExtensionManagementUtility::addTcaSelectItem(
-                'tt_content',
-                'CType',
-                [
-                    'label' => $containerConfiguration->getLabel(),
-                    'value' => $containerConfiguration->getCType(),
-                    'icon' => $containerConfiguration->getCType(),
-                    'group' => $containerConfiguration->getGroup(),
-                    'description' => $containerConfiguration->getDescription(),
-                ],
-                $containerConfiguration->getRelativeToField(),
-                $containerConfiguration->getRelativePosition(),
-            );
-        } else {
-            ExtensionManagementUtility::addTcaSelectItem(
-                'tt_content',
-                'CType',
-                [
-                    $containerConfiguration->getLabel(),
-                    $containerConfiguration->getCType(),
-                    $containerConfiguration->getCType(),
-                    $containerConfiguration->getGroup(),
-                ],
-                $containerConfiguration->getRelativeToField(),
-                $containerConfiguration->getRelativePosition(),
-            );
+        ExtensionManagementUtility::addTcaSelectItem(
+            'tt_content',
+            'CType',
+            [
+                'label' => $containerConfiguration->getLabel(),
+                'value' => $containerConfiguration->getCType(),
+                'icon' => $containerConfiguration->getCType(),
+                'group' => $containerConfiguration->getGroup(),
+                'description' => $containerConfiguration->getDescription(),
+            ],
+            $containerConfiguration->getRelativeToField(),
+            $containerConfiguration->getRelativePosition(),
+        );
+        if (!isset($GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions'])) {
+            $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions'] = [];
         }
-        $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['previewRenderer'] = \B13\Container\Backend\Preview\ContainerPreviewRenderer::class;
-
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 13) {
-            if (!isset($GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions'])) {
-                $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions'] = [];
-            }
-            $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions']['saveAndClose'] =
-                $containerConfiguration->getSaveAndCloseInNewContentElementWizard();
-            if ($containerConfiguration->getDefaultValues() !== []) {
-                $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions']['defaultValues'] =
-                    $containerConfiguration->getDefaultValues();
-            }
+        $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions']['saveAndClose'] =
+            $containerConfiguration->getSaveAndCloseInNewContentElementWizard();
+        if ($containerConfiguration->getDefaultValues() !== []) {
+            $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['creationOptions']['defaultValues'] =
+                $containerConfiguration->getDefaultValues();
         }
         foreach ($containerConfiguration->getGrid() as $row) {
             foreach ($row as $column) {
-                if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
-                    $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
-                        'label' => $column['name'],
-                        'value' => $column['colPos'],
-                    ];
-                } else {
-                    $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
-                        $column['name'],
-                        $column['colPos'],
-                    ];
-                }
+                $GLOBALS['TCA']['tt_content']['columns']['colPos']['config']['items'][] = [
+                    'label' => $column['name'],
+                    'value' => $column['colPos'],
+                ];
             }
         }
 
@@ -138,6 +106,15 @@ class Registry implements SingletonInterface
         return $contentDefenderConfiguration;
     }
 
+    public function getAllowedCTypesInColumn(string $cType, int $colPos): ?array
+    {
+        $contentDefenderConfiguration = $this->getContentDefenderConfiguration($cType, $colPos);
+        if (empty($contentDefenderConfiguration['allowed.']['CType'])) {
+            return null;
+        }
+        return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowed.']['CType'] ?? '', true);
+    }
+
     public function getAllAvailableColumnsColPos(string $cType): array
     {
         $columns = $this->getAvailableColumns($cType);
@@ -151,22 +128,21 @@ class Registry implements SingletonInterface
     public function registerIcons(): void
     {
         if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration']) && is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
-            $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
                 if (file_exists(GeneralUtility::getFileAbsFileName($containerConfiguration['icon']))) {
                     $provider = BitmapIconProvider::class;
                     if (str_contains($containerConfiguration['icon'], '.svg')) {
                         $provider = SvgIconProvider::class;
                     }
-                    $iconRegistry->registerIcon(
+                    $this->iconRegistry->registerIcon(
                         $containerConfiguration['cType'],
                         $provider,
                         ['source' => $containerConfiguration['icon']]
                     );
                 } else {
                     try {
-                        $existingIconConfiguration = $iconRegistry->getIconConfigurationByIdentifier($containerConfiguration['icon']);
-                        $iconRegistry->registerIcon(
+                        $existingIconConfiguration = $this->iconRegistry->getIconConfigurationByIdentifier($containerConfiguration['icon']);
+                        $this->iconRegistry->registerIcon(
                             $containerConfiguration['cType'],
                             $existingIconConfiguration['provider'],
                             $existingIconConfiguration['options']
@@ -219,19 +195,6 @@ class Registry implements SingletonInterface
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['label'] ?? $cType;
     }
 
-    public function getColPosName(string $cType, int $colPos): ?string
-    {
-        $grid = $this->getGrid($cType);
-        foreach ($grid as $row) {
-            foreach ($row as $column) {
-                if ($column['colPos'] === $colPos) {
-                    return (string)$column['name'];
-                }
-            }
-        }
-        return null;
-    }
-
     public function getAvailableColumns(string $cType): array
     {
         $columns = [];
@@ -270,10 +233,7 @@ class Registry implements SingletonInterface
         // group containers by group
         $groupedByGroup = [];
         $defaultGroup = 'container';
-
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         $cTypesExcludedInNewContentElementWizard = [];
-
         foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {
             if ($containerConfiguration['registerInNewContentElementWizard'] === true) {
                 $group = $containerConfiguration['group'] !== '' ? $containerConfiguration['group'] : $defaultGroup;
@@ -287,52 +247,14 @@ class Registry implements SingletonInterface
 }
 ';
             // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
-            if ($typo3Version->getMajorVersion() > 12) {
-                if ($containerConfiguration['registerInNewContentElementWizard'] === false) {
-                    $group = $containerConfiguration['group'] !== '' ? $containerConfiguration['group'] : $defaultGroup;
-                    $cTypesExcludedInNewContentElementWizard[$group][] = $cType;
-                }
+            if ($containerConfiguration['registerInNewContentElementWizard'] === false) {
+                $group = $containerConfiguration['group'] !== '' ? $containerConfiguration['group'] : $defaultGroup;
+                $cTypesExcludedInNewContentElementWizard[$group][] = $cType;
             }
         }
 
-        if ($typo3Version->getMajorVersion() > 12) {
-            foreach ($cTypesExcludedInNewContentElementWizard as $group => $ctypes) {
-                $pageTs .= LF . 'mod.wizards.newContentElement.wizardItems.' . $group . '.removeItems := addToList(' . implode(',', $ctypes) . ')';
-            }
-            return $pageTs;
-        }
-
-        foreach ($groupedByGroup as $group => $containerConfigurations) {
-            $groupLabel = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['itemGroups'][$group] ?? $group;
-
-            $content = '';
-            if (!in_array($group, ['common', 'default', 'menu', 'special', 'forms', 'plugins'])) {
-                // do not override EXT:backend dummy placeholders for item groups
-                $content .= '
-mod.wizards.newContentElement.wizardItems.' . $group . '.header = ' . $groupLabel . '
-';
-            }
-            foreach ($containerConfigurations as $cType => $containerConfiguration) {
-                array_walk($containerConfiguration['defaultValues'], static function (&$item, $key) {
-                    $item = $key . ' = ' . $item;
-                });
-                $ttContentDefValues = 'CType = ' . $cType . LF . implode(LF, $containerConfiguration['defaultValues']);
-                $content .= 'mod.wizards.newContentElement.wizardItems.' . ($group === 'default' ? 'common' : $group) . '.show := addToList(' . $cType . ')
-';
-                $content .= 'mod.wizards.newContentElement.wizardItems.' . ($group === 'default' ? 'common' : $group) . '.elements {
-' . $cType . ' {
-    title = ' . $containerConfiguration['label'] . '
-    description = ' . $containerConfiguration['description'] . '
-    iconIdentifier = ' . $cType . '
-    tt_content_defValues {
-    ' . $ttContentDefValues . '
-    }
-    saveAndClose = ' . $containerConfiguration['saveAndCloseInNewContentElementWizard'] . '
-}
-}
-';
-            }
-            $pageTs .= LF . $content;
+        foreach ($cTypesExcludedInNewContentElementWizard as $group => $ctypes) {
+            $pageTs .= LF . 'mod.wizards.newContentElement.wizardItems.' . $group . '.removeItems := addToList(' . implode(',', $ctypes) . ')';
         }
         return $pageTs;
     }

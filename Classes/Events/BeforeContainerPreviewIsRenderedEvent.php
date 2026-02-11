@@ -14,25 +14,12 @@ namespace B13\Container\Events;
 
 use B13\Container\Domain\Model\Container;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
-use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewInterface;
 
 final class BeforeContainerPreviewIsRenderedEvent
 {
-    protected Container $container;
-
-    protected StandaloneView $view;
-
-    protected Grid $grid;
-
-    protected GridColumnItem $item;
-
-    public function __construct(Container $container, StandaloneView $view, Grid $grid, GridColumnItem $item)
+    public function __construct(protected Container $container, protected ViewInterface $view, protected Grid $grid)
     {
-        $this->container = $container;
-        $this->view = $view;
-        $this->grid = $grid;
-        $this->item = $item;
     }
 
     public function getContainer(): Container
@@ -40,7 +27,7 @@ final class BeforeContainerPreviewIsRenderedEvent
         return $this->container;
     }
 
-    public function getView(): StandaloneView
+    public function getView(): ViewInterface
     {
         return $this->view;
     }
@@ -48,11 +35,5 @@ final class BeforeContainerPreviewIsRenderedEvent
     public function getGrid(): Grid
     {
         return $this->grid;
-    }
-
-    public function getItem(): GridColumnItem
-    {
-        trigger_error('gridColumItem property will be removed on next major release', E_USER_DEPRECATED);
-        return $this->item;
     }
 }
