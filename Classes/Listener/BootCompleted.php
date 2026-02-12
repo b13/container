@@ -14,21 +14,16 @@ namespace B13\Container\Listener;
 
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Core\Event\BootCompletedEvent;
+use TYPO3\CMS\Core\Imaging\IconRegistry;
 
 class BootCompleted
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    public function __construct(Registry $tcaRegistry)
+    public function __construct(protected Registry $tcaRegistry, protected IconRegistry $iconRegistry)
     {
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function __invoke(BootCompletedEvent $event): void
     {
-        $this->tcaRegistry->registerIcons();
+        $this->tcaRegistry->registerIcons($this->iconRegistry);
     }
 }

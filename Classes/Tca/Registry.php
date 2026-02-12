@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Registry implements SingletonInterface
 {
-    public function __construct(protected EventDispatcherInterface $eventDispatcher, protected IconRegistry $iconRegistry)
+    public function __construct(protected EventDispatcherInterface $eventDispatcher)
     {
     }
 
@@ -124,7 +124,7 @@ class Registry implements SingletonInterface
         return $availableColumnsColPos;
     }
 
-    public function registerIcons(): void
+    public function registerIcons(IconRegistry $iconRegistry): void
     {
         if (isset($GLOBALS['TCA']['tt_content']['containerConfiguration']) && is_array($GLOBALS['TCA']['tt_content']['containerConfiguration'])) {
             foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $containerConfiguration) {
@@ -133,15 +133,15 @@ class Registry implements SingletonInterface
                     if (str_contains($containerConfiguration['icon'], '.svg')) {
                         $provider = SvgIconProvider::class;
                     }
-                    $this->iconRegistry->registerIcon(
+                    $iconRegistry->registerIcon(
                         $containerConfiguration['cType'],
                         $provider,
                         ['source' => $containerConfiguration['icon']]
                     );
                 } else {
                     try {
-                        $existingIconConfiguration = $this->iconRegistry->getIconConfigurationByIdentifier($containerConfiguration['icon']);
-                        $this->iconRegistry->registerIcon(
+                        $existingIconConfiguration = $iconRegistry->getIconConfigurationByIdentifier($containerConfiguration['icon']);
+                        $iconRegistry->registerIcon(
                             $containerConfiguration['cType'],
                             $existingIconConfiguration['provider'],
                             $existingIconConfiguration['options']

@@ -15,7 +15,6 @@ namespace B13\Container\Tests\Unit\Tca;
 use B13\Container\Tca\Registry;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
-use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -27,8 +26,7 @@ class RegistryTest extends UnitTestCase
     public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured(): void
     {
         $eventDispatcher = new NoopEventDispatcher();
-        $iconRegistry = $this->createMock(IconRegistry::class);
-        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher, $iconRegistry);
+        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher);
         $columns = $registry->getAllAvailableColumns();
         self::assertSame([], $columns);
     }
@@ -37,8 +35,7 @@ class RegistryTest extends UnitTestCase
     public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
     {
         $eventDispatcher = new NoopEventDispatcher();
-        $iconRegistry = $this->createMock(IconRegistry::class);
-        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher, $iconRegistry);
+        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher);
         $res = $registry->getPageTsString();
         self::assertSame('', $res, 'empty string should be returned');
     }
