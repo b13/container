@@ -27,7 +27,7 @@ class RegistryTest extends UnitTestCase
     public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured(): void
     {
         $eventDispatcher = new NoopEventDispatcher();
-        $iconRegistry = $this->getMockBuilder(IconRegistry::class)->disableOriginalConstructor()->getMock();
+        $iconRegistry = $this->createMock(IconRegistry::class);
         $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher, $iconRegistry);
         $columns = $registry->getAllAvailableColumns();
         self::assertSame([], $columns);
@@ -37,7 +37,7 @@ class RegistryTest extends UnitTestCase
     public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
     {
         $eventDispatcher = new NoopEventDispatcher();
-        $iconRegistry = $this->getMockBuilder(IconRegistry::class)->disableOriginalConstructor()->getMock();
+        $iconRegistry = $this->createMock(IconRegistry::class);
         $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher, $iconRegistry);
         $res = $registry->getPageTsString();
         self::assertSame('', $res, 'empty string should be returned');

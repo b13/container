@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace B13\Container\Backend\ContextMenu;
 
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RecordContextMenuItemProvider extends \TYPO3\CMS\Backend\ContextMenu\ItemProviders\RecordProvider
 {
-    public function __construct(protected UriBuilder $uriBuilder)
-    {
-        parent::__construct();
-    }
-
     /**
      * Add tx_container_parent to newContentElementWizard Url if it is a tt_content record in a container
      */
@@ -29,7 +26,12 @@ class RecordContextMenuItemProvider extends \TYPO3\CMS\Backend\ContextMenu\ItemP
                 'uid_pid' => -$this->record['uid'],
                 'tx_container_parent' => $this->record['tx_container_parent'],
             ];
-            $url = (string)$this->uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+            if ((new Typo3Version())->getMajorVersion() < 14) {
+                $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+                $url = (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+            } else {
+                $url = (string)$this->uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+            }
             if (isset($attributes['data-new-wizard-url'])) {
                 $attributes['data-new-wizard-url'] = $url;
             }

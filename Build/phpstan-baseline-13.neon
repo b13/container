@@ -72,3 +72,7 @@ parameters:
 			message: "#^Parameter \\#4 \\$drawingConfiguration of class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor expects TYPO3\\\\CMS\\\\Backend\\\\View\\\\Drawing\\\\DrawingConfiguration, PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&TYPO3\\\\CMS\\\\Core\\\\Http\\\\ServerRequest given\\.$#"
 			count: 1
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
+		-
+			message: "#^Access to an undefined property B13\\\\Container\\\\Backend\\\\ContextMenu\\\\RecordContextMenuItemProvider\\:\\:\\$uriBuilder\\.$#"
+			count: 1
+			path: ../Classes/Backend/ContextMenu/RecordContextMenuItemProvider.php
