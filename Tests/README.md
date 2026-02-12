@@ -24,6 +24,6 @@
  ## Run tests
 
 
-    .Build/bin/phpunit -c Build/phpunit/UnitTests.xml Tests/Unit/
-    .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml Tests/Functional
-    .Build/bin/codecept run Backend --env=local,classic -c Tests/codeception.yml
+    php -d memory_limit=2G .Build/bin/phpunit -c Build/phpunit/UnitTests.xml Tests/Unit/
+    php -d memory_limit=2G .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml Tests/Functional
+    php -d memory_limit=2G .Build/bin/codecept run Backend --env=local,classic -c Tests/codeception.yml
