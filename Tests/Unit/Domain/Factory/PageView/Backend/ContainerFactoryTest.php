@@ -16,6 +16,7 @@ use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Factory\PageView\Backend\ContentStorage;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -23,9 +24,7 @@ class ContainerFactoryTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerByUidReturnsNullIfNoRecordInDatabaseIsFound(): void
     {
         $database = $this->getMockBuilder(Database::class)

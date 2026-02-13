@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Unit\Service;
 
 use B13\Container\Service\RecordLocalizeSummaryModifier;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -21,9 +22,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filterRecordsRemovesContainerChildrenIfParentContainerIsTranslatedAsWell(): void
     {
         if ((new Typo3Version())->getMajorVersion() >= 14) {
@@ -47,9 +46,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
         self::assertTrue(empty($filtered[200]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filterRecordsKeepsContainerChildrenIfParentContainerIsNotTranslated(): void
     {
         if ((new Typo3Version())->getMajorVersion() >= 14) {
@@ -73,9 +70,7 @@ class RecordLocalizeSummaryModifierTest extends UnitTestCase
         self::assertTrue(count($filtered[200]) === 1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rebuildColumnsReturnsColumnListWithConsecutiveArrayKeysAlsoWhenRegistryReturnsRepeatingColumns(): void
     {
         if ((new Typo3Version())->getMajorVersion() >= 14) {

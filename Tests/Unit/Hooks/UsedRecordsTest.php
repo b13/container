@@ -16,6 +16,7 @@ use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Hooks\UsedRecords;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,9 +26,7 @@ class UsedRecordsTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsUsedOfParamsIfTxContainerParentIsZero(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
@@ -46,9 +45,7 @@ class UsedRecordsTest extends UnitTestCase
         self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsTrueIfChildrenInContainerColPos(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
@@ -76,9 +73,7 @@ class UsedRecordsTest extends UnitTestCase
         self::assertTrue($usedRecords->addContainerChildren($params, $pageLayoutView));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenIsNotInContainerColPos(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
@@ -106,9 +101,7 @@ class UsedRecordsTest extends UnitTestCase
         self::assertFalse($usedRecords->addContainerChildren($params, $pageLayoutView));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenIsNotInRegisterdGrid(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
