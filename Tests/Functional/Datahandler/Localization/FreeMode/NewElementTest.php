@@ -13,13 +13,12 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 class NewElementTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function newElementAfterContainerSortElementAfterLastChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/setup.csv');

@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
 class ContainerTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteContainerDeleteTranslatedChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteTranslatedChildren.csv');
@@ -34,9 +33,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteTranslatedChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerToOtherPageMovesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildren.csv');

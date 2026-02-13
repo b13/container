@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
 class ContainerTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteContainerDeleteChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildren.csv');
@@ -34,9 +33,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerToOtherPageMovesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildren.csv');
@@ -60,9 +57,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerCopiesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerCopiesChildren.csv');
@@ -84,9 +79,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToOtherLanguageCopiesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildren.csv');
@@ -109,9 +102,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToDefaultLanguage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToDefaultLanguage.csv');
@@ -134,9 +125,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToDefaultLanguageResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToOtherLanguageCopiesNestedChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesNestedChildren.csv');
@@ -159,9 +148,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesNestedChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerToOtherLanguageMovesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageMovesChildren.csv');
@@ -185,9 +172,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerToDefaultLanguage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToDefaultLanguage.csv');

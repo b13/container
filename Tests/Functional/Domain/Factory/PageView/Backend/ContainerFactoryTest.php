@@ -11,6 +11,7 @@ namespace B13\Container\Tests\Functional\Domain\Factory\PageView\Backend;
  */
 
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
@@ -32,9 +33,7 @@ class ContainerFactoryTest extends FunctionalTestCase
      */
     protected array $coreExtensionsToLoad = ['workspaces'];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizedContainerChildElementsHasSortingOfDefaultChildElements(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
@@ -46,9 +45,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(6, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function movedElementIntoOtherContainerInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.csv');
@@ -65,9 +62,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(104, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function movedElementIntoContainerInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoContainerInWorkspace.csv');
@@ -82,9 +77,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(101, $first['tx_container_parent']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerRespectSortingOfMovedChildrenInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.csv');
@@ -100,9 +93,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(102, $second['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsMovedChildrenInWorkspaceWithTranslation(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceWithTranslation.csv');
@@ -121,9 +112,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(110, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsCopiedChildrenInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/copiedChildrenInWorkspace.csv');
@@ -140,9 +129,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(104, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsChildrenWhenMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
@@ -157,9 +144,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(205, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsLocalizedChildrenWhenMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');

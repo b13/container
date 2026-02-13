@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Functional\Listener;
  */
 
 use B13\Container\Listener\ContentUsedOnPage;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\View\Event\IsContentUsedOnPageLayoutEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Database\Connection;
@@ -31,9 +32,7 @@ class ContentUsedOnPageTest extends FunctionalTestCase
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsTrueIfChildrenInContainer(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
@@ -48,9 +47,7 @@ class ContentUsedOnPageTest extends FunctionalTestCase
         self::assertTrue($event->isRecordUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenHasWrongPid(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
@@ -65,9 +62,7 @@ class ContentUsedOnPageTest extends FunctionalTestCase
         self::assertFalse($event->isRecordUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenHasWrongColPos(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
@@ -82,9 +77,7 @@ class ContentUsedOnPageTest extends FunctionalTestCase
         self::assertFalse($event->isRecordUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfRecordNotInContainer(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
@@ -99,9 +92,7 @@ class ContentUsedOnPageTest extends FunctionalTestCase
         self::assertFalse($event->isRecordUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsTrueForLocalizedContent(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {

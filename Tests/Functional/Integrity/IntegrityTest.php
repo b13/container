@@ -15,6 +15,7 @@ namespace B13\Container\Tests\Functional\Integrity;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\Context\PageContext;
 use TYPO3\CMS\Backend\Domain\Model\Language\PageLanguageInformation;
 use TYPO3\CMS\Backend\View\BackendLayout\BackendLayout;
@@ -41,9 +42,7 @@ class IntegrityTest extends FunctionalTestCase
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function integrityCreateWrongPidError(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/children_with_wrong_pids.csv');
@@ -60,9 +59,7 @@ class IntegrityTest extends FunctionalTestCase
         self::assertSame(1, $container['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function wrongPidErrorElementsAreShownAsUnusedElements(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/children_with_wrong_pids.csv');
@@ -134,9 +131,7 @@ class IntegrityTest extends FunctionalTestCase
         self::assertSame(2, $unusedRecordsArr[0]['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function integrityFixDeleteChildrenWithWrongPid(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');

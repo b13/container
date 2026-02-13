@@ -17,6 +17,8 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
 use B13\Container\Integrity\Sorting;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -54,10 +56,8 @@ class SortingWithContentDefenderTest extends FunctionalTestCase
         $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function childBeforeContainerIsSortedAfterContainerEvenIfCTypeDisallowedByContentDefender(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/SortingWithContentDefender/disallowed_child_is_before_container.csv');

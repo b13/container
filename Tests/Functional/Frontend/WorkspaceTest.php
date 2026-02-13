@@ -10,6 +10,8 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 
@@ -29,10 +31,8 @@ class WorkspaceTest extends AbstractFrontend
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInLiveIsRendered(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
@@ -43,10 +43,8 @@ class WorkspaceTest extends AbstractFrontend
         self::assertStringNotContainsString('<h2 class="">header-ws</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInWorkspaceIsRendered(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
@@ -58,10 +56,8 @@ class WorkspaceTest extends AbstractFrontend
         self::assertStringNotContainsString('<h2 class="">header-live</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child_moved_from_outside.csv');
@@ -73,10 +69,8 @@ class WorkspaceTest extends AbstractFrontend
         self::assertStringNotContainsString('<h2 class="">header-live</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
@@ -88,10 +82,8 @@ class WorkspaceTest extends AbstractFrontend
         self::assertStringContainsString('<h2 class="">header-ws</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.csv');
@@ -104,10 +96,8 @@ class WorkspaceTest extends AbstractFrontend
         self::assertStringNotContainsString('live-container-header', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/child_in_ws_whith_hidden_live_version.csv');
@@ -120,10 +110,8 @@ class WorkspaceTest extends AbstractFrontend
         self::assertStringNotContainsString('live-child-header', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');

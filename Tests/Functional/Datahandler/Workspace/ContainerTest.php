@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Functional\Datahandler\Workspace;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,9 +31,7 @@ class ContainerTest extends AbstractDatahandler
         $context->setAspect('workspace', $workspaceAspect);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteContainerDeleteChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerDeleteChildren.csv');
@@ -48,9 +47,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerDeleteChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newVersionDoesNotCreateNewVersionsOfChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/NewVersionDoesNotCreateNewVersionsOfChildren.csv');
@@ -68,9 +65,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/NewVersionDoesNotCreateNewVersionsOfChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveChildsColPosInContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInContainer.csv');
@@ -93,9 +88,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveChildOutsideContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveChildOutsideContainer.csv');
@@ -119,9 +112,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveChildOutsideContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveChildsColPosInOtherContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInOtherContainer.csv');
@@ -145,9 +136,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveChildsColPosInOtherContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildsColPosInContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInContainer.csv');
@@ -171,9 +160,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildOutsideContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyChildOutsideContainer.csv');
@@ -198,9 +185,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyChildOutsideContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildsColPosInOtherContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInOtherContainer.csv');
@@ -224,9 +209,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyChildsColPosInOtherContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainer.csv');
@@ -248,9 +231,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveRecordInColPosCreatesWorkspaceElementInContainer()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveRecordInColPosCreatesWorkspaceElementInContainer.csv');
@@ -274,9 +255,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveRecordInColPosCreatesWorkspaceElementInContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChild.csv');
@@ -298,9 +277,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotCopyThisChildResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChild.csv');

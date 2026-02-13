@@ -12,6 +12,7 @@ namespace B13\Container\Tests\Functional\Domain\Factory\PageView\Backend;
 
 use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\PageView\Backend\ContentStorage;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,9 +33,7 @@ class ContentStorageTest extends FunctionalTestCase
      */
     protected array $coreExtensionsToLoad = ['workspaces'];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerChildrenReturnsAllLiveChildrenInDraftWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
@@ -49,9 +48,7 @@ class ContentStorageTest extends FunctionalTestCase
         self::assertSame(2, count($children));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerChildrenReturnsAllLiveChildrenInLiveWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
@@ -65,9 +62,7 @@ class ContentStorageTest extends FunctionalTestCase
         self::assertSame(2, count($children));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deletedChildInWorkspaceReturnsChildInLiveWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/deletedChildInWorkspace.csv');
@@ -82,9 +77,7 @@ class ContentStorageTest extends FunctionalTestCase
         self::assertSame(1, count($children));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deletedChildInWorkspaceReturnsNoChildInDraftWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/deletedChildInWorkspace.csv');

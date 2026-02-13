@@ -12,6 +12,9 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+
 class LocalizationTest extends AbstractContentDefender
 {
     /**
@@ -29,10 +32,8 @@ class LocalizationTest extends AbstractContentDefender
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localization/setup.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function moveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCType(): void
     {
         $cmdmap = [
@@ -57,10 +58,8 @@ class LocalizationTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localization/MoveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCTypeResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyElementIntoContainerAtTopDoNotCopyTranslationIfDisallowedCType(): void
     {
         $cmdmap = [

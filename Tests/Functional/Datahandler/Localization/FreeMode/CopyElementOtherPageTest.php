@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
 class CopyElementOtherPageTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildElementOutsideContainerAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/setup.csv');
@@ -43,9 +42,7 @@ class CopyElementOtherPageTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/CopyChildElementOutsideContainerAtTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildElementOutsideContainerAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/setup.csv');
@@ -71,9 +68,7 @@ class CopyElementOtherPageTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/CopyChildElementOutsideContainerAfterElementResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildElementToOtherColumnTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/setup.csv');
@@ -99,9 +94,7 @@ class CopyElementOtherPageTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/CopyChildElementToOtherColumnTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildElementToOtherColumnAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/setup.csv');
@@ -126,9 +119,7 @@ class CopyElementOtherPageTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/CopyChildElementToOtherColumnAfterElementResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyElementIntoContainerAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/setup.csv');
@@ -154,9 +145,7 @@ class CopyElementOtherPageTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/CopyElementIntoContainerAtTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyElementIntoContainerAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElementOtherPage/setup.csv');

@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
 class CopyPageTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function copyPageCopiesChildrenOfContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyPage/CopyPageCopiesChildrenOfContainer.csv');

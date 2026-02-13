@@ -12,6 +12,8 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class DataProcessorWithFilesTest extends AbstractFrontend
@@ -32,10 +34,8 @@ class DataProcessorWithFilesTest extends AbstractFrontend
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function relationIsRendered(): void
     {
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));

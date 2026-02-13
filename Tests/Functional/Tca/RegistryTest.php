@@ -14,6 +14,7 @@ namespace B13\Container\Tests\Functional\Tca;
 
 use B13\Container\Tca\ContainerConfiguration;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,9 +29,7 @@ class RegistryTest extends FunctionalTestCase
         'typo3conf/ext/container',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPageTsAddsPreviewConfigEvenIfRegisterInNewContentElementWizardIsSetToFalse(): void
     {
         // https://github.com/b13/container/pull/153
@@ -51,9 +50,7 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
         self::assertStringContainsString($expected, $pageTs);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPageTsStringReturnsGroupAsGroupLabelWhenGroupIsNotAddetToItemGroups(): void
     {
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
@@ -76,9 +73,7 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
         self::assertStringContainsString($expected, $pageTs);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function tcaDefaultGroupIsAddedToNewContentElementCommonGroup(): void
     {
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
@@ -101,9 +96,7 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
         self::assertStringContainsString($expected, $pageTs);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function originalPageTsIsNotOverriden(): void
     {
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {

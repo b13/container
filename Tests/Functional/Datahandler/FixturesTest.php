@@ -15,6 +15,9 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
 use B13\Container\Integrity\Sorting;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Finder\Finder;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -71,11 +74,9 @@ class FixturesTest extends FunctionalTestCase
         return $results;
     }
 
-    /**
-     * @test
-     * @dataProvider csvProvider
-     * @group fixtures
-     */
+    #[Test]
+    #[Group('fixtures')]
+    #[DataProvider('csvProvider')]
     public function fixturesSorting(string $csv): void
     {
         $this->importCSVDataSet(__DIR__ . '/' . $csv);

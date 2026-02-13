@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Functional\Hooks;
  */
 
 use B13\Container\Hooks\UsedRecords;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -35,9 +36,7 @@ class UsedRecordsTest extends FunctionalTestCase
         return new PageLayoutView();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsTrueIfChildrenInContainer(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
@@ -51,9 +50,7 @@ class UsedRecordsTest extends FunctionalTestCase
         self::assertTrue($res);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenHasWrongPid(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
@@ -67,9 +64,7 @@ class UsedRecordsTest extends FunctionalTestCase
         self::assertFalse($res);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenHasWrongColPos(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
@@ -83,9 +78,7 @@ class UsedRecordsTest extends FunctionalTestCase
         self::assertFalse($res);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsFalseIfRecordNotInContainer(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {
@@ -99,9 +92,7 @@ class UsedRecordsTest extends FunctionalTestCase
         self::assertFalse($res);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addContainerChildrenReturnsTrueForLocalizedContent(): void
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() >= 12) {

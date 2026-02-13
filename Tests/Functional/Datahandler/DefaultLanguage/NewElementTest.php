@@ -13,13 +13,12 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 class NewElementTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function newElementAfterContainerSortElementAfterLastChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterContainerSortElementAfterLastChild.csv');
@@ -37,9 +36,7 @@ class NewElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterContainerSortElementAfterLastChildResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newElementAfterNestedContainerSortElementAfterLastChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterNestedContainerSortElementAfterLastChild.csv');
@@ -59,9 +56,7 @@ class NewElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterNestedContainerSortElementAfterLastChildResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newElementAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAtTop.csv');
@@ -83,9 +78,7 @@ class NewElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAtTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newElementAfterChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterChild.csv');
@@ -107,9 +100,7 @@ class NewElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementAfterChildResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newElementInNexCol(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/NewElement/NewElementInNextCol.csv');

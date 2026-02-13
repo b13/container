@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
 class CopyContainerInContainerTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerInContainer/CopyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer.csv');
