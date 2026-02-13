@@ -29,9 +29,6 @@ class PageTsConfigModuleCest
 
     public function canSeeContainerPageTsConfig(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13, Scenario $scenario)
     {
-        if ($I->getTypo3MajorVersion() < 12) {
-            $scenario->skip('InfoModuleCest is used');
-        }
         $I->click('Page TSconfig');
         if ($I->getTypo3MajorVersion() < 13) {
             $I->waitForElement('#typo3-pagetree-tree .nodes .node');

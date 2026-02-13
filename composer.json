@@ -29,7 +29,7 @@
         }
     },
     "require-dev": {
-        "b13/container-example": "dev-master",
+        "b13/container-example": "dev-task/v4",
         "typo3/cms-install": "^13.4 || ^14.1 || 14.2.x-dev",
         "typo3/cms-fluid-styled-content": "^13.4 || ^14.1 || 14.2.x-dev",
         "typo3/cms-info": "^13.4 || ^14.1 || 14.2.x-dev",
