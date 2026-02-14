@@ -16,12 +16,10 @@ use B13\Container\Tca\ContainerConfiguration;
 
 final class BeforeContainerConfigurationIsAppliedEvent
 {
-    protected ContainerConfiguration $containerConfiguration;
     protected bool $skip = false;
 
-    public function __construct(ContainerConfiguration $containerConfiguration)
+    public function __construct(protected ContainerConfiguration $containerConfiguration)
     {
-        $this->containerConfiguration = $containerConfiguration;
     }
 
     public function skip(): void

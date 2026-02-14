@@ -21,18 +21,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumnItem extends GridColumnItem
 {
-    protected $container;
-    protected ?string $newContentUrl = null;
-
-    public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, Container $container, ?string $newContentUrl)
+    public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, protected Container $container, protected ?string $newContentUrl)
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 13) {
             $recordFactory = GeneralUtility::makeInstance(RecordFactory::class);
             $record = $recordFactory->createResolvedRecordFromDatabaseRow('tt_content', $record);
         }
         parent::__construct($context, $column, $record);
-        $this->container = $container;
-        $this->newContentUrl = $newContentUrl;
     }
 
     public function getAllowNewContent(): bool

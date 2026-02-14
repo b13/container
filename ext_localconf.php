@@ -3,21 +3,6 @@
 defined('TYPO3') || die('Access denied.');
 
 call_user_func(static function () {
-    $typo3Version = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
-
-    if ($typo3Version->getMajorVersion() < 12) {
-        // remove container colPos from "unused" page-elements (v12: IsContentUsedOnPageLayoutEvent)
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['record_is_used']['tx_container'] =
-            \B13\Container\Hooks\UsedRecords::class . '->addContainerChildren';
-        // add tx_container_parent parameter to wizard items (v12: ModifyNewContentElementWizardItemsEvent)
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms']['db_new_content_el']['wizardItemsHook']['tx_container'] =
-            \B13\Container\Hooks\WizardItems::class;
-        // LocalizationController Xclass (v12: AfterRecordSummaryForLocalizationEvent)
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Controller\Page\LocalizationController::class] = [
-            'className' => \B13\Container\Xclasses\LocalizationController::class,
-        ];
-    }
-
     $commandMapHooks = [
         'tx_container-post-process' => \B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook::class,
         'tx_container-before-start' => \B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook::class,

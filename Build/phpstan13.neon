@@ -9,10 +9,5 @@ parameters:
     - %currentWorkingDirectory%/Tests
 
   excludePaths:
-    - %currentWorkingDirectory%/Classes/Hooks/UsedRecords.php
-    - %currentWorkingDirectory%/Tests/Functional/Hooks/UsedRecordsTest.php
-    - %currentWorkingDirectory%/Tests/Unit/Hooks/UsedRecordsTest.php
-    - %currentWorkingDirectory%/Classes/Hooks/WizardItems.php
-    - %currentWorkingDirectory%/Classes/Listener/LegacyPageTsConfig.php
     - %currentWorkingDirectory%/Classes/Listener/PageContentPreviewRendering.php
 

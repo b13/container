@@ -20,22 +20,14 @@ class ContainerGridColumn extends GridColumn
 {
     public const CONTAINER_COL_POS_DELIMITER = '-';
 
-    protected $container;
-
-    protected ?string $newContentUrl = null;
-    protected bool $skipNewContentElementWizard;
-
     public function __construct(
         PageLayoutContext $context,
         array $columnDefinition,
-        Container $container,
-        ?string $newContentUrl,
-        bool $skipNewContentElementWizard
+        protected Container $container,
+        protected ?string $newContentUrl,
+        protected bool $skipNewContentElementWizard
     ) {
         parent::__construct($context, $columnDefinition);
-        $this->container = $container;
-        $this->newContentUrl = $newContentUrl;
-        $this->skipNewContentElementWizard = $skipNewContentElementWizard;
     }
 
     public function getContainerUid(): int
