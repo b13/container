@@ -18,12 +18,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 class LocalizeTest extends AbstractDatahandler
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->linkSiteConfigurationIntoTestInstance();
-    }
-
     #[Test]
     public function copyChildToLanguageFixContainerParent(): void
     {

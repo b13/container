@@ -50,10 +50,6 @@ abstract class AbstractFrontend extends FunctionalTestCase
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @param string $string
-     * @return string
-     */
     protected function prepareContent(string $string): string
     {
         $lines = explode("\n", $string);

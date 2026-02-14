@@ -47,11 +47,6 @@
     "replace": {
         "typo3-ter/container": "self.version"
     },
-    "scripts": {
-        "prepare-tests": [
-            "if [ ! -e .Build/Web/typo3conf/sites -a -e .Build/Web/typo3conf ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
-        ]
-    },
     "extra": {
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",

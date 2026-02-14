@@ -28,12 +28,6 @@ class MaxItemsTest extends AbstractContentDefender
         'typo3conf/ext/content_defender',
     ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->linkSiteConfigurationIntoTestInstance();
-    }
-
     #[Test]
     #[Group('content_defender')]
     public function canMoveElementIntoContainerIfMaxitemsIsNotReached(): void

@@ -598,13 +598,10 @@ case ${TEST_SUITE} in
 
             if [ "${TYPO3}" == "14-dev" ]; then
               composer require typo3/cms-core:14.2.x-dev --dev -W --no-progress --no-interaction
-              composer prepare-tests
             elif [ ${TYPO3} -eq 14 ]; then
               composer require typo3/cms-core:^14.1 --dev -W --no-progress --no-interaction
-              composer prepare-tests
             else
               composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
-              composer prepare-tests
             fi
           "
           SUITE_EXIT_CODE=$?
@@ -620,13 +617,10 @@ case ${TEST_SUITE} in
             php -v | grep '^PHP';
             if [ "${TYPO3}" == "14-dev" ]; then
               composer require typo3/cms-core:14.2.x-dev --dev -W --no-progress --no-interaction
-              composer prepare-tests
             elif [ ${TYPO3} -eq 14 ]; then
               composer require typo3/cms-core:^14.1 --dev -W --no-progress --no-interaction
-              composer prepare-tests
             else
               composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
-              composer prepare-tests
             fi
             composer validate
           "
