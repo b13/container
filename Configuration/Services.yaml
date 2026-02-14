@@ -55,10 +55,6 @@ services:
     tags:
       - name: event.listener
         identifier: 'tx-container-new-content-element-wizard'
-  B13\Container\Listener\LegacyPageTsConfig:
-    tags:
-      - name: event.listener
-        identifier: 'tx-container-legacy-page-ts-config'
   B13\Container\Listener\PageTsConfig:
     tags:
       - name: event.listener
