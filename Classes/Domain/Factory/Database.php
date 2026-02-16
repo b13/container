@@ -55,9 +55,12 @@ class Database implements SingletonInterface
         $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
-                $queryBuilder->expr()->eq(
+                $queryBuilder->expr()->in(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
+                    [
+                        $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT),
+                        -1
+                    ]
                 ),
                 $queryBuilder->expr()->eq(
                     'pid',
