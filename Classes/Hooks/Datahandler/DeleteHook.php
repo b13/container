@@ -14,20 +14,16 @@ namespace B13\Container\Hooks\Datahandler;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[Autoconfigure(public: true)]
 class DeleteHook
 {
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    public function __construct(ContainerFactory $containerFactory)
+    public function __construct(protected ContainerFactory $containerFactory)
     {
-        $this->containerFactory = $containerFactory;
     }
 
     public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, DataHandler $dataHandler): void

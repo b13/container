@@ -18,20 +18,12 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Database implements SingletonInterface
+class Database
 {
-    /**
-     * @var int
-     */
-    protected $backendUserId = 0;
-
-    /**
-     * @var int
-     */
-    protected $workspaceId = 0;
+    protected int $backendUserId = 0;
+    protected int $workspaceId = 0;
 
     public function __construct(Context $context)
     {

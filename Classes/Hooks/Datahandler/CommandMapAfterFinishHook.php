@@ -12,19 +12,15 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[Autoconfigure(public: true)]
 class CommandMapAfterFinishHook
 {
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    public function __construct(Database $database)
+    public function __construct(protected Database $database)
     {
-        $this->database = $database;
     }
 
     public function processCmdmap_afterFinish(DataHandler $dataHandler): void

@@ -20,25 +20,12 @@ use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class IntegrityFix implements SingletonInterface
+class IntegrityFix
 {
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    public function __construct(Database $database, Registry $tcaRegistry)
+    public function __construct(protected Database $database, protected Registry $tcaRegistry)
     {
-        $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function deleteChildrenWithWrongPid(WrongPidError $wrongPidError): void

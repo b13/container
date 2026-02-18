@@ -28,12 +28,3 @@ parameters:
 			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 2 parameters, 5 required\\.$#"
 			count: 1
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
-		-
-			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:cast\\(\\)\\.$#"
-			count: 1
-			path: ../Classes/Domain/Factory/ContainerFactory.php
-
-		-
-			message: "#^Call to an undefined static method TYPO3\\\\CMS\\\\Core\\\\Versioning\\\\VersionState\\:\\:cast\\(\\)\\.$#"
-			count: 2
-			path: ../Classes/Domain/Factory/PageView/Backend/ContentStorage.php

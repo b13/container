@@ -46,7 +46,7 @@ class IntegrityTest extends FunctionalTestCase
     public function integrityCreateWrongPidError(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/children_with_wrong_pids.csv');
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
+        $integrity = $this->get(Integrity::class);
         $res = $integrity->run();
         self::assertTrue(isset($res['errors']));
         self::assertSame(1, count($res['errors']));
@@ -84,43 +84,37 @@ class IntegrityTest extends FunctionalTestCase
             )
             ->executeQuery()
             ->fetchAssociative();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
-            $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout);
+
+        $site = $this->getMockBuilder(Site::class)->disableOriginalConstructor()->getMock();
+        $drawingConfiguration = $this->getMockBuilder(DrawingConfiguration::class)->disableOriginalConstructor()->getMock();
+        $serverRequest = $this->getMockBuilder(ServerRequest::class)->disableOriginalConstructor()->getMock();
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 14) {
+            $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout, $site, $drawingConfiguration, $serverRequest);
             $contentFetcher = new ContentFetcher($pageLayoutContext);
             $unusedRecords = $contentFetcher->getUnusedRecords();
         } else {
-            $site = $this->getMockBuilder(Site::class)->disableOriginalConstructor()->getMock();
-            $drawingConfiguration = $this->getMockBuilder(DrawingConfiguration::class)->disableOriginalConstructor()->getMock();
-            $serverRequest = $this->getMockBuilder(ServerRequest::class)->disableOriginalConstructor()->getMock();
-            if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 14) {
-                $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout, $site, $drawingConfiguration, $serverRequest);
-                $contentFetcher = new ContentFetcher($pageLayoutContext);
-                $unusedRecords = $contentFetcher->getUnusedRecords();
-            } else {
-                $pageLanguageInformation = new PageLanguageInformation(
-                    $pageRecord['uid'],
-                    [],
-                    [],
-                    [],
-                    [0],
-                    false,
-                    []
-                );
-                $pageContext = new PageContext(
-                    $pageRecord['uid'],
-                    $pageRecord,
-                    $site,
-                    [],
-                    [],
-                    [],
-                    $pageLanguageInformation,
-                    new Permission()
-                );
-                $pageLayoutContext = new PageLayoutContext($pageContext, $backendLayout, $drawingConfiguration, $serverRequest);
-                $container = $this->get('service_container');
-                $contentFetcher = $container->get(ContentFetcher::class);
-                $unusedRecords = $contentFetcher->getUnusedRecords($pageLayoutContext);
-            }
+            $pageLanguageInformation = new PageLanguageInformation(
+                $pageRecord['uid'],
+                [],
+                [],
+                [],
+                [0],
+                false,
+                []
+            );
+            $pageContext = new PageContext(
+                $pageRecord['uid'],
+                $pageRecord,
+                $site,
+                [],
+                [],
+                [],
+                $pageLanguageInformation,
+                new Permission()
+            );
+            $pageLayoutContext = new PageLayoutContext($pageContext, $backendLayout, $drawingConfiguration, $serverRequest);
+            $contentFetcher = $this->get(ContentFetcher::class);
+            $unusedRecords = $contentFetcher->getUnusedRecords($pageLayoutContext);
         }
 
         $unusedRecordsArr = [];
@@ -137,9 +131,9 @@ class IntegrityTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/children_with_wrong_pids.csv');
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
+        $integrity = $this->get(Integrity::class);
         $res = $integrity->run();
-        $integrityFix = GeneralUtility::makeInstance(IntegrityFix::class);
+        $integrityFix = $this->get(IntegrityFix::class);
         foreach ($res['errors'] as $error) {
             $integrityFix->deleteChildrenWithWrongPid($error);
         }

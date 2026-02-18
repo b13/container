@@ -37,7 +37,7 @@ class ContainerFactoryTest extends FunctionalTestCase
     public function localizedContainerChildElementsHasSortingOfDefaultChildElements(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(2);
         $children = $container->getChildrenByColPos(201);
         self::assertSame(2, count($children));
@@ -51,7 +51,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(0, count($children));
@@ -68,7 +68,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoContainerInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(1, count($children));
@@ -83,7 +83,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(2, count($children));
@@ -101,7 +101,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $languageAspect = GeneralUtility::makeInstance(LanguageAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         GeneralUtility::makeInstance(Context::class)->setAspect('language', $languageAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(106);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(0, count($children));
@@ -118,7 +118,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/copiedChildrenInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(1, count($children));
@@ -135,7 +135,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         // versioned record uid
         $container = $containerFactory->buildContainer(203);
         $children = $container->getChildrenByColPos(201);
@@ -151,7 +151,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localized_container_moved_to_other_page.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         // versioned record uid
         $container = $containerFactory->buildContainer(213);
         $children = $container->getChildrenByColPos(201);

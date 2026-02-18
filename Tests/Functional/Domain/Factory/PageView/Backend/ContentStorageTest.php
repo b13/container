@@ -39,7 +39,7 @@ class ContentStorageTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
-        $database = GeneralUtility::makeInstance(Database::class);
+        $database = $this->get(Database::class);
         $context = GeneralUtility::makeInstance(Context::class);
         $context->setAspect('workspace', $workspaceAspect);
         $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
@@ -53,7 +53,7 @@ class ContentStorageTest extends FunctionalTestCase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
-        $database = GeneralUtility::makeInstance(Database::class);
+        $database = $this->get(Database::class);
         $context = GeneralUtility::makeInstance(Context::class);
         $context->setAspect('workspace', $workspaceAspect);
         $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
@@ -68,7 +68,7 @@ class ContentStorageTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/deletedChildInWorkspace.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
-        $database = GeneralUtility::makeInstance(Database::class);
+        $database = $this->get(Database::class);
         $context = GeneralUtility::makeInstance(Context::class);
         $context->setAspect('workspace', $workspaceAspect);
         $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
@@ -83,7 +83,7 @@ class ContentStorageTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/deletedChildInWorkspace.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
-        $database = GeneralUtility::makeInstance(Database::class);
+        $database = $this->get(Database::class);
         $context = GeneralUtility::makeInstance(Context::class);
         $context->setAspect('workspace', $workspaceAspect);
         $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);

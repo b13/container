@@ -16,22 +16,7 @@ services:
   B13\Container\Tca\Registry:
     public: true
 
-  B13\Container\Hooks\UsedRecords:
-    public: true
-  B13\Container\Hooks\Datahandler\CommandMapAfterFinishHook:
-    public: true
-  B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook:
-    public: true
-  B13\Container\Hooks\Datahandler\CommandMapPostProcessingHook:
-    public: true
-  B13\Container\Hooks\Datahandler\DatamapBeforeStartHook:
-    public: true
-  B13\Container\Hooks\Datahandler\DatamapPreProcessFieldArrayHook:
-    public: true
-  B13\Container\Hooks\Datahandler\DeleteHook:
-    public: true
-  B13\Container\ContentDefender\Hooks\ColumnConfigurationManipulationHook:
-    public: true
+
   B13\Container\DataProcessing\ContainerProcessor:
     public: true
     tags:

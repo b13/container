@@ -16,16 +16,12 @@ use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-class FrontendContainerFactory implements SingletonInterface
+class FrontendContainerFactory
 {
-    protected Registry $tcaRegistry;
-
-    public function __construct(Registry $tcaRegistry)
+    public function __construct(protected Registry $tcaRegistry)
     {
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function buildContainer(ContentObjectRenderer $cObj, Context $context, ?int $uid = null): Container
