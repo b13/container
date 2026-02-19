@@ -14,25 +14,18 @@ namespace B13\Container\Listener;
 
 use B13\Container\Service\RecordLocalizeSummaryModifier;
 use TYPO3\CMS\Backend\Controller\Event\AfterRecordSummaryForLocalizationEvent;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
+#[AsEventListener(identifier: 'tx-container-record-summary-for-localization')]
 class RecordSummaryForLocalization
 {
-    /**
-     * @var RecordLocalizeSummaryModifier
-     */
-    protected $recordLocalizeSummaryModifier;
-
-    protected ConnectionPool $connectionPool;
-
     public function __construct(
-        RecordLocalizeSummaryModifier $recordLocalizeSummaryModifier,
-        ConnectionPool $connectionPool
+        protected RecordLocalizeSummaryModifier $recordLocalizeSummaryModifier,
+        protected ConnectionPool $connectionPool
     ) {
-        $this->recordLocalizeSummaryModifier = $recordLocalizeSummaryModifier;
-        $this->connectionPool = $connectionPool;
     }
 
     public function __invoke(AfterRecordSummaryForLocalizationEvent $event): void

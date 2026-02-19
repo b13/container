@@ -13,9 +13,11 @@ namespace B13\Container\Listener;
  */
 
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Core\Event\BootCompletedEvent;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 
+#[AsEventListener(identifier: 'tx-container-boot-completed')]
 class BootCompleted
 {
     public function __construct(protected Registry $tcaRegistry, protected IconRegistry $iconRegistry)

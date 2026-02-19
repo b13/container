@@ -13,10 +13,12 @@ namespace B13\Container\Listener;
  */
 
 use TYPO3\CMS\Backend\Controller\Event\ModifyNewContentElementWizardItemsEvent;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsEventListener(identifier: 'tx-container-new-content-element-wizard')]
 class ModifyNewContentElementWizardItems
 {
     public function __invoke(ModifyNewContentElementWizardItemsEvent $event): void

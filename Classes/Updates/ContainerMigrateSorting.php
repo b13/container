@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Attribute\UpgradeWizard;
@@ -35,14 +34,8 @@ class ContainerMigrateSorting implements UpgradeWizardInterface, RepeatableInter
 
     private OutputInterface $output;
 
-    /**
-     * @var Sorting
-     */
-    protected $sorting;
-
-    public function __construct(Sorting $sorting)
+    public function __construct(protected Sorting $sorting)
     {
-        $this->sorting = $sorting;
     }
 
     public function setOutput(OutputInterface $output): void
@@ -80,14 +73,10 @@ class ContainerMigrateSorting implements UpgradeWizardInterface, RepeatableInter
     public function executeUpdate(): bool
     {
         if (Environment::isCli() === false) {
-            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 11) {
-                $requestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
-                $request = $requestFactory::fromGlobals();
-                $request = $request->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request));
-                Bootstrap::initializeBackendUser(BackendUserAuthentication::class, $request);
-            } else {
-                Bootstrap::initializeBackendUser();
-            }
+            $requestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
+            $request = $requestFactory::fromGlobals();
+            $request = $request->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request));
+            Bootstrap::initializeBackendUser(BackendUserAuthentication::class, $request);
             if ($GLOBALS['BE_USER'] === null || $GLOBALS['BE_USER']->user === null) {
                 $this->output->writeln(
                     '<error>EXT:container Migrations need a valid Backend User, Login to the Backend to execute Wizard, or use CLI</error>'
