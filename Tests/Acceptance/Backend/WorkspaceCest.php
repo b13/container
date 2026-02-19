@@ -172,9 +172,19 @@ class WorkspaceCest
      */
     protected function switchToWs(BackendTester $I, string $ws): void
     {
-        $I->switchToMainFrame();
-        $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee($ws, self::$topBarModuleSelector);
-        $I->click($ws, self::$topBarModuleSelector);
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->switchToMainFrame();
+            if ($ws === 'test-ws') {
+                $I->executeJS("document.querySelector('typo3-backend-workspace-selector #workspace-menu button[title=\"test-ws\"]').click();");
+            } else {
+                // first button
+                $I->executeJS("document.querySelector('typo3-backend-workspace-selector #workspace-menu button').click();");
+            }
+        } else {
+            $I->switchToMainFrame();
+            $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
+            $I->canSee($ws, self::$topBarModuleSelector);
+            $I->click($ws, self::$topBarModuleSelector);
+        }
     }
 }
