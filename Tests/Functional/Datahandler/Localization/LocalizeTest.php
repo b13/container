@@ -15,6 +15,7 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization;
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 class LocalizeTest extends AbstractDatahandler
 {
@@ -265,6 +266,10 @@ class LocalizeTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainerResult.csv');
+        if ((new Typo3Version())->getMajorVersion() < 14 || (new Typo3Version())->getBranch() === '14.1') {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LegacyLocalizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainerResult.csv');
+        } else {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainerResult.csv');
+        }
     }
 }
