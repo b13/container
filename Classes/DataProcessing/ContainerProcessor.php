@@ -15,12 +15,14 @@ namespace B13\Container\DataProcessing;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\FrontendContainerFactory;
 use B13\Container\Domain\Model\Container;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
+#[Autoconfigure(public: true)]
 class ContainerProcessor implements DataProcessorInterface
 {
     public function __construct(protected ContentDataProcessor $contentDataProcessor, protected Context $context, protected FrontendContainerFactory $frontendContainerFactory)

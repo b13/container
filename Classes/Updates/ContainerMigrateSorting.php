@@ -14,6 +14,7 @@ namespace B13\Container\Updates;
 
 use B13\Container\Integrity\Sorting;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
@@ -28,6 +29,7 @@ use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 #[UpgradeWizard('container_containerMigrateSorting')]
+#[Autoconfigure(public: true)]
 class ContainerMigrateSorting implements UpgradeWizardInterface, RepeatableInterface, ChattyInterface
 {
     public const IDENTIFIER = 'container_migratesorting';
