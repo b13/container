@@ -51,7 +51,9 @@ class IntegrityCommand extends Command
         }
         if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
             $io->success('Good Job, no errors/warnings!');
+            return 0;
         }
-        return 0;
+        // return with exit code !0 if errors found
+        return 1;
     }
 }

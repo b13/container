@@ -69,7 +69,7 @@ class SortingCommand extends Command
                 $output->writeln('- all good, nothing to do here');
             }
         }
-
-        return self::SUCCESS;
+        // return with exit code !0 if errors found
+        return count($errors) > 0 ? 1 : 0;
     }
 }

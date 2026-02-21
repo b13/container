@@ -40,12 +40,16 @@ class FixContainerParentForConnectedModeCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $exitCode = 0;
+        // this fetches all errors / warnings, including unrelated
         $res = $this->integrity->run();
         foreach ($res['errors'] as $error) {
             if ($error instanceof ChildInTranslatedContainerError) {
+                $exitCode = 1;
                 $this->integrityFix->changeContainerParentToDefaultLanguageContainer($error);
             }
         }
-        return 0;
+        // return with exit code !0 if errors found
+        return $exitCode;
     }
 }
