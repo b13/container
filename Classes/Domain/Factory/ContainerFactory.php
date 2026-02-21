@@ -91,7 +91,7 @@ class ContainerFactory
         $filtered = [];
         foreach ($records as $row) {
             BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
-            if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
+            if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER->value) {
                 $filtered[] = $row;
             }
         }

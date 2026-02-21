@@ -75,7 +75,7 @@ class ContentStorage
         $filtered = [];
         foreach ($records as $row) {
             BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
-            if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
+            if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER->value) {
                 $filtered[] = $row;
             }
         }
@@ -85,7 +85,7 @@ class ContentStorage
     public function containerRecordWorkspaceOverlay(array $record): ?array
     {
         BackendUtility::workspaceOL('tt_content', $record, $this->workspaceId, false);
-        if ($record && VersionState::tryFrom($record['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
+        if ($record && VersionState::tryFrom($record['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER->value) {
             return $record;
         }
         return null;
