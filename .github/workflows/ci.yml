@@ -49,8 +49,11 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
         if: matrix.TYPO3 == '13'
       - name: Acceptance Tests 14
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast --skip-group=content_defender
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast --skip-group=content_defender,workspace
         if: matrix.TYPO3 == '14'
+      - name: Acceptance Tests 14
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast --skip-group=content_defender
+        if: matrix.TYPO3 == '14-dev'
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v4
         if: always()
