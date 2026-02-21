@@ -14,27 +14,18 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
-use B13\Container\Tests\Acceptance\Support\PageTreeV13;
 
 class EditorLayoutCest
 {
-    /**
-     * @param BackendTester $I
-     */
     public function _before(BackendTester $I)
     {
         $I->loginAs('editor');
     }
 
-    public function canSeeNewContentButton(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    public function canSeeNewContentButton(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'pageWithContainer-5']);
-        } else {
-            $pageTreeV13->openPath(['home', 'pageWithContainer-5']);
-        }
+        $pageTree->openPath(['home', 'pageWithContainer-5']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(802, 200);
