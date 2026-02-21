@@ -15,8 +15,6 @@ namespace B13\Container\Tests\Functional\Tca;
 use B13\Container\Tca\ContainerConfiguration;
 use B13\Container\Tca\Registry;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -51,12 +49,8 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
     }
 
     #[Test]
-    public function getPageTsStringReturnsGroupAsGroupLabelWhenGroupIsNotAddetToItemGroups(): void
+    public function getPageTsStringReturnsWizardItemsRemove(): void
     {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
-            self::markTestSkipped('new content element wizards removed');
-        }
         \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
             (
             new ContainerConfiguration(
@@ -65,58 +59,11 @@ b13-container = EXT:container/Resources/Private/Templates/Container.html
                 'bar', // description
                 [] // grid configuration
             )
-            )->setGroup('baz')
+            )->setRegisterInNewContentElementWizard(false)
         );
         $registry = GeneralUtility::makeInstance(Registry::class);
         $pageTs = $registry->getPageTsString();
-        $expected = 'mod.wizards.newContentElement.wizardItems.baz.header = baz';
+        $expected = 'mod.wizards.newContentElement.wizardItems.container.removeItems := addToList(b13-container)';
         self::assertStringContainsString($expected, $pageTs);
-    }
-
-    #[Test]
-    public function tcaDefaultGroupIsAddedToNewContentElementCommonGroup(): void
-    {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
-            self::markTestSkipped('new content element wizards removed');
-        }
-        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
-            (
-            new ContainerConfiguration(
-                'b13-container', // CType
-                'foo', // label
-                'bar', // description
-                [] // grid configuration
-            )
-            )->setGroup('default')
-        );
-        $registry = GeneralUtility::makeInstance(Registry::class);
-        $pageTs = $registry->getPageTsString();
-        $expected = 'mod.wizards.newContentElement.wizardItems.common.show := addToList(b13-container)';
-        self::assertStringContainsString($expected, $pageTs);
-    }
-
-    #[Test]
-    public function originalPageTsIsNotOverriden(): void
-    {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
-            self::markTestSkipped('new content element wizards removed');
-        }
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/original_page_ts_is_not_overridden.csv');
-        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registry::class)->configureContainer(
-            (
-            new ContainerConfiguration(
-                'b13-container', // CType
-                'foo', // label
-                'bar', // description
-                [] // grid configuration
-            )
-            )->setGroup('special')
-        );
-        $pageTsConfig = BackendUtility::getPagesTSconfig(1);
-        $specialHeader = $pageTsConfig['mod.']['wizards.']['newContentElement.']['wizardItems.']['special.']['header'] ?? '';
-        $expected = 'LLL:EXT:backend/Resources/Private/Language/locallang_db_new_content_el.xlf:special';
-        self::assertSame($expected, $specialHeader);
     }
 }

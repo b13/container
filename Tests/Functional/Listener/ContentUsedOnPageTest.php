@@ -18,7 +18,6 @@ use TYPO3\CMS\Backend\View\Event\IsContentUsedOnPageLayoutEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -35,9 +34,6 @@ class ContentUsedOnPageTest extends FunctionalTestCase
     #[Test]
     public function addContainerChildrenReturnsTrueIfChildrenInContainer(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $this->importCSVDataSet(__DIR__ . '/../Hooks/Fixtures/UsedRecords/children_in_container.csv');
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $record = $this->fetchOneRecordByUid(2);
@@ -50,9 +46,6 @@ class ContentUsedOnPageTest extends FunctionalTestCase
     #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenHasWrongPid(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $this->importCSVDataSet(__DIR__ . '/../Hooks/Fixtures/UsedRecords/children_in_container_wrong_pid.csv');
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $record = $this->fetchOneRecordByUid(2);
@@ -65,9 +58,6 @@ class ContentUsedOnPageTest extends FunctionalTestCase
     #[Test]
     public function addContainerChildrenReturnsFalseIfChildrenHasWrongColPos(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $this->importCSVDataSet(__DIR__ . '/../Hooks/Fixtures/UsedRecords/children_in_container_wrong_colpos.csv');
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $record = $this->fetchOneRecordByUid(2);
@@ -80,9 +70,6 @@ class ContentUsedOnPageTest extends FunctionalTestCase
     #[Test]
     public function addContainerChildrenReturnsFalseIfRecordNotInContainer(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $this->importCSVDataSet(__DIR__ . '/../Hooks/Fixtures/UsedRecords/children_not_in_container.csv');
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $record = $this->fetchOneRecordByUid(2);
@@ -95,9 +82,6 @@ class ContentUsedOnPageTest extends FunctionalTestCase
     #[Test]
     public function addContainerChildrenReturnsTrueForLocalizedContent(): void
     {
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 12) {
-            self::markTestSkipped('< v12 is tested by Hook UsedRecords');
-        }
         $this->importCSVDataSet(__DIR__ . '/../Hooks/Fixtures/UsedRecords/localized_content.csv');
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
         $record = $this->fetchOneRecordByUid(4);

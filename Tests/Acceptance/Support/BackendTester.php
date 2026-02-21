@@ -51,10 +51,7 @@ class BackendTester extends \Codeception\Actor
 
     public function getDataColPos(int $containerId, int $colPos): string
     {
-        if ($this->getTypo3MajorVersion() > 11) {
-            return (string)$colPos;
-        }
-        return (string)($containerId . '-' . $colPos);
+        return (string)$colPos;
     }
 
     public function clickLayoutModuleButton(): void
@@ -69,26 +66,16 @@ class BackendTester extends \Codeception\Actor
     public function clickNewContentElement(string $colPosSelector): void
     {
         $this->waitForElement($colPosSelector);
-        if ($this->getTypo3MajorVersion() < 12) {
-            $this->click('Content', $colPosSelector);
-            return;
-        }
         $this->click($colPosSelector . ' typo3-backend-new-content-element-wizard-button');
     }
 
     public function getNewContentElementLabel(): string
     {
-        if ($this->getTypo3MajorVersion() < 12) {
-            return 'Content';
-        }
         return 'Create new content';
     }
 
     public function getNewRecordWizardSelector(): string
     {
-        if ($this->getTypo3MajorVersion() < 13) {
-            return 'typo3-backend-new-content-element-wizard';
-        }
         return 'typo3-backend-new-record-wizard';
     }
 
@@ -103,10 +90,7 @@ class BackendTester extends \Codeception\Actor
 
     public function selectGermanInLanguageMenu(): void
     {
-        if ($this->getTypo3MajorVersion() < 12) {
-            $this->waitForElement('select[name="languageMenu"]');
-            $this->selectOption('select[name="languageMenu"]', 'german');
-        } elseif ($this->getTypo3MajorVersion() < 14) {
+        if ($this->getTypo3MajorVersion() < 14) {
             $this->waitForText('Language');
             $this->click('Language');
             $this->waitForText('german');
@@ -122,10 +106,7 @@ class BackendTester extends \Codeception\Actor
 
     public function selectLanguageComparisonMode(): void
     {
-        if ($this->getTypo3MajorVersion() < 12) {
-            $this->waitForElement('select[name="actionMenu"]');
-            $this->selectOption('select[name="actionMenu"]', 'Languages');
-        } elseif ($this->getTypo3MajorVersion() < 14) {
+        if ($this->getTypo3MajorVersion() < 14) {
             $this->waitForElement('select[name="actionMenu"]');
             $this->selectOption('select[name="actionMenu"]', 'Language Comparison');
         } else {
