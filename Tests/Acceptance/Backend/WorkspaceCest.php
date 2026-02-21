@@ -15,6 +15,7 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use B13\Container\Tests\Acceptance\Support\PageTreeV13;
+use Codeception\Attribute\Group;
 use TYPO3\TestingFramework\Core\Acceptance\Helper\Topbar;
 
 class WorkspaceCest
@@ -34,11 +35,7 @@ class WorkspaceCest
         $I->loginAs('admin');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function liveWorkspaceShowsLiveElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
@@ -56,11 +53,7 @@ class WorkspaceCest
         $I->dontSee('header-new-ws');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function testWorkspaceShowsWorkspaceElements(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
@@ -80,11 +73,7 @@ class WorkspaceCest
         $this->switchToLiveWs($I);
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
@@ -103,11 +92,7 @@ class WorkspaceCest
         $I->dontSee('translation-ws');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function testWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
     {
         $I->clickLayoutModuleButton();
@@ -127,9 +112,7 @@ class WorkspaceCest
         $this->switchToLiveWs($I);
     }
 
-    /**
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function testWorkspaceShowsLiveContainerUidForContainerParentFieldWhenContainerIsAlreadyMoved(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
     {
         $I->clickLayoutModuleButton();
