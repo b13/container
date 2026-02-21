@@ -4,17 +4,13 @@
     backupGlobals="true"
     bootstrap="FunctionalTestsBootstrap.php"
     colors="true"
-    convertErrorsToExceptions="true"
-    convertWarningsToExceptions="true"
-    convertDeprecationsToExceptions="false"
-    forceCoversAnnotation="false"
     stopOnError="false"
     stopOnFailure="false"
     stopOnIncomplete="false"
     stopOnSkipped="false"
-    verbose="false"
     beStrictAboutTestsThatDoNotTestAnything="false"
     failOnWarning="true"
+    failOnDeprecation="true"
 >
     <testsuites>
         <testsuite name="Functional tests">
@@ -22,7 +18,6 @@
         </testsuite>
     </testsuites>
     <php>
-        <const name="TYPO3_TESTING_FUNCTIONAL_REMOVE_ERROR_HANDLER" value="true" />
         <ini name="display_errors" value="1" />
         <env name="TYPO3_CONTEXT" value="Testing" />
     </php>
