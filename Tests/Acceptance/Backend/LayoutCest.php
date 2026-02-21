@@ -70,9 +70,7 @@ class LayoutCest
         // we have a "Content" Button for new elements with Fluid based page module
         $newContentElementLabel = $I->getNewContentElementLabel();
         $I->dontSee($newContentElementLabel, '#element-tt_content-102 .t3-page-ce-body');
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->selectOption('select[name="actionMenu"]', 'Languages');
-        } elseif ($I->getTypo3MajorVersion() < 14) {
+        if ($I->getTypo3MajorVersion() < 14) {
             $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
         } else {
             $I->waitForElementVisible('.module-docheader-buttons .btn-group button.dropdown-toggle');
@@ -93,26 +91,17 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
         $I->waitForText($newContentElementLabel);
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click($newContentElementLabel);
-        } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
-        }
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click('Container');
-            $I->click('2 Column Container With Header');
+        $I->wait(0.5);
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
         } else {
-            $I->wait(0.5);
-            if ($I->getTypo3MajorVersion() > 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
-            }
-            $I->wait(0.5);
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
         }
+        $I->wait(0.5);
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
@@ -132,30 +121,24 @@ class LayoutCest
         $I->switchToContentFrame();
         $newContentElementLabel = $I->getNewContentElementLabel();
         $I->waitForText($newContentElementLabel);
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click($newContentElementLabel);
-        } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
-        }
+
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click('Container');
-            // b13-2cols
-            // this also tests container-example eventListener
-            // https://github.com/b13/container-example/commit/df2560e75966a73754b5d4ea091d14727c16f024
-            $I->click('2 Column mod -- Some Description of the Container');
+
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
         } else {
-            if ($I->getTypo3MajorVersion() > 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
-            }
-            $I->wait(0.5);
-            // test event listener
-            $I->waitForText('mod -- Some Description of the Container');
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
         }
+        $I->wait(0.5);
+        // test event listener
+        // b13-2cols
+        // this also tests container-example eventListener
+        // https://github.com/b13/container-example/commit/df2560e75966a73754b5d4ea091d14727c16f024
+        $I->waitForText('mod -- Some Description of the Container');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
+
         $I->switchToContentFrame();
         $I->waitForText('2-cols-left');
         $I->canSee('2-cols-left', '.t3-grid-container');
@@ -180,18 +163,11 @@ class LayoutCest
         // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->waitForText('Header Only');
-            $I->click('Header Only');
-        } else {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
-            $I->waitForText('Header Only');
-            if ($I->getTypo3MajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
-            }
-        }
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
+        $I->waitForText('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+
         $I->switchToContentFrame();
         $I->see('header [200]');
         $I->see('2 Column Container With Header [700]');
@@ -244,18 +220,11 @@ class LayoutCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->waitForText('Header Only');
-            $I->click('Header Only');
-        } else {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
-            $I->waitForText('Header Only');
-            if ($I->getTypo3MajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
-            }
-        }
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
+        $I->waitForText('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
@@ -283,10 +252,6 @@ class LayoutCest
         }
 
         $I->switchToIFrame();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('.t3js-localization-option');
-            $I->waitForElement('div[data-bs-slide="localize-summary"]');
-        }
         if ($I->getTypo3MajorVersion() < 14) {
             $I->waitForText('(212) headerOfChild');
         } else {
@@ -348,11 +313,6 @@ class LayoutCest
         $I->see('custom backend template');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
     public function canSeeDescriptionOfContainerInNewContentElementWizard(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
@@ -361,20 +321,13 @@ class LayoutCest
         $I->switchToContentFrame();
         $newContentElementLabel = $I->getNewContentElementLabel();
         $I->waitForText($newContentElementLabel);
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click($newContentElementLabel);
-        } else {
-            $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
-        }
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         $I->switchToIFrame();
         $I->waitForModal();
 
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click('Container');
-        } else {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
-            $I->wait(0.5);
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
+        $I->wait(0.5);
+
         $I->see('Some Description of the Container');
     }
 

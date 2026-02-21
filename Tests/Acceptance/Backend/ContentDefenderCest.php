@@ -15,8 +15,6 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use Codeception\Attribute\Group;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContentDefenderCest
 {
@@ -37,9 +35,7 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
         $I->see('Header Only');
         $I->see('Images Only');
@@ -57,9 +53,7 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
         $I->dontSee('Images Only');
     }
@@ -71,15 +65,8 @@ class ContentDefenderCest
         $pageTree->openPath(['home', 'pageWithContainer-3']);
         $I->wait(0.5);
         $I->switchToContentFrame();
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
-            $I->waitForElement('#element-tt_content-810 a.t3js-contextmenutrigger');
-            $I->click('#element-tt_content-810 a.t3js-contextmenutrigger');
-        } else {
-            $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
-            $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
-        }
-
+        $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
+        $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
         $I->switchToMainFrame();
         $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more"]', 5);
         $I->click('button[data-contextmenu-id="root_more"]', 'typo3-backend-context-menu');
@@ -105,20 +92,9 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
-            $I->click('Header Only');
-        } else {
-            if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
-            }
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
         $I->switchToContentFrame();
         $I->wait(0.5);
         $I->see('textmedia', 'select');
@@ -176,20 +152,9 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if ($typo3Version->getMajorVersion() < 12) {
-            $I->click('Header Only');
-        } else {
-            if ($typo3Version->getMajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
-            }
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
         $I->switchToContentFrame();
         $I->waitForText('Create new Page Content on page');
         $I->seeElement('#EditDocumentController');
