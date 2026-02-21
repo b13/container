@@ -13,9 +13,6 @@ services:
       - '../Classes/Tca/ContainerConfiguration.php'
       - '../Classes/**/Exception.php'
 
-  B13\Container\Tca\Registry:
-    public: true
-
 
   B13\Container\DataProcessing\ContainerProcessor:
     public: true
@@ -25,7 +22,6 @@ services:
     public: true
   B13\Container\Updates\ContainerDeleteChildrenWithWrongPid:
     public: true
-  B13\Container\Tca\ItemProcFunc:
-    public: true
+
 
 
