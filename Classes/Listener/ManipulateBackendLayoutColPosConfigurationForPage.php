@@ -18,23 +18,13 @@ use B13\Container\Tca\Registry;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\Event\ManipulateBackendLayoutColPosConfigurationForPageEvent;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
+#[AsEventListener(identifier: 'tx-container-manipulate-backend-layout-col-pos-configuration-for-page')]
 class ManipulateBackendLayoutColPosConfigurationForPage
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    public function __construct(protected ContainerFactory $containerFactory, protected Registry $tcaRegistry)
     {
-        $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function __invoke(ManipulateBackendLayoutColPosConfigurationForPageEvent $e)
