@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
 class CopyElementTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function copyElementAfterContainerCopiesTranslationAfterContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/copy_element_after_container.csv');
@@ -38,9 +37,7 @@ class CopyElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyElement/CopyElementAfterContainerCopiesTranslationAfterContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyElementAfterContainerWithChildKeepsColPosForTranslatedElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyElement/copy_element_after_container_with_child.csv');

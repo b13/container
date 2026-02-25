@@ -16,6 +16,8 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -23,12 +25,9 @@ class ContainerServiceTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    protected $allContainerColumns = [200, 201, 202];
+    protected array $allContainerColumns = [200, 201, 202];
 
-    /**
-     * @return array
-     */
-    public static function setupDataProvider()
+    public static function setupDataProvider(): array
     {
         return [
             [
@@ -62,10 +61,8 @@ class ContainerServiceTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider setupDataProvider
-     */
+    #[Test]
+    #[DataProvider('setupDataProvider')]
     public function getFirstNewContentElementTargetInColumnTest(array $containerRecord, array $childRecords, int $targetColPos, int $expectedTarget): void
     {
         $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['getAllAvailableColumnsColPos'])->getMock();

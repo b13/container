@@ -17,6 +17,9 @@
     .Build/bin/typo3 extension:setup
     # run php webserver and chromedriver
     php -S 0.0.0.0:8080 -t .Build/Web/ &
+    # for TYPO3 14
+    cp Build/router.php .Build/Web
+    php -S 0.0.0.0:8080 -t .Build/Web/ .Build/Web/router.php &
     chromedriver --url-base=/wd/hub  --port=9515 &
     # create database with "_at" postfix
     mysql -e 'CREATE DATABASE IF NOT EXISTS foox_at;'
@@ -24,6 +27,6 @@
  ## Run tests
 
 
-    .Build/bin/phpunit -c Build/phpunit/UnitTests.xml Tests/Unit/
-    .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml Tests/Functional
-    .Build/bin/codecept run Backend --env=local,classic -c Tests/codeception.yml
+    php -d memory_limit=2G .Build/bin/phpunit -c Build/phpunit/UnitTests.xml Tests/Unit/
+    php -d memory_limit=2G .Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml Tests/Functional
+    php -d memory_limit=2G .Build/bin/codecept run Backend --env=local,classic -c Tests/codeception.yml

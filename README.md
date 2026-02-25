@@ -7,7 +7,7 @@
 - No default containers; everything will be built the way it is needed for a project
 - Supports multilanguage (connected or free mode (mixed mode not supported))
 - Supports workspaces
-- Supports colPos-restrictions if EXT:content_defender >= 3.1.0 is installed
+- Supports colPos-restrictions if EXT:content_defender is installed
 - Frontend Rendering via DataProcessor and Fluid templates
 
 ## Why did we create another "Grid" extension?
@@ -78,14 +78,16 @@ This is an example of creating a two-column container. The code snippet goes int
 | `setSaveAndCloseInNewContentElementWizard` | saveAndClose for new content element wizard | `bool $saveAndCloseInNewContentElementWizard` | `true` |
 | `setRegisterInNewContentElementWizard` | register in new content element wizard | `bool $registerInNewContentElementWizard` | `true` |
 | `setGroup` | Custom Group (used as optgroup for CType select, and as tab in New Content Element Wizard). If empty, "container" is used as tab and no optgroup in CType is used. | `string $group` | `'container'` |
+| `setRelativeToField` | Add item relative to existing field. | `string $relativeToField` | `''` |
+| `setRelativePosition` | Valid keywords: `'before'`, `'after'`, `'replace'`. | `string $relativeToField` | `''` |
 | `setDefaultValues` | Default values for the newContentElement.wizardItems | `array $defaultValues` | `[]` |
 
 __Notes:__
-- If EXT:content_defender >= 3.1.0 is installed, you can use `allowed`, `disallowed`, and `maxitems` in the column configuration
+- If EXT:content_defender is installed, you can use `allowed`, `disallowed`, and `maxitems` in the column configuration
 - The container registry does multiple things:
   - Adds CType to TCA select items
   - Registers your icon
-  - Adds PageTSconfig for `newContentElement.wizardItems`
+  - Adds PageTSconfig 
   - Sets ``showitem`` for this CType (`sys_language_uid,CType,tx_container_parent,colPos,hidden`)
   - Saves the configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
 - We provide some default icons you can use; see `Resources/Public/Icons`
@@ -179,7 +181,7 @@ Change view object, e.g., add variables to view or change paths
 
 ## Concepts
 - Complete registration is done with one PHP call to TCA Registry
-- A container in the TYPO3 backend Page module is rendered like a page itself (see View/ContainerLayoutView)
+- A container in the TYPO3 backend Page module is rendered like a page itself (see Backend/Preview/GridRenderer called in PageContentPreviewRenderingEvent Listeners)
 - For backend clipboard and drag & drop `<tx_container_parent>_<colPos>` used in the data-colpos attribute in the wrapping CE-div Element (instead of just the colPos as in the PageLayoutView)
 - The `<tx_container_parent>_<colPos>` parameter is resolved to `tx_container_parent` and `colPos` value in DataHandler hooks
 - When translating a container, all child elements also get translated (the child elements are not explicitly listed during the translation dialog)

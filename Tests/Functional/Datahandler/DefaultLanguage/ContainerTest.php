@@ -13,14 +13,13 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerIntoItSelfsNestedAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsNestedAfterElement.csv');
@@ -38,9 +37,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerIntoItSelfsNestedAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsNestedAtTop.csv');
@@ -66,9 +63,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerIntoItSelfsAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsAtTop.csv');
@@ -94,9 +89,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteContainerDeleteChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildren.csv');
@@ -112,9 +105,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerAfterElementMovesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildren.csv');
@@ -140,9 +131,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerToOtherPageAtTopMovesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAtTopMovesChildren.csv');
@@ -166,9 +155,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAtTopMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToOtherPageAtTopCopiesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAtTopCopiesChildren.csv');
@@ -190,9 +177,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAtTopCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToOtherPageAfterElementCopiesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAfterElementCopiesChildren.csv');
@@ -214,9 +199,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAfterElementCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerToOtherPageAfterElementMovesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAfterElementMovesChildren.csv');
@@ -240,9 +223,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAfterElementMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerKeepsSortingOfChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildren.csv');
@@ -264,9 +245,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerOtherPageOnTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageOnTop.csv');
@@ -282,9 +261,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageOnTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveContainerOtherPageAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageAfterElement.csv');
@@ -300,9 +277,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageAfterElementResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerOtherPageOnTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTop.csv');
@@ -322,9 +297,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerOtherPageAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElement.csv');
@@ -344,9 +317,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElementResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerWithDataHandlerLoggingDisabled(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerWithDataHandlerLoggingDisabled.csv');
@@ -368,9 +339,7 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerWithDataHandlerLoggingDisabledSysLogResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerWithLanguageAsStringKeepsCopiedChildrenSorting(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildren.csv');

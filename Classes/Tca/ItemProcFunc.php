@@ -14,30 +14,17 @@ namespace B13\Container\Tca;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
 
+#[Autoconfigure(public: true)]
 class ItemProcFunc
 {
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @var BackendLayoutView
-     */
-    protected $backendLayoutView;
-
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry, BackendLayoutView $backendLayoutView)
-    {
-        $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
-        $this->backendLayoutView = $backendLayoutView;
+    public function __construct(
+        protected ContainerFactory $containerFactory,
+        protected Registry $tcaRegistry,
+        protected BackendLayoutView $backendLayoutView
+    ) {
     }
 
     /**
@@ -60,8 +47,8 @@ class ItemProcFunc
                             // only one item is show, so it is not changeable
                             if ((int)$column['colPos'] === (int)$row['colPos']) {
                                 $items[] = [
-                                    $column['name'],
-                                    $column['colPos'],
+                                    'label' => $column['name'],
+                                    'value' => $column['colPos'],
                                 ];
                             }
                         }
@@ -85,19 +72,19 @@ class ItemProcFunc
                 $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
                 $items[] = [
-                    $this->tcaRegistry->getContainerLabel($cType),
-                    $row['tx_container_parent'],
+                    'label' => $this->tcaRegistry->getContainerLabel($cType),
+                    'value' => $row['tx_container_parent'],
                 ];
             } catch (Exception $e) {
                 $items[] = [
-                    '-',
-                    0,
+                    'label' => '-',
+                    'value' =>  0,
                 ];
             }
         } else {
             $items[] = [
-                '-',
-                0,
+                'label' => '-',
+                'value' => 0,
             ];
         }
         $parameters['items'] = $items;

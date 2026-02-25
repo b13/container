@@ -17,6 +17,7 @@ use B13\Container\ContentDefender\ContainerColumnConfigurationService;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,9 +29,7 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         'typo3conf/ext/container',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getNewContentUrlAfterChildContainsUidOfLiveWorkspaceAsContainerParent(): void
     {
         $container = new Container(['uid' => 2, 't3ver_oid' => 1], []);
@@ -54,9 +53,7 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getNewContentUrlAtTopOfColumnContainsUidOfLiveWorkspaceAsContainerParent(): void
     {
         $container = new Container(['uid' => 2, 't3ver_oid' => 1], []);
@@ -82,9 +79,7 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getNewContentUrlAtTopOfColumnReturnsNullIfMaxitemsIsReached(): void
     {
         $container = new Container([], []);

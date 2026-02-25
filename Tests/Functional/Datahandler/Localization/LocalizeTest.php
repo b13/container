@@ -13,18 +13,13 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 class LocalizeTest extends AbstractDatahandler
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->linkSiteConfigurationIntoTestInstance();
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function copyChildToLanguageFixContainerParent(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyChildToLanguageFixContainerParent.csv');
@@ -41,9 +36,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyChildToLanguageFixContainerParentResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToLanguageCopiesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyContainerToLanguageCopiesChildren.csv');
@@ -60,9 +53,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyContainerToLanguageCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeContainerLocalizeChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerLocalizeChildren.csv');
@@ -78,9 +69,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerLocalizeChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeNestedContainerKeepsDefaultLanguageParent(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeNestedContainerKeepsDefaultLanguageParent.csv');
@@ -96,9 +85,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeNestedContainerKeepsDefaultLanguageParentResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeContainerFromNonDefaultLanguageLocalizeChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerFromNonDefaultLanguageLocalizeChildren.csv');
@@ -114,9 +101,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerFromNonDefaultLanguageLocalizeChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyToLanguageContainerFromNonDefaultLanguageLocalizeChildren.csv');
@@ -132,9 +117,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenWhenCopiedFromFreeMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenWhenCopiedFromFreeMode.csv');
@@ -150,9 +133,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyToLanguageContainerFromNonDefaultLanguageLocalizeChildrenWhenCopiedFromFreeModeResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeChildFailedIfContainerIsInFreeMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeChildFailedIfContainerIsInFreeMode.csv');
@@ -169,9 +150,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeChildFailedIfContainerIsNotTranslated(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeChildFailedIfContainerIsNotTranslated.csv');
@@ -188,9 +167,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log should be empty');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeChildKeepsRelationsIfContainerIsInConnectedMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeChildKeepsRelationsIfContainerIsInConnectedMode.csv');
@@ -206,9 +183,6 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeChildKeepsRelationsIfContainerIsInConnectedModeResult.csv');
     }
 
-    /**
-     * @return array
-     */
     public static function localizeTwoContainerKeepsParentIndependedOnOrderDataProvider(): array
     {
         return [
@@ -233,10 +207,8 @@ class LocalizeTest extends AbstractDatahandler
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider localizeTwoContainerKeepsParentIndependedOnOrderDataProvider
-     */
+    #[Test]
+    #[DataProvider('localizeTwoContainerKeepsParentIndependedOnOrderDataProvider')]
     public function localizeTwoContainerKeepsParentIndependedOnOrder(array $cmdmap, string $dataset): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeTwoContainerKeepsParentIndependedOnOrder.csv');
@@ -245,9 +217,6 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeTwoContainerKeepsParentIndependedOnOrder' . $dataset . 'Result.csv');
     }
 
-    /**
-     * @return array
-     */
     public static function localizeWithCopyTwoContainerChangeParentIndependedOnOrderDataProvider(): array
     {
         return [
@@ -272,10 +241,8 @@ class LocalizeTest extends AbstractDatahandler
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider localizeWithCopyTwoContainerChangeParentIndependedOnOrderDataProvider
-     */
+    #[Test]
+    #[DataProvider('localizeWithCopyTwoContainerChangeParentIndependedOnOrderDataProvider')]
     public function localizeWithCopyTwoContainerChangeParentIndependedOnOrder(array $cmdmap, string $dataset): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeWithCopyTwoContainerChangeParentIndependedOnOrder.csv');
@@ -284,9 +251,7 @@ class LocalizeTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeWithCopyTwoContainerChangeParentIndependedOnOrder' . $dataset . 'Result.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/localize_element_after_already_localized_container.csv');
@@ -295,6 +260,10 @@ class LocalizeTest extends AbstractDatahandler
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainerResult.csv');
+        if ((new Typo3Version())->getMajorVersion() < 14 || (new Typo3Version())->getBranch() === '14.1') {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LegacyLocalizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainerResult.csv');
+        } else {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeElementAfterAlreadyLocalizedContainerIsSortedAfterContainerResult.csv');
+        }
     }
 }

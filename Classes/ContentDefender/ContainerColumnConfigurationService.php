@@ -17,24 +17,19 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\SingletonInterface;
 
-class ContainerColumnConfigurationService implements SingletonInterface
+#[Autoconfigure(public: true)]
+class ContainerColumnConfigurationService
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
     protected $copyMapping = [];
 
     protected $contentDefenderContainerDataHandlerHookIsLocked = false;
+
+    public function __construct(protected ContainerFactory $containerFactory, protected Registry $tcaRegistry)
+    {
+    }
 
     public function startCmdMap(): void
     {
@@ -49,12 +44,6 @@ class ContainerColumnConfigurationService implements SingletonInterface
     public function isContentDefenderContainerDataHandlerHookLooked(): bool
     {
         return $this->contentDefenderContainerDataHandlerHookIsLocked;
-    }
-
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
-    {
-        $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     protected function getRecord(int $uid): ?array

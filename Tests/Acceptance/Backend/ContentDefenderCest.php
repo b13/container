@@ -14,30 +14,20 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
-use B13\Container\Tests\Acceptance\Support\PageTreeV13;
+use Codeception\Attribute\Group;
 
 class ContentDefenderCest
 {
-    /**
-     * @param BackendTester $I
-     */
     public function _before(BackendTester $I)
     {
         $I->loginAs('admin');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function canCreateChildIn2ColsContainerWithNoContentDefenderRestrictionsDefined(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
+    #[Group('content_defender')]
+    public function canCreateChildIn2ColsContainerWithNoContentDefenderRestrictionsDefined(BackendTester $I, PageTree $pageTree): void
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'pageWithDifferentContainers']);
-        } else {
-            $pageTreeV13->openPath(['home', 'pageWithDifferentContainers']);
-        }
+        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(300, 200);
@@ -45,26 +35,17 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
         $I->see('Header Only');
         $I->see('Images Only');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function doNotSeeNotAllowedContentElementsInNewContentElementWizard(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
+    #[Group('content_defender')]
+    public function doNotSeeNotAllowedContentElementsInNewContentElementWizard(BackendTester $I, PageTree $pageTree): void
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'pageWithContainer-3']);
-        } else {
-            $pageTreeV13->openPath(['home', 'pageWithContainer-3']);
-        }
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(800, 200);
@@ -72,78 +53,38 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
         $I->dontSee('Images Only');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function doNotSeeNotAllowedContentElementsInNewContentElementWizardTriggeredByContextMenu(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13): void
+    #[Group('content_defender')]
+    public function doNotSeeNotAllowedContentElementsInNewContentElementWizardTriggeredByContextMenu(BackendTester $I, PageTree $pageTree): void
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'pageWithContainer-3']);
-        } else {
-            $pageTreeV13->openPath(['home', 'pageWithContainer-3']);
-        }
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
         $I->wait(0.5);
         $I->switchToContentFrame();
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->waitForElement('#element-tt_content-810 a.t3js-contextmenutrigger');
-            $I->click('#element-tt_content-810 a.t3js-contextmenutrigger');
-        } else {
-            $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
-            $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
-        }
-        switch ($I->getTypo3MajorVersion()) {
-            case 11:
-                $I->waitForText('More options...');
-                $I->click('.list-group-item-submenu');
-                $I->waitForText('\'Create New\' wizard');
-                $I->click('#contentMenu1 [data-callback-action="newContentWizard"]');
-                break;
-            case 12:
-                $I->waitForText('More options...');
-                $I->click('.context-menu-item-submenu');
-                $I->waitForText('\'Create New\' wizard');
-                $I->click('#contentMenu1');
-                break;
-            default:
-                // v13
-                $I->switchToMainFrame();
-                $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more"]', 5);
-                $I->click('button[data-contextmenu-id="root_more"]', 'typo3-backend-context-menu');
-                $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more_newWizard"]', 5);
-                $I->click('button[data-contextmenu-id="root_more_newWizard"]', 'typo3-backend-context-menu');
-                break;
-        }
+        $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
+        $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
+        $I->switchToMainFrame();
+        $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more"]', 5);
+        $I->click('button[data-contextmenu-id="root_more"]', 'typo3-backend-context-menu');
+        $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more_newWizard"]', 5);
+        $I->click('button[data-contextmenu-id="root_more_newWizard"]', 'typo3-backend-context-menu');
 
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
         $I->dontSee('Images Only');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenCreateNewElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    #[Group('content_defender')]
+    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenCreateNewElement(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'pageWithContainer-4']);
-        } else {
-            $pageTreeV13->openPath(['home', 'pageWithContainer-4']);
-        }
+        $pageTree->openPath(['home', 'pageWithContainer-4']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(801, 200);
@@ -151,37 +92,20 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click('Header Only');
-        } else {
-            if ($I->getTypo3MajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
-            }
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
         $I->switchToContentFrame();
         $I->wait(0.5);
         $I->see('textmedia', 'select');
         $I->dontSee('Images Only', 'select');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenEditAnElement(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    #[Group('content_defender')]
+    public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenEditAnElement(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'contentTCASelectCtype']);
-        } else {
-            $pageTreeV13->openPath(['home', 'contentTCASelectCtype']);
-        }
+        $pageTree->openPath(['home', 'contentTCASelectCtype']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $I->waitForElement('#element-tt_content-502 a[title="Edit"]');
@@ -191,18 +115,11 @@ class ContentDefenderCest
         $I->dontSee('Images Only', 'select');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function canSeeNewContentButtonIfMaxitemsIsNotReached(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    #[Group('content_defender')]
+    public function canSeeNewContentButtonIfMaxitemsIsNotReached(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'contentDefenderMaxitems']);
-        } else {
-            $pageTreeV13->openPath(['home', 'contentDefenderMaxitems']);
-        }
+        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
@@ -210,18 +127,11 @@ class ContentDefenderCest
         $I->see('Content', '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function canNotSeeNewContentButtonIfMaxitemsIsReached(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    #[Group('content_defender')]
+    public function canNotSeeNewContentButtonIfMaxitemsIsReached(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'contentDefenderMaxitems']);
-        } else {
-            $pageTreeV13->openPath(['home', 'contentDefenderMaxitems']);
-        }
+        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(401, 202);
@@ -230,18 +140,11 @@ class ContentDefenderCest
         $I->dontSee($newContentElementLabel, '#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    #[Group('content_defender')]
+    public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'contentDefenderMaxitems']);
-        } else {
-            $pageTreeV13->openPath(['home', 'contentDefenderMaxitems']);
-        }
+        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
@@ -250,36 +153,19 @@ class ContentDefenderCest
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
-        if ($I->getTypo3MajorVersion() > 12) {
-            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
-        if ($I->getTypo3MajorVersion() < 12) {
-            $I->click('Header Only');
-        } else {
-            if ($I->getTypo3MajorVersion() < 13) {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"common_header\"]').click()");
-            } else {
-                $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
-            }
-        }
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
         $I->switchToContentFrame();
         $I->waitForText('Create new Page Content on page');
         $I->seeElement('#EditDocumentController');
     }
 
-    /**
-     * @group content_defender
-     */
-    public function seeEditDocumentWhenAddingChildrenToColposWhereOnlyHeaderIsAllowed(BackendTester $I, PageTree $pageTree, PageTreeV13 $pageTreeV13)
+    #[Group('content_defender')]
+    public function seeEditDocumentWhenAddingChildrenToColposWhereOnlyHeaderIsAllowed(BackendTester $I, PageTree $pageTree)
     {
         $I->clickLayoutModuleButton();
-        if ($I->getTypo3MajorVersion() < 13) {
-            $I->waitForElement('#typo3-pagetree-tree .nodes .node');
-            $pageTree->openPath(['home', 'pageWithDifferentContainers']);
-        } else {
-            $pageTreeV13->openPath(['home', 'pageWithDifferentContainers']);
-        }
+        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         $I->wait(0.5);
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(300, 201);

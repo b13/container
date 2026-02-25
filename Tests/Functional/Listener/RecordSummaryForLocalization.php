@@ -12,23 +12,19 @@ namespace B13\Container\Tests\Functional\Listener;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Backend\Controller\Event\AfterRecordSummaryForLocalizationEvent;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class RecordSummaryForLocalization extends FunctionalTestCase
 {
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function childrenIsMovedIntoBackendLayoutColPosIfContainerIsAlreadyTranslated(): void
     {
         if ((new Typo3Version())->getMajorVersion() < 14) {
@@ -59,9 +55,7 @@ class RecordSummaryForLocalization extends FunctionalTestCase
         self::assertSame($expected, $records);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function childrenIsNotMovedIntoBackendLayoutColPosIfContainerShouldBeTranslated(): void
     {
         if ((new Typo3Version())->getMajorVersion() < 14) {

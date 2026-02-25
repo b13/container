@@ -17,42 +17,19 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[Autoconfigure(public: true)]
 class CommandMapBeforeStartHook
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    /**
-     * @var ContainerService
-     */
-    protected $containerService;
-
     public function __construct(
-        ContainerFactory $containerFactory,
-        Registry $tcaRegistry,
-        Database $database,
-        ContainerService $containerService
+        protected ContainerFactory $containerFactory,
+        protected Registry $tcaRegistry,
+        protected Database $database,
+        protected ContainerService $containerService
     ) {
-        $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
-        $this->database = $database;
-        $this->containerService = $containerService;
     }
 
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
@@ -302,20 +279,14 @@ class CommandMapBeforeStartHook
 
     protected function logAndUnsetCmd(int $id, string $cmd, string $message, DataHandler $dataHandler): void
     {
-        $recpid = null;
-        $detailsNumber = null;
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 13) {
-            $recpid = 0;
-            $detailsNumber = 28;
-        }
         $dataHandler->log(
             'tt_content',
             $id,
             1,
-            $recpid,
+            null,
             1,
             $cmd . ' ' . $message,
-            $detailsNumber
+            null
         );
         unset($dataHandler->cmdmap['tt_content'][$id][$cmd]);
         if (!empty($dataHandler->cmdmap['tt_content'][$id])) {

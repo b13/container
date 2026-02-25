@@ -12,72 +12,26 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 class ContainerConfiguration
 {
-    /**
-     * @var string
-     */
-    protected $cType = '';
-
-    /**
-     * @var string
-     */
-    protected $label = '';
-
-    /**
-     * @var string
-     */
-    protected $description = '';
-
-    /**
-     * @var mixed[]
-     */
-    protected $grid = [];
-
-    /**
-     * @var string
-     */
-    protected $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
-
+    protected string $cType = '';
+    protected string $label = '';
+    protected string $description = '';
+    protected array $grid = [];
+    protected string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
     protected string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html';
-
-    /**
-     * @var string
-     */
-    protected $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html';
-
-    /**
-     * @var array
-     */
-    protected $gridPartialPaths = [
+    protected string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html';
+    protected array $gridPartialPaths = [
         'EXT:backend/Resources/Private/Partials/',
         'EXT:container/Resources/Private/Partials/',
     ];
-
-    protected $gridLayoutPaths = [];
-
-    /**
-     * @var bool
-     */
-    protected $saveAndCloseInNewContentElementWizard = true;
-
-    /**
-     * @var bool
-     */
-    protected $registerInNewContentElementWizard = true;
-
-    /**
-     * @var string
-     */
-    protected $group = 'container';
-
-    /**
-     * @var array
-     */
-    protected $defaultValues = [];
+    protected array $gridLayoutPaths = [];
+    protected bool $saveAndCloseInNewContentElementWizard = true;
+    protected bool $registerInNewContentElementWizard = true;
+    protected string $group = 'container';
+    protected string $relativeToField = '';
+    protected string $relativePosition = '';
+    protected array $defaultValues = [];
 
     public function __construct(
         string $cType,
@@ -89,63 +43,32 @@ class ContainerConfiguration
         $this->label = $label;
         $this->description = $description;
         $this->grid = $grid;
-        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 11) {
-            $this->gridPartialPaths = [
-                'EXT:backend/Resources/Private/Partials/',
-                'EXT:container/Resources/Private/Partials11/',
-            ];
-        } elseif ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() === 12) {
-            $this->gridPartialPaths = [
-                'EXT:backend/Resources/Private/Partials/',
-                'EXT:container/Resources/Private/Partials12/',
-            ];
-        }
     }
 
-    /**
-     * @param string $icon
-     * @return ContainerConfiguration
-     */
     public function setIcon(string $icon): ContainerConfiguration
     {
         $this->icon = $icon;
         return $this;
     }
 
-    /**
-     * @param string $backendTemplate
-     * @return ContainerConfiguration
-     */
     public function setBackendTemplate(string $backendTemplate): ContainerConfiguration
     {
         $this->backendTemplate = $backendTemplate;
         return $this;
     }
 
-    /**
-     * @param string $gridTemplate
-     * @return ContainerConfiguration
-     */
     public function setGridTemplate(string $gridTemplate): ContainerConfiguration
     {
         $this->gridTemplate = $gridTemplate;
         return $this;
     }
 
-    /**
-     * @param array $gridPartialPaths
-     * @return ContainerConfiguration
-     */
     public function setGridPartialPaths(array $gridPartialPaths): ContainerConfiguration
     {
         $this->gridPartialPaths = $gridPartialPaths;
         return $this;
     }
 
-    /**
-     * @param string $gridPartialPath
-     * @return ContainerConfiguration
-     */
     public function addGridPartialPath(string $gridPartialPath): ContainerConfiguration
     {
         $this->gridPartialPaths[] = $gridPartialPath;
@@ -169,55 +92,46 @@ class ContainerConfiguration
         return $this;
     }
 
-    /**
-     * @param bool $saveAndCloseInNewContentElementWizard
-     * @return ContainerConfiguration
-     */
     public function setSaveAndCloseInNewContentElementWizard(bool $saveAndCloseInNewContentElementWizard): ContainerConfiguration
     {
         $this->saveAndCloseInNewContentElementWizard = $saveAndCloseInNewContentElementWizard;
         return $this;
     }
 
-    /**
-     * @param bool $registerInNewContentElementWizard
-     * @return ContainerConfiguration
-     */
     public function setRegisterInNewContentElementWizard(bool $registerInNewContentElementWizard): ContainerConfiguration
     {
         $this->registerInNewContentElementWizard = $registerInNewContentElementWizard;
         return $this;
     }
 
-    /**
-     * @param string $group
-     * @return ContainerConfiguration
-     */
     public function setGroup(string $group): ContainerConfiguration
     {
         $this->group = $group;
         return $this;
     }
 
-    /**
-     * @return string
-     */
+    public function setRelativeToField(string $relativeToField): ContainerConfiguration
+    {
+        $this->relativeToField = $relativeToField;
+        return $this;
+    }
+
+    public function setRelativePosition(string $relativePosition): ContainerConfiguration
+    {
+        $this->relativePosition = $relativePosition;
+        return $this;
+    }
+
     public function getCType(): string
     {
         return $this->cType;
     }
 
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->label;
     }
 
-    /**
-     * @return mixed[]
-     */
     public function getGrid(): array
     {
         return $this->grid;
@@ -261,18 +175,21 @@ class ContainerConfiguration
         return $this->saveAndCloseInNewContentElementWizard;
     }
 
-    /**
-     * @return string
-     */
     public function getGroup(): string
     {
         return $this->group;
     }
 
-    /**
-     * @param array $defaultValues
-     * @return ContainerConfiguration
-     */
+    public function getRelativeToField(): string
+    {
+        return $this->relativeToField;
+    }
+
+    public function getRelativePosition(): string
+    {
+        return $this->relativePosition;
+    }
+
     public function setDefaultValues(array $defaultValues): ContainerConfiguration
     {
         $this->defaultValues = $defaultValues;
@@ -316,9 +233,6 @@ class ContainerConfiguration
         $this->grid = $modRows;
     }
 
-    /**
-     * @return mixed[]
-     */
     public function toArray(): array
     {
         return [

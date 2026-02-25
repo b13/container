@@ -15,6 +15,7 @@ namespace B13\Container\Tests\Unit\DataProcessing;
 use B13\Container\DataProcessing\ContainerProcessor;
 use B13\Container\Domain\Factory\FrontendContainerFactory;
 use B13\Container\Domain\Model\Container;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -24,9 +25,7 @@ class ContainerProcessorTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function configuredContentIdIsUsed(): void
     {
         $processorConfiguration = ['contentId' => 1];
@@ -44,9 +43,7 @@ class ContainerProcessorTest extends UnitTestCase
         $containerProcessor->process($contentObjectRenderer, [], $processorConfiguration, []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function configuredContentIdStdWrapIsUsed(): void
     {
         $processorConfiguration = ['contentId' => 1, 'contentId.' => 'foo'];
@@ -64,9 +61,7 @@ class ContainerProcessorTest extends UnitTestCase
         $containerProcessor->process($contentObjectRenderer, [], $processorConfiguration, []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBeCalledWithoutContentId(): void
     {
         $processorConfiguration = ['contentId.' => 'foo'];
@@ -84,9 +79,7 @@ class ContainerProcessorTest extends UnitTestCase
         $containerProcessor->process($contentObjectRenderer, [], $processorConfiguration, []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nullIsUsedForFactoryIfNoContentIdIsGiven(): void
     {
         $processorConfiguration = [];

@@ -5,7 +5,7 @@
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^11.5 || ^12.4 || ^13.4 || ^14.0"
+        "typo3/cms-backend": "^13.4 || ^14.1 || 14.2.x-dev"
     },
     "autoload": {
         "psr-4": {
@@ -16,8 +16,7 @@
     "prefer-stable": true,
     "autoload-dev": {
         "psr-4": {
-            "B13\\Container\\Tests\\": "Tests",
-            "TYPO3\\JsonResponse\\": ".Build/Web/typo3conf/ext/json_response/Classes"
+            "B13\\Container\\Tests\\": "Tests"
         }
     },
     "config": {
@@ -29,30 +28,23 @@
         }
     },
     "require-dev": {
-        "b13/container-example": "dev-task/v14-backend-template",
-        "typo3/cms-install": "^11.5 || ^12.4 || ^13.4 || ^14.0",
-        "typo3/cms-fluid-styled-content": "^11.5 || ^12.4 || ^13.4 || ^14.0",
-        "typo3/cms-info": "^11.5 || ^12.4 || ^13.4 || ^14.0",
-        "typo3/cms-workspaces": "^11.5 || ^12.4 || ^13.4 || ^14.0",
-        "typo3/testing-framework": "^7.1.1 || ^8.2.7 || ^9.1",
+        "b13/container-example": "dev-task/v4",
+        "typo3/cms-install": "^13.4 || ^14.1 || 14.2.x-dev",
+        "typo3/cms-fluid-styled-content": "^13.4 || ^14.1 || 14.2.x-dev",
+        "typo3/cms-info": "^13.4 || ^14.1 || 14.2.x-dev",
+        "typo3/cms-workspaces": "^13.4 || ^14.1 || 14.2.x-dev",
+        "typo3/testing-framework": "^9.1",
         "phpstan/phpstan": "^1.10",
         "typo3/coding-standards": "^0.5.5",
         "friendsofphp/php-cs-fixer": "^3.51",
-        "codeception/codeception": "^4.1 || ^5.1",
-        "codeception/module-asserts": "^1.0 || ^3.0",
-        "codeception/module-webdriver": "^1.0 || ^4.0",
-        "codeception/module-db": "^1.0 || ^3.1",
-        "phpunit/phpunit": "9.6 || ^10.5 || ^11.3"
+        "codeception/codeception": "^5.1",
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-webdriver": "^4.0",
+        "codeception/module-db": "^3.1",
+        "phpunit/phpunit": "^11.3"
     },
     "replace": {
         "typo3-ter/container": "self.version"
-    },
-    "scripts": {
-        "prepare-tests": [
-            "if [ ! -e .Build/Web/typo3conf/ext/container_example -a -e .Build/Web/typo3conf/ext ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/b13/container-example container_example && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/ext/content_defender -a -e .Build/vendor/ichhabrecht/content-defender -a -e .Build/Web/typo3conf/ext ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/ichhabrecht/content-defender content_defender && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/sites -a -e .Build/Web/typo3conf ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
-        ]
     },
     "extra": {
         "typo3/cms": {

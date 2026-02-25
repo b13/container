@@ -17,18 +17,13 @@ use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use IchHabRecht\ContentDefender\Hooks\CmdmapDataHandlerHook;
 use IchHabRecht\ContentDefender\Repository\ContentRepository;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CommandMapHook extends CmdmapDataHandlerHook
 {
-    /**
-     * @var ContainerColumnConfigurationService
-     */
-    protected $containerColumnConfigurationService;
-
-    protected $mapping = [];
+    protected ContainerColumnConfigurationService $containerColumnConfigurationService;
+    protected array $mapping = [];
 
     public function __construct(
         ?ContentRepository $contentRepository = null,
@@ -72,20 +67,14 @@ class CommandMapHook extends CmdmapDataHandlerHook
 
                         if ($this->containerColumnConfigurationService->isMaxitemsReachedByContainenrId((int)$data['update']['tx_container_parent'], (int)$data['update']['colPos'], $useChildId)) {
                             unset($dataHandler->cmdmap['tt_content'][$id]);
-                            $recpid = null;
-                            $detailsNumber = null;
-                            if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() < 13) {
-                                $recpid = 0;
-                                $detailsNumber = 28;
-                            }
                             $dataHandler->log(
                                 'tt_content',
                                 $id,
                                 1,
-                                $recpid,
+                                null,
                                 1,
                                 'The command couldn\'t be executed due to reached maxitems configuration',
-                                $detailsNumber
+                                null
                             );
                         }
                     }

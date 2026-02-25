@@ -13,13 +13,12 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  */
 
 use TYPO3\CMS\Core\Information\Typo3Version;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 class MaxItemsTest extends AbstractContentDefender
 {
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
@@ -31,13 +30,10 @@ class MaxItemsTest extends AbstractContentDefender
             $this->testExtensionsToLoad[] = 'typo3conf/ext/content_defender';
         }
         parent::setUp();
-        $this->linkSiteConfigurationIntoTestInstance();
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canMoveElementIntoContainerIfMaxitemsIsNotReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanMoveElementIntoContainerIfMaxitemsIsNotReached.csv');
@@ -63,10 +59,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanMoveElementIntoContainerIfMaxitemsIsNotReachedResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function cannotMoveElementIntoContainerIfMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotMoveElementIntoContainerIfMaxitemsIsReached.csv');
@@ -97,10 +91,8 @@ class MaxItemsTest extends AbstractContentDefender
         }
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function cannotCopyElementIntoContainerIfMaxitemsIsReachedAfterIntoContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterIntoContainer.csv');
@@ -133,10 +125,8 @@ class MaxItemsTest extends AbstractContentDefender
         }
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function cannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCopyElementIntoContainerIfMaxitemsIsReachedAfterElement.csv');
@@ -158,10 +148,8 @@ class MaxItemsTest extends AbstractContentDefender
         }
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canCreateElementInContainerIfMaxitemsIsNotReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCreateElementInContainerIfMaxitemsIsNotReached.csv');
@@ -184,10 +172,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function cannotCreateElementInContainerIfMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCreateElementInContainerIfMaxitemsIsReached.csv');
@@ -209,10 +195,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotCreateElementInContainerIfMaxitemsIsReachedResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canEditElementInContainerWhenMaxitemIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanEditElementInContainerWhenMaxitemIsReached.csv');
@@ -234,10 +218,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canMoveContainerWithMaxitemsReachedColumnToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanMoveContainerWithMaxitemsReachedColumnToOtherPage.csv');
@@ -263,10 +245,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canCopyElementFromContainerMaxitemsReachedColumnToOtherColumn(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyElementFromContainerMaxitemsReachedColumnToOtherColumn.csv');
@@ -291,10 +271,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canCopyElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyElementFromContainerMaxitemsReachedColumnToOtherContainer.csv');
@@ -319,10 +297,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canMoveElementFromContainerMaxitemsReachedColumnToOtherContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanMoveElementFromContainerMaxitemsReachedColumnToOtherContainer.csv');
@@ -347,10 +323,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertSame([], $this->dataHandler->errorLog, 'dataHander error log is not empty');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function cannotMoveElementInsideContainerColumnIfMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CannotMoveElementInsideContainerColumnIfMaxitemsIsReached.csv');
@@ -378,10 +352,8 @@ class MaxItemsTest extends AbstractContentDefender
         }
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReached.csv');
@@ -401,10 +373,8 @@ class MaxItemsTest extends AbstractContentDefender
         }
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReached.csv');
@@ -424,10 +394,8 @@ class MaxItemsTest extends AbstractContentDefender
         }
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanSaveChildInDefaultLanguageWhenTranslatedAndMaxitemsIsReached.csv');
@@ -455,10 +423,8 @@ class MaxItemsTest extends AbstractContentDefender
         }
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canCopyFilledContainerWithMaxitemsReachedColumnToTopOfPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/filled_container.csv');
@@ -483,10 +449,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyFilledContainerWithMaxitemsReachedColumnToTopOfPageResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canCopyChildFromFilledContainerFromMaxItemsReachedColumnToTopOfPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/filled_container.csv');
@@ -511,10 +475,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyChildFromFilledContainerFromMaxItemsReachedColumnToTopOfPage.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function canCopyChildFromFilledContainerWhenCopyPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/filled_container.csv');
@@ -532,10 +494,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyChildFromFilledContainerWhenCopyPage.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function cannotCopyChildFromFilledContainerIntoMaxItemsReachedColumnAfterChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/filled_container.csv');
@@ -560,10 +520,8 @@ class MaxItemsTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/filled_container.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function cannotCopyChildFromFilledContainerIntoMaxItemsReachedColumnAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Maxitems/filled_container.csv');

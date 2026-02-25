@@ -15,24 +15,17 @@ namespace B13\Container\Hooks\Datahandler;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
+#[Autoconfigure(public: true)]
 class CommandMapPostProcessingHook
 {
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    protected ContainerService $containerService;
-
-    public function __construct(ContainerFactory $containerFactory, ContainerService $containerService)
+    public function __construct(protected ContainerFactory $containerFactory, protected ContainerService $containerService)
     {
-        $this->containerFactory = $containerFactory;
-        $this->containerService = $containerService;
     }
 
     public function processCmdmap_postProcess(string $command, string $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void

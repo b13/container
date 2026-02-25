@@ -16,19 +16,9 @@ class NonExistingParentWarning implements ErrorInterface
 {
     private const IDENTIFIER = 'NonExistingParentWarning';
 
-    /**
-     * @var array
-     */
-    protected $childRecord;
+    protected array $childRecord;
+    protected string $errorMessage;
 
-    /**
-     * @var string
-     */
-    protected $errorMessage;
-
-    /**
-     * @param array $childRecord
-     */
     public function __construct(array $childRecord)
     {
         $this->childRecord = $childRecord;
@@ -42,17 +32,11 @@ class NonExistingParentWarning implements ErrorInterface
         return $this->childRecord;
     }
 
-    /**
-     * @return string
-     */
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getSeverity(): int
     {
         return ErrorInterface::ERROR;

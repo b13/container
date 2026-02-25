@@ -15,12 +15,11 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization;
 use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 class CopyToLanguageSortingTest extends AbstractDatahandler
 {
-    /**
-     * @return array
-     */
     public static function localizeKeepsSortingDataProvider(): array
     {
         return [
@@ -39,10 +38,8 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider localizeKeepsSortingDataProvider
-     */
+    #[Test]
+    #[DataProvider('localizeKeepsSortingDataProvider')]
     public function localizeKeepsSorting(array $cmdmap, string $dataset): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeKeepsSorting.csv');
@@ -51,9 +48,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeKeepsSorting' . $dataset . 'Result.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeChildAtTopOfContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAtTopOfContainer.csv');
@@ -69,9 +64,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAtTopOfContainerResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeChildAfterContainerChild(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/localize_child_after_child.csv');
@@ -87,9 +80,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeChildAfterContainerChildResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeWithNestedElements(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeWithNestedElements.csv');
@@ -105,9 +96,7 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeWithNestedElementsResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizeWithMultipleNestedElements(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeWithMultipleNestedElements.csv');

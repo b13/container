@@ -30,30 +30,17 @@ abstract class AbstractFrontend extends FunctionalTestCase
         ],
     ];
 
-    /**
-     * @var non-empty-string[]
-     */
     protected array $coreExtensionsToLoad = ['core', 'frontend', 'workspaces', 'fluid_styled_content'];
 
-    /**
-     * @var array<string, non-empty-string>
-     */
     protected array $pathsToLinkInTestInstance = [
         'typo3conf/ext/container/Build/sites' => 'typo3conf/sites',
     ];
 
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @param string $string
-     * @return string
-     */
     protected function prepareContent(string $string): string
     {
         $lines = explode("\n", $string);

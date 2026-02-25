@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  */
 
 use TYPO3\CMS\Core\Information\Typo3Version;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class LocalizationTest extends AbstractContentDefender
 {
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
@@ -33,10 +32,8 @@ class LocalizationTest extends AbstractContentDefender
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localization/setup.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function moveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCType(): void
     {
         $cmdmap = [
@@ -61,10 +58,8 @@ class LocalizationTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Localization/MoveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCTypeResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyElementIntoContainerAtTopDoNotCopyTranslationIfDisallowedCType(): void
     {
         $cmdmap = [

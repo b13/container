@@ -16,10 +16,9 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Database implements SingletonInterface
+class Database
 {
     private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 'colPos', 'tx_container_parent', 'l10n_source', 'hidden', 'sorting'];
 

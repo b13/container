@@ -16,25 +16,15 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Tca\Registry;
 use IchHabRecht\ContentDefender\BackendLayout\ColumnConfigurationManipulationInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Http\ServerRequest;
 
+#[Autoconfigure(public: true)]
 class ColumnConfigurationManipulationHook implements ColumnConfigurationManipulationInterface
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry)
+    public function __construct(protected ContainerFactory $containerFactory, protected Registry $tcaRegistry)
     {
-        $this->containerFactory = $containerFactory;
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function manipulateConfiguration(array $configuration, int $colPos, $recordUid): array

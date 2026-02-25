@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  */
 
 use TYPO3\CMS\Core\Information\Typo3Version;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class CopyContainerTest extends AbstractContentDefender
 {
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
@@ -33,10 +32,8 @@ class CopyContainerTest extends AbstractContentDefender
         $this->importCSVDataSet(__DIR__ . '/Fixtures/copy_container.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyContainerAfterElementCopiesChildEvenChildIsNotAllowedByContentDefenderInBackendLayout(): void
     {
         $cmdmap = [
@@ -58,10 +55,8 @@ class CopyContainerTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerAfterElementCopiesChildEvenChildIsNotAllowedByContentDefenderInBackendLayoutResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyContainerIntoOtherContainerWithSameColPosCopiesAlsoChildEvenChildIsDisallowedInTargetContainer(): void
     {
         $cmdmap = [
@@ -83,10 +78,8 @@ class CopyContainerTest extends AbstractContentDefender
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerIntoOtherContainerWithSameColPosCopiesAlsoChildEvenChildIsDisallowedInTargetContainerResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyContainerWithRestrictionsIgnoresContentDefender(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/copy_container_with_restrictions.csv');

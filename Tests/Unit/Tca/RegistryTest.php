@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Unit\Tca;
  */
 
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -21,9 +22,7 @@ class RegistryTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured(): void
     {
         $eventDispatcher = new NoopEventDispatcher();
@@ -32,9 +31,7 @@ class RegistryTest extends UnitTestCase
         self::assertSame([], $columns);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
     {
         $eventDispatcher = new NoopEventDispatcher();
