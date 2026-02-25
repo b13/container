@@ -14,9 +14,9 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization;
 
 use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CopyToLanguageSortingTest extends AbstractDatahandler
 {

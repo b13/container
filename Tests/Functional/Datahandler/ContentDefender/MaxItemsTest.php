@@ -12,9 +12,9 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Information\Typo3Version;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 class MaxItemsTest extends AbstractContentDefender
