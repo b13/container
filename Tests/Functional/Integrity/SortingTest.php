@@ -17,6 +17,7 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Integrity\Database;
 use B13\Container\Integrity\Sorting;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -25,14 +26,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class SortingTest extends FunctionalTestCase
 {
-    /**
-     * @var Sorting
-     */
-    protected $sorting;
+    protected ?Sorting $sorting = null;
 
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
@@ -53,9 +48,7 @@ class SortingTest extends FunctionalTestCase
         $this->sorting = GeneralUtility::makeInstance(Sorting::class, $sortingDatabase, $containerRegistry, $containerFactory, $containerService);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function childBeforeContainerIsSortedAfterContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/child_is_before_container.csv');
@@ -65,9 +58,7 @@ class SortingTest extends FunctionalTestCase
         self::assertTrue($rows[1]['sorting'] < $rows[2]['sorting'], 'child should be sorted after container');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nestedContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/nested_container.csv');
@@ -79,9 +70,7 @@ class SortingTest extends FunctionalTestCase
         self::assertTrue(count($errors) === 1, 'no error is added error');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function childSecondColIsSortedAfterChildInFirstCol(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/child_in_second_col_is_before_child_in_first_col.csv');
@@ -91,9 +80,7 @@ class SortingTest extends FunctionalTestCase
         self::assertTrue($rows[3]['sorting'] < $rows[2]['sorting'], 'child in second col should be sorted after child in first col');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function translatedChildInFreeModeBeforeContainerIsSortedAfterContainer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Sorting/translated_child_in_free_mode_is_before_container.csv');

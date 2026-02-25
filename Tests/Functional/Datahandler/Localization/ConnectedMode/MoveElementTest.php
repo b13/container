@@ -13,12 +13,11 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
 class MoveElementTest extends AbstractDatahandler
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function moveChildElementOutsideContainerAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
@@ -43,9 +42,7 @@ class MoveElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveElement/MoveChildElementOutsideContainerAtTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveChildElementOutsideContainerAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
@@ -71,9 +68,7 @@ class MoveElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveElement/MoveChildElementOutsideContainerAfterElementResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveChildElementToOtherColumnTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
@@ -99,9 +94,7 @@ class MoveElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveElement/MoveChildElementToOtherColumnTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveChildElementToOtherColumnAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
@@ -126,9 +119,7 @@ class MoveElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveElement/MoveChildElementToOtherColumnAfterElementResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveElementIntoContainerAtTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');
@@ -154,9 +145,7 @@ class MoveElementTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/MoveElement/MoveElementIntoContainerAtTopResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moveElementIntoContainerAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MoveElement/setup.csv');

@@ -15,24 +15,11 @@ namespace B13\Container\Domain\Service;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\SingletonInterface;
 
-class ContainerService implements SingletonInterface
+class ContainerService
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    public function __construct(Registry $tcaRegistry, ContainerFactory $containerFactory)
+    public function __construct(protected Registry $tcaRegistry, protected ContainerFactory $containerFactory)
     {
-        $this->tcaRegistry = $tcaRegistry;
-        $this->containerFactory = $containerFactory;
     }
 
     public function getNewContentElementAtTopTargetInColumn(Container $container, int $targetColPos): int

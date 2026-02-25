@@ -17,19 +17,12 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class RecordLocalizeSummaryModifier implements SingletonInterface
+class RecordLocalizeSummaryModifier
 {
-    /**
-     * @var Registry
-     */
-    protected $containerRegistry;
-
-    public function __construct(Registry $containerRegistry)
+    public function __construct(protected Registry $containerRegistry)
     {
-        $this->containerRegistry = $containerRegistry;
     }
 
     public function rebuildPayload(array $payload): array

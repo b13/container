@@ -16,25 +16,10 @@ class ChildInTranslatedContainerError implements ErrorInterface
 {
     private const IDENTIFIER = 'ChildInTranslatedContainerError';
 
-    /**
-     * @var array
-     */
-    protected $childRecord;
+    protected array $childRecord;
+    protected array $containerRecord;
+    protected string $errorMessage;
 
-    /**
-     * @var array
-     */
-    protected $containerRecord;
-
-    /**
-     * @var string
-     */
-    protected $errorMessage;
-
-    /**
-     * @param array $childRecord
-     * @param array $containerRecord
-     */
     public function __construct(array $childRecord, array $containerRecord)
     {
         $this->childRecord = $childRecord;
@@ -45,33 +30,21 @@ class ChildInTranslatedContainerError implements ErrorInterface
             . ' but should point to default language container record ' . $containerRecord['l18n_parent'];
     }
 
-    /**
-     * @return string
-     */
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getSeverity(): int
     {
         return ErrorInterface::ERROR;
     }
 
-    /**
-     * @return array
-     */
     public function getChildRecord(): array
     {
         return $this->childRecord;
     }
 
-    /**
-     * @return array
-     */
     public function getContainerRecord(): array
     {
         return $this->containerRecord;

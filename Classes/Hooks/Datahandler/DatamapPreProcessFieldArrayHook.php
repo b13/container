@@ -16,41 +16,19 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
+#[Autoconfigure(public: true)]
 class DatamapPreProcessFieldArrayHook
 {
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    /**
-     * @var ContainerService
-     */
-    protected $containerService;
-
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
     public function __construct(
-        ContainerFactory $containerFactory,
-        Database $database,
-        Registry $tcaRegistry,
-        ContainerService $containerService
+        protected ContainerFactory $containerFactory,
+        protected Database $database,
+        protected Registry $tcaRegistry,
+        protected ContainerService $containerService
     ) {
-        $this->containerFactory = $containerFactory;
-        $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
-        $this->containerService = $containerService;
     }
 
     protected function newElementAfterContainer(array $incomingFieldArray): array

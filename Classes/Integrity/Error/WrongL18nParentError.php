@@ -16,25 +16,10 @@ class WrongL18nParentError implements ErrorInterface
 {
     private const IDENTIFIER = 'WrongL18nParentError';
 
-    /**
-     * @var array
-     */
-    protected $childRecord;
+    protected array $childRecord;
+    protected array $containerRecord;
+    protected string $errorMessage;
 
-    /**
-     * @var array
-     */
-    protected $containerRecord;
-
-    /**
-     * @var string
-     */
-    protected $errorMessage;
-
-    /**
-     * @param array $childRecord
-     * @param array $containerRecord
-     */
     public function __construct(array $childRecord, array $containerRecord)
     {
         $this->childRecord = $childRecord;
@@ -47,33 +32,21 @@ class WrongL18nParentError implements ErrorInterface
             ' (page: ' . $containerRecord['pid'] . ' language: ' . $containerRecord['sys_language_uid'] . ')';
     }
 
-    /**
-     * @return string
-     */
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getSeverity(): int
     {
         return ErrorInterface::ERROR;
     }
 
-    /**
-     * @return array
-     */
     public function getChildRecord(): array
     {
         return $this->childRecord;
     }
 
-    /**
-     * @return array
-     */
     public function getContainerRecord(): array
     {
         return $this->containerRecord;

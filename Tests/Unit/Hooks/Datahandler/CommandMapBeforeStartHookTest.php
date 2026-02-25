@@ -18,15 +18,14 @@ use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Hooks\Datahandler\CommandMapBeforeStartHook;
 use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class CommandMapBeforeStartHookTest extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rewriteCommandMapTargetForTopAtContainerTest(): void
     {
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)
@@ -79,9 +78,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         self::assertSame($expected, $rewrittenCommandMap);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rewriteSimpleCommandMapTestForIntoContainer(): void
     {
         $copyAfterRecord = [
@@ -127,9 +124,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         self::assertSame($expected, $rewrittenCommandMap);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rewriteSimpleCommandMapTestForAfterContainer(): void
     {
         $copyAfterRecord = [
@@ -177,9 +172,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         self::assertSame($expected, $rewrittenCommandMap);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
     {
         $database = $this->getMockBuilder(Database::class)->getMock();
@@ -220,9 +213,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         self::assertSame(2, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValueForDelimiterV12WithMultipleDelimiters(): void
     {
         $database = $this->getMockBuilder(Database::class)->getMock();
@@ -250,9 +241,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
         self::assertSame(2, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
     {
         $database = $this->getMockBuilder(Database::class)->getMock();

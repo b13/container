@@ -16,18 +16,15 @@ use B13\Container\Backend\Preview\GridRenderer;
 use B13\Container\Domain\Core\RecordWithRenderedGrid;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
+#[AsEventListener(identifier: 'tx-container-page-content-preview-rendering', before: 'typo3-backend/fluid-preview/content')]
 class PageContentPreviewRendering
 {
-    protected GridRenderer $gridRenderer;
-    protected Registry $tcaRegistry;
-
-    public function __construct(GridRenderer $gridRenderer, Registry $tcaRegistry)
+    public function __construct(protected GridRenderer $gridRenderer, protected Registry $tcaRegistry)
     {
-        $this->gridRenderer = $gridRenderer;
-        $this->tcaRegistry = $tcaRegistry;
     }
 
     public function __invoke(PageContentPreviewRenderingEvent $event): void

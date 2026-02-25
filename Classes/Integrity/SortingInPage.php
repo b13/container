@@ -17,39 +17,18 @@ use B13\Container\Domain\Model\Container;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class SortingInPage implements SingletonInterface
+class SortingInPage
 {
-    /**
-     * @var Database
-     */
-    protected $database;
+    protected array $errors = [];
 
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @var ContainerService
-     */
-    protected $containerService;
-
-    protected $errors = [];
-
-    public function __construct(Database $database, Registry $tcaRegistry, ContainerFactory $containerFactory, ContainerService $containerService)
-    {
-        $this->database = $database;
-        $this->tcaRegistry = $tcaRegistry;
-        $this->containerFactory = $containerFactory;
-        $this->containerService = $containerService;
+    public function __construct(
+        protected Database $database,
+        protected Registry $tcaRegistry,
+        protected ContainerFactory $containerFactory,
+        protected ContainerService $containerService
+    ) {
     }
 
     public function run(bool $dryRun = true, bool $enableLogging = false, ?int $pid = null): array

@@ -14,22 +14,18 @@ namespace B13\Container\Tests\Functional\Service;
 
 use B13\Container\Service\RecordLocalizeSummaryModifier;
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
 {
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerUidsReturnsAllUids(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/two_container_elements.csv');
@@ -42,9 +38,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
         self::assertSame(2, count($containerUids));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerChildrenReturnsHiddenRecords(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_child_record.csv');
@@ -58,9 +52,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
         self::assertIsArray($containerChildren[1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerUidsReturnsHiddenUids(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_container_record.csv');
@@ -73,9 +65,7 @@ class RecordLocalizeSummaryModifierTest extends FunctionalTestCase
         self::assertSame([1], $containerUids);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerUidsReturnsAlsoUidsOfL18nParents(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/container_and_translated_container.csv');

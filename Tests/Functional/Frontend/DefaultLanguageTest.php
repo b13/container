@@ -10,14 +10,14 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class DefaultLanguageTest extends AbstractFrontend
 {
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childrenAreRendered(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
@@ -39,10 +39,8 @@ class DefaultLanguageTest extends AbstractFrontend
         self::assertStringContainsString('<h2 class="">left-side-default</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childrenAreRenderedAsSorted(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerWithTwoChildren.csv');
@@ -62,10 +60,8 @@ class DefaultLanguageTest extends AbstractFrontend
         self::assertStringContainsString('<h6>first child</h6><h6>second child</h6>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function canRenderContainerFromOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerFromOtherPage.csv');
@@ -84,10 +80,8 @@ class DefaultLanguageTest extends AbstractFrontend
         self::assertStringContainsString('<h2>left side (201)</h2><div class="left-children"><h6 class="left-children">child</h6><div id="c2"', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childrenAreNotRenderedIfSkipOptionIsSet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');

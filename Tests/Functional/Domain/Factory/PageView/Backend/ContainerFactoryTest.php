@@ -11,6 +11,7 @@ namespace B13\Container\Tests\Functional\Domain\Factory\PageView\Backend;
  */
 
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
@@ -19,26 +20,18 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ContainerFactoryTest extends FunctionalTestCase
 {
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @var non-empty-string[]
-     */
     protected array $coreExtensionsToLoad = ['workspaces'];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizedContainerChildElementsHasSortingOfDefaultChildElements(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(2);
         $children = $container->getChildrenByColPos(201);
         self::assertSame(2, count($children));
@@ -46,15 +39,13 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(6, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function movedElementIntoOtherContainerInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoOtherContainerInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(0, count($children));
@@ -65,15 +56,13 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(104, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function movedElementIntoContainerInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedElementIntoContainerInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(1, count($children));
@@ -82,15 +71,13 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(101, $first['tx_container_parent']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerRespectSortingOfMovedChildrenInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceSorting.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(2, count($children));
@@ -100,9 +87,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(102, $second['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsMovedChildrenInWorkspaceWithTranslation(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/movedChildrenInWorkspaceWithTranslation.csv');
@@ -110,7 +95,7 @@ class ContainerFactoryTest extends FunctionalTestCase
         $languageAspect = GeneralUtility::makeInstance(LanguageAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
         GeneralUtility::makeInstance(Context::class)->setAspect('language', $languageAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(106);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(0, count($children));
@@ -121,15 +106,13 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(110, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsCopiedChildrenInWorkspace(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/copiedChildrenInWorkspace.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         $container = $containerFactory->buildContainer(101);
         $children = $container->getChildrenByColPos(200);
         self::assertSame(1, count($children));
@@ -140,15 +123,13 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(104, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsChildrenWhenMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         // versioned record uid
         $container = $containerFactory->buildContainer(203);
         $children = $container->getChildrenByColPos(201);
@@ -157,16 +138,14 @@ class ContainerFactoryTest extends FunctionalTestCase
         self::assertSame(205, $first['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function containerHoldsLocalizedChildrenWhenMovedToOtherPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/container_moved_to_other_page.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixture/ContainerFactory/localized_container_moved_to_other_page.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
         GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
+        $containerFactory = $this->get(ContainerFactory::class);
         // versioned record uid
         $container = $containerFactory->buildContainer(213);
         $children = $container->getChildrenByColPos(201);

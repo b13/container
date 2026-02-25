@@ -1,11 +1,5 @@
 parameters:
 	ignoreErrors:
-
-		-
-			message: "#^Constant LF not found\\.$#"
-			count: 5
-			path: ../Classes/Tca/Registry.php
-
 		-
 			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\* \", expected type at offset 679$#"
 			count: 1
@@ -25,21 +19,6 @@ parameters:
 			message: "#^PHPDoc tag @throws with type B13\\\\Container\\\\Tests\\\\Acceptance\\\\Support\\\\_generated\\\\ModuleException is not subtype of Throwable$#"
 			count: 1
 			path: ../Tests/Acceptance/Support/BackendTester.php
-
-		-
-			message: "#^Property TYPO3\\\\TestingFramework\\\\Core\\\\Acceptance\\\\Helper\\\\AbstractPageTree\\:\\:\\$tester \\(AcceptanceTester\\) does not accept B13\\\\Container\\\\Tests\\\\Acceptance\\\\Support\\\\BackendTester\\.$#"
-			count: 1
-			path: ../Tests/Acceptance/Support/PageTree.php
-
-		-
-			message: "#^Constant ORIGINAL_ROOT not found\\.$#"
-			count: 1
-			path: ../Tests/Functional/Datahandler/AbstractDatahandler.php
-
-		-
-			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 2 parameters, 5 required\\.$#"
-			count: 1
-			path: ../Tests/Functional/Integrity/IntegrityTest.php
 		-
 			message: "#^Cannot call method getRecordType\\(\\) on array\\.$#"
 			count: 1
@@ -78,3 +57,7 @@ parameters:
 			message: "#^Parameter \\#4 \\$drawingConfiguration of class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor expects TYPO3\\\\CMS\\\\Backend\\\\View\\\\Drawing\\\\DrawingConfiguration, PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&TYPO3\\\\CMS\\\\Core\\\\Http\\\\ServerRequest given\\.$#"
 			count: 1
 			path: ../Tests/Functional/Integrity/IntegrityTest.php
+		-
+			message: "#^Access to an undefined property B13\\\\Container\\\\Backend\\\\ContextMenu\\\\RecordContextMenuItemProvider\\:\\:\\$uriBuilder\\.$#"
+			count: 1
+			path: ../Classes/Backend/ContextMenu/RecordContextMenuItemProvider.php

@@ -18,48 +18,24 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractDatahandler extends FunctionalTestCase
 {
-    /**
-     * @var DataHandler
-     */
-    protected $dataHandler;
+    protected ?DataHandler $dataHandler = null;
 
-    /**
-     * @var BackendUserAuthentication
-     */
-    protected $backendUser;
+    protected ?BackendUserAuthentication $backendUser = null;
 
-    /**
-     * @var non-empty-string[]
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @var non-empty-string[]
-     */
     protected array $coreExtensionsToLoad = ['workspaces'];
 
-    protected function linkSiteConfigurationIntoTestInstance(): void
-    {
-        $from = ORIGINAL_ROOT . '../../Build/sites';
-        $to = $this->getInstancePath() . '/typo3conf/sites';
-        if (!is_dir($from)) {
-            throw new \Exception('site config directory not found', 1630425034);
-        }
-        if (!file_exists($to)) {
-            $success = symlink(realpath($from), $to);
-            if ($success === false) {
-                throw new \Exception('cannot link site config', 1630425035);
-            }
-        }
-    }
+    protected array $pathsToLinkInTestInstance = [
+        'typo3conf/ext/container/Build/sites' => 'typo3conf/sites',
+    ];
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->linkSiteConfigurationIntoTestInstance();
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
         $this->backendUser = $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $GLOBALS['BE_USER'] = $this->backendUser;
