@@ -12,9 +12,11 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization;
  * of the License, or any later version.
  */
 
+use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CopyToLanguageSortingTest extends AbstractDatahandler
 {
@@ -108,5 +110,6 @@ class CopyToLanguageSortingTest extends AbstractDatahandler
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyToLanguageSorting/LocalizeWithMultipleNestedElementsResult.csv');
+        self::assertFalse((GeneralUtility::makeInstance(DatahandlerProcess::class))->areContentElementRestrictionsLooked());
     }
 }

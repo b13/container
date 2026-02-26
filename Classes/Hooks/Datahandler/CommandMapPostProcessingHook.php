@@ -118,6 +118,7 @@ class CommandMapPostProcessingHook
             // when moving or copy a container into other language the other language is returned
             $container = $this->containerFactory->buildContainer($origUid);
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->startContainerProcess($origUid);
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->lockContentElementRestrictions();
             $children = [];
             $colPosVals = $container->getChildrenColPos();
             foreach ($colPosVals as $colPos) {
@@ -170,6 +171,7 @@ class CommandMapPostProcessingHook
                 }
             }
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->endContainerProcess($origUid);
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->unlockContentElementRestrictions();
         } catch (Exception $e) {
             // nothing todo
         }

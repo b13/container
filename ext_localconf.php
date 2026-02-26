@@ -37,4 +37,8 @@ call_user_func(static function () {
         $datamapHooks,
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']
     );
+    if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() > 13) {
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['contentElementRestriction'] = \B13\Container\Hooks\Datahandler\ContentElementRestriction\DataHandlerHook::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['contentElementRestriction'] = \B13\Container\Hooks\Datahandler\ContentElementRestriction\DataHandlerHook::class;
+    }
 });

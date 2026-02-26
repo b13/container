@@ -96,9 +96,17 @@ class Registry
         foreach ($rows as $columns) {
             foreach ($columns as $column) {
                 if ((int)$column['colPos'] === $colPos) {
+                    $contentDefenderConfiguration['allowedContentTypes'] = $column['allowedContentTypes'] ?? '';
+                    $contentDefenderConfiguration['disallowedContentTypes'] = $column['disallowedContentTypes'] ?? '';
                     $contentDefenderConfiguration['allowed.'] = $column['allowed'] ?? [];
                     $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
                     $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
+                    if ($contentDefenderConfiguration['allowedContentTypes'] === '' && $contentDefenderConfiguration['allowed.'] !== []) {
+                        $contentDefenderConfiguration['allowedContentTypes'] = $contentDefenderConfiguration['allowed.']['CType'] ?? '';
+                    }
+                    if ($contentDefenderConfiguration['disallowedContentTypes'] === '' && $contentDefenderConfiguration['disallowed.'] !== []) {
+                        $contentDefenderConfiguration['disallowedContentTypes'] = $contentDefenderConfiguration['disallowed.']['CType'] ?? '';
+                    }
                     return $contentDefenderConfiguration;
                 }
             }
