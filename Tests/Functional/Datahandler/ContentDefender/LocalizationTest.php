@@ -43,9 +43,9 @@ class LocalizationTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-200',
+                            'colPos' => 200,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -69,9 +69,9 @@ class LocalizationTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-200',
+                            'colPos' => 200,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],

@@ -18,7 +18,6 @@ use TYPO3\CMS\Backend\View\PageLayoutContext;
 
 class ContainerGridColumn extends GridColumn
 {
-    public const CONTAINER_COL_POS_DELIMITER = '-';
 
     public function __construct(
         PageLayoutContext $context,

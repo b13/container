@@ -79,9 +79,9 @@ class MoveElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 3,
                         'update' => [
-                            'colPos' => '61-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
-
+                            'tx_container_parent' => 61,
                         ],
                     ],
                 ],
@@ -105,9 +105,9 @@ class MoveElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -63,
                         'update' => [
-                            'colPos' => '61-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
-
+                            'tx_container_parent' => 61,
                         ],
                     ],
                 ],
@@ -130,9 +130,9 @@ class MoveElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 3,
                         'update' => [
-                            'colPos' => '61-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
-
+                            'tx_container_parent' => 61,
                         ],
                     ],
                 ],
@@ -156,9 +156,9 @@ class MoveElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -63,
                         'update' => [
-                            'colPos' => '61-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
-
+                            'tx_container_parent' => 61,
                         ],
                     ],
                 ],

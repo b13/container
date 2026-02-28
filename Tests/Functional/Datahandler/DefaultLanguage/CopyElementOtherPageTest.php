@@ -30,7 +30,6 @@ class CopyElementOtherPageTest extends AbstractDatahandler
                         'update' => [
                             'colPos' => 0,
                             'sys_language_uid' => 0,
-
                         ],
                     ],
                 ],
@@ -55,7 +54,6 @@ class CopyElementOtherPageTest extends AbstractDatahandler
                         'update' => [
                             'colPos' => 0,
                             'sys_language_uid' => 0,
-
                         ],
                     ],
                 ],
@@ -79,9 +77,9 @@ class CopyElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 3,
                         'update' => [
-                            'colPos' => '11-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 11,
                         ],
                     ],
                 ],
@@ -105,9 +103,9 @@ class CopyElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -13,
                         'update' => [
-                            'colPos' => '11-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 11,
                         ],
                     ],
                 ],
@@ -130,9 +128,9 @@ class CopyElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 3,
                         'update' => [
-                            'colPos' => '11-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 11,
                         ],
                     ],
                 ],
@@ -156,9 +154,9 @@ class CopyElementOtherPageTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -13,
                         'update' => [
-                            'colPos' => '11-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 11,
                         ],
                     ],
                 ],
