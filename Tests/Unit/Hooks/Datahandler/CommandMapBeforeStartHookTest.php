@@ -112,8 +112,9 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
                         'action' => 'paste',
                         'target' => -1,
                         'update' => [
-                            'colPos' => '2-3',
+                            'colPos' => 3,
                             'sys_language_uid' => 0,
+                            'tx_container_parent' => 2,
 
                         ],
                     ],

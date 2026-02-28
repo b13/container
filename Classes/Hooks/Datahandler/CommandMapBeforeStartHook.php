@@ -12,14 +12,12 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
-use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 #[Autoconfigure(public: true)]
 class CommandMapBeforeStartHook
@@ -36,7 +34,6 @@ class CommandMapBeforeStartHook
     {
         $this->unsetInconsistentLocalizeCommands($dataHandler);
         $dataHandler->cmdmap = $this->rewriteSimpleCommandMap($dataHandler->cmdmap);
-        $dataHandler->cmdmap = $this->extractContainerIdFromColPosOnUpdate($dataHandler->cmdmap);
         $this->unsetInconsistentCopyOrMoveCommands($dataHandler);
         // previously page id is used for copy/moving element at top of a container colum
         // but this leeds to wrong sorting in page context (e.g. List-Module)
@@ -195,8 +192,9 @@ class CommandMapBeforeStartHook
                                     'action' => 'paste',
                                     'target' => $target,
                                     'update' => [
-                                        'colPos' => $targetRecordForOperation['tx_container_parent'] . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $targetRecordForOperation['colPos'],
+                                        'colPos' => $targetRecordForOperation['colPos'],
                                         'sys_language_uid' => $targetRecordForOperation['sys_language_uid'],
+                                        'tx_container_parent' => $targetRecordForOperation['tx_container_parent'],
 
                                     ],
                                 ],
@@ -244,37 +242,6 @@ class CommandMapBeforeStartHook
                 }
             }
         }
-    }
-
-    protected function extractContainerIdFromColPosOnUpdate(array $cmdmap): array
-    {
-        if (!empty($cmdmap['tt_content'])) {
-            foreach ($cmdmap['tt_content'] as $id => &$cmds) {
-                foreach ($cmds as &$cmd) {
-                    if (
-                        (!empty($cmd['update'])) &&
-                        isset($cmd['update']['colPos'])
-                    ) {
-                        $cmd['update'] = $this->dataFromContainerIdColPos($cmd['update']);
-                    }
-                }
-            }
-        }
-        return $cmdmap;
-    }
-
-    protected function dataFromContainerIdColPos(array $data): array
-    {
-        $colPos = $data['colPos'];
-        if (strpos((string)$colPos, ContainerGridColumn::CONTAINER_COL_POS_DELIMITER) > 0) {
-            [$containerId, $newColPos] = GeneralUtility::intExplode(ContainerGridColumn::CONTAINER_COL_POS_DELIMITER, $colPos);
-            $data['colPos'] = $newColPos;
-            $data['tx_container_parent'] = $containerId;
-        } elseif (!isset($data['tx_container_parent'])) {
-            $data['tx_container_parent'] = 0;
-            $data['colPos'] = (int)$colPos;
-        }
-        return $data;
     }
 
     protected function logAndUnsetCmd(int $id, string $cmd, string $message, DataHandler $dataHandler): void
