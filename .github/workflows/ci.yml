@@ -42,7 +42,7 @@ jobs:
         if: matrix.TYPO3 == '13'
 
       - name: Functional Tests 14
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --exclude-group content_defender
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
         if: matrix.TYPO3 != '13'
 
       - name: Acceptance Tests

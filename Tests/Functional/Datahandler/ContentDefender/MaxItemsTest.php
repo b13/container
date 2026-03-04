@@ -369,7 +369,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
+        if ((new Typo3Version())->getMajorVersion() < 14 || (new Typo3Version())->getBranch() === '14.1') {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/LegacyCanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
+        } else {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanTranslateChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
+        }
         if ((new Typo3Version())->getMajorVersion() < 14) {
             self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
         } else {
@@ -390,7 +394,11 @@ class MaxItemsTest extends AbstractContentDefender
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
+        if ((new Typo3Version())->getMajorVersion() < 14 || (new Typo3Version())->getBranch() === '14.1') {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/LegacyCanCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
+        } else {
+            self::assertCSVDataSet(__DIR__ . '/Fixtures/Maxitems/CanCopyToLanguageChildIfContainerOfDefaultLanguageMaxitemsIsReachedResult.csv');
+        }
         if ((new Typo3Version())->getMajorVersion() < 14) {
             self::assertEmpty($this->dataHandler->errorLog, 'dataHander error log is not empty');
         } else {
