@@ -18,7 +18,6 @@ use TYPO3\CMS\Backend\View\PageLayoutContext;
 
 class ContainerGridColumn extends GridColumn
 {
-
     public function __construct(
         PageLayoutContext $context,
         array $columnDefinition,

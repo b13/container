@@ -81,7 +81,7 @@ class MoveElementTest extends AbstractDatahandler
                         'update' => [
                             'colPos' => 201,
                             'sys_language_uid' => 1,
-                            'tx_container_parent' => 51
+                            'tx_container_parent' => 51,
 
                         ],
                     ],
@@ -108,7 +108,7 @@ class MoveElementTest extends AbstractDatahandler
                         'update' => [
                             'colPos' => 201,
                             'sys_language_uid' => 1,
-                            'tx_container_parent' => 51
+                            'tx_container_parent' => 51,
 
                         ],
                     ],
@@ -134,7 +134,7 @@ class MoveElementTest extends AbstractDatahandler
                         'update' => [
                             'colPos' => 201,
                             'sys_language_uid' => 1,
-                            'tx_container_parent' => 51
+                            'tx_container_parent' => 51,
 
                         ],
                     ],
@@ -161,7 +161,7 @@ class MoveElementTest extends AbstractDatahandler
                         'update' => [
                             'colPos' => 201,
                             'sys_language_uid' => 1,
-                            'tx_container_parent' => 51
+                            'tx_container_parent' => 51,
 
                         ],
                     ],
