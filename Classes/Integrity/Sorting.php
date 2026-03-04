@@ -55,6 +55,8 @@ class Sorting
         // unset content_defender configuration for migration because already unallowed children in container may exist
         foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['grid'] ?? [] as $rowKey => $row) {
             foreach ($row as $colKey => $column) {
+                $column['allowedContentTypes'] = '';
+                $column['disallowedContentTypes'] = '';
                 $column['allowed'] = [];
                 $column['disallowed'] = [];
                 $column['maxitems'] = 0;
