@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -30,13 +31,15 @@ class SortingWithContentDefenderTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender',
     ];
 
     protected ?Sorting $sorting = null;
 
     protected function setUp(): void
     {
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            $this->testExtensionsToLoad[] = 'typo3conf/ext/content_defender';
+        }
         parent::setUp();
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
