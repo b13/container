@@ -265,9 +265,7 @@ class LayoutCest
         $pageTree->openPath(['home', 'pageWithTranslatedContainer-2']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->waitForElement('#element-tt_content-712');
-
-        $I->click('headerOfChild', '#element-tt_content-712');
+        $I->openRecordInContextPanelOrWithEditDocumentController(712);
 
         if ($I->getTypo3MajorVersion() > 13) {
             $I->waitForText('english');

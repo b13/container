@@ -108,9 +108,7 @@ class ContentDefenderCest
         $pageTree->openPath(['home', 'contentTCASelectCtype']);
         $I->wait(0.5);
         $I->switchToContentFrame();
-        $I->waitForElement('#element-tt_content-502 a[title="Edit"]');
-        $I->click('#element-tt_content-502 a[title="Edit"]');
-        $I->waitForElement('#EditDocumentController');
+        $I->openRecordInContextPanelOrWithEditDocumentController(502);
         $I->see('textmedia', 'select');
         $I->dontSee('Images Only', 'select');
     }

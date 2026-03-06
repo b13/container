@@ -49,6 +49,29 @@ class BackendTester extends \Codeception\Actor
         $I->switchToIFrame();
     }
 
+    /**
+     * v14: Click a content element in the page module to open it in the context panel,
+     * then switch into the context panel iframe.
+     */
+    public function openRecordInContextPanelOrWithEditDocumentController(int $uid): void
+    {
+        if ($this->getTypo3MajorVersion() < 14 || (new Typo3Version())->getBranch() === '14.1') {
+            $this->waitForElement('#element-tt_content-' . $uid . ' a[title="Edit"]');
+            $this->click('#element-tt_content-' . $uid . ' a[title="Edit"]');
+        } else {
+            $this->waitForElement('#element-tt_content-' . $uid . ' typo3-backend-contextual-record-edit-trigger');
+            $this->click('#element-tt_content-' . $uid . ' typo3-backend-contextual-record-edit-trigger');
+            $this->switchToMainFrame();
+            $this->waitForElement('iframe[name="context_panel_frame"]', 10);
+            $this->switchToIFrame('context_panel_frame');
+            $this->waitForElementNotVisible('#t3js-ui-block');
+            $this->click('a.t3js-contextual-fullscreen');
+            $this->switchToMainFrame();
+            $this->switchToContentFrame();
+        }
+        $this->waitForElement('#EditDocumentController');
+    }
+
     public function getDataColPos(int $containerId, int $colPos): string
     {
         return (string)$colPos;
