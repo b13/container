@@ -12,7 +12,6 @@ namespace B13\Container\ContentDefender;
  * of the License, or any later version.
  */
 
-use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
@@ -56,7 +55,7 @@ class ContainerColumnConfigurationService
         $record = $this->getRecord($sourceContentId);
         $sourceColPos = (int)$record['colPos'];
         $sourceContainerId = (int)$record['tx_container_parent'];
-        $this->copyMapping[$sourceContainerId . ContainerGridColumn::CONTAINER_COL_POS_DELIMITER . $sourceColPos] = [
+        $this->copyMapping[$sourceContainerId . '-' . $sourceColPos] = [
             'containerId' => $containerId,
             'sourceColPos' => $sourceColPos,
             'targetColPos' => $targetColpos,

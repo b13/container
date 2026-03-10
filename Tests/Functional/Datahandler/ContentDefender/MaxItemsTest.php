@@ -44,9 +44,9 @@ class MaxItemsTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => 202,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -71,9 +71,9 @@ class MaxItemsTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => -3,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => 202,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -104,9 +104,9 @@ class MaxItemsTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => 202,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -157,7 +157,7 @@ class MaxItemsTest extends AbstractContentDefender
         $datamap = [
             'tt_content' => [
                 $newId => [
-                    'colPos' => '202',
+                    'colPos' => 202,
                     'tx_container_parent' => 1,
                     'pid' => -1,
                     'sys_language_uid' => 0,
@@ -257,8 +257,9 @@ class MaxItemsTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -283,8 +284,9 @@ class MaxItemsTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '3-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
+                            'tx_container_parent' => 3,
                         ],
                     ],
                 ],
@@ -309,8 +311,9 @@ class MaxItemsTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '3-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
+                            'tx_container_parent' => 3,
                         ],
                     ],
                 ],
@@ -335,8 +338,9 @@ class MaxItemsTest extends AbstractContentDefender
                         'action' => 'paste',
                         'target' => -2,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => 202,
                             'sys_language_uid' => 0,
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],

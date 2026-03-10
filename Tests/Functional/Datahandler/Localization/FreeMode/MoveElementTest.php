@@ -79,8 +79,9 @@ class MoveElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '51-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
+                            'tx_container_parent' => 51,
 
                         ],
                     ],
@@ -105,8 +106,9 @@ class MoveElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -53,
                         'update' => [
-                            'colPos' => '51-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
+                            'tx_container_parent' => 51,
 
                         ],
                     ],
@@ -130,8 +132,9 @@ class MoveElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '51-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
+                            'tx_container_parent' => 51,
 
                         ],
                     ],
@@ -156,8 +159,9 @@ class MoveElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -53,
                         'update' => [
-                            'colPos' => '51-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 1,
+                            'tx_container_parent' => 51,
 
                         ],
                     ],

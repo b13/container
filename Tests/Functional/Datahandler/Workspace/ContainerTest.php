@@ -76,8 +76,9 @@ class ContainerTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -123,9 +124,9 @@ class ContainerTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '91-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 91,
                         ],
                     ],
                 ],
@@ -147,9 +148,9 @@ class ContainerTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -196,9 +197,9 @@ class ContainerTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '91-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 91,
                         ],
                     ],
                 ],
@@ -242,9 +243,9 @@ class ContainerTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-200',
+                            'colPos' => 200,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],

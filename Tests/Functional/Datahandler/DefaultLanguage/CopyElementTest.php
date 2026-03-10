@@ -79,9 +79,9 @@ class CopyElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -105,9 +105,9 @@ class CopyElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -3,
                         'update' => [
-                            'colPos' => '1-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -130,9 +130,9 @@ class CopyElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -156,9 +156,9 @@ class CopyElementTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => -3,
                         'update' => [
-                            'colPos' => '1-201',
+                            'colPos' => 201,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],

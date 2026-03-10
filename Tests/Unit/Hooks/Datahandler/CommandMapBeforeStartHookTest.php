@@ -112,8 +112,9 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
                         'action' => 'paste',
                         'target' => -1,
                         'update' => [
-                            'colPos' => '2-3',
+                            'colPos' => 3,
                             'sys_language_uid' => 0,
+                            'tx_container_parent' => 2,
 
                         ],
                     ],
@@ -173,48 +174,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
     }
 
     #[Test]
-    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
-    {
-        $database = $this->getMockBuilder(Database::class)->getMock();
-        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
-        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
-        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
-            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
-            ->onlyMethods([])
-            ->getMock();
-        $commandMap = [
-            'tt_content' => [
-                39 => [
-                    'copy' => [
-                        'update' => [
-                            'colPos' => '2-34',
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        // should be
-        $expected = [
-            'tt_content' => [
-                39 => [
-                    'copy' => [
-                        'update' => [
-                            'colPos' => 34,
-                            'tx_container_parent' => 2,
-
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $commandMap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $commandMap);
-        self::assertSame(34, $commandMap['tt_content'][39]['copy']['update']['colPos']);
-        self::assertSame(2, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
-    }
-
-    #[Test]
-    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValueForDelimiterV12WithMultipleDelimiters(): void
+    public function setContainerIdToZeroIfNotSetOnUpdateSetsContainerIdToZeroValue(): void
     {
         $database = $this->getMockBuilder(Database::class)->getMock();
         $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
@@ -230,34 +190,6 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
                     'copy' => [
                         'update' => [
                             'colPos' => 34,
-                            'tx_container_parent' => 2,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $commandMap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $commandMap);
-        self::assertSame(34, $commandMap['tt_content'][39]['copy']['update']['colPos']);
-        self::assertSame(2, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
-    }
-
-    #[Test]
-    public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
-    {
-        $database = $this->getMockBuilder(Database::class)->getMock();
-        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
-        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
-        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
-        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
-            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
-            ->onlyMethods([])
-            ->getMock();
-        $commandMap = [
-            'tt_content' => [
-                39 => [
-                    'copy' => [
-                        'update' => [
-                            'colPos' => '34',
                         ],
                     ],
                 ],
@@ -277,7 +209,7 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
                 ],
             ],
         ];
-        $commandMap = $dataHandlerHook->_call('extractContainerIdFromColPosOnUpdate', $commandMap);
+        $commandMap = $dataHandlerHook->_call('setContainerIdToZeroIfNotSetOnUpdate', $commandMap);
         self::assertSame(34, $commandMap['tt_content'][39]['copy']['update']['colPos']);
         self::assertSame(0, $commandMap['tt_content'][39]['copy']['update']['tx_container_parent']);
     }

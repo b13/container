@@ -48,9 +48,9 @@ class ContainerTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 2,
                         'update' => [
-                            'colPos' => '2-202',
+                            'colPos' => 202,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 2,
                         ],
                     ],
                 ],
@@ -74,9 +74,9 @@ class ContainerTest extends AbstractDatahandler
                         'action' => 'paste',
                         'target' => 2,
                         'update' => [
-                            'colPos' => '1-202',
+                            'colPos' => 202,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -118,7 +118,6 @@ class ContainerTest extends AbstractDatahandler
                         'update' => [
                             'colPos' => 0,
                             'sys_language_uid' => 0,
-
                         ],
                     ],
                 ],
