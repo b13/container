@@ -88,7 +88,7 @@ __Notes:__
   - Adds CType to TCA select items
   - Registers your icon
   - Adds PageTSconfig 
-  - Sets ``showitem`` for this CType (`sys_language_uid,CType,tx_container_parent,colPos,hidden`)
+  - Sets ``showitem`` for this CType (`header`)
   - Saves the configuration in TCA in ``$GLOBALS['TCA']['tt_content']['containerConfiguration'][<CType>]`` for further usage
 - We provide some default icons you can use; see `Resources/Public/Icons`
   - container-1col
