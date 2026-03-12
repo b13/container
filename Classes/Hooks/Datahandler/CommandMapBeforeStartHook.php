@@ -195,11 +195,14 @@ class CommandMapBeforeStartHook
                     if (in_array($operation, ['copy', 'move'], true) === false) {
                         continue;
                     }
+                    if (empty($cmd[$operation])) {
+                        continue;
+                    }
                     if (is_array($cmd[$operation])) {
                         continue;
                     }
-                    if ((int)$cmd[$operation] < 0) {
-                        $target = (int)$cmd[$operation];
+                    $target = (int)$cmd[$operation];
+                    if ($target < 0) {
                         $targetRecordForOperation = $this->database->fetchOneRecord((int)abs($target));
                         if ($targetRecordForOperation === null) {
                             continue;
@@ -231,7 +234,23 @@ class CommandMapBeforeStartHook
                                     ],
                                 ],
                             ];
+                        } else {
+                            $cmd = [
+                                $operation => [
+                                    'action' => 'paste',
+                                    'target' => $target,
+                                    'update' => [],
+                                ],
+                            ];
                         }
+                    } else {
+                        $cmd = [
+                            $operation => [
+                                'action' => 'paste',
+                                'target' => $target,
+                                'update' => [],
+                            ],
+                        ];
                     }
                 }
             }
