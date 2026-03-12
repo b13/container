@@ -297,6 +297,38 @@ class ContainerTest extends AbstractDatahandler
     }
 
     #[Test]
+    public function copyContainerOtherPageOnTopWithSimpleCommand(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTopWithSimpleCommand.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => 3,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTopWithSimpleCommandResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerOtherPageAfterElementWithSimpleCommand(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElementWithSimpleCommand.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => -10,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElementWithSimpleCommandResult.csv');
+    }
+
+    #[Test]
     public function copyContainerOtherPageAfterElement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElement.csv');
