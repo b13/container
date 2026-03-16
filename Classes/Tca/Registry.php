@@ -187,6 +187,19 @@ class Registry
         return $GLOBALS['TCA']['tt_content']['containerConfiguration'][$cType]['label'] ?? $cType;
     }
 
+    public function getColPosName(string $cType, int $colPos): ?string
+    {
+        $grid = $this->getGrid($cType);
+        foreach ($grid as $row) {
+            foreach ($row as $column) {
+                if ($column['colPos'] === $colPos) {
+                    return (string)$column['name'];
+                }
+            }
+        }
+        return null;
+    }
+
     public function getAvailableColumns(string $cType): array
     {
         $columns = [];
