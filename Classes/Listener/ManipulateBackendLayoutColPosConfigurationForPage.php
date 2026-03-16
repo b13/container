@@ -67,7 +67,7 @@ class ManipulateBackendLayoutColPosConfigurationForPage
         }
         if (isset($queryParams['edit']['tt_content'])) {
             $recordUid = array_keys($queryParams['edit']['tt_content'])[0];
-            $recordUid = (int)abs($recordUid);
+            $recordUid = abs((int)$recordUid);
             // TcaCTypeItems: edit record
             $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
             if (isset($record['tx_container_parent'])) {
