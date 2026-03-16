@@ -12,6 +12,7 @@ namespace B13\Container\Tests\Functional\Frontend;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class DefaultLanguageTest extends AbstractFrontend
@@ -37,6 +38,33 @@ class DefaultLanguageTest extends AbstractFrontend
         // rendered content
         self::assertStringContainsString('<h2 class="">header-default</h2>', $body);
         self::assertStringContainsString('<h2 class="">left-side-default</h2>', $body);
+    }
+
+    #[Test]
+    #[Group('frontend')]
+    public function childrenAreRenderedContentArea(): void
+    {
+        if (((float)(new Typo3Version())->getBranch()) < 14.2) {
+            $this->markTestSkipped('Content area rendering is only supported in TYPO3 v14.2 and above');
+        }
+
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language_ContentArea.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/TypoScript/2ColsContentArea/setup.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        // rendered content
+        self::assertStringContainsString('<h2 class="">left-side-default</h2>', $body);
+        self::assertStringContainsString('<h2 class="">right-side-default</h2>', $body);
     }
 
     #[Test]
