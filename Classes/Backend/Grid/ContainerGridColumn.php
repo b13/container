@@ -64,4 +64,14 @@ class ContainerGridColumn extends GridColumn
         }
         return $this->newContentUrl;
     }
+
+    public function getColSpan(): int
+    {
+        return $this->colSpan;
+    }
+
+    public function getRowSpan(): int
+    {
+        return $this->rowSpan;
+    }
 }
