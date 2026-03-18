@@ -12,6 +12,7 @@ namespace B13\Container\Backend\Preview;
  * of the License, or any later version.
  */
 
+use B13\Container\Backend\Grid\ContainerGrid;
 use B13\Container\Backend\Grid\ContainerGridColumn;
 use B13\Container\Backend\Grid\ContainerGridColumnItem;
 use B13\Container\Backend\Service\NewContentUrlBuilder;
@@ -21,7 +22,6 @@ use B13\Container\Events\BeforeContainerPreviewIsRenderedEvent;
 use B13\Container\Tca\Registry;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridRow;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -43,7 +43,7 @@ class GridRenderer
 
     public function renderGrid(array $record, PageLayoutContext $context): string
     {
-        $grid = GeneralUtility::makeInstance(Grid::class, $context);
+        $grid = GeneralUtility::makeInstance(ContainerGrid::class, $context);
         try {
             $container = $this->containerFactory->buildContainer((int)$record['uid']);
         } catch (Exception $e) {
