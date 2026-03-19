@@ -15,6 +15,7 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use Codeception\Attribute\Group;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 class ContentDefenderCest
 {
@@ -155,7 +156,11 @@ class ContentDefenderCest
         $I->waitForText('Header Only');
         $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
         $I->switchToContentFrame();
-        $I->waitForText('Create new Page Content on page');
+        if ($I->getTypo3MajorVersion() > 13 && (new Typo3Version())->getBranch() !== '14.1') {
+            $I->waitForText('Create new Header Only');
+        } else {
+            $I->waitForText('Create new Page Content on page');
+        }
         $I->seeElement('#EditDocumentController');
     }
 
