@@ -54,6 +54,9 @@ class GridRenderer
         foreach ($containerGrid as $cols) {
             $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
             foreach ($cols as $col) {
+                if ($context->getDrawingConfiguration()->isLanguageComparisonMode()) {
+                    $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
+                }
                 $defVals = $this->getDefValsForContentDefenderAllowsOnlyOneSpecificContentType($record['CType'], (int)$col['colPos']);
                 $url = $this->newContentUrlBuilder->getNewContentUrlAtTopOfColumn($context, $container, (int)$col['colPos'], $defVals);
                 $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $url, $defVals !== null);
@@ -66,8 +69,13 @@ class GridRenderer
                         $columnObject->addItem($columnItem);
                     }
                 }
+                if ($context->getDrawingConfiguration()->isLanguageComparisonMode()) {
+                    $grid->addRow($rowObject);
+                }
             }
-            $grid->addRow($rowObject);
+            if ($context->getDrawingConfiguration()->isLanguageComparisonMode() === false) {
+                $grid->addRow($rowObject);
+            }
         }
 
         $gridTemplate = $this->tcaRegistry->getGridTemplate($record['CType']);
@@ -87,7 +95,9 @@ class GridRenderer
         // keep compatibility
         $view->assign('containerGrid', $grid);
         $view->assign('grid', $grid);
-        $view->assign('gridColumns', array_fill(1, $grid->getSpan(), null));
+        if ($context->getDrawingConfiguration()->isLanguageComparisonMode() === false) {
+            $view->assign('gridColumns', array_fill(1, $grid->getSpan(), null));
+        }
         $view->assign('containerRecord', $record);
         $view->assign('context', $context);
         $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view, $grid);
