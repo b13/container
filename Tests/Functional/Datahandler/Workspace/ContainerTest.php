@@ -13,6 +13,7 @@ namespace B13\Container\Tests\Functional\Datahandler\Workspace;
  */
 
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
@@ -29,6 +30,26 @@ class ContainerTest extends AbstractDatahandler
         $context = GeneralUtility::makeInstance(Context::class);
         $workspaceAspect = new WorkspaceAspect(1);
         $context->setAspect('workspace', $workspaceAspect);
+    }
+
+    #[Test]
+    #[Group('v14-only')]
+    public function publishChildPublishAlsoParentContainer(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/PublishChildPublishAlsoParentContainer.csv');
+        $cmdmap = [
+            'tt_content' => [
+                2 => [
+                    'version' => [
+                        'action' => 'publish',
+                        'swapWith' => 2,
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/PublishChildPublishAlsoParentContainerResult.csv');
     }
 
     #[Test]
