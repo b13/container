@@ -38,12 +38,16 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s unit
 
       - name: Functional Tests
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --do-not-fail-on-deprecation
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --do-not-fail-on-deprecation --exclude-group v14-only
         if: matrix.TYPO3 == '13'
+
+      - name: Functional Tests 14.1
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --exclude-group v14-only
+        if: matrix.TYPO3 == '14'
 
       - name: Functional Tests 14
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
-        if: matrix.TYPO3 != '13'
+        if: matrix.TYPO3 == '14-dev'
 
       - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast

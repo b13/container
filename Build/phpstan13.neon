@@ -12,4 +12,5 @@ parameters:
     - %currentWorkingDirectory%/Classes/Listener/PageContentPreviewRendering.php
     - %currentWorkingDirectory%/Classes/Listener/ManipulateBackendLayoutColPosConfigurationForPage.php
     - %currentWorkingDirectory%/Classes/Hooks/Datahandler/ContentElementRestriction
+    - %currentWorkingDirectory%/Classes/Listener/IsReferenceConsideredForDependency.php
 
