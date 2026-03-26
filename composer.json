@@ -4,6 +4,7 @@
     "type": "typo3-cms-extension",
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
+    "version": "4.0.0",
     "require": {
         "typo3/cms-backend": "^13.4 || ^14.1 || 14.2.x-dev"
     },
@@ -51,7 +52,10 @@
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
-            "extension-key": "container"
+            "extension-key": "container",
+            "Package": {
+                "providesPackages": {}
+            }
         }
     }
 }
