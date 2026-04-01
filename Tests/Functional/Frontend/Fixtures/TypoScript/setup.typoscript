@@ -1,5 +1,4 @@
 @import 'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript'
-@import 'EXT:container_example/Configuration/TypoScript/setup.typoscript'
 
 page = PAGE
 page.config.disableAllHeaderCode = 1
