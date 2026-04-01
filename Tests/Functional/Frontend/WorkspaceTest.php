@@ -26,7 +26,10 @@ class WorkspaceTest extends AbstractFrontend
             1,
             [
                 'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
-                'setup' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                ],
             ]
         );
     }

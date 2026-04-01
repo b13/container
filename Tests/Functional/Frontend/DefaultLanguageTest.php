@@ -26,7 +26,10 @@ class DefaultLanguageTest extends AbstractFrontend
             1,
             [
                 'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
-                'setup' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/TypoScript/setup.typoscript',
+                ],
             ]
         );
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
@@ -45,17 +48,18 @@ class DefaultLanguageTest extends AbstractFrontend
     public function childrenAreRenderedContentArea(): void
     {
         if (((float)(new Typo3Version())->getBranch()) < 14.2) {
-            $this->markTestSkipped('Content area rendering is only supported in TYPO3 v14.2 and above');
+            self::markTestSkipped('Content area rendering is only supported in TYPO3 v14.2 and above');
         }
 
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language_ContentArea.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerWithTwoChildren.csv');
         $this->setUpFrontendRootPage(
             1,
             [
                 'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
                     'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
-                    'EXT:container_example/Configuration/Sets/ContainerExample/TypoScript/2ColsContentArea/setup.typoscript',
+                    //'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExampleContentArea/setup.typoscript',
                 ],
             ]
         );
@@ -63,8 +67,9 @@ class DefaultLanguageTest extends AbstractFrontend
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         // rendered content
-        self::assertStringContainsString('<h2 class="">left-side-default</h2>', $body);
-        self::assertStringContainsString('<h2 class="">right-side-default</h2>', $body);
+        self::assertStringContainsString('<h1 class="container">container</h1><div class="left-children"></div><div class="right-children"><a id="c3"></a><header><h2 class="">first child</h2></header><a id="c2"></a><header><h2 class="">second child</h2></header></div>', $body);
+        self::assertStringContainsString('<h2 class="">first child</h2>', $body);
+        self::assertStringContainsString('<h2 class="">second child</h2>', $body);
     }
 
     #[Test]
@@ -78,6 +83,7 @@ class DefaultLanguageTest extends AbstractFrontend
                 'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
                     'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
                     'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/container_with_two_children.typoscript',
                 ],
             ]

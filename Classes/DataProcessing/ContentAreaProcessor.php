@@ -12,6 +12,7 @@ namespace B13\Container\DataProcessing;
  * of the License, or any later version.
  */
 
+use function array_map;
 use B13\Container\Domain\Factory\FrontendContainerFactory;
 use B13\Container\Tca\Registry;
 use Psr\Log\LoggerInterface;
@@ -26,9 +27,8 @@ use TYPO3\CMS\Core\Page\ContentSlideMode;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
-use function array_map;
+use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 /**
  * Automatically detects if content element has container columns
@@ -49,12 +49,10 @@ use function array_map;
  *
  * html:
  *     <f:render.contentArea contentArea="{content.200}" />
- *
  */
 #[Autoconfigure(public: true)]
 readonly class ContentAreaProcessor implements DataProcessorInterface
 {
-
     public function __construct(
         protected ContentDataProcessor $contentDataProcessor,
         protected Context $context,
@@ -63,7 +61,8 @@ readonly class ContentAreaProcessor implements DataProcessorInterface
         protected RecordFactory $recordFactory,
         protected Typo3Version $typo3Version,
         protected LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     public function process(
         ContentObjectRenderer $cObj,
@@ -98,7 +97,7 @@ readonly class ContentAreaProcessor implements DataProcessorInterface
 
                     $rows = $container->getChildrenByColPos($colPos);
 
-                    $records = array_map(fn($row) => $this->recordFactory->createFromDatabaseRow('tt_content', $row), $rows);
+                    $records = array_map(fn ($row) => $this->recordFactory->createFromDatabaseRow('tt_content', $row), $rows);
                     return new ContentArea(
                         (string)$colPos,
                         $this->tcaRegistry->getColPosName($record['CType'], $colPos),
@@ -115,7 +114,7 @@ readonly class ContentAreaProcessor implements DataProcessorInterface
             );
         }
 
-        $processedData[$processedConfiguration['as'] ?? 'content'] = new ContentAreaCollection($areas);
+        $processedData[$processorConfiguration['as'] ?? 'content'] = (new ContentAreaCollection($areas))->withRequest($cObj->getRequest());
         return $processedData;
     }
 }
