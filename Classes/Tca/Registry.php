@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -83,6 +84,7 @@ class Registry
     public function getContentDefenderConfiguration(string $cType, int $colPos): array
     {
         $contentDefenderConfiguration = [];
+        $typo3Version = ((new Typo3Version())->getMajorVersion());
         $rows = $this->getGrid($cType);
         foreach ($rows as $columns) {
             foreach ($columns as $column) {
@@ -93,9 +95,15 @@ class Registry
                     $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
                     $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
                     if ($contentDefenderConfiguration['allowedContentTypes'] === '' && $contentDefenderConfiguration['allowed.'] !== []) {
+                        if ($typo3Version > 13) {
+                            trigger_error('use allowedContentTypes instead of allowed.CType', E_USER_DEPRECATED);
+                        }
                         $contentDefenderConfiguration['allowedContentTypes'] = $contentDefenderConfiguration['allowed.']['CType'] ?? '';
                     }
                     if ($contentDefenderConfiguration['disallowedContentTypes'] === '' && $contentDefenderConfiguration['disallowed.'] !== []) {
+                        if ($typo3Version > 13) {
+                            trigger_error('use disallowedContentTypes instead of disallowed.CType', E_USER_DEPRECATED);
+                        }
                         $contentDefenderConfiguration['disallowedContentTypes'] = $contentDefenderConfiguration['disallowed.']['CType'] ?? '';
                     }
                     return $contentDefenderConfiguration;
