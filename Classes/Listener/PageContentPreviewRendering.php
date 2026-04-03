@@ -19,6 +19,7 @@ use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 #[AsEventListener(identifier: 'tx-container-page-content-preview-rendering', before: 'typo3-backend/fluid-preview/content')]
 class PageContentPreviewRendering
@@ -37,6 +38,14 @@ class PageContentPreviewRendering
         }
 
         $record = $event->getRecord();
+        if ($this->tcaRegistry->recordIsAllowedInContainerColumn($record) === false) {
+            $labels = $event->getPageLayoutContext()->getContentTypeLabels();
+            $label = $labels[$record->getRecordType()] ?? $record->getRecordType();
+            $label = sprintf($this->getLanguageService()->sL('core.core:labels.typeNotAllowedInColumn'), $label);
+            $content = '<span class="badge badge-warning">' . $label . '</span>';
+            $event->setPreviewContent($content);
+            return;
+        }
         $recordType = $record->getRecordType();
         if (!$this->tcaRegistry->isContainerElement($recordType)) {
             return;
@@ -46,5 +55,10 @@ class PageContentPreviewRendering
             $recordWithRenderedGrid = new RecordWithRenderedGrid($record, $previewContent);
             $event->setRecord($recordWithRenderedGrid);
         }
+    }
+
+    protected function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 }

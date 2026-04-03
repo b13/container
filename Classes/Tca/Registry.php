@@ -15,6 +15,7 @@ namespace B13\Container\Tca;
 use B13\Container\Events\BeforeContainerConfigurationIsAppliedEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -108,10 +109,35 @@ class Registry
     public function getAllowedCTypesInColumn(string $cType, int $colPos): ?array
     {
         $contentDefenderConfiguration = $this->getContentDefenderConfiguration($cType, $colPos);
-        if (empty($contentDefenderConfiguration['allowed.']['CType'])) {
+        if (empty($contentDefenderConfiguration['allowedContentTypes'])) {
             return null;
         }
-        return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowed.']['CType'] ?? '', true);
+        return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowedContentTypes'], true);
+    }
+
+    public function recordIsAllowedInContainerColumn(RecordInterface $record): bool
+    {
+        $recordType = $record->getRecordType();
+        if ($record->has('tx_container_parent')) {
+            $containerRecord = $record->get('tx_container_parent');
+            if ($containerRecord instanceof RecordInterface) {
+                $containerRecordType = $containerRecord->getRecordType();
+                if ($this->isContainerElement($containerRecordType)) {
+                    return $this->isAllowedInColumn($recordType, (int)$record->get('colPos'), $containerRecordType);
+                }
+            }
+        }
+        return true;
+    }
+
+    public function isAllowedInColumn(string $cType, int $colPos, string $containerCType): bool
+    {
+        $contentDefenderConfiguration = $this->getContentDefenderConfiguration($cType, $colPos);
+        $disallowed = GeneralUtility::trimExplode(',', $contentDefenderConfiguration['disallowedContentTypes'] ?? '', true);
+        if (in_array($cType, $disallowed)) {
+            return false;
+        }
+        return in_array($cType, $this->getAllowedCTypesInColumn($containerCType, $colPos));
     }
 
     public function getAllAvailableColumnsColPos(string $cType): array
