@@ -13,6 +13,7 @@ namespace B13\Container\Backend\Grid;
  */
 
 use B13\Container\Domain\Model\Container;
+use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Domain\RecordFactory;
@@ -21,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumnItem extends GridColumnItem
 {
-    public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, protected Container $container, protected ?string $newContentUrl)
+    public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, protected Registry $tcaRegistry, protected Container $container, protected ?string $newContentUrl)
     {
         if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 13) {
             $recordFactory = GeneralUtility::makeInstance(RecordFactory::class);
@@ -44,7 +45,10 @@ class ContainerGridColumnItem extends GridColumnItem
         if ($this->isDisabled()) {
             $wrapperClassNames[] = 't3-page-ce-hidden t3js-hidden-record';
         }
-        // we do not need a "t3-page-ce-warning" class because we are build from Container
+        $record = $this->record;
+        if (!$this->tcaRegistry->recordIsAllowedInContainerColumn($record)) {
+            $wrapperClassNames[] = 't3-page-ce-warning';
+        }
         return implode(' ', $wrapperClassNames);
     }
 

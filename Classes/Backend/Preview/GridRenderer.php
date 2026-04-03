@@ -65,7 +65,7 @@ class GridRenderer
                     $records = $container->getChildrenByColPos($col['colPos']);
                     foreach ($records as $contentRecord) {
                         $url = $this->newContentUrlBuilder->getNewContentUrlAfterChild($context, $container, (int)$col['colPos'], (int)$contentRecord['uid'], $defVals);
-                        $columnItem = GeneralUtility::makeInstance(ContainerGridColumnItem::class, $context, $columnObject, $contentRecord, $container, $url);
+                        $columnItem = GeneralUtility::makeInstance(ContainerGridColumnItem::class, $context, $columnObject, $contentRecord, $this->tcaRegistry, $container, $url);
                         $columnObject->addItem($columnItem);
                     }
                 }
