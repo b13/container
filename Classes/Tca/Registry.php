@@ -108,10 +108,10 @@ class Registry
     public function getAllowedCTypesInColumn(string $cType, int $colPos): ?array
     {
         $contentDefenderConfiguration = $this->getContentDefenderConfiguration($cType, $colPos);
-        if (empty($contentDefenderConfiguration['allowed.']['CType'])) {
+        if (empty($contentDefenderConfiguration['allowedContentTypes'])) {
             return null;
         }
-        return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowed.']['CType'] ?? '', true);
+        return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowedContentTypes'], true);
     }
 
     public function getAllAvailableColumnsColPos(string $cType): array
