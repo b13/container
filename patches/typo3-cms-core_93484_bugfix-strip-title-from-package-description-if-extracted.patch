@@ -1,0 +1,53 @@
+@package typo3/cms-core
+@label [BUGFIX] Strip title from package description if extracted
+@link https://review.typo3.org/c/Packages/TYPO3.CMS/+/93484
+@version ~14.2.0
+@after typo3-cms-core_93530_bugfix-avoid-undefined-property_-stdclass__version-warning.patch
+
+From 17f8256acba6eb1c5b4b3e2732b63dc891279ad0 Mon Sep 17 00:00:00 2001
+From: Benjamin Kott <benjamin.kott@outlook.com>
+Date: Tue, 31 Mar 2026 11:24:01 +0200
+Subject: [PATCH] [BUGFIX] Strip title from package description if extracted
+
+When a composer description contains " - ", the part before
+the separator is used as the package title. However, the
+description was not updated and still contained the full
+string including the title prefix, leading to duplicate
+information when both title and description are displayed.
+
+The description is now set to only the part after the
+separator when a title is extracted.
+
+Resolves: #109435
+Releases: main
+Change-Id: I2a7a57ca18b750fa26fc967fe3cc5f6df07f3728
+Reviewed-on: https://review.typo3.org/c/Packages/TYPO3.CMS/+/93484
+Reviewed-by: Benjamin Franzke <ben@bnf.dev>
+Reviewed-by: Benni Mack <benni@typo3.org>
+Tested-by: Benjamin Franzke <ben@bnf.dev>
+Tested-by: Benni Mack <benni@typo3.org>
+Tested-by: core-ci <typo3@b13.com>
+---
+
+diff --git a/Classes/Package/Package.php b/Classes/Package/Package.php
+index b163b85..383c126 100644
+--- a/Classes/Package/Package.php
++++ b/Classes/Package/Package.php
+@@ -143,13 +143,15 @@
+     {
+         $this->packageMetaData = new MetaData($this->getPackageKey());
+         $description = (string)$this->getValueFromComposerManifest('description');
+-        $this->packageMetaData->setDescription($description);
+         $descriptionParts = explode(' - ', $description, 2);
+-        $title = $description;
+         if (count($descriptionParts) === 2) {
+             $title = $descriptionParts[0];
++            $description = $descriptionParts[1];
++        } else {
++            $title = $description;
+         }
+         $this->packageMetaData->setTitle($title);
++        $this->packageMetaData->setDescription($description);
+         $this->packageMetaData->setPackageType((string)$this->getValueFromComposerManifest('type'));
+         $isFrameworkPackage = $this->packageMetaData->isFrameworkType();
+         $version = (string)($this->getValueFromComposerManifest('version') ?? '1.0.0');

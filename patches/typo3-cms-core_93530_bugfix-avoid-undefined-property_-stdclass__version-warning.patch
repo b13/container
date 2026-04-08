@@ -1,0 +1,61 @@
+@package typo3/cms-core
+@label [BUGFIX] Avoid `Undefined property: stdClass::$version` warning
+@link https://review.typo3.org/c/Packages/TYPO3.CMS/+/93530
+@version ~14.2.0
+
+From 0672a9436796d0b8cc047fe29e611a654dbea6e7 Mon Sep 17 00:00:00 2001
+From: Stefan Bürk <stefan@buerk.tech>
+Date: Thu, 02 Apr 2026 16:34:35 +0200
+Subject: [PATCH] [BUGFIX] Avoid `Undefined property: stdClass::$version` warning
+
+With [1] resolving #108345 #96388 extension need to have
+`version` set in the extension `composer.json` for classic
+mode installation.
+
+In case the optional `version` key is not set, which is
+recommended to avoid by composer, this leads to a native
+php warning:
+
+  Undefined property: stdClass::$version in
+  vendor/typo3/cms-core/Classes/Package/PackageManager.php:939
+
+This has been detected trying to make a extension TYPO3 v14 ready
+with v13/v14 dual support and keeping the `ext_emconf.php`, which
+emits the warning during functional test execution and should at
+least respect that it is optional and possible not available.
+
+Does not fix the fact that the deprecation is still triggered,
+which is the topic of another change to discuss and resolve.
+
+Let's make at least the warning to vanish.
+
+[1] https://review.typo3.org/c/Packages/TYPO3.CMS/+/91908
+
+Resolves: #109473
+Related: #108345
+Related: #96388
+Releases: main
+Change-Id: Iac794747b3afe837a7b89e369233fd9f891aa714
+Reviewed-on: https://review.typo3.org/c/Packages/TYPO3.CMS/+/93530
+Tested-by: Oliver Klee <typo3-coding@oliverklee.de>
+Tested-by: Garvin Hicking <garvin@hick.ing>
+Reviewed-by: Garvin Hicking <garvin@hick.ing>
+Tested-by: Stefan Bürk <stefan@buerk.tech>
+Reviewed-by: Stefan Bürk <stefan@buerk.tech>
+Tested-by: core-ci <typo3@b13.com>
+Reviewed-by: Oliver Klee <typo3-coding@oliverklee.de>
+---
+
+diff --git a/Classes/Package/PackageManager.php b/Classes/Package/PackageManager.php
+index 3d9496a..dd9b427 100644
+--- a/Classes/Package/PackageManager.php
++++ b/Classes/Package/PackageManager.php
+@@ -936,7 +936,7 @@
+     private function isComposerOnlyCapable(\stdClass $manifest): bool
+     {
+         return isset($manifest->extra->{'typo3/cms'}->Package->providesPackages)
+-            && $manifest->version !== null;
++            && ($manifest->version ?? null) !== null;
+     }
+
+     /**

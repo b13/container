@@ -1,0 +1,339 @@
+@package typo3/cms-core
+@label [TASK] Allow extension version declaration in extra.version
+@link https://review.typo3.org/c/Packages/TYPO3.CMS/+/93536
+@version ~14.2.0
+@after typo3-cms-core_93484_bugfix-strip-title-from-package-description-if-extracted.patch
+
+From ccce176b8173fbb59d79312a0723b599e8838682 Mon Sep 17 00:00:00 2001
+From: Helmut Hummel <typo3@helhum.io>
+Date: Fri, 03 Apr 2026 12:08:32 +0200
+Subject: [PATCH] [TASK] Allow extension version declaration in extra.version
+
+Using the top level "version" field for a TYPO3 extension version
+for classic mode has the disadvantage, that Composer pulls in
+this version also for branches (aka. dev versions).
+This would then either mean for extension authors that they need
+to update this field constantly for branches and/ or releases,
+which would have a bigger impact on behaviour in Composer managed
+TYPO3 systems and extension authors than initially intended.
+
+Therefore it is now possible to declare the version in extra section.
+
+This field must still match the composer version that is tagged.
+
+Releases: main
+Resolves: #109482
+Change-Id: I96cbdb175dc46ff5b3b1f863663412395fd4469c
+Reviewed-on: https://review.typo3.org/c/Packages/TYPO3.CMS/+/93536
+Reviewed-by: Garvin Hicking <garvin@hick.ing>
+Reviewed-by: Georg Ringer <georg.ringer@gmail.com>
+Tested-by: Garvin Hicking <garvin@hick.ing>
+Reviewed-by: Stefan Bürk <stefan@buerk.tech>
+Tested-by: Georg Ringer <georg.ringer@gmail.com>
+Tested-by: core-ci <typo3@b13.com>
+Tested-by: Stefan Bürk <stefan@buerk.tech>
+---
+
+diff --git a/Classes/Package/Package.php b/Classes/Package/Package.php
+index 383c126..85739b7 100644
+--- a/Classes/Package/Package.php
++++ b/Classes/Package/Package.php
+@@ -150,16 +150,17 @@
+         } else {
+             $title = $description;
+         }
++        $manifest = $this->getValueFromComposerManifest();
+         $this->packageMetaData->setTitle($title);
+         $this->packageMetaData->setDescription($description);
+-        $this->packageMetaData->setPackageType((string)$this->getValueFromComposerManifest('type'));
++        $this->packageMetaData->setPackageType($manifest->type ?? '');
+         $isFrameworkPackage = $this->packageMetaData->isFrameworkType();
+-        $version = (string)($this->getValueFromComposerManifest('version') ?? '1.0.0');
++        $version = $manifest->extra->{'typo3/cms'}->{'version'} ?? $manifest->version ?? '1.0.0+no-version-set';
+         if ($isFrameworkPackage) {
+             $version = str_replace('-dev', '', (new Typo3Version())->getVersion());
+         }
+         $this->packageMetaData->setVersion($version);
+-        $requirements = $this->getValueFromComposerManifest('require');
++        $requirements = $manifest->require ?? null;
+         if ($requirements !== null) {
+             foreach ($requirements as $packageName => $versionConstraints) {
+                 if ($this->ignoreDependencyInPackageConstraint($packageName, $packageManager, $isBuildingPackageArtifact)) {
+@@ -174,7 +175,7 @@
+                 );
+             }
+         }
+-        $suggestions = $this->getValueFromComposerManifest('suggest');
++        $suggestions = $manifest->suggest ?? null;
+         if ($suggestions !== null) {
+             foreach ($suggestions as $packageName => $description) {
+                 if ($this->ignoreDependencyInPackageConstraint($packageName, $packageManager, $isBuildingPackageArtifact)) {
+@@ -184,7 +185,7 @@
+                 $this->packageMetaData->addConstraint($constraint);
+             }
+         }
+-        $conflicts = $this->getValueFromComposerManifest('conflict');
++        $conflicts = $manifest->conflict ?? null;
+         if ($conflicts !== null) {
+             foreach ($conflicts as $packageName => $versionConstraints) {
+                 if ($this->ignoreDependencyInPackageConstraint($packageName, $packageManager, $isBuildingPackageArtifact)) {
+diff --git a/Classes/Package/PackageManager.php b/Classes/Package/PackageManager.php
+index dd9b427..cc419ff 100644
+--- a/Classes/Package/PackageManager.php
++++ b/Classes/Package/PackageManager.php
+@@ -936,7 +936,10 @@
+     private function isComposerOnlyCapable(\stdClass $manifest): bool
+     {
+         return isset($manifest->extra->{'typo3/cms'}->Package->providesPackages)
+-            && ($manifest->version ?? null) !== null;
++            && (
++                ($manifest->version ?? null) !== null
++                || isset($manifest->extra->{'typo3/cms'}->version)
++            );
+     }
+
+     /**
+diff --git a/Documentation/Changelog/14.2/Deprecation-108345-Deprecation-of-ext-emconf-php.rst b/Documentation/Changelog/14.2/Deprecation-108345-Deprecation-of-ext-emconf-php.rst
+index cea425f..7ca1e9b 100644
+--- a/Documentation/Changelog/14.2/Deprecation-108345-Deprecation-of-ext-emconf-php.rst
++++ b/Documentation/Changelog/14.2/Deprecation-108345-Deprecation-of-ext-emconf-php.rst
+@@ -26,7 +26,6 @@
+         "name": "vendor/example",
+         "type": "typo3-cms-extension",
+         "description": "example",
+-        "version": "1.0.0",
+         "license": "GPL-2.0-or-later",
+         "require": {
+             "typo3/cms-core": "^14.2",
+@@ -36,6 +35,7 @@
+         "extra": {
+             "typo3/cms": {
+                 "extension-key": "example_extension",
++                "version": "1.0.0",
+                 "Package": {
+                     "providesPackages": {
+                         "symfony/dotenv": ""
+@@ -52,7 +52,6 @@
+         "name": "vendor/example2",
+         "type": "typo3-cms-extension",
+         "description": "example",
+-        "version": "1.0.0",
+         "license": "GPL-2.0-or-later",
+         "require": {
+             "typo3/cms-core": "^14.2"
+@@ -60,6 +59,7 @@
+         "extra": {
+             "typo3/cms": {
+                 "extension-key": "example2_extension",
++                "version": "1.0.0",
+                 "Package": {
+                     "providesPackages": {}
+                 }
+@@ -68,10 +68,20 @@
+     }
+
+ For compatibility with TYPO3 classic mode, third-party extensions
+-must set the exact extension version in the top-level `"version"` field
+-of `composer.json`. This version should match the version previously
++must set the exact extension version in `extra.typo3/cms.version`
++or in the top level `version` field of `composer.json`.
++This version must match the version previously
+ defined in `ext_emconf.php` and the released Git tag.
+
++Fixture extensions used in tests can set any version number, for example `1.0.0`,
++but a version number must still be provided to avoid deprecation messages.
++
++During testing, the version number is not evaluated.
++
++TYPO3 Core extensions may omit the version number
++in `composer.json`, because their version can and will be derived from
++php`\TYPO3\CMS\Core\Information\Typo3Version`.
++
+ If an extension depends on regular Composer packages, these packages
+ must be declared in
+ `extra.typo3/cms.Package.providesPackages`.
+@@ -81,6 +91,13 @@
+ to avoid deprecation messages and to declare future compatibility
+ with TYPO3 classic mode.
+
++If strict `composer.json` validation is required and the extension is published
++to Packagist as well, where setting the top level `version` field is not recommended,
++it is recommended to set the version via `extra.typo3/cms.version`.
++
++If the `version` field is set anyway, it is recommended to omit `extra.typo3/cms.version`
++to avoid redundant data points.
++
+ Impact
+ ======
+
+@@ -88,7 +105,8 @@
+
+ TYPO3 classic installations will trigger a deprecation message
+ for extensions that still ship `ext_emconf.php` but do not yet define
+-both the `"version"` field and `providesPackages` in `composer.json`.
++both `extra.typo3/cms.version` (or `"version"` field ) *and* `providesPackages`
++in `composer.json`.
+
+ Affected installations
+ ======================
+@@ -109,6 +127,6 @@
+ For the time being, `ext_emconf.php` may still need to be kept for
+ third-party tooling such as TYPO3 TER or Tailor. However, once the
+ required metadata is correctly defined in `composer.json`,
+-TYPO3 will no longer need to evaluate `ext_emconf.php`.
++TYPO3 will no longer evaluate `ext_emconf.php`.
+
+ .. index:: ext:core, NotScanned
+diff --git a/Documentation/Changelog/14.2/Feature-108345-No-ext-em-conf-in-classic-mode.rst b/Documentation/Changelog/14.2/Feature-108345-No-ext-em-conf-in-classic-mode.rst
+index 9a05b80..ef8c299 100644
+--- a/Documentation/Changelog/14.2/Feature-108345-No-ext-em-conf-in-classic-mode.rst
++++ b/Documentation/Changelog/14.2/Feature-108345-No-ext-em-conf-in-classic-mode.rst
+@@ -18,7 +18,7 @@
+
+ This is now resolved by allowing an extension's `composer.json`
+ to contain information that previously had to be defined in
+-`ext_emconf.php`.
++`ext_emconf.php`:
+
+ 1. Extension title
+ 2. Extension version
+@@ -30,16 +30,15 @@
+ See :ref:`feature-108653-1767199420` for how the extension title can also be set
+ in `composer.json`.
+
+-The version number can be set in the regular `"version"` field
+-in `composer.json`.
+-
+ Extension version
+ -----------------
+
++The version number can be set in `extra.typo3/cms.version` or alternatively
++in the regular `"version"` field in `composer.json`.
++
+ For third-party extensions to be compatible with TYPO3 classic mode,
+-this field must now be set to the exact version previously defined in `ext_emconf.php`
+-and must match the version in the Git tag
+-(for example, when publishing to Packagist).
++this version must now be set to the exact version previously defined in `ext_emconf.php`
++and must match the version in the Git tag (for example, when publishing to Packagist).
+
+ Fixture extensions used in tests can set any version number, for example `1.0.0`,
+ but a version number must still be provided to avoid deprecation messages.
+@@ -57,7 +56,7 @@
+ a version range.
+
+ `composer.json` also contains a field for specifying dependencies
+-by using a Composer package name with a version range.
++using a Composer package name with a version range.
+ However, there is no direct way to distinguish whether such a package name
+ refers to another TYPO3 extension or to a regular Composer package
+ that should be installed from Packagist.
+@@ -113,7 +112,6 @@
+         "name": "vendor/example",
+         "type": "typo3-cms-extension",
+         "description": "example",
+-        "version": "1.0.0",
+         "license": "GPL-2.0-or-later",
+         "require": {
+             "typo3/cms-core": "^14.2",
+@@ -123,6 +121,7 @@
+         "extra": {
+             "typo3/cms": {
+                 "extension-key": "example_extension",
++                "version": "1.0.0",
+                 "Package": {
+                     "providesPackages": {
+                         "symfony/dotenv": ""
+@@ -151,7 +150,6 @@
+         "name": "vendor/example",
+         "type": "typo3-cms-extension",
+         "description": "example",
+-        "version": "1.0.0",
+         "license": "GPL-2.0-or-later",
+         "require": {
+             "typo3/cms-core": "^14.2",
+@@ -160,6 +158,7 @@
+         "extra": {
+             "typo3/cms": {
+                 "extension-key": "example_extension",
++                "version": "1.0.0",
+                 "Package": {
+                     "providesPackages": {}
+                 }
+@@ -167,13 +166,41 @@
+         }
+     }
+
++If the `version` field is set anyway, the version is populated from there
++and `extra.typo3/cms.version` can be omitted:
++
++..  code-block:: json
++
++    {
++        "name": "vendor/example",
++        "version": "1.0.0",
++        "type": "typo3-cms-extension",
++        "description": "example",
++        "license": "GPL-2.0-or-later",
++        "require": {
++            "typo3/cms-core": "^14.2",
++            "vendor/other-example": "*",
++            "symfony/dotenv": "^8.0"
++        },
++        "extra": {
++            "typo3/cms": {
++                "extension-key": "example_extension",
++                "Package": {
++                    "providesPackages": {
++                        "symfony/dotenv": ""
++                    }
++                }
++            }
++        }
++    }
++
+ Be aware that keeping `ext_emconf.php`, while no longer directly required
+ by TYPO3, may still be necessary for some tools,
+ such as Tailor or TYPO3 TER. Therefore, for the time being, it is recommended
+ to keep the file and ensure that its information stays in sync
+ with `composer.json` as outlined above.
+
+-However, TYPO3 will **not** evaluate `ext_emconf.php` any more if the `version` field
++However, TYPO3 will **not** evaluate `ext_emconf.php` anymore if the `version` field
+ and `providesPackages` are correctly defined in `composer.json`.
+
+ Impact
+@@ -181,7 +208,7 @@
+
+ Extensions can now omit `ext_emconf.php` in TYPO3 classic mode.
+ A deprecation message is shown during cache warm-up when `ext_emconf.php`
+-is present and `composer.json` is not yet future-proof,
++is present and `composer.json` is not yet future-proof
+ because it does not contain the `version` and `providesPackages` definitions.
+
+ .. index:: ext:core
+diff --git a/Tests/Unit/Utility/Fixtures/ext_emconf.php b/Tests/Unit/Utility/Fixtures/ext_emconf.php
+deleted file mode 100644
+index 8288584..0000000
+--- a/Tests/Unit/Utility/Fixtures/ext_emconf.php
++++ /dev/null
+@@ -1,19 +0,0 @@
+-<?php
+-
+-declare(strict_types=1);
+-
+-$EM_CONF[$_EXTKEY] = [
+-    'title' => '',
+-    'description' => 'This is a fixture extension configuration file used for unit tests.',
+-    'category' => '',
+-    'state' => 'stable',
+-    'author' => '',
+-    'author_email' => '',
+-    'author_company' => '',
+-    'version' => '14.3.0',
+-    'constraints' => [
+-        'depends' => [],
+-        'conflicts' => [],
+-        'suggests' => [],
+-    ],
+-];
