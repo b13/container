@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check tag
         run: |
@@ -39,6 +39,12 @@ jobs:
         with:
           php-version: 8.3
           extensions: intl, mbstring, json, zip, curl
+          tools: composer:v2
+
+      - name: Set composer.json version and extra.typo3/cms.version
+        run: |
+          composer config "extra"."typo3/cms"."version" "${{ steps.get-version.outputs.version }}" \
+          && composer validate --strict --no-check-lock --no-check-version
 
       - name: Install tailor
         run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest

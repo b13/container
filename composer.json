@@ -1,6 +1,6 @@
 {
     "name": "b13/container",
-    "description": "Create Custom Container Content Elements for TYPO3",
+    "description": "Container Content Elements - Create Custom Container Content Elements for TYPO3",
     "type": "typo3-cms-extension",
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
@@ -45,15 +45,16 @@
         "phpunit/phpunit": "^11.3",
         "vaimo/composer-patches": "^6.0.1"
     },
-    "replace": {
-        "typo3-ter/container": "self.version"
-    },
     "extra": {
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
-            "extension-key": "container"
+            "extension-key": "container",
+            "version": "3.2.4-dev",
+            "Package": {
+                "providesPackages": []
+            }
         },
         "patches-search": "patches/"
     }
