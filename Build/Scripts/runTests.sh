@@ -284,7 +284,7 @@ CORE_ROOT="${PWD}"
 
 # Option defaults
 TEST_SUITE="help"
-COMPOSER_ROOT_VERSION="2.3.7-dev"
+COMPOSER_ROOT_VERSION="3.2.4-dev"
 DBMS="mariadb"
 DBMS_VERSION=""
 PHP_VERSION="8.2"
@@ -598,9 +598,9 @@ case ${TEST_SUITE} in
             php -v | grep '^PHP';
 
             if [ "${TYPO3}" == "14-dev" ]; then
-              composer require typo3/cms-core:14.2.x-dev --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:14.3.x-dev --dev -W --no-progress --no-interaction
             elif [ ${TYPO3} -eq 14 ]; then
-              composer require typo3/cms-core:^14.1 --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^14.2 --dev -W --no-progress --no-interaction
             else
               composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
             fi
@@ -617,11 +617,11 @@ case ${TEST_SUITE} in
           ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name composer-validate-${SUFFIX} -e COMPOSER_CACHE_DIR=.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "
             php -v | grep '^PHP';
             if [ "${TYPO3}" == "14-dev" ]; then
-              composer require typo3/cms-core:14.2.x-dev --dev -W --no-progress --no-interaction
+              composer require 'typo3/cms-core':'14.3.*@dev' --dev -W --no-progress --no-interaction
             elif [ ${TYPO3} -eq 14 ]; then
-              composer require typo3/cms-core:^14.1 --dev -W --no-progress --no-interaction
+              composer require 'typo3/cms-core':'^14.1' --dev -W --no-progress --no-interaction
             else
-              composer require typo3/cms-core:^13.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
+              composer require 'typo3/cms-core':'^13.4' 'ichhabrecht/content-defender' --dev -W --no-progress --no-interaction
             fi
             composer validate
           "

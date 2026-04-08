@@ -26,23 +26,24 @@
             "typo3/class-alias-loader": true,
             "typo3/cms-composer-installers": true,
             "vaimo/composer-patches": true
-        }
+        },
+        "sort-packages": true
     },
     "require-dev": {
         "b13/container-example": "dev-task/v4",
-        "typo3/cms-install": "^13.4 || ^14.1 || 14.2.x-dev",
-        "typo3/cms-fluid-styled-content": "^13.4 || ^14.1 || 14.2.x-dev",
-        "typo3/cms-info": "^13.4 || ^14.1 || 14.2.x-dev",
-        "typo3/cms-workspaces": "^13.4 || ^14.1 || 14.2.x-dev",
-        "typo3/testing-framework": "^9.1",
-        "phpstan/phpstan": "^1.10",
-        "typo3/coding-standards": "^0.5.5",
-        "friendsofphp/php-cs-fixer": "^3.51",
         "codeception/codeception": "^5.1",
         "codeception/module-asserts": "^3.0",
-        "codeception/module-webdriver": "^4.0",
         "codeception/module-db": "^3.1",
+        "codeception/module-webdriver": "^4.0",
+        "friendsofphp/php-cs-fixer": "^3.51",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^11.3",
+        "typo3/cms-fluid-styled-content": "^13.4 || ^14.2 || 14.3.*@dev",
+        "typo3/cms-info": "^13.4 || ^14.2 || 14.3.*@dev",
+        "typo3/cms-install": "^13.4 || ^14.2 || 14.3.*@dev",
+        "typo3/cms-workspaces": "^13.4 || ^14.2 || 14.3.*@dev",
+        "typo3/coding-standards": "^0.5.5",
+        "typo3/testing-framework": "^9.5",
         "vaimo/composer-patches": "^6.0.1"
     },
     "extra": {
