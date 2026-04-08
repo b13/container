@@ -55,7 +55,7 @@ class BackendTester extends \Codeception\Actor
      */
     public function openRecordInContextPanelOrWithEditDocumentController(int $uid): void
     {
-        if ($this->getTypo3MajorVersion() < 14 || (new Typo3Version())->getBranch() === '14.1') {
+        if ($this->getTypo3MajorVersion() < 14) {
             $this->waitForElement('#element-tt_content-' . $uid . ' a[title="Edit"]');
             $this->click('#element-tt_content-' . $uid . ' a[title="Edit"]');
         } else {
@@ -121,7 +121,7 @@ class BackendTester extends \Codeception\Actor
         } else {
             $this->waitForText('english');
             //$this->click('english');
-            $this->click('.module-docheader-bar-column button');
+            $this->click('.module-docheader-column button.dropdown-toggle');
             $this->waitForText('german');
             $this->click('german');
         }
