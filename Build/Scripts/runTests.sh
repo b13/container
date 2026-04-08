@@ -131,6 +131,7 @@ Options:
             - composer: "composer" command dispatcher, to execute various composer commands
             - composerInstall: "composer install", handy if host has no PHP, uses composer cache of users home
             - composerValidate: "composer validate"
+            - downloadGerritPatch: Download TYPO3 Gerrit change and transform it to composer patch files in "patches/"
             - functional: functional tests
             - lint: PHP linting
             - phpstan: phpstan tests
@@ -628,6 +629,11 @@ case ${TEST_SUITE} in
           cp composer.json composer.json.testing
           mv composer.json.orig composer.json
         ;;
+    downloadGerritPatch)
+        COMMAND=(php -dxdebug.mode=off Build/Scripts/download-patch-from-gerrit.phpsh "$@")
+        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name phpstan-${SUFFIX} ${IMAGE_PHP} "${COMMAND[@]}"
+        SUITE_EXIT_CODE=$?
+      ;;
     functional)
         COMMAND=(.Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml --exclude-group not-${DBMS} "$@")
         case ${DBMS} in

@@ -24,7 +24,8 @@
         "bin-dir": ".Build/bin",
         "allow-plugins": {
             "typo3/class-alias-loader": true,
-            "typo3/cms-composer-installers": true
+            "typo3/cms-composer-installers": true,
+            "vaimo/composer-patches": true
         }
     },
     "require-dev": {
@@ -41,7 +42,8 @@
         "codeception/module-asserts": "^3.0",
         "codeception/module-webdriver": "^4.0",
         "codeception/module-db": "^3.1",
-        "phpunit/phpunit": "^11.3"
+        "phpunit/phpunit": "^11.3",
+        "vaimo/composer-patches": "^6.0.1"
     },
     "replace": {
         "typo3-ter/container": "self.version"
@@ -52,6 +54,7 @@
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
             "extension-key": "container"
-        }
+        },
+        "patches-search": "patches/"
     }
 }

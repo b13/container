@@ -1,0 +1,142 @@
+#!/usr/bin/php
+<?php
+// Adopted from gist: https://gist.github.com/xperseguers/ce58e2d27f1115278bf06e5a8eb4b983
+// adjusting it for project needs, which includes:
+//
+// * Using the subject line in normalized form for the generated patch file
+// * Add `@package <package-name>`, `@label <subject>` and `@link <gerrit-change>`
+//   to the patch file as meta data.
+
+$gerritId = null;
+$showUsage = count($argv) < 2;
+$patchesDirectory = __DIR__ . '/../../patches/';
+
+if (!$showUsage) {
+    $gerritId = (int)$argv[1];
+}
+
+if ($showUsage || empty($gerritId)) {
+    $usage = [
+        'NAME',
+        "\tbin/" . basename($argv[0]) . ' -- downloads a patch from Gerrit',
+        '',
+        'SYNOPSIS',
+        "\tbin/" . basename($argv[0] . ' <id>'),
+        '',
+        'DESCRIPTION',
+        "\tThis will download the latest patchset from",
+        "\thttps://review.typo3.org/c/Packages/TYPO3.CMS/+/id then",
+        "\tsplit it for the various typo3/cms-* packages and update",
+        "\tyour composer.json",
+    ];
+    echo implode("\n", $usage) . "\n\n";
+    exit(1);
+}
+
+$change = file_get_contents('https://review.typo3.org/changes/' . $gerritId);
+// Fix garbage at the beginning
+if (strpos($change, ")]}'") === 0) {
+    $change = json_decode(trim(substr($change, 4)), true);
+}
+if (empty($change['subject'])) {
+    echo "Change $gerritId was not found.\n";
+    exit(2);
+}
+
+$subject = $change['subject'];
+$normalizedSubject = preg_replace('/-+/', '-', str_replace(
+    [
+        '`',
+        ' ',
+        '[!!!]',
+        '[wip]',
+        '[',
+        ']',
+        ':',
+        '$',
+        '/',
+        '\\',
+    ],
+    [
+        '',
+        '-',
+        'breaking-',
+        '',
+        '',
+        '-',
+        '_',
+        '',
+        '',
+        '',
+    ],
+    mb_strtolower($subject)
+));
+echo "Subject is '$subject'\n";
+
+$patch = base64_decode(file_get_contents('https://review.typo3.org/changes/' . $gerritId . '/revisions/current/patch'));
+$patchMessage = null;
+$patches = [];
+do {
+    $nextPatchPos = strpos($patch, 'diff --git', 1);
+    if ($nextPatchPos === false) {
+        $buffer = $patch;
+        $patch = '';
+    } else {
+        $buffer = substr($patch, 0, $nextPatchPos);
+        $patch = substr($patch, $nextPatchPos);
+    }
+    if ($patchMessage === null) {
+        $patchMessage = $buffer;
+        continue;
+    }
+    // Ignore any file not part of a system extension, for example monorepository build system files.
+    if (!preg_match('#^diff --git a/typo3/sysext/([^/]+)/([^ ]+)#', $buffer, $matches)) {
+        continue;
+    }
+    $sysExtRelativeFilename = $matches[2];
+    if (str_starts_with($sysExtRelativeFilename, 'Tests/')) {
+        // Skip any test related files, which are not included in distribution
+        // archives of composer packages and are not patchable.
+        continue;
+    }
+    $sysext = $matches[1];
+    $package = match(true) {
+        str_starts_with($sysext, 'theme-') => 'typo3/' . str_replace('_', '-', $sysext),
+        default => 'typo3/cms-' . str_replace('_', '-', $sysext),
+    };
+    $patchPrologue = [
+        '@package ' . $package,
+        '@label ' . $subject,
+        '@link ' . 'https://review.typo3.org/c/Packages/TYPO3.CMS/+/' . $gerritId,
+        '',
+    ];
+    if (!isset($patches[$package])) {
+        $patches[$package] = [
+            implode(PHP_EOL, $patchPrologue) . PHP_EOL . $patchMessage,
+        ];
+    }
+
+    // Fix the patch
+    $prefix = 'typo3/sysext/' . $matches[1];
+    $file = $matches[2];
+    $buffer = str_replace(' a/' . $prefix . '/' . $file, ' a/' . $file, $buffer);
+    $buffer = str_replace(' b/' . $prefix . '/' . $file, ' b/' . $file, $buffer);
+    $patches[$package][] = $buffer;
+} while (!empty($patch));
+
+$composerChanges = [];
+foreach ($patches as $package => $chunks) {
+    if (!is_dir($patchesDirectory)) {
+        @mkdir($patchesDirectory, 0775, true);
+    }
+    $content = implode('', $chunks);
+    $patchFileName = str_replace('/', '-', $package) . '_' . $gerritId . '_' . $normalizedSubject . '.patch';
+    file_put_contents($patchesDirectory . $patchFileName, $content);
+    echo "Created patch '" . $patchesDirectory . $patchFileName . "'\n";
+
+    $composerChanges[$package] = [
+        $subject => 'patches/' . $patchFileName,
+    ];
+}
+
+echo "\n\nRun \"./composer install\" to install and apply missing patches.\n\n";
