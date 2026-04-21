@@ -12,6 +12,4 @@ parameters:
     - %currentWorkingDirectory%/Classes/Listener/LegacyPageContentPreviewRendering.php
     - %currentWorkingDirectory%/Classes/ContentDefender
     - %currentWorkingDirectory%/Tests/Functional/Integrity/IntegrityTest.php
-    # can be removed when 14.2 is released
-    - %currentWorkingDirectory%/Classes/Listener/IsReferenceConsideredForDependency.php
 

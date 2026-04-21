@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         php: [ '8.2', '8.3', '8.4', '8.5']
-        TYPO3: [ '13', '14', '14-dev' ]
+        TYPO3: [ '13', '14' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -41,17 +41,12 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --do-not-fail-on-deprecation --exclude-group v14-only
         if: matrix.TYPO3 == '13'
 
-      - name: Functional Tests 14.2
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --do-not-fail-on-deprecation  --do-not-fail-on-warning
-        if: matrix.TYPO3 == '14'
-
       - name: Functional Tests 14
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
-        if: matrix.TYPO3 == '14-dev'
+        if: matrix.TYPO3 == '14'
 
       - name: Acceptance Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
-        if: matrix.TYPO3 != '14'
       - name: Archive acceptance tests results
         uses: actions/upload-artifact@v6
         if: always()
