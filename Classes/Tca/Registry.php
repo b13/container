@@ -137,7 +137,11 @@ class Registry
         if (in_array($cType, $disallowed)) {
             return false;
         }
-        return in_array($cType, $this->getAllowedCTypesInColumn($containerCType, $colPos));
+        $allowed = $this->getAllowedCTypesInColumn($containerCType, $colPos);
+        if ($allowed === null) {
+            return true;
+        }
+        return in_array($cType, $allowed);
     }
 
     public function getAllAvailableColumnsColPos(string $cType): array
