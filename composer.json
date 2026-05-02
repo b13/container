@@ -1,11 +1,11 @@
 {
     "name": "b13/container",
-    "description": "Create Custom Container Content Elements for TYPO3",
+    "description": "Container Content Elements - Create Custom Container Content Elements for TYPO3",
     "type": "typo3-cms-extension",
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^13.4 || ^14.1 || 14.2.x-dev"
+        "typo3/cms-backend": "^13.4 || ^14.3"
     },
     "autoload": {
         "psr-4": {
@@ -29,10 +29,10 @@
     },
     "require-dev": {
         "b13/container-example": "dev-task/v4",
-        "typo3/cms-install": "^13.4 || ^14.1 || 14.2.x-dev",
-        "typo3/cms-fluid-styled-content": "^13.4 || ^14.1 || 14.2.x-dev",
-        "typo3/cms-info": "^13.4 || ^14.1 || 14.2.x-dev",
-        "typo3/cms-workspaces": "^13.4 || ^14.1 || 14.2.x-dev",
+        "typo3/cms-install": "^13.4 || ^14.3",
+        "typo3/cms-fluid-styled-content": "^13.4 || ^14.3",
+        "typo3/cms-info": "^13.4 || ^14.3",
+        "typo3/cms-workspaces": "^13.4 || ^14.3",
         "typo3/testing-framework": "^9.1",
         "phpstan/phpstan": "^1.10",
         "typo3/coding-standards": "^0.5.5",
@@ -51,7 +51,11 @@
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
-            "extension-key": "container"
+            "extension-key": "container",
+            "version": "4.0.0",
+            "Package": {
+                "providesPackages": {}
+            }
         }
     }
 }

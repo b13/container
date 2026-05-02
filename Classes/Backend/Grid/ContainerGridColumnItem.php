@@ -17,6 +17,7 @@ use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Domain\RecordFactory;
+use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -46,8 +47,15 @@ class ContainerGridColumnItem extends GridColumnItem
             $wrapperClassNames[] = 't3-page-ce-hidden t3js-hidden-record';
         }
         $record = $this->record;
-        if (!$this->tcaRegistry->recordIsAllowedInContainerColumn($record)) {
-            $wrapperClassNames[] = 't3-page-ce-warning';
+        if ($record instanceof RecordInterface) {
+            if (!$this->tcaRegistry->recordIsAllowedInContainerColumn($record)) {
+                $wrapperClassNames[] = 't3-page-ce-warning';
+            }
+        } else {
+            // v13
+            if (!$this->tcaRegistry->isAllowedInColumn($record['CType'], (int)$record['colPos'], $this->container->getCType())) {
+                $wrapperClassNames[] = 't3-page-ce-warning';
+            }
         }
         return implode(' ', $wrapperClassNames);
     }
