@@ -189,6 +189,35 @@ Change view object, e.g., add variables to view or change paths
 - Custom definitions make use of custom `colPos` values so site owners build their own elements, no fixed `colPos` given, so no interference with existing solutions
 - Each container type is just a definition for its own `CType`
 
+## Migration to EXT:container
+
+In case you want to migrate your existing hierarchical contents (e.g. EXT:gridelements) to EXT:container it's best to know a bit about the internal structure.
+
+* a CEs `pid` should always match its container CEs `pid`
+* a CEs `tx_container_parent` points its container CEs `uid`
+* a CEs `sorting` is pid-wide (and thus logically consistent for all CEs within the same `colPos`)
+* a translated CEs `l18n_parent` points obviously to its translation origin (if it has one)
+* a translated CEs `tx_container_parent` doesn't point to the translated parent (as you would assume) but to the translation origin
+* a translated container CE should have the same CType as its translation origin _if they're "connected"_
+* a container doesn't store the number of its children (there no pendant to the field `tx_gridelements_children`)
+
+Here's a typical use case of a translated container and its child CEs.
+
+```
++--------+-----+------------------+-------------+-----------+--------+---------------------+---------+
+| uid    | pid | sys_language_uid | l18n_parent | CType     | colPos | tx_container_parent | sorting |
++--------+-----+------------------+-------------+--------------+-----+---------------------+---------+
+|    123 |  15 |                0 |           0 | 2_columns |      0 |                   0 |     256 |
+|    321 |  15 |                0 |           0 | text      |    100 |                 123 |     512 |
+|    322 |  15 |                0 |           0 | text      |    100 |                 123 |     768 |
+|    330 |  15 |                0 |           0 | text      |    101 |                 123 |    1024 |
+|   1123 |  15 |                1 |         123 | 2_columns |      0 |                   0 |    1280 |
+|   1321 |  15 |                1 |         321 | text      |    100 |                 123 |     640 |
+|   1322 |  15 |                1 |         322 | text      |    100 |                 123 |     896 |
+|   1330 |  15 |                1 |         330 | text      |    101 |                 123 |    1152 |
++--------+-----+------------------+-------------+-----------+--------+---------------------+---------+
+```
+
 ## CLI commands
 
 There are several CLI commands to check/fix the integrity of the containers and their children.
