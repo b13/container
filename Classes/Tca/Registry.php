@@ -15,9 +15,11 @@ namespace B13\Container\Tca;
 use B13\Container\Events\BeforeContainerConfigurationIsAppliedEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -67,8 +69,15 @@ class Registry
         }
 
         $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$containerConfiguration->getCType()] = $containerConfiguration->getCType();
-        $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['showitem'] =
-            'header;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header.ALT.div_formlabel';
+        $GLOBALS['TCA']['tt_content']['types'][$containerConfiguration->getCType()]['showitem'] = '
+                    header;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header.ALT.div_formlabel,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
+                    --palette--;;frames,
+                    --palette--;;appearanceLinks,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
+                    categories,
+                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+';
 
         $GLOBALS['TCA']['tt_content']['containerConfiguration'][$containerConfiguration->getCType()] = $containerConfiguration->toArray();
     }
@@ -76,6 +85,7 @@ class Registry
     public function getContentDefenderConfiguration(string $cType, int $colPos): array
     {
         $contentDefenderConfiguration = [];
+        $typo3Version = ((new Typo3Version())->getMajorVersion());
         $rows = $this->getGrid($cType);
         foreach ($rows as $columns) {
             foreach ($columns as $column) {
@@ -86,9 +96,15 @@ class Registry
                     $contentDefenderConfiguration['disallowed.'] = $column['disallowed'] ?? [];
                     $contentDefenderConfiguration['maxitems'] = $column['maxitems'] ?? 0;
                     if ($contentDefenderConfiguration['allowedContentTypes'] === '' && $contentDefenderConfiguration['allowed.'] !== []) {
+                        if ($typo3Version > 13) {
+                            trigger_error('use allowedContentTypes instead of allowed.CType', E_USER_DEPRECATED);
+                        }
                         $contentDefenderConfiguration['allowedContentTypes'] = $contentDefenderConfiguration['allowed.']['CType'] ?? '';
                     }
                     if ($contentDefenderConfiguration['disallowedContentTypes'] === '' && $contentDefenderConfiguration['disallowed.'] !== []) {
+                        if ($typo3Version > 13) {
+                            trigger_error('use disallowedContentTypes instead of disallowed.CType', E_USER_DEPRECATED);
+                        }
                         $contentDefenderConfiguration['disallowedContentTypes'] = $contentDefenderConfiguration['disallowed.']['CType'] ?? '';
                     }
                     return $contentDefenderConfiguration;
@@ -101,10 +117,39 @@ class Registry
     public function getAllowedCTypesInColumn(string $cType, int $colPos): ?array
     {
         $contentDefenderConfiguration = $this->getContentDefenderConfiguration($cType, $colPos);
-        if (empty($contentDefenderConfiguration['allowed.']['CType'])) {
+        if (empty($contentDefenderConfiguration['allowedContentTypes'])) {
             return null;
         }
-        return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowed.']['CType'] ?? '', true);
+        return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowedContentTypes'], true);
+    }
+
+    public function recordIsAllowedInContainerColumn(RecordInterface $record): bool
+    {
+        $recordType = $record->getRecordType();
+        if ($record->has('tx_container_parent')) {
+            $containerRecord = $record->get('tx_container_parent');
+            if ($containerRecord instanceof RecordInterface) {
+                $containerRecordType = $containerRecord->getRecordType();
+                if ($this->isContainerElement($containerRecordType)) {
+                    return $this->isAllowedInColumn($recordType, (int)$record->get('colPos'), $containerRecordType);
+                }
+            }
+        }
+        return true;
+    }
+
+    public function isAllowedInColumn(string $cType, int $colPos, string $containerCType): bool
+    {
+        $contentDefenderConfiguration = $this->getContentDefenderConfiguration($cType, $colPos);
+        $disallowed = GeneralUtility::trimExplode(',', $contentDefenderConfiguration['disallowedContentTypes'] ?? '', true);
+        if (in_array($cType, $disallowed)) {
+            return false;
+        }
+        $allowed = $this->getAllowedCTypesInColumn($containerCType, $colPos);
+        if ($allowed === null) {
+            return true;
+        }
+        return in_array($cType, $allowed);
     }
 
     public function getAllAvailableColumnsColPos(string $cType): array

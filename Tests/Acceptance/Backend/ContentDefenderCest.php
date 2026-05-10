@@ -155,7 +155,11 @@ class ContentDefenderCest
         $I->waitForText('Header Only');
         $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
         $I->switchToContentFrame();
-        $I->waitForText('Create new Page Content on page');
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->waitForText('Create new Header Only');
+        } else {
+            $I->waitForText('Create new Page Content on page');
+        }
         $I->seeElement('#EditDocumentController');
     }
 

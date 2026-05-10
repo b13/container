@@ -15,7 +15,6 @@ namespace B13\Container\Tests\Acceptance\Backend;
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
 use Codeception\Attribute\Group;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Acceptance\Helper\Topbar;
 
 class WorkspaceCest
@@ -115,7 +114,7 @@ class WorkspaceCest
 
     protected function switchToWs(BackendTester $I, string $ws): void
     {
-        if ($I->getTypo3MajorVersion() > 13 && (new Typo3Version())->getBranch() !== '14.1') {
+        if ($I->getTypo3MajorVersion() > 13) {
             $I->switchToMainFrame();
             if ($ws === 'test-ws') {
                 $I->executeJS("document.querySelector('typo3-backend-workspace-selector #workspace-menu button[title=\"test-ws\"]').click();");

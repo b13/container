@@ -1,0 +1,8 @@
+"tt_content"
+,"uid","pid","CType","header","t3ver_wsid","t3ver_state","colPos","tx_container_parent"
+,"1","1","b13-2cols-with-header-container","container-element","1","1","0","0"
+,"2","1","header","container-child-element","1","1","200","1"
+"sys_refindex"
+,"hash","workspace","tablename","field","ref_table","ref_uid","recuid"
+,"73cc8f1fe4a83716bd7bf9e2153dbc42","1","tt_content","tx_container_parent","tt_content","1","2"
+

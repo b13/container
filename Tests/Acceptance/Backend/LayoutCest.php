@@ -269,7 +269,7 @@ class LayoutCest
 
         if ($I->getTypo3MajorVersion() > 13) {
             $I->waitForText('english');
-            $I->click('.module-docheader-bar-column button');
+            $I->click('.module-docheader-column button.dropdown-toggle');
             $I->waitForText('german');
             $I->executeJS("document.querySelector('typo3-backend-localization-button').click()");
             $I->switchToIFrame();

@@ -55,15 +55,15 @@ class BackendTester extends \Codeception\Actor
      */
     public function openRecordInContextPanelOrWithEditDocumentController(int $uid): void
     {
-        if ($this->getTypo3MajorVersion() < 14 || (new Typo3Version())->getBranch() === '14.1') {
+        if ($this->getTypo3MajorVersion() < 14) {
             $this->waitForElement('#element-tt_content-' . $uid . ' a[title="Edit"]');
             $this->click('#element-tt_content-' . $uid . ' a[title="Edit"]');
         } else {
             $this->waitForElement('#element-tt_content-' . $uid . ' typo3-backend-contextual-record-edit-trigger');
             $this->click('#element-tt_content-' . $uid . ' typo3-backend-contextual-record-edit-trigger');
             $this->switchToMainFrame();
-            $this->waitForElement('iframe[name="context_panel_frame"]', 10);
-            $this->switchToIFrame('context_panel_frame');
+            $this->waitForElement('iframe[name="modal_frame"]', 10);
+            $this->switchToIFrame('modal_frame');
             $this->waitForElementNotVisible('#t3js-ui-block');
             $this->click('a.t3js-contextual-fullscreen');
             $this->switchToMainFrame();
@@ -121,7 +121,7 @@ class BackendTester extends \Codeception\Actor
         } else {
             $this->waitForText('english');
             //$this->click('english');
-            $this->click('.module-docheader-bar-column button');
+            $this->click('.module-docheader-column button.dropdown-toggle');
             $this->waitForText('german');
             $this->click('german');
         }

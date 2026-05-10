@@ -15,13 +15,16 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 abstract class AbstractContentDefender extends AbstractDatahandler
 {
     protected function setUp(): void
     {
         parent::setUp();
-        // content_defender always returns true for restrictions if global variable TYPO3_REQUEST is null
-        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            // content_defender always returns true for restrictions if global variable TYPO3_REQUEST is null
+            $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        }
     }
 }

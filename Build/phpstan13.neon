@@ -13,4 +13,4 @@ parameters:
     - %currentWorkingDirectory%/Classes/Listener/ManipulateBackendLayoutColPosConfigurationForPage.php
     - %currentWorkingDirectory%/Classes/Hooks/Datahandler/ContentElementRestriction
     - %currentWorkingDirectory%/Classes/DataProcessing/ContentAreaProcessor.php
-
+    - %currentWorkingDirectory%/Classes/Listener/IsReferenceConsideredForDependency.php
