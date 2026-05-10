@@ -1,0 +1,67 @@
+<?php
+
+namespace B13\Container\Tests\Functional\Frontend;
+
+/*
+ * This file is part of TYPO3 CMS-based extension "container" by b13.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ */
+
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
+
+class ContentAreaDefaultLanguageTest extends AbstractFrontend
+{
+    #[Test]
+    #[Group('frontend')]
+    #[Group('v14-only')]
+    public function childrenAreRendered(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExampleContentArea/setup.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        // rendered content
+        self::assertStringContainsString('<h1 class="container">container-default</h1>', $body);
+        self::assertStringContainsString('<header><h2 class="">header-default</h2></header>', $body);
+        self::assertStringContainsString('<header><h2 class="">left-side-default</h2>', $body);
+    }
+
+    #[Test]
+    #[Group('frontend')]
+    #[Group('v14-only')]
+    public function childrenAreRenderedAsSorted(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerWithTwoChildren.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExampleContentArea/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/container_with_two_children.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h6>first child</h6><h6>second child</h6>', $body);
+    }
+}
