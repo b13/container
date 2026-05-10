@@ -12,7 +12,6 @@ namespace B13\Container\Tests\Functional\Frontend;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class DefaultLanguageTest extends AbstractFrontend

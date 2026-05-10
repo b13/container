@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container\Tests\Functional\Frontend;
+namespace B13\Container\Tests\Functional\Frontend\ContentArea;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,16 +10,17 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use B13\Container\Tests\Functional\Frontend\AbstractFrontend;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class ContentAreaSiteLanguageFreeTest extends AbstractFrontend
+class SiteLanguageFreeTest extends AbstractFrontend
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/SiteLanguageFree/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/SiteLanguageFree/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [

@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container\Tests\Functional\Frontend;
+namespace B13\Container\Tests\Functional\Frontend\ContentArea;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,16 +10,17 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use B13\Container\Tests\Functional\Frontend\AbstractFrontend;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class ContentAreaLanguageStrictTest extends AbstractFrontend
+class LanguageStrictTest extends AbstractFrontend
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/LanguageStrict/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -52,7 +53,7 @@ class ContentAreaLanguageStrictTest extends AbstractFrontend
     #[Group('v14-only')]
     public function bothTranslated(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_both_translated.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/LanguageStrict/tt_content_both_translated.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -68,7 +69,7 @@ class ContentAreaLanguageStrictTest extends AbstractFrontend
     #[Group('v14-only')]
     public function bothTranslatedTranslatedChildHidden(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_both_translated_tranlated_child_hidden.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/LanguageStrict/tt_content_both_translated_tranlated_child_hidden.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -84,7 +85,7 @@ class ContentAreaLanguageStrictTest extends AbstractFrontend
     #[Group('v14-only')]
     public function childTranslated(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_child_translated.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/LanguageStrict/tt_content_child_translated.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -100,7 +101,7 @@ class ContentAreaLanguageStrictTest extends AbstractFrontend
     #[Group('v14-only')]
     public function containerTranslated(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_container_translated.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/LanguageStrict/tt_content_container_translated.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);

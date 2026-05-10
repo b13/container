@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container\Tests\Functional\Frontend;
+namespace B13\Container\Tests\Functional\Frontend\ContentArea;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,19 +10,19 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use B13\Container\Tests\Functional\Frontend\AbstractFrontend;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class ContentAreaDefaultLanguageTest extends AbstractFrontend
+class DefaultLanguageTest extends AbstractFrontend
 {
     #[Test]
     #[Group('frontend')]
     #[Group('v14-only')]
     public function childrenAreRendered(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/default_language.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -47,7 +47,7 @@ class ContentAreaDefaultLanguageTest extends AbstractFrontend
     #[Group('v14-only')]
     public function childrenAreRenderedAsSorted(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerWithTwoChildren.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/ContainerWithTwoChildren.csv');
         $this->setUpFrontendRootPage(
             1,
             [

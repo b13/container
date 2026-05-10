@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container\Tests\Functional\Frontend;
+namespace B13\Container\Tests\Functional\Frontend\ContentArea;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,18 +10,19 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use B13\Container\Tests\Functional\Frontend\AbstractFrontend;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 
-class ContentAreaWorkspaceTest extends AbstractFrontend
+class WorkspaceTest extends AbstractFrontend
 {
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -39,7 +40,7 @@ class ContentAreaWorkspaceTest extends AbstractFrontend
     #[Group('v14-only')]
     public function childInLiveIsRendered(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_with_ws_child.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest());
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -52,7 +53,7 @@ class ContentAreaWorkspaceTest extends AbstractFrontend
     #[Group('v14-only')]
     public function childInWorkspaceIsRendered(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_with_ws_child.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -66,7 +67,7 @@ class ContentAreaWorkspaceTest extends AbstractFrontend
     #[Group('v14-only')]
     public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child_moved_from_outside.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_with_ws_child_moved_from_outside.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -80,8 +81,8 @@ class ContentAreaWorkspaceTest extends AbstractFrontend
     #[Group('v14-only')]
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -94,7 +95,7 @@ class ContentAreaWorkspaceTest extends AbstractFrontend
     #[Group('v14-only')]
     public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_in_ws_whith_hidden_live_version.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -109,7 +110,7 @@ class ContentAreaWorkspaceTest extends AbstractFrontend
     #[Group('v14-only')]
     public function childInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/child_in_ws_whith_hidden_live_version.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/child_in_ws_whith_hidden_live_version.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -124,10 +125,10 @@ class ContentAreaWorkspaceTest extends AbstractFrontend
     #[Group('v14-only')]
     public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_pages.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/localized_pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/localized_container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de/'), $context);
         $body = (string)$response->getBody();
