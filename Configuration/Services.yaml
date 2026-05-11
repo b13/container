@@ -17,3 +17,6 @@ services:
   B13\Container\DataProcessing\ContainerProcessor:
     tags:
       - { name: 'data.processor', identifier: 'container' }
+  B13\Container\DataProcessing\ContentAreaProcessor:
+    tags:
+      - { name: 'data.processor', identifier: 'container-content-area' }

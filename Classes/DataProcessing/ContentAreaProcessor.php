@@ -70,13 +70,29 @@ readonly class ContentAreaProcessor implements DataProcessorInterface
         array $processorConfiguration,
         array $processedData,
     ): array {
-        if (((float)$this->typo3Version->getBranch()) <= 14.1) {
-            $this->logger->error(ContentAreaProcessor::class . ' requires TYPO3 v14.2 or higher. Please check your configuration.');
-
+        if ($this->typo3Version->getMajorVersion() < 14) {
+            $this->logger->error(ContentAreaProcessor::class . ' requires TYPO3 v14 or higher. Please check your configuration.');
             return $processedData;
         }
 
-        $record = $cObj->data;
+        if (isset($processorConfiguration['if.']) && !$cObj->checkIf($processorConfiguration['if.'])) {
+            return $processedData;
+        }
+        $contentId = null;
+        if ($processorConfiguration['contentId.'] ?? false) {
+            $contentId = (int)$cObj->stdWrap($processorConfiguration['contentId'] ?? '', $processorConfiguration['contentId.']);
+        } elseif ($processorConfiguration['contentId'] ?? false) {
+            $contentId = (int)$processorConfiguration['contentId'];
+        }
+        if ($contentId !== null) {
+            $records = $cObj->getRecords('tt_content', ['uidInList' => $contentId, 'pidInList' => 0]);
+            if (empty($records)) {
+                return $processedData;
+            }
+            $record = $records[0];
+        } else {
+            $record = $cObj->data;
+        }
 
         $CType = $record['CType'] ?? '';
         if (!$this->tcaRegistry->isContainerElement($CType)) {

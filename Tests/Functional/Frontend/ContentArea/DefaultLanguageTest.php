@@ -64,4 +64,27 @@ class DefaultLanguageTest extends AbstractFrontend
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h6>first child</h6><h6>second child</h6>', $body);
     }
+
+    #[Test]
+    #[Group('frontend')]
+    #[Group('v14-only')]
+    public function canRenderContainerFromOtherPage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/ContainerFromOtherPage.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExampleContentArea/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/container_from_other_page.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<header><h2 class="">child</h2></header>', $body);
+    }
 }
