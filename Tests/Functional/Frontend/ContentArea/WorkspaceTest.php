@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\Container\Tests\Functional\Frontend;
+namespace B13\Container\Tests\Functional\Frontend\ContentArea;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -10,6 +10,7 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use B13\Container\Tests\Functional\Frontend\AbstractFrontend;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -21,14 +22,14 @@ class WorkspaceTest extends AbstractFrontend
     {
         parent::setUp();
 
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/setup.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [
                 'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
                     'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
-                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExampleContentArea/setup.typoscript',
                 ],
             ]
         );
@@ -36,9 +37,10 @@ class WorkspaceTest extends AbstractFrontend
 
     #[Test]
     #[Group('frontend')]
+    #[Group('v14-only')]
     public function childInLiveIsRendered(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_with_ws_child.csv');
         $response = $this->executeFrontendRequestWrapper(new InternalRequest());
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
@@ -48,9 +50,10 @@ class WorkspaceTest extends AbstractFrontend
 
     #[Test]
     #[Group('frontend')]
+    #[Group('v14-only')]
     public function childInWorkspaceIsRendered(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_with_ws_child.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -61,23 +64,25 @@ class WorkspaceTest extends AbstractFrontend
 
     #[Test]
     #[Group('frontend')]
+    #[Group('v14-only')]
     public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child_moved_from_outside.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_with_ws_child_moved_from_outside.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
-        self::assertStringContainsString('><h2>header (200)</h2><div class="header-children"><h6 class="header-children">header-ws</h6><div id="c201" class="frame frame-default frame-type-header frame-layout-0"><header><h2 class="">header-ws</h2></header>', $body);
+        self::assertStringContainsString('<h2 class="">header-ws</h2>', $body);
         self::assertStringNotContainsString('<h2 class="">header-live</h2>', $body);
     }
 
     #[Test]
     #[Group('frontend')]
+    #[Group('v14-only')]
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -87,9 +92,10 @@ class WorkspaceTest extends AbstractFrontend
 
     #[Test]
     #[Group('frontend')]
+    #[Group('v14-only')]
     public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_in_ws_whith_hidden_live_version.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -101,9 +107,10 @@ class WorkspaceTest extends AbstractFrontend
 
     #[Test]
     #[Group('frontend')]
+    #[Group('v14-only')]
     public function childInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/child_in_ws_whith_hidden_live_version.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/child_in_ws_whith_hidden_live_version.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
@@ -115,12 +122,13 @@ class WorkspaceTest extends AbstractFrontend
 
     #[Test]
     #[Group('frontend')]
+    #[Group('v14-only')]
     public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_pages.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/localized_pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Workspace/localized_container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
         $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de/'), $context);
         $body = (string)$response->getBody();

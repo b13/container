@@ -167,6 +167,47 @@ The HTML template file goes in the folder you defined in your TypoScript above (
 
 With explicit colPos defined use `{children_200|201}` as set in the example above
 
+## ContentAreaProcessor for TYPO3 v14 or above
+
+for TYPO3 v14 or higher you can use the ConentAreaProcessor
+Automatically detects if content element has container columns
+adds them lazily to the content variable.
+The ContentArea can be used in f:render.contentArea or f:render.record ViewHelper
+
+
+### TypoScript
+
+    tt_content.b13-2cols-with-header-container < lib.contentElement
+    tt_content.b13-2cols-with-header-container {
+        templateName = 2ColsWithHeader
+        templateRootPaths {
+            10 = EXT:container_example/Resources/Private/Templates
+        }
+        dataProcessing {
+            100 = B13\Container\DataProcessing\ContentAreaProcessor
+        }
+    }
+
+### Options for ContentAreaProcessor
+
+| Option                      | Description                       | Default                                               | Parameter   |
+|-----------------------------|-----------------------------------|-------------------------------------------------------|-------------|
+| `contentId`                 | id of container to to process     | current uid of content element ``$cObj->data['uid']`` | ``?int``    |
+| `as`                        | variable to use for proceesedData | ``content``                                           | ``?string`` |
+
+### Template
+
+```html
+<f:if condition="{content.200}">
+  <div class="header-children">{content.200 -> f:render.contentArea()}</div>
+</f:if>
+<f:if condition="{content.201}">
+  <f:for each="{content.201}" as="record">
+    {record -> f:render.record()}
+  </f:for>
+</f:if>
+```
+
 ## PSR-14 Events
 
 ### BeforeContainerConfigurationIsAppliedEvent
