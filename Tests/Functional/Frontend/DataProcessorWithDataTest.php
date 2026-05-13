@@ -28,7 +28,7 @@ class DataProcessorWithDataTest extends AbstractFrontend
                 'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
                     'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
-                    'EXT:container_example/Configuration/TypoScript/2cols.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
                 ],
             ]
         );
