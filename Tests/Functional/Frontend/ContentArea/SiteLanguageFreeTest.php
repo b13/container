@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace B13\Container\Tests\Functional\Frontend;
+namespace B13\Container\Tests\Functional\Frontend\ContentArea;
 
 /*
  * This file is part of TYPO3 CMS-based extension "container" by b13.
@@ -12,23 +10,24 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use B13\Container\Tests\Functional\Frontend\AbstractFrontend;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class DataProcessorWithFilesTest extends AbstractFrontend
+class SiteLanguageFreeTest extends AbstractFrontend
 {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/data_processor_with_files.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/SiteLanguageFree/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [
                 'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
                     'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
-                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExampleContentArea/setup.typoscript',
                 ],
             ]
         );
@@ -36,11 +35,13 @@ class DataProcessorWithFilesTest extends AbstractFrontend
 
     #[Test]
     #[Group('frontend')]
-    public function relationIsRendered(): void
+    #[Group('v14-only')]
+    public function containerTranslatedInFreeModeSiteConfiguration(): void
     {
-        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/en-free'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
-        self::assertStringContainsString('README.md', $body);
+        self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
+        self::assertStringContainsString('<h2 class="">header-translated</h2>', $body);
     }
 }
