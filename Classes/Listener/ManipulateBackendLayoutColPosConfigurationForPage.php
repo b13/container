@@ -12,8 +12,8 @@ namespace B13\Container\Listener;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Tca\Registry;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
