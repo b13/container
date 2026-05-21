@@ -12,8 +12,8 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
 
