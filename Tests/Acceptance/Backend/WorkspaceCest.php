@@ -100,6 +100,32 @@ class WorkspaceCest
         $this->switchToLiveWs($I);
     }
 
+    #[Group('workspace')]
+    public function canCreateChildInWsWhenContainerCTypeWasChanged(BackendTester $I, PageTree $pageTree)
+    {
+        $I->clickLayoutModuleButton();
+        $this->switchToTestWs($I);
+        $pageTree->openPath(['home', 'pageWithWorkspace-changedContainer']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+
+        $dataColPos = 202;
+        $containerColumn = '#element-tt_content-701 [data-colpos="' . $dataColPos . '"]';
+        $contentInContainerColumn = '#element-tt_content-701 div[data-colpos="' . $dataColPos . '"] .t3-page-ce';
+        $I->waitForElement($containerColumn);
+        $I->dontSeeElement($contentInContainerColumn);
+        $I->clickNewContentElement($containerColumn);
+        $I->switchToIFrame();
+        $I->waitForModal();
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
+        $I->waitForText('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+        $I->switchToContentFrame();
+        $I->waitForText('Header Only [header]');
+        $I->waitForText('right side [202]');
+    }
+
     protected function switchToLiveWs(BackendTester $I): void
     {
         $this->switchToWs($I, 'LIVE workspace');
