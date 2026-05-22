@@ -28,7 +28,7 @@
         }
     },
     "require-dev": {
-        "b13/container-example": "dev-task/v4",
+        "b13/container-example": "dev-master",
         "typo3/cms-install": "^13.4 || ^14.3",
         "typo3/cms-fluid-styled-content": "^13.4 || ^14.3",
         "typo3/cms-info": "^13.4 || ^14.3",
