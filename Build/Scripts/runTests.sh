@@ -1,11 +1,40 @@
 #!/usr/bin/env bash
 
 #
-# TYPO3 core test runner based on docker.
+# TYPO3 core test runner based on docker or podman.
 #
 if [ "${CI}" != "true" ]; then
     trap 'echo "runTests.sh SIGINT signal emitted";cleanUp;exit 2' SIGINT
 fi
+
+printSummary() {
+    cleanUp
+
+    echo "" >&2
+    echo "###########################################################################" >&2
+    echo "Result of ${TEST_SUITE}" >&2
+    echo "Container runtime: ${CONTAINER_BIN}" >&2
+    echo "Container suffix: ${SUFFIX}"
+    echo "PHP: ${PHP_VERSION}" >&2
+    if [[ ${TEST_SUITE} =~ ^(functional|acceptance)$ ]]; then
+        case "${DBMS}" in
+            mariadb|mysql|postgres)
+                echo "DBMS: ${DBMS}  version ${DBMS_VERSION}  driver ${DATABASE_DRIVER}" >&2
+                ;;
+            sqlite)
+                echo "DBMS: ${DBMS}" >&2
+                ;;
+        esac
+    fi
+    if [[ ${SUITE_EXIT_CODE} -eq 0 ]]; then
+        echo "SUCCESS" >&2
+    else
+        echo "FAILURE" >&2
+    fi
+    echo "###########################################################################" >&2
+    echo "" >&2
+    exit ${SUITE_EXIT_CODE}
+}
 
 waitFor() {
     local HOST=${1}
@@ -53,7 +82,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.4"
-            if ! [[ ${DBMS_VERSION} =~ ^(10.1|10.2|10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1|11.2|11.3|11.4)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -69,7 +98,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="8.0"
-            if ! [[ ${DBMS_VERSION} =~ ^(5.5|5.6|5.7|8.0|8.1|8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(8.0|8.1|8.2|8.3|8.4)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -175,9 +204,6 @@ Options:
     -i version
         Specify a specific database version
         With "-d mariadb":
-            - 10.1   short-term, no longer maintained
-            - 10.2   short-term, no longer maintained
-            - 10.3   short-term, maintained until 2023-05-25
             - 10.4   short-term, maintained until 2024-06-18 (default)
             - 10.5   short-term, maintained until 2025-06-24
             - 10.6   long-term, maintained until 2026-06
@@ -187,19 +213,19 @@ Options:
             - 10.10  short-term, maintained until 2023-11
             - 10.11  long-term, maintained until 2028-02
             - 11.0   development series
-            - 11.1   short-term development series
-        With "-d mariadb":
-            - 5.5   unmaintained since 2018-12
-            - 5.6   unmaintained since 2021-02
-            - 5.7   maintained until 2023-10
-            - 8.0   maintained until 2026-04 (default)
+            - 11.1   short-term development series, maintained until 2024-08
+            - 11.2   short-term development series, maintained until 2024-11
+            - 11.3   short-term development series, rolling release
+            - 11.4   long-term, maintained until 2029-05
+        With "-d mysql":
+            - 8.0   maintained until 2026-04 (default) LTS
             - 8.1   unmaintained since 2023-10
             - 8.2   unmaintained since 2024-01
             - 8.3   maintained until 2024-04
             - 8.4   maintained until 2032-04 LTS
         With "-d postgres":
             - 10    unmaintained since 2022-11-10 (default)
-            - 11    maintained until 2023-11-09
+            - 11    unmaintained since 2023-11-09
             - 12    maintained until 2024-11-14
             - 13    maintained until 2025-11-13
             - 14    maintained until 2026-11-12
@@ -300,7 +326,11 @@ CONTAINER_HOST="host.docker.internal"
 HOST_UID=$(id -u)
 HOST_PID=$(id -g)
 USERSET=""
+CI_JOB_ID=${CI_JOB_ID:-}
 SUFFIX=$(echo $RANDOM)
+if [ ${CI_JOB_ID} ]; then
+    SUFFIX="${CI_JOB_ID}-${SUFFIX}"
+fi
 NETWORK="b13-container-${SUFFIX}"
 PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS:-}"
 # @todo Remove USE_APACHE option when TF7 has been dropped (along with TYPO3 v11 support).
@@ -391,28 +421,24 @@ fi
 
 handleDbmsOptions
 
-# ENV var "CI" is set by gitlab-ci. Use it to force some CI details.
-IS_CORE_CI=0
 if [ "${CI}" == "true" ]; then
-    IS_CORE_CI=1
+    # ENV var "CI" is set by gitlab-ci. Use it to force some CI details.
     CONTAINER_INTERACTIVE=""
+elif [ ! -t 0 ] || [ ! -t 1 ]; then
+    # If stdin or stdout is not a TTY (e.g. a script runner, pipe, or non-interactive shell),
+    # drop the interactive "-it" flags automatically to avoid podman warning "The input device
+    # is not a TTY." and docker failure, and to keep redirected output free of TTY control characters.
+    # Keep "--init" so the PID 1 init process still forwards signals (e.g. ctrl-c) to the test process.
+    CONTAINER_INTERACTIVE="--init"
 fi
 
 # determine default container binary to use: 1. podman 2. docker
 if [[ -z "${CONTAINER_BIN}" ]]; then
-  if [[ "${TYPO3}" == "11" ]]; then
-    if type "docker" >/dev/null 2>&1; then
-        CONTAINER_BIN="docker"
-    elif type "podman" >/dev/null 2>&1; then
-        CONTAINER_BIN="podman"
-    fi
-  else
     if type "podman" >/dev/null 2>&1; then
         CONTAINER_BIN="podman"
     elif type "docker" >/dev/null 2>&1; then
         CONTAINER_BIN="docker"
     fi
-  fi
 fi
 
 if [ $(uname) != "Darwin" ] && [ ${CONTAINER_BIN} = "docker" ]; then
@@ -455,10 +481,16 @@ ${CONTAINER_BIN} network create ${NETWORK} >/dev/null
 if [ ${CONTAINER_BIN} = "docker" ]; then
     # docker needs the add-host for xdebug remote debugging. podman has host.container.internal built in
     CONTAINER_COMMON_PARAMS="${CONTAINER_INTERACTIVE} --rm --network ${NETWORK} --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -v ${CORE_ROOT}:${CORE_ROOT} -w ${CORE_ROOT}"
+    TMPFS_MOUNT_OPTIONS="rw,noexec,nosuid,uid=${HOST_UID},gid=${HOST_PID}"
 else
     # podman
     CONTAINER_HOST="host.containers.internal"
     CONTAINER_COMMON_PARAMS="${CONTAINER_INTERACTIVE} ${CI_PARAMS} --rm --network ${NETWORK} -v ${CORE_ROOT}:${CORE_ROOT} -w ${CORE_ROOT}"
+    TMPFS_MOUNT_OPTIONS="rw,noexec,nosuid"
+fi
+
+if [[ "${CI}" == "true" ]]; then
+    CONTAINER_COMMON_PARAMS="${CONTAINER_COMMON_PARAMS} ${CONTAINER_COMMON_PARAMS_CI:-}"
 fi
 
 if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
@@ -653,7 +685,7 @@ case ${TEST_SUITE} in
                 # create sqlite tmpfs mount typo3temp/var/tests/functional-sqlite-dbs/ to avoid permission issues
                 rm -rf "${CORE_ROOT}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs"
                 mkdir -p "${CORE_ROOT}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs/"
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite --tmpfs ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs/:rw,noexec,nosuid"
+                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite --tmpfs ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs/:${TMPFS_MOUNT_OPTIONS}"
                 ${CONTAINER_BIN} run --rm ${CI_PARAMS} ${CONTAINER_COMMON_PARAMS} --name functional-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
                 SUITE_EXIT_CODE=$?
                 ;;
@@ -710,37 +742,5 @@ case ${TEST_SUITE} in
         ;;
 esac
 
-cleanUp
-
-# Print summary
-echo "" >&2
-echo "###########################################################################" >&2
-echo "Result of ${TEST_SUITE}" >&2
-if [[ ${IS_CORE_CI} -eq 1 ]]; then
-    echo "Environment: CI" >&2
-else
-    echo "Environment: local" >&2
-fi
-echo "Container runtime: ${CONTAINER_BIN}" >&2
-echo "Container suffix: ${SUFFIX}"
-echo "PHP: ${PHP_VERSION}" >&2
-if [[ ${TEST_SUITE} =~ ^(functional|functionalDeprecated|acceptance|acceptanceInstall)$ ]]; then
-    case "${DBMS}" in
-        mariadb|mysql|postgres)
-            echo "DBMS: ${DBMS}  version ${DBMS_VERSION}  driver ${DATABASE_DRIVER}" >&2
-            ;;
-        sqlite)
-            echo "DBMS: ${DBMS}" >&2
-            ;;
-    esac
-fi
-if [[ ${SUITE_EXIT_CODE} -eq 0 ]]; then
-    echo "SUCCESS" >&2
-else
-    echo "FAILURE" >&2
-fi
-echo "###########################################################################" >&2
-echo "" >&2
-
-# Exit with code of test suite - This script return non-zero if the executed test failed.
-exit $SUITE_EXIT_CODE
+# Cleanup, print summary && exit with exitcode
+printSummary
