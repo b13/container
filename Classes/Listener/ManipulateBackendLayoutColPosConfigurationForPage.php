@@ -43,8 +43,8 @@ class ManipulateBackendLayoutColPosConfigurationForPage
         $cType = $container->getCType();
         $configuration = $this->tcaRegistry->getContentDefenderConfiguration($cType, $e->colPos);
         $e->configuration = [
-            'allowedContentTypes' => $configuration['allowedContentTypes'],
-            'disallowedContentTypes' => $configuration['disallowedContentTypes'],
+            'allowedContentTypes' => $configuration['allowedContentTypes'] ?? '',
+            'disallowedContentTypes' => $configuration['disallowedContentTypes'] ?? '',
         ];
     }
 
