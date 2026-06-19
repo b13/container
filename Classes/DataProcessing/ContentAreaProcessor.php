@@ -113,7 +113,7 @@ readonly class ContentAreaProcessor implements DataProcessorInterface
 
                     $rows = $container->getChildrenByColPos($colPos);
 
-                    $records = array_map(fn ($row) => $this->recordFactory->createFromDatabaseRow('tt_content', $row), $rows);
+                    $records = array_map(fn ($row) => $this->recordFactory->createResolvedRecordFromDatabaseRow('tt_content', $row), $rows);
                     return new ContentArea(
                         (string)$colPos,
                         $this->tcaRegistry->getColPosName($record['CType'], $colPos),

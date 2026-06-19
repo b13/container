@@ -1,0 +1,7 @@
+"pages"
+,"uid","pid","title","slug"
+,1,0,"page-1","/"
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","frame_class","header_link"
+,1,1,"b13-2cols","container-default",256,0,,,"none",""
+,2,1,"header","header-default",128,0,200,1,"none","t3://page?uid=1 - - foo"
