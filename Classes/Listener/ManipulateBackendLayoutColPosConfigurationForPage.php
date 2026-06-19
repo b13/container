@@ -66,12 +66,18 @@ class ManipulateBackendLayoutColPosConfigurationForPage
             return (int)$queryParams['defVals']['tt_content']['tx_container_parent'];
         }
         if (isset($queryParams['edit']['tt_content'])) {
-            $recordUid = array_keys($queryParams['edit']['tt_content'])[0];
-            $recordUid = abs((int)$recordUid);
-            // TcaCTypeItems: edit record
-            $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
-            if (isset($record['tx_container_parent'])) {
-                return (int)$record['tx_container_parent'];
+            $editKey = array_keys($queryParams['edit']['tt_content'])[0];
+            // For new records the URL is edit[tt_content][<pid>]=new - the array key
+            // is a page id, NOT a content uid. Only resolve a container parent for an
+            // existing record that is actually being edited; otherwise a page id that
+            // numerically collides with a container child uid yields a false parent.
+            if ($queryParams['edit']['tt_content'][$editKey] === 'edit') {
+                $recordUid = abs((int)$editKey);
+                // TcaCTypeItems: edit record
+                $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
+                if (isset($record['tx_container_parent'])) {
+                    return (int)$record['tx_container_parent'];
+                }
             }
         }
         return null;
