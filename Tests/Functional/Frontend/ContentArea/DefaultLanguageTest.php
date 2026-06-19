@@ -87,4 +87,27 @@ class DefaultLanguageTest extends AbstractFrontend
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<header><h2 class="">child</h2></header>', $body);
     }
+
+    #[Test]
+    #[Group('frontend')]
+    #[Group('v14-only')]
+    public function childRecordsAreResolved(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DefaultLanguage/ChildRecordsAreResolved/setup.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExampleContentArea/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/ContentArea/Fixtures/DefaultLanguage/ChildRecordsAreResolved/setup.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<a href="/">foo</a>', $body);
+    }
 }
