@@ -54,6 +54,7 @@ class ManipulateBackendLayoutColPosConfigurationForPage
             return null;
         }
         $queryParams = $request->getQueryParams();
+
         if (isset($queryParams['tx_container_parent']) && $queryParams['tx_container_parent'] > 0) {
             // new content elemment wizard
             return (int)$queryParams['tx_container_parent'];
@@ -67,6 +68,10 @@ class ManipulateBackendLayoutColPosConfigurationForPage
         }
         if (isset($queryParams['edit']['tt_content'])) {
             $recordUid = array_keys($queryParams['edit']['tt_content'])[0];
+            if ($recordUid > 0 && $queryParams['edit']['tt_content'][$recordUid] === 'new') {
+                // the recordUid is a page id, we want to create a new record at the first position of a page
+                return null;
+            }
             $recordUid = abs((int)$recordUid);
             // TcaCTypeItems: edit record
             $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
