@@ -345,4 +345,14 @@ class LayoutCest
         $I->see('2 Column Container With Header');
         $I->dontSee('1 Column');
     }
+
+    public function childRecordHasSysLanguageDataAttribute(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-810');
+        $I->seeElement('#element-tt_content-810[data-language-uid="0"]');
+    }
 }

@@ -16,6 +16,7 @@ use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
+use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Domain\RecordFactory;
 use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -38,6 +39,23 @@ class ContainerGridColumnItem extends GridColumnItem
             return false;
         }
         return true;
+    }
+
+    /*
+     * @internal
+     */
+    public function getRecordLanguageId(): int
+    {
+        // s. Partials Record.html
+        // for v14 we can use {record.languageId} and drop this method
+        $record = $this->record;
+        if ($record instanceof Record) {
+            return $record->getSystemProperties()->getLanguage()->getLanguageId();
+        }
+        if (is_array($record)) {
+            return $record['sys_language_uid'];
+        }
+        return 0;
     }
 
     public function getWrapperClassName(): string
