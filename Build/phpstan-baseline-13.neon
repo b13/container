@@ -65,3 +65,12 @@ parameters:
 			message: "#^Instanceof between array and TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordInterface will always evaluate to false\\.$#"
 			count: 1
 			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
+		-
+			message: "#^Instanceof between array and TYPO3\\\\CMS\\\\Core\\\\Domain\\\\Record will always evaluate to false\\.$#"
+			count: 1
+			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
