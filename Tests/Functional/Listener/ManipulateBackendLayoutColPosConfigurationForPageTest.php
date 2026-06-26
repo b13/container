@@ -71,4 +71,20 @@ class ManipulateBackendLayoutColPosConfigurationForPageTest extends FunctionalTe
         $listener($e);
         self::assertSame(['allowedContentTypes' => 'header, textmedia, b13-2cols', 'disallowedContentTypes' => ''], $e->configuration);
     }
+
+    #[Test]
+    public function editContainerChildElementWithWrongColPos(): void
+    {
+        // https://forge.typo3.org/issues/110106
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::markTestSkipped('only v14');
+        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ManipulateBackendLayoutColPosConfigurationForPageTest.csv');
+        $request = new ServerRequest();
+        $request = $request->withQueryParams(['edit' => ['tt_content' => [1 => 'edit']]]);
+        $e = new ManipulateBackendLayoutColPosConfigurationForPageEvent([], new BackendLayout('foo', 'bar', []), 0, 1, $request);
+        $listener = $this->getContainer()->get(ManipulateBackendLayoutColPosConfigurationForPage::class);
+        $listener($e);
+        self::assertSame([], $e->configuration);
+    }
 }
