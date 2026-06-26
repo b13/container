@@ -15,7 +15,6 @@ namespace B13\Container\Listener;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Tca\Registry;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\Event\ManipulateBackendLayoutColPosConfigurationForPageEvent;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
@@ -29,7 +28,7 @@ class ManipulateBackendLayoutColPosConfigurationForPage
 
     public function __invoke(ManipulateBackendLayoutColPosConfigurationForPageEvent $e)
     {
-        $parent = $this->getParentUid($e->request);
+        $parent = $this->getParentUid($e);
         if ($parent === null) {
             return;
         }
@@ -48,8 +47,9 @@ class ManipulateBackendLayoutColPosConfigurationForPage
         ];
     }
 
-    private function getParentUid(?ServerRequestInterface $request): ?int
+    private function getParentUid(ManipulateBackendLayoutColPosConfigurationForPageEvent $e): ?int
     {
+        $request = $e->request;
         if ($request === null) {
             return null;
         }
@@ -74,8 +74,8 @@ class ManipulateBackendLayoutColPosConfigurationForPage
             }
             $recordUid = abs((int)$recordUid);
             // TcaCTypeItems: edit record
-            $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
-            if (isset($record['tx_container_parent'])) {
+            $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent,colPos');
+            if (isset($record['tx_container_parent']) && (int)$record['colPos'] === $e->colPos) {
                 return (int)$record['tx_container_parent'];
             }
         }
