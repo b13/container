@@ -57,6 +57,9 @@ class LayoutCest
         $I->see('header-header-1', $languageCol . ' td.t3-grid-cell');
         $I->dontSee('2cols-header-0', $languageCol);
         $I->dontSee('header-header-0', $languageCol . ' td.t3-grid-cell');
+        // reset
+        $I->selectLayoutMode();
+        $I->selectEnglishInLanguageMenu();
     }
 
     public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree)
@@ -70,17 +73,13 @@ class LayoutCest
         // we have a "Content" Button for new elements with Fluid based page module
         $newContentElementLabel = $I->getNewContentElementLabel();
         $I->dontSee($newContentElementLabel, '#element-tt_content-102 .t3-page-ce-body');
-        if ($I->getTypo3MajorVersion() < 14) {
-            $I->selectOption('select[name="actionMenu"]', 'Language Comparison');
-        } else {
-            $I->waitForElementVisible('.module-docheader-buttons .btn-group button.dropdown-toggle');
-            $I->click('.module-docheader-buttons .btn-group button.dropdown-toggle');
-            $I->waitForElementVisible('.module-docheader-buttons .dropdown-menu');
-            $I->click('Language Comparison', '.module-docheader-buttons .dropdown-menu');
-        }
+        $I->selectLanguageComparisonMode();
         $I->waitForElementNotVisible('#t3js-ui-block');
         // but not in Language View
         $I->dontSee($newContentElementLabel, '#element-tt_content-102');
+        // reset
+        $I->selectLayoutMode();
+        $I->selectEnglishInLanguageMenu();
     }
 
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree)
@@ -214,7 +213,6 @@ class LayoutCest
         $uid = 104;
 
         $selector = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
-        $I->dontSee('german', $selector);
         $dataColPos = $I->getDataColPos($uid, 200);
         $colPosSelector = '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]';
         $I->clickNewContentElement($colPosSelector);
@@ -231,6 +229,8 @@ class LayoutCest
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->canSeeElement($selector . ' .t3js-flag[title="german"]');
+        // reset
+        $I->selectEnglishInLanguageMenu();
     }
 
     public function canTranslateChildWithTranslationModule(BackendTester $I, PageTree $pageTree, Scenario $scenario): void
@@ -241,8 +241,8 @@ class LayoutCest
         $I->wait(0.2);
         $I->switchToContentFrame();
 
-        $I->selectLanguageComparisonMode();
         $I->selectGermanInLanguageMenu();
+        $I->selectLanguageComparisonMode();
         if ($I->getTypo3MajorVersion() < 14) {
             $I->waitForElementVisible('a.t3js-localize');
             $I->click('a.t3js-localize');
@@ -254,9 +254,15 @@ class LayoutCest
         $I->switchToIFrame();
         if ($I->getTypo3MajorVersion() < 14) {
             $I->waitForText('(212) headerOfChild');
+            $I->click('button.t3js-modal-close');
         } else {
             $I->waitForText('headerOfChild');
+            $I->click('button.modal-header-close');
         }
+        $I->switchToContentFrame();
+        // reset
+        $I->selectLayoutMode();
+        $I->selectEnglishInLanguageMenu();
     }
 
     public function canTranslateChild(BackendTester $I, PageTree $pageTree): void
