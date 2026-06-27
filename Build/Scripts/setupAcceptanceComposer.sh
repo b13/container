@@ -17,15 +17,6 @@ PROJECT_PATH=${1:-.Build/Web/typo3temp/var/tests/acceptance-composer}
 export TYPO3_DB_DRIVER=${TYPO3_DB_DRIVER:-sqlite}
 TYPO3_VERSION="${TYPO3:-14}"
 
-case "${TYPO3_VERSION}" in
-    13)
-        TYPO3_CONSTRAINT="^13.4"
-        ;;
-    14|14-dev|*)
-        TYPO3_CONSTRAINT="^14.3"
-        ;;
-esac
-
 # Compute the relative path from PROJECT_PATH back to the project root.
 # e.g. ".Build/Web/typo3temp/var/tests/acceptance-composer" -> "../../../../../../"
 RELATIVE_ROOT=$(echo "${PROJECT_PATH}" | sed -e 's/[^\/][^\/]*/../g' -e 's/\/$//')
@@ -35,15 +26,17 @@ mkdir -p "${PROJECT_PATH}"
 # b13-container -> project root   (provides the b13/container path repository)
 # packages      -> Build/tests/packages  (provides typo3tests/dataset-import)
 ln -snf "${RELATIVE_ROOT}" "${PROJECT_PATH}/b13-container"
-ln -snf "${RELATIVE_ROOT}/Build/tests/packages" "${PROJECT_PATH}/packages"
-
-# Generate composer.json from the dist template, substituting the TYPO3 constraint.
-sed "s/TYPO3_CONSTRAINT/${TYPO3_CONSTRAINT}/g" Build/composer/composer.dist.json > "${PROJECT_PATH}/composer.json"
+ln -snf "${RELATIVE_ROOT}/Build/acceptance_tests/packages" "${PROJECT_PATH}/packages"
+rm -f "${PROJECT_PATH}/composer.json"
+ln -snf "${RELATIVE_ROOT}/Build/acceptance_tests/composer.${TYPO3_VERSION}.json" "${PROJECT_PATH}/composer.json"
+rm -rf "${PROJECT_PATH}/config"
+mkdir -p "${PROJECT_PATH}/config/system/"
+ln -snf "${RELATIVE_ROOT}/../Build/sites" "${PROJECT_PATH}/config/sites"
 
 cd "${PROJECT_PATH}"
-rm -rf composer.lock config/ public/ var/ vendor/
 
-mkdir -p "config/system/"
+rm -rf composer.lock public/ var/ vendor/
+
 cat > "config/system/additional.php" <<\EOF
 <?php
 $GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = true;
@@ -59,21 +52,17 @@ $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport'] = 'mbox';
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport_mbox_file'] = \TYPO3\CMS\Core\Core\Environment::getVarPath() . '/log/mail.mbox';
 EOF
 
-EXTRA_PACKAGES=""
-if [ "${TYPO3_VERSION}" = "13" ]; then
-    EXTRA_PACKAGES="ichhabrecht/content-defender:*"
-fi
 
-# `composer require` implicitly performs an initial install since there is no composer.lock.
-composer require --no-progress --no-interaction --dev \
-    typo3tests/dataset-import:@dev \
-    typo3/testing-framework:^9.1 \
-    ${EXTRA_PACKAGES}
+composer install --no-progress --no-interaction --dev
 
 TYPO3_SERVER_TYPE=apache \
 TYPO3_PROJECT_NAME="Container Test" \
 vendor/bin/typo3 setup --force --no-interaction
 
+echo "empty db"
+vendor/bin/typo3 dataset:empty-db
+
+echo "import fixtures"
 # Import acceptance test fixtures. vendor/b13/container symlinks back to the
 # project root via the b13-container path repository.
 FIXTURES="vendor/b13/container/Tests/Acceptance/Fixtures"
@@ -99,3 +88,4 @@ vendor/bin/typo3 dataset:import "${FIXTURES}/pageWithWorkspace.csv"
 vendor/bin/typo3 dataset:import "${FIXTURES}/pageWithWorkspace-movedContainer.csv"
 vendor/bin/typo3 dataset:import "${FIXTURES}/pageWithWorkspace-changedContainer.csv"
 vendor/bin/typo3 dataset:import "${FIXTURES}/pageWithContainerAndContentElementOutside.csv"
+echo "finished"
