@@ -55,6 +55,13 @@ env:
           capabilities:
             goog:chromeOptions:
               args: ["no-sandbox", "disable-gpu"]
+  localheadless:
+    modules:
+      config:
+        WebDriver:
+          capabilities:
+            goog:chromeOptions:
+              args: ["headless", "no-sandbox", "disable-gpu"]
 params:
   - parameters.yml
   - env

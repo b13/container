@@ -9,6 +9,10 @@ env:
     extensions:
       enabled:
         - B13\Container\Tests\Acceptance\Support\Extension\BackendContainerEnvironment
+  composer:
+    extensions:
+      enabled:
+        - B13\Container\Tests\Acceptance\Support\Extension\BackendContainerEnvironmentComposer
 
 groups:
   AcceptanceTests-Job-*: AcceptanceTests-Job-*
