@@ -127,6 +127,22 @@ class BackendTester extends \Codeception\Actor
         }
     }
 
+    public function selectEnglishInLanguageMenu(): void
+    {
+        if ($this->getTypo3MajorVersion() < 14) {
+            $this->waitForText('Language');
+            $this->click('Language');
+            $this->waitForText('english');
+            $this->click('english');
+        } else {
+            $this->waitForText('german');
+            //$this->click('english');
+            $this->click('.module-docheader-column button.dropdown-toggle');
+            $this->waitForText('english');
+            $this->click('english');
+        }
+    }
+
     public function selectLanguageComparisonMode(): void
     {
         if ($this->getTypo3MajorVersion() < 14) {
@@ -137,6 +153,19 @@ class BackendTester extends \Codeception\Actor
             $this->click('.module-docheader-buttons .btn-group button.dropdown-toggle');
             $this->waitForElementVisible('.module-docheader-buttons .dropdown-menu');
             $this->click('Language Comparison', '.module-docheader-buttons .dropdown-menu');
+        }
+    }
+
+    public function selectLayoutMode(): void
+    {
+        if ($this->getTypo3MajorVersion() < 14) {
+            $this->waitForElement('select[name="actionMenu"]');
+            $this->selectOption('select[name="actionMenu"]', 'Layout');
+        } else {
+            $this->waitForElementVisible('.module-docheader-buttons .btn-group button.dropdown-toggle');
+            $this->click('.module-docheader-buttons .btn-group button.dropdown-toggle');
+            $this->waitForElementVisible('.module-docheader-buttons .dropdown-menu');
+            $this->click('Layout', '.module-docheader-buttons .dropdown-menu');
         }
     }
 }

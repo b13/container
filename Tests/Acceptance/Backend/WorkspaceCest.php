@@ -69,6 +69,7 @@ class WorkspaceCest
         $I->waitForText('translation-live');
         $I->see('translation-live');
         $I->dontSee('translation-ws');
+        $I->selectEnglishInLanguageMenu();
     }
 
     #[Group('workspace')]
@@ -84,6 +85,8 @@ class WorkspaceCest
         $I->dontSee('translation-live');
         $I->see('translation-ws');
         $this->switchToLiveWs($I);
+        $I->switchToContentFrame();
+        $I->selectEnglishInLanguageMenu();
     }
 
     #[Group('workspace')]

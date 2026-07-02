@@ -4,3 +4,5 @@
 # e.g. in Build/Scripts/runTest.sh
 #
 typo3TestingAcceptanceBaseUrl: http://web:80
+TESTS_LOG_PATH: ../.Build/Web/typo3temp/var/tests/AcceptanceReports
+TESTS_OUTPUT_PATH: ../.Build/Web/typo3temp/var/tests/_output
