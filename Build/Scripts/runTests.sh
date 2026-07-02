@@ -626,7 +626,8 @@ case ${TEST_SUITE} in
             elif [ "${ACCEPTANCE_HEADLESS}" -eq 0 ] && type "open" >/dev/null; then
                 open http://localhost:7900/?autoconnect=1 >/dev/null
             fi
-            ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-${DBMS}-composer-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${TESTPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
+            ADDITIONLPARAMS="-e TESTS_OUTPUT_PATH=../.Build/Web/typo3temp/var/tests_composer/AcceptanceReports -e TESTS_OUTPUT_PATH=../.Build/Web/typo3temp/var/tests_composer/_output"
+            ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-${DBMS}-composer-${SUFFIX} ${XDEBUG_MODE} ${ADDITIONLPARAMS} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${TESTPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
             SUITE_EXIT_CODE=$?
         fi
         ;;

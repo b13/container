@@ -2,9 +2,9 @@ namespace: B13\Container\Tests\Acceptance\Support
 paths:
   tests: Acceptance
   data: .
-  log: ../.Build/Web/typo3temp/var/tests/AcceptanceReports
+  log: '%TESTS_LOG_PATH%'
   support: Acceptance/Support
-  output: ../.Build/Web/typo3temp/var/tests/_output
+  output: '%TESTS_OUTPUT_PATH%'
 settings:
   colors: true
   memory_limit: 1024M
