@@ -14,10 +14,14 @@ namespace B13\Container\Hooks\Datahandler;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Model\Container;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 #[Autoconfigure(public: true)]
 class CommandMapBeforeStartHook
@@ -162,6 +166,7 @@ class CommandMapBeforeStartHook
                         continue;
                     }
 
+                    // Path 1: drop-at-top rewritten from a positive page-uid target.
                     if (
                         isset($value['update']) &&
                         isset($value['update']['tx_container_parent']) &&
@@ -173,7 +178,36 @@ class CommandMapBeforeStartHook
                         try {
                             $container = $this->containerFactory->buildContainer((int)$value['update']['tx_container_parent']);
                             $target = $this->containerService->getNewContentElementAtTopTargetInColumn($container, (int)$value['update']['colPos']);
+                            if ($target === -$container->getUid()) {
+                                // Fallback anchor active. Ensure the invariant
+                                // container.sorting < min(child.sorting) so DataHandler
+                                // computes the new sorting within the children's sort space
+                                // instead of around the container record itself (see #738).
+                                $this->normalizeContainerChildrenSorting($container);
+                            }
                             $cmd[$operation]['target'] = $target;
+                        } catch (Exception $e) {
+                            // not a container
+                        }
+                    }
+
+                    // Path 2: command that already arrives with target = -container_uid.
+                    // The Path 1 branch skips this case (target > 0 gate), so the
+                    // -container_uid anchor reaches DataHandler unchanged. Ensure the
+                    // invariant here as well (see #738).
+                    if (
+                        isset($value['update']) &&
+                        isset($value['update']['tx_container_parent']) &&
+                        $value['update']['tx_container_parent'] > 0 &&
+                        isset($value['update']['colPos']) &&
+                        $value['update']['colPos'] > 0 &&
+                        isset($value['target']) &&
+                        (int)$value['target'] < 0 &&
+                        abs((int)$value['target']) === (int)$value['update']['tx_container_parent']
+                    ) {
+                        try {
+                            $container = $this->containerFactory->buildContainer((int)$value['update']['tx_container_parent']);
+                            $this->normalizeContainerChildrenSorting($container);
                         } catch (Exception $e) {
                             // not a container
                         }
@@ -182,6 +216,62 @@ class CommandMapBeforeStartHook
             }
         }
         return $cmdmap;
+    }
+
+    /**
+     * Renumber the container's children so that all sorting values sit strictly
+     * above the container's own sorting. Invoked from the drop-at-top path when
+     * the anchor falls back to -container_uid. Without this, DataHandler would
+     * compute the new sorting from the container record's own page-level
+     * sorting, which is outside the children's sort range whenever
+     * container.sorting > min(child.sorting) (see #738).
+     *
+     * Writes are workspace-aware: the current BE user's active workspace scopes
+     * both the read and the update.
+     */
+    protected function normalizeContainerChildrenSorting(Container $container): void
+    {
+        $containerRecord = $container->getContainerRecord();
+        $containerUid = (int)$containerRecord['uid'];
+        $containerSorting = (int)$containerRecord['sorting'];
+        $workspace = (int)($GLOBALS['BE_USER']->workspace ?? 0);
+
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tt_content');
+        $qb = $connection->createQueryBuilder();
+        $qb->getRestrictions()->removeAll();
+        $qb->select('uid', 'sorting')
+            ->from('tt_content')
+            ->where(
+                $qb->expr()->eq('tx_container_parent', $qb->createNamedParameter($containerUid, Connection::PARAM_INT)),
+                $qb->expr()->eq('deleted', $qb->createNamedParameter(0, Connection::PARAM_INT)),
+                $qb->expr()->eq('t3ver_wsid', $qb->createNamedParameter($workspace, Connection::PARAM_INT)),
+            )
+            ->orderBy('sorting', 'ASC')
+            ->addOrderBy('uid', 'ASC');
+        $children = $qb->executeQuery()->fetchAllAssociative();
+
+        if ($children === []) {
+            return;
+        }
+        if ((int)$children[0]['sorting'] > $containerSorting) {
+            // invariant already holds
+            return;
+        }
+
+        $newSorting = $containerSorting + 256;
+        $tstamp = time();
+        foreach ($children as $child) {
+            $childUid = (int)$child['uid'];
+            if ((int)$child['sorting'] !== $newSorting) {
+                $connection->update(
+                    'tt_content',
+                    ['sorting' => $newSorting, 'tstamp' => $tstamp],
+                    ['uid' => $childUid],
+                    ['sorting' => Connection::PARAM_INT, 'tstamp' => Connection::PARAM_INT, 'uid' => Connection::PARAM_INT]
+                );
+            }
+            $newSorting += 256;
+        }
     }
 
     protected function rewriteSimpleCommandMap(array $cmdmap): array
