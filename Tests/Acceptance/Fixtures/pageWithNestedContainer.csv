@@ -1,0 +1,9 @@
+"pages"
+,"uid","pid","is_siteroot","title","perms_everybody","sys_language_uid","l10n_parent","l10n_source"
+,51,1,,"pageWithNestedContainer",17,,,
+"tt_content"
+,"uid","pid","CType","header","colPos","tx_container_parent","l18n_parent","sys_language_uid","t3ver_wsid","t3ver_oid","l10n_source","t3ver_state"
+,1000,51,"b13-2cols",,,,,,,,,
+,1001,51,"b13-1col",,200,1000,,,,,,,
+,1002,51,"b13-1col",,,,,,,,,,
+,1003,51,"b13-1col",,200,1002,,,,,,,

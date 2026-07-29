@@ -140,7 +140,7 @@ class Registry
 
     public function isAllowedInColumn(string $cType, int $colPos, string $containerCType): bool
     {
-        $contentDefenderConfiguration = $this->getContentDefenderConfiguration($cType, $colPos);
+        $contentDefenderConfiguration = $this->getContentDefenderConfiguration($containerCType, $colPos);
         $disallowed = GeneralUtility::trimExplode(',', $contentDefenderConfiguration['disallowedContentTypes'] ?? '', true);
         if (in_array($cType, $disallowed)) {
             return false;
