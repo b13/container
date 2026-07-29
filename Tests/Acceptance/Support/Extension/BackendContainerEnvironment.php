@@ -62,6 +62,7 @@ class BackendContainerEnvironment extends BackendEnvironment
             __DIR__ . '/../../Fixtures/pageWithWorkspace-movedContainer.csv',
             __DIR__ . '/../../Fixtures/pageWithContainerAndContentElementOutside.csv',
             __DIR__ . '/../../Fixtures/pageWithWorkspace-changedContainer.csv',
+            __DIR__ . '/../../Fixtures/pageWithNestedContainer.csv',
             __DIR__ . '/../../Fixtures/pages.csv',
             __DIR__ . '/../../Fixtures/sys_workspace.csv',
             __DIR__ . '/../../Fixtures/be_groups.csv',

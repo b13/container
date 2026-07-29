@@ -180,4 +180,26 @@ class ContentDefenderCest
         $I->see('header', 'select');
         $I->dontSee('Images Only', 'select');
     }
+
+    #[Group('content_defender')]
+    public function nestedContainerOfDisallowedContentTypeIsMarkedAsNotAllowed(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithNestedContainer']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-1003');
+        $I->seeElement('#element-tt_content-1003.t3-page-ce-warning');
+    }
+
+    #[Group('content_defender')]
+    public function nestedContainerOfDifferentTypeIsNotMarkedAsNotAllowed(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithNestedContainer']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-1001');
+        $I->dontSeeElement('#element-tt_content-1001.t3-page-ce-warning');
+    }
 }
