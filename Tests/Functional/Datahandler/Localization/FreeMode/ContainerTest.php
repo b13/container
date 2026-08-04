@@ -80,6 +80,74 @@ class ContainerTest extends AbstractDatahandler
     }
 
     #[Test]
+    public function copyContainerKeepsChildOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsChildOrder.csv');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsChildOrderResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerToOtherLanguageKeepsChildOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageKeepsChildOrder.csv');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageKeepsChildOrderResult.csv');
+    }
+
+    #[Test]
+    public function moveContainerToOtherLanguageKeepsChildOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageKeepsChildOrder.csv');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageKeepsChildOrderResult.csv');
+    }
+
+    #[Test]
     public function copyContainerToOtherLanguageCopiesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildren.csv');

@@ -119,11 +119,22 @@ class CommandMapPostProcessingHook
             $container = $this->containerFactory->buildContainer($origUid);
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->startContainerProcess($origUid);
             (GeneralUtility::makeInstance(DatahandlerProcess::class))->lockContentElementRestrictions();
+            $allChildren = $container->getChildRecords();
+            $targetLanguage = $dataHandler->cmdmap['tt_content'][$origUid][$command]['update']['sys_language_uid'] ?? null;
+            // the loop below chains every child after the previously handled one as soon as the
+            // language changes, in that case the original order has to be kept
+            $chainAfterPrevious = $targetLanguage !== null
+                && isset($allChildren[0])
+                && (int)$targetLanguage !== (int)$allChildren[0]['sys_language_uid'];
             $children = [];
             $colPosVals = $container->getChildrenColPos();
             foreach ($colPosVals as $colPos) {
                 $childrenByColPos = $container->getChildrenByColPos($colPos);
-                $childrenByColPos = array_reverse($childrenByColPos);
+                if (!$chainAfterPrevious) {
+                    // every child is pasted on the same target, which is resolved to the top of
+                    // the container column, so the reversed order restores the original order
+                    $childrenByColPos = array_reverse($childrenByColPos);
+                }
                 foreach ($childrenByColPos as $child) {
                     $children[] = $child;
                 }

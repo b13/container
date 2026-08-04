@@ -1,0 +1,15 @@
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent"
+,51,1,"b13-2cols-with-header-container","container-3",1024,0,0,0
+,52,1,"header","container-3-child-header-1",1280,0,200,51
+,53,1,"header","container-3-child-header-2",1536,0,200,51
+,54,1,"header","container-3-child-header-3",1792,0,200,51
+,55,1,"header","container-3-child-left-1",2048,0,201,51
+,56,1,"header","container-3-child-left-2",2304,0,201,51
+,57,1,"header","outside",2560,0,0,0
+,58,3,"b13-2cols-with-header-container","container-3",256,0,0,0
+,59,3,"header","container-3-child-header-3",512,0,200,58
+,60,3,"header","container-3-child-header-2",384,0,200,58
+,61,3,"header","container-3-child-header-1",320,0,200,58
+,62,3,"header","container-3-child-left-2",768,0,201,58
+,63,3,"header","container-3-child-left-1",640,0,201,58
