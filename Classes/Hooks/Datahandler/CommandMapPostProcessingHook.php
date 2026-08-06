@@ -144,6 +144,8 @@ class CommandMapPostProcessingHook
                                 'update' => [
                                     'tx_container_parent' => $containerId,
                                     'colPos' => $record['colPos'],
+                                    // keep the original hidden state instead of DataHandler's hideAtCopy default
+                                    'hidden' => (int)$record['hidden'],
                                 ],
                             ],
                         ],
