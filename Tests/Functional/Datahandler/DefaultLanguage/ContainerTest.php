@@ -245,6 +245,28 @@ class ContainerTest extends AbstractDatahandler
     }
 
     #[Test]
+    public function copyContainerKeepsHiddenStateOfChildren(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsHiddenStateOfChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsHiddenStateOfChildrenResult.csv');
+    }
+
+    #[Test]
     public function moveContainerOtherPageOnTop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageOnTop.csv');
