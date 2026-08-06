@@ -75,6 +75,7 @@ class CommandMapPostProcessingHook
                 if ($newId === null) {
                     continue;
                 }
+                $this->keepHiddenState($newId, $record, $dataHandler);
                 $cmd = ['tt_content' => [$newId=> [
                     'move' => [
                         'target' => -$last,
@@ -106,10 +107,27 @@ class CommandMapPostProcessingHook
                 $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
                 $localDataHandler->process_cmdmap();
+                $newId = $localDataHandler->copyMappingArray['tt_content'][$record['uid']] ?? null;
+                if ($newId !== null) {
+                    $this->keepHiddenState($newId, $record, $dataHandler);
+                }
             }
         } catch (Exception $e) {
             // nothing todo
         }
+    }
+
+    /**
+     * Localize/copyToLanguage always hide the new record unless the source was already hidden
+     * (TcaSchemaCapability::HideRecordsAtCopy), losing the original per-child visibility. Restore it explicitly,
+     * since neither 'localize' nor 'copyToLanguage' cmdmap commands support an 'update' override array.
+     */
+    protected function keepHiddenState(int $newId, array $record, DataHandler $dataHandler): void
+    {
+        $hiddenStateDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $hiddenStateDataHandler->enableLogging = $dataHandler->enableLogging;
+        $hiddenStateDataHandler->start(['tt_content' => [$newId => ['hidden' => (int)$record['hidden']]]], [], $dataHandler->BE_USER);
+        $hiddenStateDataHandler->process_datamap();
     }
 
     protected function copyOrMoveChildren(int $origUid, int $newId, int $containerId, string $command, DataHandler $dataHandler): void
