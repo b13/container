@@ -283,10 +283,12 @@ class Registry
         $defaultGroup = 'container';
         $cTypesExcludedInNewContentElementWizard = [];
         foreach ($GLOBALS['TCA']['tt_content']['containerConfiguration'] as $cType => $containerConfiguration) {
-            $pageTs .= chr(10) . 'mod.web_layout.tt_content.preview {
+            if ($containerConfiguration['backendTemplate'] !== null) {
+                $pageTs .= chr(10) . 'mod.web_layout.tt_content.preview {
 ' . $cType . ' = ' . $containerConfiguration['backendTemplate'] . '
 }
 ';
+            }
             // s. https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102834-RemoveItemsFromNewContentElementWizard.html
             if ($containerConfiguration['registerInNewContentElementWizard'] === false) {
                 $group = $containerConfiguration['group'] !== '' ? $containerConfiguration['group'] : $defaultGroup;
