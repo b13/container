@@ -13,25 +13,20 @@ namespace B13\Container\Listener;
  */
 
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\Configuration\Event\ModifyLoadedPageTsConfigEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
+use TYPO3\CMS\Core\TypoScript\IncludeTree\Event\ModifyLoadedPageTsConfigEvent;
 
+#[AsEventListener(identifier: 'tx-container-page-ts-config')]
 class PageTsConfig
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    public function __construct(Registry $tcaRegistry = null)
+    public function __construct(protected Registry $tcaRegistry)
     {
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
     public function __invoke(ModifyLoadedPageTsConfigEvent $event): void
     {
         $tsConfig = $event->getTsConfig();
-        $tsConfig['default'] .= $this->tcaRegistry->getPageTsString();
+        $tsConfig = array_merge(['pagesTsConfig-package-container' => $this->tcaRegistry->getPageTsString()], $tsConfig);
         $event->setTsConfig($tsConfig);
     }
 }

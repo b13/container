@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -11,28 +12,87 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ContainerTest extends DatahandlerTest
+class ContainerTest extends AbstractDatahandler
 {
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
+    #[Test]
+    public function moveContainerIntoItSelfsNestedAfterElement(): void
     {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsNestedAfterElement.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => -3,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsNestedAfterElementResult.csv');
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    public function moveContainerIntoItSelfsNestedAtTop(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsNestedAtTop.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 2,
+                        'update' => [
+                            'colPos' => 202,
+                            'sys_language_uid' => 0,
+                            'tx_container_parent' => 2,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsNestedAtTopResult.csv');
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+    }
+
+    #[Test]
+    public function moveContainerIntoItSelfsAtTop(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsAtTop.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 2,
+                        'update' => [
+                            'colPos' => 202,
+                            'sys_language_uid' => 0,
+                            'tx_container_parent' => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerIntoItSelfsAtTopResult.csv');
+        self::assertNotEmpty($this->dataHandler->errorLog, 'dataHander error log is empty');
+    }
+
+    #[Test]
     public function deleteContainerDeleteChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -42,48 +102,38 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 1);
-        self::assertSame(1, $row['deleted']);
-        $row = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $row['deleted']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function moveContainerAjaxToBottomMovesChildren(): void
+    #[Test]
+    public function moveContainerAfterElementMovesChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
-                    'move' => -4,
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -4,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
                 ],
             ],
         ];
-        $datamap = [
-            'tt_content' => [
-                1 => [
-                    'colPos' => '0',
-                    'sys_language_uid' => 0,
 
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 2);
-        self::assertSame(1, $child['pid']);
-        self::assertSame(1, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function moveContainerByClipboardToOtherPageAtTopMovesChildren(): void
+    #[Test]
+    public function moveContainerToOtherPageAtTopMovesChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAtTopMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -101,18 +151,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 2);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(1, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAtTopMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToOtherPageAtTopCopiesChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAtTopCopiesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -128,20 +173,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 1);
-        $child = $this->fetchOneRecord('t3_origuid', 2);
-        self::assertSame(3, $child['pid']);
-        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAtTopCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerToOtherPageAfterElementCopiesChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_other_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAfterElementCopiesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -157,19 +195,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 1);
-        $child = $this->fetchOneRecord('t3_origuid', 2);
-        self::assertSame(3, $child['pid']);
-        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherPageAfterElementCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function moveContainerByClipboardToOtherPageAfterElementMovesChildren(): void
+    #[Test]
+    public function moveContainerToOtherPageAfterElementMovesChildren(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language_other_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAfterElementMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -187,17 +219,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 2);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(1, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAfterElementMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function copyClipboardKeepsSortingOfChildren(): void
+    #[Test]
+    public function copyContainerKeepsSortingOfChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -213,8 +241,155 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('t3_origuid', 2);
-        $secondChild = $this->fetchOneRecord('t3_origuid', 5);
-        self::assertTrue($child['sorting'] < $secondChild['sorting']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildrenResult.csv');
+    }
+
+    #[Test]
+    public function moveContainerOtherPageOnTop(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageOnTop.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => 3,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageOnTopResult.csv');
+    }
+
+    #[Test]
+    public function moveContainerOtherPageAfterElement(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageAfterElement.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => -10,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageAfterElementResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerOtherPageOnTop(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTop.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTopResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerOtherPageOnTopWithSimpleCommand(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTopWithSimpleCommand.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => 3,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageOnTopWithSimpleCommandResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerOtherPageAfterElementWithSimpleCommand(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElementWithSimpleCommand.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => -10,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElementWithSimpleCommandResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerOtherPageAfterElement(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElement.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -10,
+                        'update' => [],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerOtherPageAfterElementResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerWithDataHandlerLoggingDisabled(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerWithDataHandlerLoggingDisabled.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [],
+                    ],
+                ],
+            ],
+        ];
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->enableLogging = false;
+        $dataHandler->start([], $cmdmap, $this->backendUser);
+        $dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerWithDataHandlerLoggingDisabledSysLogResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerWithLanguageAsStringKeepsCopiedChildrenSorting(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => '0',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildrenResult.csv');
     }
 }

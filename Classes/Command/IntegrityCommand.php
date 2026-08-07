@@ -13,43 +13,44 @@ namespace B13\Container\Command;
  */
 
 use B13\Container\Integrity\Integrity;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: 'container:integrity',
+    description: 'Checks integrity of containers'
+)]
 class IntegrityCommand extends Command
 {
+    public function __construct(protected Integrity $integrity, ?string $name = null)
+    {
+        parent::__construct($name);
+    }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->getName() === 'integrity:run') {
-            trigger_error(
-                'use "container:integrity" instead of "integrity:run" as command name',
-                E_USER_DEPRECATED
-            );
-        }
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
-        $res = $integrity->run();
+        $io = new SymfonyStyle($input, $output);
+        $res = $this->integrity->run();
         if (count($res['errors']) > 0) {
-            $output->writeln('ERRORS');
+            $errors = [];
             foreach ($res['errors'] as $error) {
-                $output->writeln($error->getErrorMessage());
+                $errors[] = $error->getErrorMessage();
             }
+            $io->error('ERRORS: ' . chr(10) . implode(chr(10), $errors));
         }
         if (count($res['warnings']) > 0) {
-            $output->writeln('WARNINGS ("unused elements")');
-            foreach ($res['warnings'] as $error) {
-                $output->writeln($error->getErrorMessage());
+            $warnings = [];
+            foreach ($res['warnings'] as $warning) {
+                $warnings[] = $warning->getErrorMessage();
             }
+            $io->error('WARNINGS ("unused elements")' . chr(10) . implode(chr(10), $warnings));
         }
         if (count($res['warnings']) === 0 && count($res['errors']) === 0) {
-            $output->writeln('Good Job, no ERRORS/WARNINGS');
+            $io->success('Good Job, no errors/warnings!');
         }
-        return 0;
+        return Command::SUCCESS;
     }
 }

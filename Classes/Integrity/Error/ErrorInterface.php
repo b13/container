@@ -14,14 +14,10 @@ namespace B13\Container\Integrity\Error;
 
 interface ErrorInterface
 {
+    public const ERROR = 2;
+    public const WARNING = 1;
 
-    /**
-     * @return string
-     */
     public function getErrorMessage(): string;
 
-    /**
-     * @return int
-     */
     public function getSeverity(): int;
 }

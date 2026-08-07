@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
 
 /*
@@ -11,29 +12,15 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\ConnectedMode;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
-class ContainerTest extends DatahandlerTest
+class ContainerTest extends AbstractDatahandler
 {
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteContainerDeleteTranslatedChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteTranslatedChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -43,48 +30,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 21);
-        self::assertSame(1, $row['deleted']);
-        $row = $this->fetchOneRecord('uid', 22);
-        self::assertSame(1, $row['deleted']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteTranslatedChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function moveContainerAjaxToBottomMovesChildren(): void
+    #[Test]
+    public function moveContainerToOtherPageMovesChildren(): void
     {
-        $cmdmap = [
-            'tt_content' => [
-                1 => [
-                    'move' => -4,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                1 => [
-                    'colPos' => '0',
-                    'sys_language_uid' => 0,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 22);
-        self::assertSame(1, $child['pid']);
-        self::assertSame(1, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
-    }
-
-    /**
-     * @test
-     */
-    public function moveContainerClipboardToOtherPageMovesChildren(): void
-    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -102,10 +54,6 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 22);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(1, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildrenResult.csv');
     }
 }

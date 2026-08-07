@@ -1,0 +1,8 @@
+"pages"
+,"uid","pid","title","slug"
+,1,0,"page-1","/"
+"tt_content"
+,"uid","pid","CType","header","sorting"
+,1,1,"header","element1",128
+,2,1,"header","element2",768
+# moving 1 after 2 should throw no exception

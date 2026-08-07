@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -13,145 +14,148 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
-use Codeception\Scenario;
-use TYPO3\CMS\Core\Information\Typo3Version;
+use Codeception\Attribute\Group;
 use TYPO3\TestingFramework\Core\Acceptance\Helper\Topbar;
 
 class WorkspaceCest
 {
-
     /**
      * Selector for the module container in the topbar
-     *
-     * @var string
      */
-    public static $topBarModuleSelector = '#typo3-cms-workspaces-backend-toolbaritems-workspaceselectortoolbaritem';
+    public static string $topBarModuleSelector = '#typo3-cms-workspaces-backend-toolbaritems-workspaceselectortoolbaritem';
 
-    /**
-     * @param BackendTester $I
-     */
     public function _before(BackendTester $I)
     {
         $I->loginAs('admin');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function liveWorkspaceShowsLiveElements(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForText('header-live');
         $I->see('header-live');
         $I->dontSee('header-ws');
         $I->dontSee('header-new-ws');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function testWorkspaceShowsWorkspaceElements(BackendTester $I, PageTree $pageTree)
     {
+        $I->clickLayoutModuleButton();
         $this->switchToTestWs($I);
-        $I->click('Page');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->waitForText('header-ws');
         $I->dontSee('header-live');
         $I->see('header-ws');
         $I->see('header-new-ws');
         $this->switchToLiveWs($I);
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function liveWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        $I->selectGermanInLanguageMenu();
         $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->waitForText('translation-live');
         $I->see('translation-live');
         $I->dontSee('translation-ws');
+        $I->selectEnglishInLanguageMenu();
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @group workspace
-     */
+    #[Group('workspace')]
     public function testWorkspaceShowsLiveElementsForTranslations(BackendTester $I, PageTree $pageTree): void
     {
+        $I->clickLayoutModuleButton();
         $this->switchToTestWs($I);
-        $I->click('Page');
         $pageTree->openPath(['home', 'pageWithWorkspace']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        $I->selectGermanInLanguageMenu();
         $I->waitForElementNotVisible('#t3js-ui-block');
-
         $I->dontSee('translation-live');
         $I->see('translation-ws');
         $this->switchToLiveWs($I);
+        $I->switchToContentFrame();
+        $I->selectEnglishInLanguageMenu();
     }
 
-    /**
-     * @group workspace
-     */
-    public function testWorkspaceShowsLiveContainerUidForContainerParentFieldWhenContainerIsAlreadyMoved(BackendTester $I, PageTree $pageTree, Scenario $scenario)
+    #[Group('workspace')]
+    public function testWorkspaceShowsLiveContainerUidForContainerParentFieldWhenContainerIsAlreadyMoved(BackendTester $I, PageTree $pageTree)
     {
-        $typo3Version = new Typo3Version();
-        if ($typo3Version->getMajorVersion() < 11) {
-            $scenario->skip('test runs only on v11');
-        }
+        $I->clickLayoutModuleButton();
         $this->switchToTestWs($I);
-        $I->click('Page');
         $pageTree->openPath(['home', 'pageWithWorkspace-movedContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         // 600 is live uid (603 is ws uid)
-        $I->waitForElement('td[data-colpos="600-200"]');
+        $dataColPos = $I->getDataColPos(600, 200);
+        $I->waitForElement('td[data-colpos="' . $dataColPos . '"]');
         $this->switchToLiveWs($I);
     }
 
-    /**
-     * @param BackendTester $I
-     */
+    #[Group('workspace')]
+    public function canCreateChildInWsWhenContainerCTypeWasChanged(BackendTester $I, PageTree $pageTree)
+    {
+        $I->clickLayoutModuleButton();
+        $this->switchToTestWs($I);
+        $pageTree->openPath(['home', 'pageWithWorkspace-changedContainer']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+
+        $dataColPos = 202;
+        $containerColumn = '#element-tt_content-701 [data-colpos="' . $dataColPos . '"]';
+        $contentInContainerColumn = '#element-tt_content-701 div[data-colpos="' . $dataColPos . '"] .t3-page-ce';
+        $I->waitForElement($containerColumn);
+        $I->dontSeeElement($contentInContainerColumn);
+        $I->clickNewContentElement($containerColumn);
+        $I->switchToIFrame();
+        $I->waitForModal();
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
+        $I->waitForText('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+        $I->switchToContentFrame();
+        $I->waitForText('Header Only [header]');
+        $I->waitForText('right side [202]');
+    }
+
     protected function switchToLiveWs(BackendTester $I): void
     {
         $this->switchToWs($I, 'LIVE workspace');
         $I->wait(0.3);
     }
 
-    /**
-     * @param BackendTester $I
-     */
     protected function switchToTestWs(BackendTester $I): void
     {
         $this->switchToWs($I, 'test-ws');
         $I->wait(0.3);
     }
 
-    /**
-     * @param BackendTester $I
-     * @param string $ws
-     */
     protected function switchToWs(BackendTester $I, string $ws): void
     {
-        $I->switchToMainFrame();
-        $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
-        $I->canSee($ws, self::$topBarModuleSelector);
-        $I->click($ws, self::$topBarModuleSelector);
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->switchToMainFrame();
+            if ($ws === 'test-ws') {
+                $I->executeJS("document.querySelector('typo3-backend-workspace-selector #workspace-menu button[title=\"test-ws\"]').click();");
+            } else {
+                // first button
+                $I->executeJS("document.querySelector('typo3-backend-workspace-selector #workspace-menu button').click();");
+            }
+        } else {
+            $I->switchToMainFrame();
+            $I->click(Topbar::$dropdownToggleSelector, self::$topBarModuleSelector);
+            $I->canSee($ws, self::$topBarModuleSelector);
+            $I->click($ws, self::$topBarModuleSelector);
+        }
     }
 }

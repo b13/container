@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
 
 /*
@@ -11,28 +12,15 @@ namespace B13\Container\Tests\Functional\Datahandler\Localization\FreeMode;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
-class ContainerTest extends DatahandlerTest
+class ContainerTest extends AbstractDatahandler
 {
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/sys_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_free_mode.xml');
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteContainerDeleteChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -42,48 +30,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 51);
-        self::assertSame(1, $row['deleted']);
-        $row = $this->fetchOneRecord('uid', 52);
-        self::assertSame(1, $row['deleted']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function moveContainerAjaxToBottomMovesChildren(): void
+    #[Test]
+    public function moveContainerToOtherPageMovesChildren(): void
     {
-        $cmdmap = [
-            'tt_content' => [
-                51 => [
-                    'move' => -54,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                51 => [
-                    'colPos' => '0',
-                    'sys_language_uid' => 1,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 52);
-        self::assertSame(1, $child['pid']);
-        self::assertSame(51, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
-    }
-
-    /**
-     * @test
-     */
-    public function moveContainerClipboardToOtherPageMovesChildren(): void
-    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -101,18 +54,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(51, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageMovesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function copyClipboardCopiesChildren(): void
+    #[Test]
+    public function copyContainerCopiesChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerCopiesChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -128,19 +76,36 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 51);
-        $child = $this->fetchOneRecord('t3_origuid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(1, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerCopiesChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function copyClipboardToOtherLanguageCopiesChildren(): void
+    #[Test]
+    public function copyContainerToOtherLanguageCopiesChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesChildrenResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerToDefaultLanguage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToDefaultLanguage.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -157,19 +122,13 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 51);
-        $child = $this->fetchOneRecord('t3_origuid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame($copiedRecord['uid'], $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToDefaultLanguageResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function copyClipboardToOtherLanguageCopiesNestedChildren(): void
+    #[Test]
+    public function copyContainerToOtherLanguageCopiesNestedChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesNestedChildren.csv');
         $cmdmap = [
             'tt_content' => [
                 55 => [
@@ -186,18 +145,37 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('t3_origuid', 56);
-        $nestedChild = $this->fetchOneRecord('t3_origuid', 57);
-        self::assertSame($child['uid'], $nestedChild['tx_container_parent']);
-        self::assertSame(200, $nestedChild['colPos']);
-        self::assertSame(0, $nestedChild['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerToOtherLanguageCopiesNestedChildrenResult.csv');
     }
 
-    /**
-     * @test
-     */
-    public function moveContainerClipboardToOtherLanguageMovesChildren(): void
+    #[Test]
+    public function moveContainerToOtherLanguageMovesChildren(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageMovesChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                51 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => 3,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 1,
+
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherLanguageMovesChildrenResult.csv');
+    }
+
+    #[Test]
+    public function moveContainerToDefaultLanguage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToDefaultLanguage.csv');
         $cmdmap = [
             'tt_content' => [
                 51 => [
@@ -215,41 +193,6 @@ class ContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 52);
-        self::assertSame(3, $child['pid']);
-        self::assertSame(51, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
-    }
-
-    /**
-     * @test
-     */
-    public function moveContainerAjaxToOtherLanguageMovesChildren(): void
-    {
-        $cmdmap = [
-            'tt_content' => [
-                51 => [
-                    'move' => 1,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                51 => [
-                    'colPos' => '0',
-                    'sys_language_uid' => 0,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $child = $this->fetchOneRecord('uid', 52);
-        self::assertSame(1, $child['pid']);
-        self::assertSame(51, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToDefaultLanguageResult.csv');
     }
 }

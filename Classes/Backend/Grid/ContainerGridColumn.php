@@ -13,27 +13,29 @@ namespace B13\Container\Backend\Grid;
  */
 
 use B13\Container\Domain\Model\Container;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumn;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumn extends GridColumn
 {
-    protected $container;
-
-    protected $allowNewContentElements = true;
-
-    public function __construct(PageLayoutContext $context, array $columnDefinition, Container $container, bool $allowNewContentElements = true)
-    {
+    public function __construct(
+        PageLayoutContext $context,
+        array $columnDefinition,
+        protected Container $container,
+        protected ?string $newContentUrl,
+        protected bool $skipNewContentElementWizard
+    ) {
         parent::__construct($context, $columnDefinition);
-        $this->container = $container;
-        $this->allowNewContentElements = $allowNewContentElements;
     }
 
     public function getContainerUid(): int
     {
         return $this->container->getUidOfLiveWorkspace();
+    }
+
+    public function getNewContentElementWizardShouldBeSkipped(): bool
+    {
+        return $this->skipNewContentElementWizard;
     }
 
     public function getTitle(): string
@@ -46,7 +48,7 @@ class ContainerGridColumn extends GridColumn
         if ($this->container->getLanguage() > 0 && $this->container->isConnectedMode()) {
             return false;
         }
-        return $this->allowNewContentElements;
+        return $this->newContentUrl !== null;
     }
 
     public function isActive(): bool
@@ -57,16 +59,9 @@ class ContainerGridColumn extends GridColumn
 
     public function getNewContentUrl(): string
     {
-        $pageId = $this->context->getPageId();
-        $urlParameters = [
-            'id' => $pageId,
-            'sys_language_uid' => $this->container->getLanguage(),
-            'colPos' => $this->getColumnNumber(),
-            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
-            'uid_pid' => $pageId,
-            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
-        ];
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        if ($this->newContentUrl === null) {
+            return '';
+        }
+        return $this->newContentUrl;
     }
 }

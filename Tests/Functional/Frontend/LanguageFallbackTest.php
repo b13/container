@@ -10,17 +10,33 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class LanguageFallbackTest extends AbstractFrontendTest
+class LanguageFallbackTest extends AbstractFrontend
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/setup.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                ],
+            ]
+        );
+    }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function nothingTranslated(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-default</h1>', $body);
@@ -32,13 +48,12 @@ class LanguageFallbackTest extends AbstractFrontendTest
         self::assertStringContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function bothTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_both_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_both_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-fr</h1>', $body);
@@ -50,13 +65,29 @@ class LanguageFallbackTest extends AbstractFrontendTest
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
+    public function fallbackForStrictLanguageToOtherTranslationFreeMode(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_fallback_for_strict_language_to_other_translation_free_mode.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/ch'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h1 class="container">container-de</h1>', $body);
+        self::assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
+        self::assertStringContainsString('<h6 class="header-children">header-de</h6>', $body);
+        self::assertStringNotContainsString('<h6 class="header-children">header-default</h6>', $body);
+        // rendered content
+        self::assertStringContainsString('<h2 class="">header-de</h2>', $body);
+        self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
+    }
+
+    #[Test]
+    #[Group('frontend')]
     public function bothTranslatedTranslatedChildHidden(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_both_translated_tranlated_child_hidden.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-fr</h1>', $body);
@@ -68,13 +99,12 @@ class LanguageFallbackTest extends AbstractFrontendTest
         self::assertStringContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_child_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_child_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-default</h1>', $body);
@@ -86,13 +116,12 @@ class LanguageFallbackTest extends AbstractFrontendTest
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function containerTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageFallback/tt_content_container_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/fr'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageFallback/tt_content_container_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/fr'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-fr</h1>', $body);

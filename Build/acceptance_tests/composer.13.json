@@ -1,0 +1,27 @@
+{
+    "repositories": [
+        {"type": "path", "url": "b13-container"},
+        {"type": "path", "url": "packages/*"}
+    ],
+    "require": {
+        "typo3/cms-backend": "^13.4",
+        "typo3/cms-frontend": "^13.4",
+        "typo3/cms-install": "^13.4",
+        "typo3/cms-fluid-styled-content": "^13.4",
+        "typo3/cms-info": "^13.4",
+        "typo3/cms-workspaces": "^13.4",
+        "b13/container": "@dev",
+        "ichhabrecht/content-defender": "*",
+        "typo3tests/dataset-import": "@dev",
+        "typo3/testing-framework": "^9.1",
+        "b13/container-example": "dev-master"
+    },
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

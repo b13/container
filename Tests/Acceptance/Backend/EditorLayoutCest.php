@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -16,27 +17,20 @@ use B13\Container\Tests\Acceptance\Support\PageTree;
 
 class EditorLayoutCest
 {
-
-    /**
-     * @param BackendTester $I
-     */
     public function _before(BackendTester $I)
     {
         $I->loginAs('editor');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
     public function canSeeNewContentButton(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithContainer']);
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-5']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $dataColPos = $I->getDataColPos(802, 200);
         // header
-        $I->see('Content', '#element-tt_content-1 [data-colpos="1-200"]');
+        $I->waitForElement('#element-tt_content-802 [data-colpos="' . $dataColPos . '"]');
+        $I->see('Content', '#element-tt_content-802 [data-colpos="' . $dataColPos . '"]');
     }
 }

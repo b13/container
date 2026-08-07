@@ -1,0 +1,33 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\* \", expected type at offset 679$#"
+			count: 1
+			path: ../Tests/Acceptance/Support/BackendTester.php
+
+		-
+			message: "#^PHPDoc tag @return has invalid value \\(\\)\\: Unexpected token \"\\\\n     \\* \", expected type at offset 743$#"
+			count: 1
+			path: ../Tests/Acceptance/Support/BackendTester.php
+
+		-
+			message: "#^PHPDoc tag @throws with type B13\\\\Container\\\\Tests\\\\Acceptance\\\\Support\\\\_generated\\\\ConfigurationException is not subtype of Throwable$#"
+			count: 1
+			path: ../Tests/Acceptance/Support/BackendTester.php
+
+		-
+			message: "#^PHPDoc tag @throws with type B13\\\\Container\\\\Tests\\\\Acceptance\\\\Support\\\\_generated\\\\ModuleException is not subtype of Throwable$#"
+			count: 1
+			path: ../Tests/Acceptance/Support/BackendTester.php
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Backend\\\\View\\\\PageLayoutContext constructor invoked with 2 parameters, 5 required\\.$#"
+			count: 1
+			path: ../Tests/Functional/Integrity/IntegrityTest.php
+		-
+			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
+			count: 1
+			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php
+		-
+			message: "#^Call to function is_array\\(\\) with TYPO3\\\\CMS\\\\Core\\\\Domain\\\\RecordInterface will always evaluate to false\\.$#"
+			count: 1
+			path: ../Classes/Backend/Grid/ContainerGridColumnItem.php

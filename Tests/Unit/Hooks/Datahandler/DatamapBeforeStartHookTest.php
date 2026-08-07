@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Unit\Hooks\Datahandler;
 
 /*
@@ -12,34 +13,42 @@ namespace B13\Container\Tests\Unit\Hooks\Datahandler;
  */
 
 use B13\Container\Domain\Factory\ContainerFactory;
+use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Hooks\Datahandler\Database;
 use B13\Container\Hooks\Datahandler\DatamapBeforeStartHook;
+use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DatamapBeforeStartHookTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function datamapForLocalizationsExtendsDatamapWithLocalizations(): void
     {
-        $database = $this->prophesize(Database::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
         $defaultRecord = [
             'uid' => 2,
             'tx_container_parent' => 0,
             'sys_language_uid' => 0,
         ];
-        $database->fetchOverlayRecords($defaultRecord)->willReturn([['uid' => 3]]);
-        $database->fetchOneRecord(2)->willReturn($defaultRecord);
-
-        $dataHandlerHook = $this->getAccessibleMock(
-            DatamapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'database' => $database->reveal()]
-        );
+        $database = $this->getMockBuilder(Database::class)
+            ->onlyMethods(['fetchOverlayRecords', 'fetchOneRecord'])
+            ->getMock();
+        $database->expects(self::once())->method('fetchOverlayRecords')->with($defaultRecord)->willReturn([['uid' => 3]]);
+        $database->expects(self::once())->method('fetchOneRecord')->with(2)->willReturn($defaultRecord);
+        $containerRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(DatamapBeforeStartHook::class))
+            ->setConstructorArgs([
+                'containerFactory' => $containerFactory,
+                'database' => $database,
+                'tcaRegistry' => $containerRegistry,
+                'containerService' => $containerService,
+            ])
+            ->onlyMethods([])
+            ->getMock();
         $datamap = [
             'tt_content' => [
                 2 => [
@@ -53,54 +62,5 @@ class DatamapBeforeStartHookTest extends UnitTestCase
         $modDatamap = $dataHandlerHook->_call('datamapForChildLocalizations', $datamap);
         self::assertIsArray($modDatamap['tt_content'][3]);
         self::assertSame(1, $modDatamap['tt_content'][3]['tx_container_parent']);
-    }
-    /**
-     * @test
-     */
-    public function extractContainerIdFromColPosInDatamapSetsContainerIdToSplittedColPosValue(): void
-    {
-        $database = $this->prophesize(Database::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $dataHandlerHook = $this->getAccessibleMock(
-            DatamapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'database' => $database->reveal()]
-        );
-        $datamap = [
-            'tt_content' => [
-                39 => [
-                    'colPos' => '2-34',
-                    'sys_language_uid' => 0,
-                ],
-            ],
-        ];
-        $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
-        self::assertSame(34, $datamap['tt_content'][39]['colPos']);
-        self::assertSame(2, $datamap['tt_content'][39]['tx_container_parent']);
-    }
-
-    /**
-     * @test
-     */
-    public function extractContainerIdFromColPosInDatamapSetsContainerIdToZeroValue(): void
-    {
-        $database = $this->prophesize(Database::class);
-        $containerFactory = $this->prophesize(ContainerFactory::class);
-        $dataHandlerHook = $this->getAccessibleMock(
-            DatamapBeforeStartHook::class,
-            ['foo'],
-            ['containerFactory' => $containerFactory->reveal(), 'database' => $database->reveal()]
-        );
-        $datamap = [
-            'tt_content' => [
-                39 => [
-                    'colPos' => '0',
-                    'sys_language_uid' => 0,
-                ],
-            ],
-        ];
-        $datamap = $dataHandlerHook->_call('extractContainerIdFromColPosInDatamap', $datamap);
-        self::assertSame(0, $datamap['tt_content'][39]['colPos']);
-        self::assertSame(0, $datamap['tt_content'][39]['tx_container_parent']);
     }
 }

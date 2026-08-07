@@ -4,41 +4,19 @@ services:
     autoconfigure: true
     public: false
 
-  B13\Container\View\ContainerLayoutView:
-    shared: false
-    public: true
+  B13\Container\:
+    resource: '../Classes/*'
+    exclude:
+      - '../Classes/Domain/Model/*'
+      - '../Classes/Backend/Grid/*'
+      - '../Classes/Integrity/Error/*'
+      - '../Classes/Tca/ContainerConfiguration.php'
+      - '../Classes/**/Exception.php'
 
-  B13\Container\Listener\PageTsConfig:
+
+  B13\Container\DataProcessing\ContainerProcessor:
     tags:
-      - name: event.listener
-        identifier: 'tx-container-page-ts-config'
-        event: TYPO3\CMS\Core\Configuration\Event\ModifyLoadedPageTsConfigEvent
-  B13\Container\Listener\BootCompleted:
+      - { name: 'data.processor', identifier: 'container' }
+  B13\Container\DataProcessing\ContentAreaProcessor:
     tags:
-      - name: event.listener
-        identifier: 'tx-container-boot-completed'
-        event: TYPO3\CMS\Core\Core\Event\BootCompletedEvent
-  B13\Container\Command\FixLanguageModeCommand:
-    tags:
-      - name: 'console.command'
-        command: 'container:fixLanguageModeCommand'
-        schedulable: false
-        description: connect children of connected container if possible, else disconnect container
-  B13\Container\Command\FixContainerParentForConnectedModeCommand:
-    tags:
-      - name: 'console.command'
-        command: 'container:fixContainerParentForConnectedModeCommand'
-        schedulable: false
-        description: tx_container_parent of children in connected mode should point to default language container
-  B13\Container\Command\DeleteChildrenWithWrongPidCommand:
-    tags:
-      - name: 'console.command'
-        command: 'container:deleteChildrenWithWrongPid'
-        schedulable: false
-        description: delete all child records with pid neq containers pid
-  B13\Container\Command\IntegrityCommand:
-    tags:
-      - name: 'console.command'
-        command: 'container:integrity'
-        schedulable: true
-        description: Checks integrity of containers
+      - { name: 'data.processor', identifier: 'container-content-area' }

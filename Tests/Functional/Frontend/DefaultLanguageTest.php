@@ -10,18 +10,28 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class DefaultLanguageTest extends AbstractFrontendTest
+class DefaultLanguageTest extends AbstractFrontend
 {
-
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childrenAreRendered(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest());
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-default</h1>', $body);
@@ -30,5 +40,72 @@ class DefaultLanguageTest extends AbstractFrontendTest
         // rendered content
         self::assertStringContainsString('<h2 class="">header-default</h2>', $body);
         self::assertStringContainsString('<h2 class="">left-side-default</h2>', $body);
+    }
+
+    #[Test]
+    #[Group('frontend')]
+    public function childrenAreRenderedAsSorted(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerWithTwoChildren.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/container_with_two_children.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h6>first child</h6><h6>second child</h6>', $body);
+    }
+
+    #[Test]
+    #[Group('frontend')]
+    public function canRenderContainerFromOtherPage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContainerFromOtherPage.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/container_from_other_page.typoscript',
+                ],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h2>left side (201)</h2><div class="left-children"><h6 class="left-children">child</h6><div id="c2"', $body);
+    }
+
+    #[Test]
+    #[Group('frontend')]
+    public function childrenAreNotRenderedIfSkipOptionIsSet(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_language.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup_skip_rendering_child_content.typoscript'],
+            ]
+        );
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('<h1 class="container">container-default</h1>', $body);
+        self::assertStringContainsString('<h6 class="header-children">header-default</h6>', $body);
+        self::assertStringContainsString('<h6 class="left-children">left-side-default</h6>', $body);
+        // rendered content
+        self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
+        self::assertStringNotContainsString('<h2 class="">left-side-default</h2>', $body);
     }
 }

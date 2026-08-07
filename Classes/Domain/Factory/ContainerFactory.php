@@ -14,34 +14,17 @@ namespace B13\Container\Domain\Factory;
 
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Versioning\VersionState;
 
-class ContainerFactory implements SingletonInterface
+class ContainerFactory
 {
-    /**
-     * @var Database
-     */
-    protected $database;
+    protected int $workspaceId = 0;
 
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var int
-     */
-    protected $workspaceId = 0;
-
-    public function __construct(Database $database = null, Registry $tcaRegistry = null, Context $context = null)
+    public function __construct(protected Database $database, protected Registry $tcaRegistry, Context $context)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-        }
         $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
@@ -55,10 +38,6 @@ class ContainerFactory implements SingletonInterface
         return $this->database->fetchOneDefaultRecord($localizedContainer);
     }
 
-    /**
-     * @param int $uid
-     * @return Container
-     */
     public function buildContainer(int $uid): Container
     {
         $record = $this->containerByUid($uid);
@@ -102,14 +81,23 @@ class ContainerFactory implements SingletonInterface
 
     protected function children(array $containerRecord, int $language): array
     {
-        return $this->database->fetchRecordsByParentAndLanguage((int)$containerRecord['uid'], $language);
+        $records = $this->database->fetchRecordsByParentAndLanguage((int)$containerRecord['uid'], $language);
+        $records = $this->workspaceOverlay($records);
+        return $records;
     }
 
-    /**
-     * @param array $defaultRecords
-     * @param array $localizedRecords
-     * @return array
-     */
+    protected function workspaceOverlay(array $records): array
+    {
+        $filtered = [];
+        foreach ($records as $row) {
+            BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
+            if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
+                $filtered[] = $row;
+            }
+        }
+        return $filtered;
+    }
+
     protected function sortLocalizedRecordsByDefaultRecords(array $defaultRecords, array $localizedRecords): array
     {
         $sorted = [];
@@ -125,10 +113,6 @@ class ContainerFactory implements SingletonInterface
         return $sorted;
     }
 
-    /**
-     * @param array $records
-     * @return array
-     */
     protected function recordsByColPosKey(array $records): array
     {
         $recordsByColPosKey = [];

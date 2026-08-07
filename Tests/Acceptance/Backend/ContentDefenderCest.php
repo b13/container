@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -13,87 +14,192 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
+use Codeception\Attribute\Group;
 
 class ContentDefenderCest
 {
-
-    /**
-     * @param BackendTester $I
-     */
     public function _before(BackendTester $I)
     {
         $I->loginAs('admin');
     }
 
+    #[Group('content_defender')]
     public function canCreateChildIn2ColsContainerWithNoContentDefenderRestrictionsDefined(BackendTester $I, PageTree $pageTree): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithDifferentContainers']);
-        $I->wait(0.2);
+        $I->wait(0.5);
         $I->switchToContentFrame();
-        $I->click('Content', '#element-tt_content-300 [data-colpos="300-200"]');
+        $dataColPos = $I->getDataColPos(300, 200);
+        $colPosSelector = '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        $I->waitForText('Header Only');
         $I->see('Header Only');
-        $I->see('Table');
+        $I->see('Images Only');
     }
 
+    #[Group('content_defender')]
     public function doNotSeeNotAllowedContentElementsInNewContentElementWizard(BackendTester $I, PageTree $pageTree): void
     {
-        $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithContainer']);
-        $I->wait(0.2);
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        $I->wait(0.5);
         $I->switchToContentFrame();
-        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
+        $dataColPos = $I->getDataColPos(800, 200);
+        $colPosSelector = '#element-tt_content-800 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
-        $I->dontSee('Table');
+        $I->dontSee('Images Only');
     }
 
+    #[Group('content_defender')]
+    public function doNotSeeNotAllowedContentElementsInNewContentElementWizardTriggeredByContextMenu(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-800 [data-contextmenu-uid="810"]');
+        $I->click('#element-tt_content-800 [data-contextmenu-uid="810"]');
+        $I->switchToMainFrame();
+        $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more"]', 5);
+        $I->click('button[data-contextmenu-id="root_more"]', 'typo3-backend-context-menu');
+        $I->waitForElementVisible('typo3-backend-context-menu button[data-contextmenu-id="root_more_newWizard"]', 5);
+        $I->click('button[data-contextmenu-id="root_more_newWizard"]', 'typo3-backend-context-menu');
+
+        $I->switchToIFrame();
+        $I->waitForModal();
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        $I->waitForText('Header Only');
+        $I->dontSee('Images Only');
+    }
+
+    #[Group('content_defender')]
     public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenCreateNewElement(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithContainer']);
-        $I->wait(0.2);
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-4']);
+        $I->wait(0.5);
         $I->switchToContentFrame();
-        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
+        $dataColPos = $I->getDataColPos(801, 200);
+        $colPosSelector = '#element-tt_content-801 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
         $I->switchToContentFrame();
-        $I->wait(0.2);
+        $I->wait(0.5);
         $I->see('textmedia', 'select');
-        $I->dontSee('Table', 'select');
+        $I->dontSee('Images Only', 'select');
     }
 
+    #[Group('content_defender')]
     public function doNotSeeNotAllowedContentElementsInCTypeSelectBoxWhenEditAnElement(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'contentTCASelectCtype']);
-        $I->wait(0.2);
+        $I->wait(0.5);
         $I->switchToContentFrame();
-        $I->click('#element-tt_content-502 a[title="Edit"]');
+        $I->openRecordInContextPanelOrWithEditDocumentController(502);
         $I->see('textmedia', 'select');
-        $I->dontSee('Table', 'select');
+        $I->dontSee('Images Only', 'select');
     }
 
+    #[Group('content_defender')]
     public function canSeeNewContentButtonIfMaxitemsIsNotReached(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'contentDefenderMaxitems']);
-        $I->wait(0.2);
+        $I->wait(0.5);
         $I->switchToContentFrame();
-        $I->see('Content', '#element-tt_content-402 [data-colpos="402-202"]');
+        $dataColPos = $I->getDataColPos(402, 202);
+        $I->waitForElement('#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
+        $I->see('Content', '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]');
     }
 
+    #[Group('content_defender')]
     public function canNotSeeNewContentButtonIfMaxitemsIsReached(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'contentDefenderMaxitems']);
-        $I->wait(0.2);
+        $I->wait(0.5);
         $I->switchToContentFrame();
-        $I->dontSee('Content', '#element-tt_content-401 [data-colpos="401-202"]');
+        $dataColPos = $I->getDataColPos(401, 202);
+        $I->waitForElement('#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->dontSee($newContentElementLabel, '#element-tt_content-401 [data-colpos="' . $dataColPos . '"]');
+    }
+
+    #[Group('content_defender')]
+    public function canCreateNewChildInContainerIfMaxitemsIsReachedInOtherContainer(BackendTester $I, PageTree $pageTree)
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'contentDefenderMaxitems']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $dataColPos = $I->getDataColPos(402, 202);
+        $colPosSelector = '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]';
+        $I->scrollTo($colPosSelector);
+        $I->clickNewContentElement($colPosSelector);
+        $I->switchToIFrame();
+        $I->waitForModal();
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default\"]').click()");
+        $I->waitForText('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+        $I->switchToContentFrame();
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->waitForText('Create new Header Only');
+        } else {
+            $I->waitForText('Create new Page Content on page');
+        }
+        $I->seeElement('#EditDocumentController');
+    }
+
+    #[Group('content_defender')]
+    public function seeEditDocumentWhenAddingChildrenToColposWhereOnlyHeaderIsAllowed(BackendTester $I, PageTree $pageTree)
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $dataColPos = $I->getDataColPos(300, 201);
+        $I->waitForElement('#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->click($newContentElementLabel, '#element-tt_content-300 [data-colpos="' . $dataColPos . '"]');
+        $I->switchToIFrame();
+        $I->switchToContentFrame();
+        $I->wait(0.5);
+        $I->see('header', 'select');
+        $I->dontSee('Images Only', 'select');
+    }
+
+    #[Group('content_defender')]
+    public function nestedContainerOfDisallowedContentTypeIsMarkedAsNotAllowed(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithNestedContainer']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-1003');
+        $I->seeElement('#element-tt_content-1003.t3-page-ce-warning');
+    }
+
+    #[Group('content_defender')]
+    public function nestedContainerOfDifferentTypeIsNotMarkedAsNotAllowed(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithNestedContainer']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-1001');
+        $I->dontSeeElement('#element-tt_content-1001.t3-page-ce-warning');
     }
 }

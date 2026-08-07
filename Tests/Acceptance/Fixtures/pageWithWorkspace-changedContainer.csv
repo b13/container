@@ -1,0 +1,7 @@
+"pages"
+,"uid","pid","is_siteroot","title"
+,23,1,,"pageWithWorkspace-changedContainer"
+"tt_content"
+,"uid","pid","CType","header","t3ver_oid","t3ver_wsid","t3ver_state","t3ver_stage"
+,"701","23","b13-2cols","live","0","0","0","0"
+,"702","23","b13-2cols-with-header-container","ws","701","1","0","0"

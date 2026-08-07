@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
@@ -11,37 +12,29 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
-class LocalizationTest extends DatahandlerTest
+class LocalizationTest extends AbstractContentDefender
 {
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender',
     ];
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
     protected function setUp(): void
     {
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            $this->testExtensionsToLoad[] = 'typo3conf/ext/content_defender';
+        }
         parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/pages.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_default_language.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_translations_connected_mode.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/tt_content_content_defender.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localization/setup.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function moveElementIntoContainerAtTopClipboard(): void
+    #[Test]
+    #[Group('content_defender')]
+    public function moveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCType(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -50,9 +43,9 @@ class LocalizationTest extends DatahandlerTest
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-200',
+                            'colPos' => 200,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -62,46 +55,12 @@ class LocalizationTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 72);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localization/MoveElementIntoContainerAtTopToNotMoveTranslationIfDisallowedCTypeResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function moveElementIntoContainerAtTopAjax(): void
-    {
-        $cmdmap = [
-            'tt_content' => [
-                71 => [
-                    'move' => 1,
-                ],
-            ],
-        ];
-        $datamap = [
-            'tt_content' => [
-                71 => [
-                    'colPos' => '1-200',
-                    'sys_language_uid' => 0,
-
-                ],
-            ],
-        ];
-        $this->dataHandler->start($datamap, $cmdmap, $this->backendUser);
-        $this->dataHandler->process_datamap();
-        $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('uid', 72);
-        self::assertSame(0, (int)$row['tx_container_parent']);
-        self::assertSame(0, (int)$row['colPos']);
-    }
-
-    /**
-     * @test
-     * @group content_defender
-     */
-    public function copyElementIntoContainerAtTop(): void
+    #[Test]
+    #[Group('content_defender')]
+    public function copyElementIntoContainerAtTopDoNotCopyTranslationIfDisallowedCType(): void
     {
         $cmdmap = [
             'tt_content' => [
@@ -110,9 +69,9 @@ class LocalizationTest extends DatahandlerTest
                         'action' => 'paste',
                         'target' => 1,
                         'update' => [
-                            'colPos' => '1-200',
+                            'colPos' => 200,
                             'sys_language_uid' => 0,
-
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -122,17 +81,6 @@ class LocalizationTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-        $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    't3_origuid',
-                    $queryBuilder->createNamedParameter(72, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-        self::assertFalse($row);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localization/CopyElementIntoContainerAtTopDoNotCopyTranslationIfDisallowedCTypeResult.csv');
     }
 }

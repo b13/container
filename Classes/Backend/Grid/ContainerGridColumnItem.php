@@ -13,20 +13,24 @@ namespace B13\Container\Backend\Grid;
  */
 
 use B13\Container\Domain\Model\Container;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumn;
+use B13\Container\Tca\Registry;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
+use TYPO3\CMS\Core\Domain\Record;
+use TYPO3\CMS\Core\Domain\RecordFactory;
+use TYPO3\CMS\Core\Domain\RecordInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContainerGridColumnItem extends GridColumnItem
 {
-    protected $container;
-
-    public function __construct(PageLayoutContext $context, GridColumn $column, array $record, Container $container)
+    public function __construct(PageLayoutContext $context, ContainerGridColumn $column, array $record, protected Registry $tcaRegistry, protected Container $container, protected ?string $newContentUrl)
     {
+        if ((GeneralUtility::makeInstance(Typo3Version::class))->getMajorVersion() > 13) {
+            $recordFactory = GeneralUtility::makeInstance(RecordFactory::class);
+            $record = $recordFactory->createResolvedRecordFromDatabaseRow('tt_content', $record);
+        }
         parent::__construct($context, $column, $record);
-        $this->container = $container;
     }
 
     public function getAllowNewContent(): bool
@@ -37,28 +41,48 @@ class ContainerGridColumnItem extends GridColumnItem
         return true;
     }
 
+    /*
+     * @internal
+     */
+    public function getRecordLanguageId(): int
+    {
+        // s. Partials Record.html
+        // for v14 we can use {record.languageId} and drop this method
+        $record = $this->record;
+        if ($record instanceof Record) {
+            return $record->getSystemProperties()->getLanguage()->getLanguageId();
+        }
+        if (is_array($record)) {
+            return $record['sys_language_uid'];
+        }
+        return 0;
+    }
+
     public function getWrapperClassName(): string
     {
         $wrapperClassNames = [];
         if ($this->isDisabled()) {
             $wrapperClassNames[] = 't3-page-ce-hidden t3js-hidden-record';
         }
-        // we do not need a "t3-page-ce-warning" class because we are build from Container
+        $record = $this->record;
+        if ($record instanceof RecordInterface) {
+            if (!$this->tcaRegistry->recordIsAllowedInContainerColumn($record)) {
+                $wrapperClassNames[] = 't3-page-ce-warning';
+            }
+        } else {
+            // v13
+            if (!$this->tcaRegistry->isAllowedInColumn($record['CType'], (int)$record['colPos'], $this->container->getCType())) {
+                $wrapperClassNames[] = 't3-page-ce-warning';
+            }
+        }
         return implode(' ', $wrapperClassNames);
     }
 
     public function getNewContentAfterUrl(): string
     {
-        $pageId = $this->context->getPageId();
-        $urlParameters = [
-            'id' => $pageId,
-            'sys_language_uid' => $this->container->getLanguage(),
-            'colPos' => $this->column->getColumnNumber(),
-            'tx_container_parent' => $this->container->getUidOfLiveWorkspace(),
-            'uid_pid' => -$this->record['uid'],
-            'returnUrl' => GeneralUtility::getIndpEnv('REQUEST_URI'),
-        ];
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+        if ($this->newContentUrl === null) {
+            return '';
+        }
+        return $this->newContentUrl;
     }
 }

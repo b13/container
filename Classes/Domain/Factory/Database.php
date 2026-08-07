@@ -17,78 +17,51 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
-use TYPO3\CMS\Core\Database\Query\Restriction\FrontendWorkspaceRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Database implements SingletonInterface
+class Database
 {
-    /**
-     * @var int
-     */
-    protected $backendUserId = 0;
+    protected int $backendUserId = 0;
+    protected int $workspaceId = 0;
 
-    /**
-     * @var int
-     */
-    protected $workspaceId = 0;
-
-    public function __construct(Context $context = null)
+    public function __construct(Context $context)
     {
-        if ($context === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-        }
         $this->backendUserId = (int)$context->getPropertyFromAspect('backend.user', 'id', 0);
         $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
     }
 
-    /**
-     * @return QueryBuilder
-     */
     protected function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
-        if (TYPO3_MODE === 'BE') {
-            $queryBuilder->getRestrictions()
-                ->removeAll()
-                ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-                ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
-        } elseif (TYPO3_MODE === 'FE') {
-            $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
-            // do not use FrontendWorkspaceRestriction
-            $queryBuilder->getRestrictions()
-                ->removeByType(FrontendWorkspaceRestriction::class)
-                ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
-        }
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
+            ->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $this->workspaceId));
         return $queryBuilder;
     }
 
     public function fetchRecordsByPidAndLanguage(int $pid, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (array)$queryBuilder->select('*')
+        $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'pid',
-                    $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
                 )
             )
             ->orderBy('sorting', 'ASC')
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $rows;
     }
 
-    /**
-     * @param int $uid
-     * @return array|null
-     */
     public function fetchOneRecord(int $uid): ?array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -98,21 +71,17 @@ class Database implements SingletonInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }
         return $record;
     }
 
-    /**
-     * @param array $record
-     * @return array|null
-     */
     public function fetchOneDefaultRecord(array $record): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -121,52 +90,43 @@ class Database implements SingletonInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($record['l18n_parent'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($record['l18n_parent'], Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
         if ($record === false) {
             return null;
         }
         return $record;
     }
 
-    /**
-     * @param int $parent
-     * @param int $language
-     * @return array
-     */
     public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();
 
-        return  (array)$queryBuilder->select('*')
+        $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq(
                     'tx_container_parent',
-                    $queryBuilder->createNamedParameter($parent, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($parent, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
                 )
             )
             ->orderBy('sorting', 'ASC')
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $rows;
     }
 
-    /**
-     * @param array $records
-     * @param int $language
-     * @return array
-     */
     public function fetchOverlayRecords(array $records, int $language): array
     {
         $uids = [];
@@ -177,7 +137,7 @@ class Database implements SingletonInterface
             }
         }
         $queryBuilder = $this->getQueryBuilder();
-        $records = (array)$queryBuilder->select('*')
+        $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->in(
@@ -186,39 +146,11 @@ class Database implements SingletonInterface
                 ),
                 $queryBuilder->expr()->eq(
                     'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchAll();
-        return $records;
-    }
-
-    /**
-     * @param int $uid
-     * @param int $language
-     * @return array
-     */
-    public function fetchOneOverlayRecord(int $uid, int $language): ?array
-    {
-        $queryBuilder = $this->getQueryBuilder();
-        $record = $queryBuilder->select('*')
-            ->from('tt_content')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'l18n_parent',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    'sys_language_uid',
-                    $queryBuilder->createNamedParameter($language, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-        if ($record === false) {
-            return null;
-        }
-        return $record;
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $rows;
     }
 }

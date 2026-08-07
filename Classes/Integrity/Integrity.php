@@ -17,24 +17,12 @@ use B13\Container\Integrity\Error\NonExistingParentWarning;
 use B13\Container\Integrity\Error\UnusedColPosWarning;
 use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Error\WrongLanguageWarning;
+use B13\Container\Integrity\Error\WrongParentError;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
-use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Integrity implements SingletonInterface
+class Integrity
 {
-
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
     /**
      * @var string[][]
      */
@@ -43,14 +31,8 @@ class Integrity implements SingletonInterface
         'warnings' => [],
     ];
 
-    /**
-     * @param Database|null $database
-     * @param Registry|null $tcaRegistry
-     */
-    public function __construct(Database $database = null, Registry $tcaRegistry = null)
+    public function __construct(protected Database $database, protected Registry $tcaRegistry)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
     public function run(): array
@@ -72,15 +54,20 @@ class Integrity implements SingletonInterface
     private function nonDefaultLanguageRecords(array $cTypes, array $colPosByCType): void
     {
         $nonDefaultLanguageChildRecords = $this->database->getNonDefaultLanguageContainerChildRecords();
-        $nonDefaultLangaugeContainerRecords = $this->database->getNonDefaultLanguageContainerRecords($cTypes);
+        $nonDefaultLanguageContainerRecords = $this->database->getNonDefaultLanguageContainerRecords($cTypes);
+        foreach ($nonDefaultLanguageContainerRecords as $containerRecord) {
+            if ($containerRecord['uid'] === $containerRecord['tx_container_parent']) {
+                $this->res['errors'][] = new WrongParentError($containerRecord);
+            }
+        }
         $defaultLanguageContainerRecords = $this->database->getContainerRecords($cTypes);
         foreach ($nonDefaultLanguageChildRecords as $nonDefaultLanguageChildRecord) {
             if ($nonDefaultLanguageChildRecord['l18n_parent'] > 0) {
                 // connected mode
                 // tx_container_parent should be default container record uid
                 if (!isset($defaultLanguageContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']])) {
-                    if (isset($nonDefaultLangaugeContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']])) {
-                        $containerRecord = $nonDefaultLangaugeContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']];
+                    if (isset($nonDefaultLanguageContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']])) {
+                        $containerRecord = $nonDefaultLanguageContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']];
                         if ($containerRecord['sys_language_uid'] === $nonDefaultLanguageChildRecord['sys_language_uid'] && $containerRecord['l18n_parent'] > 0) {
                             $this->res['errors'][] = new ChildInTranslatedContainerError($nonDefaultLanguageChildRecord, $containerRecord);
                         } else {
@@ -89,8 +76,8 @@ class Integrity implements SingletonInterface
                     } else {
                         $this->res['warnings'][] = new NonExistingParentWarning($nonDefaultLanguageChildRecord);
                     }
-                } elseif (isset($nonDefaultLangaugeContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']])) {
-                    $containerRecord = $nonDefaultLangaugeContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']];
+                } elseif (isset($nonDefaultLanguageContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']])) {
+                    $containerRecord = $nonDefaultLanguageContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']];
                     $this->res['errors'][] = new WrongL18nParentError($nonDefaultLanguageChildRecord, $containerRecord);
                 }
             } else {
@@ -102,10 +89,10 @@ class Integrity implements SingletonInterface
                         $this->res['errors'][] = new WrongPidError($nonDefaultLanguageChildRecord, $containerRecord);
                     }
                     $this->res['warnings'][] = new WrongLanguageWarning($nonDefaultLanguageChildRecord, $containerRecord);
-                } elseif (!isset($nonDefaultLangaugeContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']])) {
+                } elseif (!isset($nonDefaultLanguageContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']])) {
                     $this->res['warnings'][] = new NonExistingParentWarning($nonDefaultLanguageChildRecord);
                 } else {
-                    $containerRecord = $nonDefaultLangaugeContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']];
+                    $containerRecord = $nonDefaultLanguageContainerRecords[$nonDefaultLanguageChildRecord['tx_container_parent']];
                     if ($containerRecord['pid'] !== $nonDefaultLanguageChildRecord['pid']) {
                         $this->res['errors'][] = new WrongPidError($nonDefaultLanguageChildRecord, $containerRecord);
                     }
@@ -123,15 +110,14 @@ class Integrity implements SingletonInterface
         }
     }
 
-    // translated children tx_container_parent should point to translated container
-
-    /**
-     * @param array $cTypes
-     * @param array $colPosByCType
-     */
     private function defaultLanguageRecords(array $cTypes, array $colPosByCType): void
     {
         $containerRecords = $this->database->getContainerRecords($cTypes);
+        foreach ($containerRecords as $containerRecord) {
+            if ($containerRecord['uid'] === $containerRecord['tx_container_parent']) {
+                $this->res['errors'][] = new WrongParentError($containerRecord);
+            }
+        }
         $containerChildRecords = $this->database->getContainerChildRecords();
         foreach ($containerChildRecords as $containerChildRecord) {
             if (!isset($containerRecords[$containerChildRecord['tx_container_parent']])) {

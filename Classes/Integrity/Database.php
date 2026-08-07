@@ -16,16 +16,12 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Database implements SingletonInterface
+class Database
 {
-    private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 't3_origuid', 'colPos', 'tx_container_parent', 'l10n_source', 'hidden'];
+    private $fields = ['uid', 'pid', 'sys_language_uid', 'CType', 'l18n_parent', 'colPos', 'tx_container_parent', 'l10n_source', 'hidden', 'sorting'];
 
-    /**
-     * @return QueryBuilder
-     */
     public function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -36,7 +32,7 @@ class Database implements SingletonInterface
     public function getNonDefaultLanguageContainerRecords(array $cTypes): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder
+        $results = $queryBuilder
             ->select(...$this->fields)
             ->from('tt_content')
             ->where(
@@ -49,9 +45,10 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery()
+            ->fetchAllAssociative();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -60,7 +57,7 @@ class Database implements SingletonInterface
     public function getNonDefaultLanguageContainerChildRecords(): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $stm = $queryBuilder
+        $results = $queryBuilder
             ->select(...$this->fields)
             ->from('tt_content')
             ->where(
@@ -73,9 +70,10 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery()
+            ->fetchAllAssociative();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
@@ -84,7 +82,7 @@ class Database implements SingletonInterface
     public function getChildrenByContainerAndColPos(int $containerId, int $colPos, int $languageId): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (array)$queryBuilder
+        $rows = $queryBuilder
             ->select(...$this->fields)
             ->from('tt_content')
             ->where(
@@ -102,15 +100,51 @@ class Database implements SingletonInterface
                 )
             )
             ->orderBy('sorting')
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $rows;
     }
 
-    /**
-     * @param array $cTypes
-     * @return array
-     */
-    public function getContainerRecords(array $cTypes): array
+    public function getNonContainerChildrenPerColPos(array $containerUsedColPosArray, ?int $pid = null): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $stm = $queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->notIn(
+                    'colPos',
+                    $queryBuilder->createNamedParameter($containerUsedColPosArray, Connection::PARAM_INT_ARRAY)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                )
+            );
+        if (!empty($pid)) {
+            $stm->andWhere(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
+                )
+            );
+        }
+        $stm->orderBy('pid');
+        $stm->addOrderBy('colPos');
+        $stm->addOrderBy('sorting');
+        $results = $stm->executeQuery()->fetchAllAssociative();
+        $rows = [];
+        foreach ($results as $result) {
+            $key = $result['pid'] . '-' . $result['colPos'];
+            if (!isset($rows[$key])) {
+                $rows[$key] = [];
+            }
+            $rows[$key][$result['uid']] = $result;
+        }
+        return $rows;
+    }
+
+    public function getContainerRecords(array $cTypes, ?int $pid = null): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
@@ -125,22 +159,63 @@ class Database implements SingletonInterface
                     'sys_language_uid',
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
+        if (!empty($pid)) {
+            $stm->andWhere(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
+                )
+            );
+        }
+        $results = $stm->executeQuery()->fetchAllAssociative();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
     }
 
-    /**
-     * @return array
-     */
-    public function getContainerChildRecords(): array
+    public function getContainerRecordsFreeMode(array $cTypes, ?int $pid = null): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $stm = $queryBuilder
+            ->select(...$this->fields)
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->in(
+                    'CType',
+                    $queryBuilder->createNamedParameter($cTypes, Connection::PARAM_STR_ARRAY)
+                ),
+                $queryBuilder->expr()->neq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'l18n_parent',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                )
+            );
+        if (!empty($pid)) {
+            $stm->andWhere(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
+                )
+            );
+        }
+        $results = $stm->executeQuery()->fetchAllAssociative();
+        $rows = [];
+        foreach ($results as $result) {
+            $rows[$result['uid']] = $result;
+        }
+        return $rows;
+    }
+
+    public function getContainerChildRecords(): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $results = $queryBuilder
             ->select(...$this->fields)
             ->from('tt_content')
             ->where(
@@ -153,11 +228,32 @@ class Database implements SingletonInterface
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery()
+            ->fetchAllAssociative();
         $rows = [];
-        while ($result = $stm->fetch()) {
+        foreach ($results as $result) {
             $rows[$result['uid']] = $result;
         }
         return $rows;
+    }
+
+    public function getSortingByUid(int $uid): ?int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder
+            ->select('sorting')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
+                )
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+        if ($row === false || !isset($row['sorting'])) {
+            return null;
+        }
+        return $row['sorting'];
     }
 }

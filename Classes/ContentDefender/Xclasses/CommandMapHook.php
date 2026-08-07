@@ -13,6 +13,7 @@ namespace B13\Container\ContentDefender\Xclasses;
  */
 
 use B13\Container\ContentDefender\ContainerColumnConfigurationService;
+use B13\Container\Hooks\Datahandler\DatahandlerProcess;
 use IchHabRecht\ContentDefender\Hooks\CmdmapDataHandlerHook;
 use IchHabRecht\ContentDefender\Repository\ContentRepository;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -21,33 +22,26 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CommandMapHook extends CmdmapDataHandlerHook
 {
-
-    /**
-     * @var ContainerColumnConfigurationService
-     */
-    protected $containerColumnConfigurationService;
-
-    protected $mapping = [];
+    protected ContainerColumnConfigurationService $containerColumnConfigurationService;
+    protected array $mapping = [];
 
     public function __construct(
-        ContentRepository $contentRepository = null,
-        ContainerColumnConfigurationService $containerColumnConfigurationService = null
+        ?ContentRepository $contentRepository = null,
+        ?ContainerColumnConfigurationService $containerColumnConfigurationService = null
     ) {
         $this->containerColumnConfigurationService = $containerColumnConfigurationService ?? GeneralUtility::makeInstance(ContainerColumnConfigurationService::class);
         parent::__construct($contentRepository);
     }
 
-    /**
-     * @param DataHandler $dataHandler
-     */
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
+        if (isset($dataHandler->cmdmap['pages'])) {
+            $this->containerColumnConfigurationService->startCmdMap();
+        }
         if (!empty($dataHandler->cmdmap['tt_content'])) {
+            $this->containerColumnConfigurationService->startCmdMap();
             foreach ($dataHandler->cmdmap['tt_content'] as $id => $cmds) {
                 foreach ($cmds as $cmd => $data) {
-                    if ($cmd === 'copy') {
-                        $this->containerColumnConfigurationService->setContainerIsCopied($id);
-                    }
                     if (
                         ($cmd === 'copy' || $cmd === 'move') &&
                         (!empty($data['update'])) &&
@@ -77,10 +71,10 @@ class CommandMapHook extends CmdmapDataHandlerHook
                                 'tt_content',
                                 $id,
                                 1,
-                                0,
+                                null,
                                 1,
                                 'The command couldn\'t be executed due to reached maxitems configuration',
-                                28
+                                null
                             );
                         }
                     }
@@ -90,30 +84,38 @@ class CommandMapHook extends CmdmapDataHandlerHook
         parent::processCmdmap_beforeStart($dataHandler);
     }
 
-    /**
-     * @param array $columnConfiguration
-     * @param array $record
-     * @return bool
-     */
-    protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record)
+    public function processCmdmap_postProcess(string $command, string $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
     {
-        if (isset($this->mapping[$record['uid']])) {
+        $this->containerColumnConfigurationService->endCmdMap();
+    }
+
+    protected function isRecordAllowedByRestriction(array $columnConfiguration, array $record): bool
+    {
+        if (isset($record['tx_container_parent']) &&
+            $record['tx_container_parent'] > 0 &&
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$record['tx_container_parent'])
+        ) {
+            return true;
+        }
+        $recordOrigUid = (int)($record['uid'] ?? 0);
+        if (isset($this->mapping[$recordOrigUid])) {
             $columnConfiguration = $this->containerColumnConfigurationService->override(
                 $columnConfiguration,
-                $this->mapping[$record['uid']]['containerId'],
-                $this->mapping[$record['uid']]['colPos']
+                $this->mapping[$recordOrigUid]['containerId'],
+                $this->mapping[$recordOrigUid]['colPos']
             );
         }
         return parent::isRecordAllowedByRestriction($columnConfiguration, $record);
     }
 
-    /**
-     * @param array $columnConfiguration
-     * @param array $record
-     * @return bool
-     */
-    protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record)
+    protected function isRecordAllowedByItemsCount(array $columnConfiguration, array $record): bool
     {
+        if (isset($record['tx_container_parent']) &&
+            $record['tx_container_parent'] > 0 &&
+            (GeneralUtility::makeInstance(DatahandlerProcess::class))->isContainerInProcess((int)$record['tx_container_parent'])
+        ) {
+            return true;
+        }
         if (isset($this->mapping[$record['uid']])) {
             return true;
         }

@@ -12,17 +12,70 @@ namespace B13\Container\Domain\Factory\PageView\Backend;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\Database;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Versioning\VersionState;
 
-class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStorage
+class ContentStorage
 {
+    protected array $records = [];
+    protected int $workspaceId = 0;
+
+    public function __construct(protected Database $database, Context $context)
+    {
+        $this->workspaceId = (int)$context->getPropertyFromAspect('workspace', 'id');
+    }
+
+    protected function buildRecords(int $pid, int $language): array
+    {
+        $records = $this->database->fetchRecordsByPidAndLanguage($pid, $language);
+        $records = $this->workspaceOverlay($records);
+        $records = $this->recordsByContainer($records);
+        return $records;
+    }
+
+    protected function recordsByContainer(array $records): array
+    {
+        $recordsByContainer = [];
+        foreach ($records as $record) {
+            if ($record['tx_container_parent'] > 0) {
+                if (empty($recordsByContainer[$record['tx_container_parent']])) {
+                    $recordsByContainer[$record['tx_container_parent']] = [];
+                }
+                $recordsByContainer[$record['tx_container_parent']][] = $record;
+            }
+        }
+        return  $recordsByContainer;
+    }
+
+    public function getContainerChildren(array $containerRecord, int $language): array
+    {
+        $pid = (int)$containerRecord['pid'];
+        if (isset($containerRecord['t3ver_oid']) && $containerRecord['t3ver_oid'] > 0) {
+            $defaultContainerRecord = $this->database->fetchOneRecord((int)$containerRecord['t3ver_oid']);
+            $uid = (int)$defaultContainerRecord['uid'];
+        } else {
+            $uid = (int)$containerRecord['uid'];
+        }
+        if (!isset($this->records[$pid])) {
+            $this->records[$pid] = [];
+        }
+        if (!isset($this->records[$pid][$language])) {
+            $this->records[$pid][$language] = $this->buildRecords($pid, $language);
+        }
+        if (empty($this->records[$pid][$language][$uid])) {
+            return [];
+        }
+        return $this->records[$pid][$language][$uid];
+    }
+
     public function workspaceOverlay(array $records): array
     {
         $filtered = [];
         foreach ($records as $row) {
             BackendUtility::workspaceOL('tt_content', $row, $this->workspaceId, true);
-            if ($row && !VersionState::cast($row['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
+            if ($row && VersionState::tryFrom($row['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
                 $filtered[] = $row;
             }
         }
@@ -32,7 +85,7 @@ class ContentStorage extends \B13\Container\Domain\Factory\PageView\ContentStora
     public function containerRecordWorkspaceOverlay(array $record): ?array
     {
         BackendUtility::workspaceOL('tt_content', $record, $this->workspaceId, false);
-        if ($record && !VersionState::cast($record['t3ver_state'] ?? 0)->equals(VersionState::DELETE_PLACEHOLDER)) {
+        if ($record && VersionState::tryFrom($record['t3ver_state'] ?? 0) !== VersionState::DELETE_PLACEHOLDER) {
             return $record;
         }
         return null;

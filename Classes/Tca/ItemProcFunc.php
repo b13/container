@@ -12,53 +12,30 @@ namespace B13\Container\Tca;
  * of the License, or any later version.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\View\BackendLayoutView;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[Autoconfigure(public: true)]
 class ItemProcFunc
 {
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @var BackendLayoutView
-     */
-    protected $backendLayoutView;
-
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * ItemProcFunc constructor.
-     * @param ContainerFactory|null $containerFactory
-     * @param Registry|null $tcaRegistry
-     * @param BackendLayoutView|null $backendLayoutView
-     */
-    public function __construct(ContainerFactory $containerFactory = null, Registry $tcaRegistry = null, BackendLayoutView $backendLayoutView = null)
-    {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
-        $this->backendLayoutView = $backendLayoutView ?? GeneralUtility::makeInstance(BackendLayoutView::class);
+    public function __construct(
+        protected ContainerFactory $containerFactory,
+        protected Registry $tcaRegistry,
+        protected BackendLayoutView $backendLayoutView
+    ) {
     }
 
     /**
      * Gets colPos items to be shown in the forms engine.
      * This method is called as "itemsProcFunc" with the accordant context
      * for tt_content.colPos.
-     *
-     * @param array $parameters
      */
-    public function colPos(array $parameters): void
+    public function colPos(array &$parameters): void
     {
         $row = $parameters['row'];
-        if ($row['tx_container_parent'] > 0) {
+        if (($row['tx_container_parent'] ?? 0) > 0) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
@@ -70,8 +47,8 @@ class ItemProcFunc
                             // only one item is show, so it is not changeable
                             if ((int)$column['colPos'] === (int)$row['colPos']) {
                                 $items[] = [
-                                    $column['name'],
-                                    $column['colPos'],
+                                    'label' => $column['name'],
+                                    'value' => $column['colPos'],
                                 ];
                             }
                         }
@@ -86,31 +63,28 @@ class ItemProcFunc
         $this->backendLayoutView->colPosListItemProcFunc($parameters);
     }
 
-    /**
-     * @param array $parameters
-     */
-    public function txContainerParent(array $parameters): void
+    public function txContainerParent(array &$parameters): void
     {
         $row = $parameters['row'];
         $items = [];
-        if ($row['tx_container_parent'] > 0) {
+        if (($row['tx_container_parent'] ?? 0) > 0) {
             try {
                 $container = $this->containerFactory->buildContainer((int)$row['tx_container_parent']);
                 $cType = $container->getCType();
                 $items[] = [
-                    $cType,
-                    $row['tx_container_parent'],
+                    'label' => $this->tcaRegistry->getContainerLabel($cType),
+                    'value' => $row['tx_container_parent'],
                 ];
             } catch (Exception $e) {
                 $items[] = [
-                    '-',
-                    0,
+                    'label' => '-',
+                    'value' =>  0,
                 ];
             }
         } else {
             $items[] = [
-                '-',
-                0,
+                'label' => '-',
+                'value' => 0,
             ];
         }
         $parameters['items'] = $items;

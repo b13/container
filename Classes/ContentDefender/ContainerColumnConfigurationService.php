@@ -16,31 +16,33 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Model\Container;
 use B13\Container\Tca\Registry;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ContainerColumnConfigurationService implements SingletonInterface
+#[Autoconfigure(public: true)]
+class ContainerColumnConfigurationService
 {
-
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
     protected $copyMapping = [];
 
-    public function __construct(
-        ContainerFactory $containerFactory = null,
-        Registry $tcaRegistry = null
-    ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+    protected $contentDefenderContainerDataHandlerHookIsLocked = false;
+
+    public function __construct(protected ContainerFactory $containerFactory, protected Registry $tcaRegistry)
+    {
+    }
+
+    public function startCmdMap(): void
+    {
+        $this->contentDefenderContainerDataHandlerHookIsLocked = true;
+    }
+
+    public function endCmdMap(): void
+    {
+        $this->contentDefenderContainerDataHandlerHookIsLocked = false;
+    }
+
+    public function isContentDefenderContainerDataHandlerHookLooked(): bool
+    {
+        return $this->contentDefenderContainerDataHandlerHookIsLocked;
     }
 
     protected function getRecord(int $uid): ?array
@@ -48,7 +50,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
         return BackendUtility::getRecord('tt_content', $uid);
     }
 
-    public function addCopyMapping(int $sourceContentId, int $containerId, int $targetColpos): array
+    public function addCopyMapping(int $sourceContentId, int $containerId, int $targetColpos): void
     {
         $record = $this->getRecord($sourceContentId);
         $sourceColPos = (int)$record['colPos'];
@@ -58,34 +60,6 @@ class ContainerColumnConfigurationService implements SingletonInterface
             'sourceColPos' => $sourceColPos,
             'targetColPos' => $targetColpos,
         ];
-        return $this->copyMapping[$sourceContainerId . '-' . $sourceColPos];
-    }
-
-    public function setContainerIsCopied($containerId): void
-    {
-        try {
-            $this->containerFactory->buildContainer($containerId);
-            $this->copyMapping[$containerId] = true;
-        } catch (Exception $e) {
-            // not a container, do not set mapping
-        }
-    }
-
-    public function getTargetColPosForNew(int $containerId, int $colPos): ?int
-    {
-        //var_dump($containerId);
-        if (isset($this->copyMapping[$containerId . '-' . $colPos])) {
-            return $this->copyMapping[$containerId . '-' . $colPos]['targetColPos'];
-        }
-        return null;
-    }
-
-    public function getContainerIdForNew(int $containerId, int $colPos): ?int
-    {
-        if (isset($this->copyMapping[$containerId . '-' . $colPos])) {
-            return $this->copyMapping[$containerId . '-' . $colPos]['containerId'];
-        }
-        return null;
     }
 
     public function override(array $columnConfiguration, int $containerId, int $colPos): array
@@ -106,7 +80,7 @@ class ContainerColumnConfigurationService implements SingletonInterface
         return $columnConfiguration;
     }
 
-    public function isMaxitemsReachedByContainenrId(int $containerId, int $colPos, int $childUid = null): bool
+    public function isMaxitemsReachedByContainenrId(int $containerId, int $colPos, ?int $childUid = null): bool
     {
         try {
             $container = $this->containerFactory->buildContainer($containerId);
@@ -117,11 +91,8 @@ class ContainerColumnConfigurationService implements SingletonInterface
         return false;
     }
 
-    public function isMaxitemsReached(Container $container, int $colPos, int $childUid = null): bool
+    public function isMaxitemsReached(Container $container, int $colPos, ?int $childUid = null): bool
     {
-        if (isset($this->copyMapping[$container->getUid()])) {
-            return false;
-        }
         $columnConfiguration = $this->getColumnConfigurationForContainer($container, $colPos);
         if (!isset($columnConfiguration['maxitems']) || (int)$columnConfiguration['maxitems'] === 0) {
             return false;

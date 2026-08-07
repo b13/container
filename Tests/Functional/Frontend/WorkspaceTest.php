@@ -10,115 +10,88 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class WorkspaceTest extends AbstractFrontendTest
+class WorkspaceTest extends AbstractFrontend
 {
-    protected $typo3MajorVersion;
-
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        $this->typo3MajorVersion = $typo3Version->getMajorVersion();
-    }
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
     protected function setUp(): void
     {
-        FunctionalTestCase::setUp();
+        parent::setUp();
 
-        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Acceptance/Fixtures/be_users.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/sys_workspace.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/root_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/setup.csv');
         $this->setUpFrontendRootPage(
             1,
             [
-                'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
-                'setup' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript'],
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                ],
             ]
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInLiveIsRendered(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest());
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest());
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h2 class="">header-live</h2>', $body);
         self::assertStringNotContainsString('<h2 class="">header-ws</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInWorkspaceIsRendered(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
-        $response = $this->executeFrontendRequest(new InternalRequest(), $context);
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h2 class="">header-ws</h2>', $body);
         self::assertStringNotContainsString('<h2 class="">header-live</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInWorkspaceIsRenderedIfMovedFromOutsideContainer(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_with_ws_child_moved_from_outside.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_with_ws_child_moved_from_outside.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
-        $response = $this->executeFrontendRequest(new InternalRequest(), $context);
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('><h2>header (200)</h2><div class="header-children"><h6 class="header-children">header-ws</h6><div id="c201" class="frame frame-default frame-type-header frame-layout-0"><header><h2 class="">header-ws</h2></header>', $body);
         self::assertStringNotContainsString('<h2 class="">header-live</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childInWorkspaceIsRenderendIfContainerIsMovedToOtherPage(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
-        if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/container_moved_to_other_page.xml');
-        } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
-        $response = $this->executeFrontendRequest(new InternalRequest(), $context);
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h2 class="">header-ws</h2>', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function containerInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_in_ws_whith_hidden_live_version.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
-        $response = $this->executeFrontendRequest(new InternalRequest(), $context);
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('ws-container-header', $body);
@@ -126,26 +99,30 @@ class WorkspaceTest extends AbstractFrontendTest
         self::assertStringNotContainsString('live-container-header', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
+    public function childInWorkspaceIsRenderedWhenLiveVersionIsHidden(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/child_in_ws_whith_hidden_live_version.csv');
+        $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest(), $context);
+        $body = (string)$response->getBody();
+        $body = $this->prepareContent($body);
+        self::assertStringContainsString('live-container-header', $body);
+        self::assertStringContainsString('ws-child-header', $body);
+        self::assertStringNotContainsString('live-child-header', $body);
+    }
+
+    #[Test]
+    #[Group('frontend')]
     public function localizedChildInWorkspaceIsRenderendIfContainerWithLocalizationIsMovedToOtherPage(): void
     {
-        if ($this->typo3MajorVersion === 11) {
-            self::markTestSkipped('todo seems bug in core #93445');
-        }
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/other_page.xml');
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_pages.xml');
-        if ($this->typo3MajorVersion < 11) {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/container_moved_to_other_page.xml');
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/10/localized_container_moved_to_other_page.xml');
-        } else {
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/container_moved_to_other_page.xml');
-            $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/Workspace/localized_container_moved_to_other_page.xml');
-        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/container_moved_to_other_page.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Workspace/localized_container_moved_to_other_page.csv');
         $context = (new InternalRequestContext())->withWorkspaceId(1)->withBackendUserId(1);
-        $response = $this->executeFrontendRequest(new InternalRequest('http://localhost/de/'), $context);
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de/'), $context);
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h2 class="">header-ws loc</h2>', $body);

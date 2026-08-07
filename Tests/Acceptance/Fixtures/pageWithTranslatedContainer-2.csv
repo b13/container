@@ -1,0 +1,9 @@
+"pages"
+,"uid","pid","is_siteroot","title","perms_everybody","sys_language_uid","l10n_parent","l10n_source"
+,31,1,,"pageWithTranslatedContainer-2",17,,,
+,32,1,,"pageWithTranslatedContainer-21",17,1,31,31
+"tt_content"
+,"uid","pid","CType","header","colPos","tx_container_parent","l18n_parent","sys_language_uid","t3ver_wsid","t3ver_oid","l10n_source","t3ver_state"
+,710,31,"b13-2cols-with-header-container",,,,,,,,,
+,711,31,"b13-2cols-with-header-container",,,,710,1,,,710,
+,712,31,"header","headerOfChild",200,710,,,,,,

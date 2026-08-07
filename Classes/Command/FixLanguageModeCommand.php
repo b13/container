@@ -15,30 +15,32 @@ namespace B13\Container\Command;
 use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsCommand(
+    name: 'container:fixLanguageMode',
+    description: 'connect children of connected container if possible, else disconnect container'
+)]
 class FixLanguageModeCommand extends Command
 {
+    public function __construct(protected Integrity $integrity, protected IntegrityFix $integrityFix, ?string $name = null)
+    {
+        parent::__construct($name);
+    }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
-        $integrityFix = GeneralUtility::makeInstance(IntegrityFix::class);
-        $res = $integrity->run();
+        $res = $this->integrity->run();
         $errors = [];
         foreach ($res['errors'] as $error) {
             if ($error instanceof WrongL18nParentError) {
                 $errors[] = $error;
             }
         }
-        $integrityFix->languageMode($errors);
-        return 0;
+        $this->integrityFix->languageMode($errors);
+        return Command::SUCCESS;
     }
 }

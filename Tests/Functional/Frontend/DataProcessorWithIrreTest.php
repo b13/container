@@ -10,46 +10,44 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class DataProcessorWithIrreTest extends AbstractFrontendTest
+class DataProcessorWithIrreTest extends AbstractFrontend
 {
     public function setUp(): void
     {
-        FunctionalTestCase::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/data_processor_with_irre.xml');
+        parent::setUp();
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/data_processor_with_irre.csv');
         $this->setUpFrontendRootPage(
             1,
             [
-                'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
-                    'EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript',
-                    'EXT:container/Tests/Functional/Fixtures/TypoScript/data_processor_with_irre.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/data_processor_with_irre.typoscript',
                 ],
             ]
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function relationIsRendered(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('irre-title-default', $body);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function translatedRelationIsRendered(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('irre-title-translated', $body);

@@ -1,0 +1,7 @@
+"pages"
+,"uid","pid","title","slug"
+,1,0,"page-1","/"
+"tt_content"
+,"uid","pid","CType","colPos","tx_container_parent","header"
+,1,1,"b13-2cols",,,
+,2,1,"header",200,1,"header"

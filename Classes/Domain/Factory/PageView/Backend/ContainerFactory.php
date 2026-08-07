@@ -15,22 +15,47 @@ namespace B13\Container\Domain\Factory\PageView\Backend;
 use B13\Container\Domain\Factory\Database;
 use B13\Container\Tca\Registry;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ContainerFactory extends \B13\Container\Domain\Factory\PageView\ContainerFactory
+class ContainerFactory extends \B13\Container\Domain\Factory\ContainerFactory
 {
-    /**
-     * @var ContentStorage
-     */
-    protected $contentStorage;
-
     public function __construct(
-        Database $database = null,
-        Registry $tcaRegistry = null,
-        Context $context = null,
-        ContentStorage $contentStorage = null
+        Database $database,
+        Registry $tcaRegistry,
+        Context $context,
+        protected ContentStorage $contentStorage
     ) {
         parent::__construct($database, $tcaRegistry, $context);
-        $this->contentStorage = $contentStorage ?? GeneralUtility::makeInstance(ContentStorage::class);
+    }
+
+    protected function children(array $containerRecord, int $language): array
+    {
+        return $this->contentStorage->getContainerChildren($containerRecord, $language);
+    }
+
+    protected function localizedRecordsByDefaultRecords(array $defaultRecords, int $language): array
+    {
+        $childRecords = parent::localizedRecordsByDefaultRecords($defaultRecords, $language);
+        return $this->contentStorage->workspaceOverlay($childRecords);
+    }
+
+    protected function containerByUid(int $uid): ?array
+    {
+        $record =  $this->database->fetchOneRecord($uid);
+        if ($record === null) {
+            return null;
+        }
+        return $this->contentStorage->containerRecordWorkspaceOverlay($record);
+    }
+
+    protected function defaultContainer(array $localizedContainer): ?array
+    {
+        if (isset($localizedContainer['_ORIG_uid'])) {
+            $localizedContainer = $this->database->fetchOneRecord((int)$localizedContainer['uid']);
+        }
+        $defaultRecord = $this->database->fetchOneDefaultRecord($localizedContainer);
+        if ($defaultRecord === null) {
+            return null;
+        }
+        return $this->contentStorage->containerRecordWorkspaceOverlay($defaultRecord);
     }
 }

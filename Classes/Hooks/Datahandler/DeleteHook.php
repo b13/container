@@ -14,50 +14,52 @@ namespace B13\Container\Hooks\Datahandler;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[Autoconfigure(public: true)]
 class DeleteHook
 {
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @param ContainerFactory|null $containerFactory
-     */
-    public function __construct(ContainerFactory $containerFactory = null)
+    public function __construct(protected ContainerFactory $containerFactory)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
     }
 
-    /**
-     * @param string $table
-     * @param int $id
-     * @param array $recordToDelete
-     * @param bool $recordWasDeleted
-     * @param DataHandler $dataHandler
-     */
     public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, DataHandler $dataHandler): void
     {
         if ($table === 'tt_content') {
-            try {
-                $container = $this->containerFactory->buildContainer($id);
-                $children = $container->getChildRecords();
-                $toDelete = [];
-                foreach ($children as $colPos => $record) {
-                    $toDelete[$record['uid']] = ['delete' => 1];
-                }
-                if (count($toDelete) > 0) {
-                    $cmd = ['tt_content' => $toDelete];
-                    $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
-                    $localDataHandler->start([], $cmd, $dataHandler->BE_USER);
-                    $localDataHandler->process_cmdmap();
-                }
-            } catch (Exception $e) {
-                // nothing todo
+            $this->deleteChildren($id, $dataHandler->BE_USER, $dataHandler->enableLogging);
+        }
+    }
+
+    public function processCmdmap_discardAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted): void
+    {
+        if ($table === 'tt_content') {
+            $this->deleteChildren($id, null);
+        }
+    }
+
+    protected function deleteChildren(int $id, ?BackendUserAuthentication $backendUser, ?bool $enableLogging = null): void
+    {
+        try {
+            $container = $this->containerFactory->buildContainer($id);
+            $children = $container->getChildRecords();
+            $toDelete = [];
+            foreach ($children as $colPos => $record) {
+                $toDelete[$record['uid']] = ['delete' => 1];
             }
+            if (!empty($toDelete)) {
+                $cmd = ['tt_content' => $toDelete];
+                $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                if ($enableLogging !== null) {
+                    $localDataHandler->enableLogging = $enableLogging;
+                }
+                $localDataHandler->start([], $cmd, $backendUser);
+                $localDataHandler->process_cmdmap();
+            }
+        } catch (Exception $e) {
+            // nothing todo
         }
     }
 }

@@ -13,35 +13,19 @@ namespace B13\Container\Integrity;
  */
 
 use B13\Container\Integrity\Error\ChildInTranslatedContainerError;
+use B13\Container\Integrity\Error\NonExistingParentWarning;
+use B13\Container\Integrity\Error\UnusedColPosWarning;
 use B13\Container\Integrity\Error\WrongL18nParentError;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Tca\Registry;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class IntegrityFix implements SingletonInterface
+class IntegrityFix
 {
-
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * ContainerFactory constructor.
-     * @param Database|null $database
-     * @param Registry|null $tcaRegistry
-     */
-    public function __construct(Database $database = null, Registry $tcaRegistry = null)
+    public function __construct(protected Database $database, protected Registry $tcaRegistry)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
     public function deleteChildrenWithWrongPid(WrongPidError $wrongPidError): void
@@ -49,6 +33,26 @@ class IntegrityFix implements SingletonInterface
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $dataHandler->enableLogging = false;
         $childRecord = $wrongPidError->getChildRecord();
+        $cmd = ['tt_content' => [$childRecord['uid'] => ['delete' => 1]]];
+        $dataHandler->start([], $cmd);
+        $dataHandler->process_cmdmap();
+    }
+
+    public function deleteChildrenWithNonExistingParent(NonExistingParentWarning $nonExistingParentWarning): void
+    {
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->enableLogging = false;
+        $childRecord = $nonExistingParentWarning->getChildRecord();
+        $cmd = ['tt_content' => [$childRecord['uid'] => ['delete' => 1]]];
+        $dataHandler->start([], $cmd);
+        $dataHandler->process_cmdmap();
+    }
+
+    public function deleteChildrenWithUnusedColPos(UnusedColPosWarning $unusedColPosWarning): void
+    {
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->enableLogging = false;
+        $childRecord = $unusedColPosWarning->getChildRecord();
         $cmd = ['tt_content' => [$childRecord['uid'] => ['delete' => 1]]];
         $dataHandler->start([], $cmd);
         $dataHandler->process_cmdmap();
@@ -65,10 +69,10 @@ class IntegrityFix implements SingletonInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($child['uid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($child['uid'], Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeStatement();
     }
 
     /**
@@ -108,14 +112,14 @@ class IntegrityFix implements SingletonInterface
                             ->where(
                                 $queryBuilder->expr()->eq(
                                     'uid',
-                                    $queryBuilder->createNamedParameter($childRecord['uid'], \PDO::PARAM_INT)
+                                    $queryBuilder->createNamedParameter($childRecord['uid'], Connection::PARAM_INT)
                                 )
                             );
                         if ((int)$childRecord['l10n_source'] === 0) {
                             // i think this is always true
                             $stm->set('l10n_source', $defaultChildRecord['uid']);
                         }
-                        $stm->execute();
+                        $stm->executeStatement();
                     }
                 }
                 // disconnect container ?

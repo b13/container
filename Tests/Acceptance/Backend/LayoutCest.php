@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Acceptance\Backend;
 
 /*
@@ -13,43 +14,33 @@ namespace B13\Container\Tests\Acceptance\Backend;
 
 use B13\Container\Tests\Acceptance\Support\BackendTester;
 use B13\Container\Tests\Acceptance\Support\PageTree;
-use TYPO3\CMS\Core\Information\Typo3Version;
+use Codeception\Scenario;
 
 class LayoutCest
 {
-
-    /**
-     * @param BackendTester $I
-     */
     public function _before(BackendTester $I)
     {
         $I->loginAs('admin');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     */
     public function connectedModeShowCorrectContentElements(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
-
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithLocalization']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->see('2cols-header-0');
+        $I->waitForText('2cols-header-0');
         $I->see('header-header-0');
         $I->dontSee('2cols-header-1');
         $I->dontSee('header-header-1');
-        $I->selectOption('select[name="languageMenu"]', 'german');
-
+        $I->selectGermanInLanguageMenu();
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->see('2cols-header-1');
         $I->see('header-header-1');
         $I->dontSee('2cols-header-0');
         $I->dontSee('header-header-0');
 
-        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        $I->selectLanguageComparisonMode();
         $I->waitForElementNotVisible('#t3js-ui-block');
 
         // td.t3-grid-cell:nth-child(1)
@@ -66,219 +57,308 @@ class LayoutCest
         $I->see('header-header-1', $languageCol . ' td.t3-grid-cell');
         $I->dontSee('2cols-header-0', $languageCol);
         $I->dontSee('header-header-0', $languageCol . ' td.t3-grid-cell');
+        // reset
+        $I->selectLayoutMode();
+        $I->selectEnglishInLanguageMenu();
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     */
     public function connectedModeShowNoAddContentButton(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithLocalization']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        $I->selectGermanInLanguageMenu();
         $I->waitForElementNotVisible('#t3js-ui-block');
         // we have a "Content" Button for new elements with Fluid based page module
-        $I->dontSee('Content', '#element-tt_content-102 .t3-page-ce-body');
-        $I->selectOption('select[name="actionMenu"]', 'Languages');
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->dontSee($newContentElementLabel, '#element-tt_content-102 .t3-page-ce-body');
+        $I->selectLanguageComparisonMode();
         $I->waitForElementNotVisible('#t3js-ui-block');
         // but not in Language View
-        $I->dontSee('Content', '#element-tt_content-102');
+        $I->dontSee($newContentElementLabel, '#element-tt_content-102');
+        // reset
+        $I->selectLayoutMode();
+        $I->selectEnglishInLanguageMenu();
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
     public function canCreateContainerContentElement(BackendTester $I, PageTree $pageTree)
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'emptyPage']);
+        $newContentElementLabel = $I->getNewContentElementLabel();
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $I->click('Content');
+        $I->waitForText($newContentElementLabel);
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
-        $I->click('Container');
-        $I->click('2 Column Container With Header');
+        $I->waitForModal();
+        $I->wait(0.5);
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
+        } else {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
+        }
+        $I->wait(0.5);
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols-with-header-container\"]').click()");
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
+        $I->canSee('my-default-value-header', '.element-preview-header-header');
         $I->canSee('header', '.t3-grid-container');
         $I->canSee('left side', '.t3-grid-container');
         $I->canSee('right side', '.t3-grid-container');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     */
+    public function canCreateContainerContentElementSaveAndClose(BackendTester $I, PageTree $pageTree)
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'emptyPage']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->waitForText($newContentElementLabel);
+
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
+        $I->switchToIFrame();
+        $I->waitForModal();
+
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container\"]').click()");
+        } else {
+            $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
+        }
+        $I->wait(0.5);
+        // test event listener
+        // b13-2cols
+        // this also tests container-example eventListener
+        // https://github.com/b13/container-example/commit/df2560e75966a73754b5d4ea091d14727c16f024
+        $I->waitForText('mod -- Some Description of the Container');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"container_b13-2cols\"]').click()");
+
+        $I->switchToContentFrame();
+        $I->waitForText('2-cols-left');
+        $I->canSee('2-cols-left', '.t3-grid-container');
+    }
+
+    public function canDragAndDropElementOutsideIntoContainer(BackendTester $I, PageTree $pageTree, Scenario $scenario)
+    {
+        $I->clickLayoutModuleButton();
+        $scenario->skip('drag and drop currently not work, s git show 4f459c2925be702ce93f047d7af32d296de1ddd6 Tests/Acceptance/Support/Helper/Mouse.php');
+    }
+
     public function newElementInHeaderColumnHasExpectedColPosAndParentSelected(BackendTester $I, PageTree $pageTree): void
     {
-        $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithContainer']);
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-2']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         // header
-        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
-        // "[data-colpos="1-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
+        $dataColPos = $I->getDataColPos(700, 200);
+        $colPosSelector = '#element-tt_content-700 [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
+        // "[data-colpos="700-200"]" can be attribute of "td" or "div" tag, depends if Fluid based page module is enabled
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+
         $I->switchToContentFrame();
         $I->see('header [200]');
-        $I->see('b13-2cols-with-header-container [1]');
+        $I->see('2 Column Container With Header [700]');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
     public function canCreateContentElementInContainer(BackendTester $I, PageTree $pageTree)
     {
         //@depends canCreateContainer
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-        $selector = '#element-tt_content-1 div:nth-child(1) div:nth-child(2)';
-        if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->dontSee('english', $selector);
-        } else {
-            $I->dontSeeElement($selector . ' .t3js-flag[title="english"]');
-        }
-        $I->click('Content', '#element-tt_content-1 [data-colpos="1-200"]');
+        $dataColPos = $I->getDataColPos(1, 200);
+        $containerColumn = '#element-tt_content-1 [data-colpos="' . $dataColPos . '"]';
+        $contentInContainerColumn = '#element-tt_content-1 div[data-colpos="' . $dataColPos . '"] .t3-page-ce';
+        $I->waitForElement($containerColumn);
+        $I->dontSeeElement($contentInContainerColumn);
+        $I->clickNewContentElement($containerColumn);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->see('english', $selector);
-        } else {
-            $I->canSeeElement($selector . ' .t3js-flag[title="english"]');
-        }
+        $I->canSeeElement($contentInContainerColumn);
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
     public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree)
     {
         //@depends canCreateContainer
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithLocalizationFreeModeWithContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
-
-        $I->selectOption('select[name="languageMenu"]', 'german');
+        $I->selectGermanInLanguageMenu();
         $I->waitForElementNotVisible('#t3js-ui-block');
 
         $uid = 104;
 
         $selector = '#element-tt_content-' . $uid . ' div:nth-child(1) div:nth-child(2)';
-        $I->dontSee('german', $selector);
-        $I->click('Content', '#element-tt_content-' . $uid . ' [data-colpos="' . $uid . '-200"]');
+        $dataColPos = $I->getDataColPos($uid, 200);
+        $colPosSelector = '#element-tt_content-' . $uid . ' [data-colpos="' . $dataColPos . '"]';
+        $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
-        $I->waitForElement('.modal-dialog');
+        $I->waitForModal();
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('header ')");
         $I->waitForText('Header Only');
-        $I->click('Header Only');
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').shadowRoot.querySelector('button[data-identifier=\"default_header\"]').click()");
+
         $I->switchToContentFrame();
         $I->click('Save');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
-        if ((new Typo3Version())->getMajorVersion() === 10) {
-            $I->see('german', $selector);
-        } else {
-            $I->canSeeElement($selector . ' .t3js-flag[title="german"]');
-        }
+        $I->canSeeElement($selector . ' .t3js-flag .t3js-icon[title="german"]');
+        // reset
+        $I->selectEnglishInLanguageMenu();
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
-    public function canTranslateChildWithTranslationModule(BackendTester $I, PageTree $pageTree): void
+    public function canTranslateChildWithTranslationModule(BackendTester $I, PageTree $pageTree, Scenario $scenario): void
     {
         // test must be before canTranslateChild
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
         $I->wait(0.2);
         $I->switchToContentFrame();
 
-        $I->selectOption('select[name="actionMenu"]', 'Languages');
-        if ((new Typo3Version())->getMajorVersion() > 10) {
-            $I->selectOption('select[name="languageMenu"]', 'All languages');
+        $I->selectGermanInLanguageMenu();
+        $I->selectLanguageComparisonMode();
+        if ($I->getTypo3MajorVersion() < 14) {
+            $I->waitForElementVisible('a.t3js-localize');
+            $I->click('a.t3js-localize');
+        } else {
+            $I->waitForText('Translate');
+            $I->executeJS("document.querySelector('#PageLayoutController typo3-backend-localization-button').click()");
         }
-        $I->waitForElementVisible('a.t3js-localize');
-        $I->click('a.t3js-localize');
 
         $I->switchToIFrame();
-        $I->waitForElement('.t3js-localization-option');
-        if ((new Typo3Version())->getMajorVersion() < 11) {
-            $I->click('.t3js-localization-option');
-            $I->click('Next');
-            $I->waitForElement('div[data-slide="localize-summary"]');
+        if ($I->getTypo3MajorVersion() < 14) {
+            $I->waitForText('(212) headerOfChild');
+            $I->click('button.t3js-modal-close');
         } else {
-            $I->waitForElement('div[data-bs-slide="localize-summary"]');
+            $I->waitForText('headerOfChild');
+            $I->click('button.modal-header-close');
         }
-        $I->waitForText('(212) headerOfChild');
+        $I->switchToContentFrame();
+        // reset
+        $I->selectLayoutMode();
+        $I->selectEnglishInLanguageMenu();
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     * @throws \Exception
-     */
     public function canTranslateChild(BackendTester $I, PageTree $pageTree): void
     {
-        $I->click('Page');
-        $pageTree->openPath(['home', 'pageWithTranslatedContainer']);
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithTranslatedContainer-2']);
         $I->wait(0.2);
         $I->switchToContentFrame();
+        $I->openRecordInContextPanelOrWithEditDocumentController(712);
 
-        $I->click('headerOfChild', '#element-tt_content-212');
-
-        $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
-        $typo3Version = new Typo3Version();
-        if ($typo3Version->getMajorVersion() === 10) {
-            $I->see('[Translate to language-1:] headerOfChild');
+        if ($I->getTypo3MajorVersion() > 13) {
+            $I->waitForText('english');
+            $I->click('.module-docheader-column button.dropdown-toggle');
+            $I->waitForText('german');
+            $I->executeJS("document.querySelector('typo3-backend-localization-button').click()");
+            $I->switchToIFrame();
+            $I->waitForText('Localize');
+            $I->executeJS("document.querySelector('typo3-backend-localization-wizard button.btn-primary').click()");
+            $I->waitForText('Finish');
+            $I->executeJS("document.querySelector('typo3-backend-localization-wizard').querySelector('button.btn-primary').click()");
+            $I->switchToContentFrame();
         } else {
-            $I->see('[Translate to german:] headerOfChild');
+            $I->waitForElement('select[name="_langSelector"]');
+            $I->selectOption('select[name="_langSelector"]', 'german [NEW]');
         }
+        $I->see('[Translate to german:] headerOfChild');
     }
 
-    /**
-     * @param BackendTester $I
-     * @param PageTree $pageTree
-     */
     public function canSeeContainerColumnTitleForDifferentContainers(BackendTester $I, PageTree $pageTree): void
     {
-        $I->click('Page');
+        $I->clickLayoutModuleButton();
         $pageTree->openPath(['home', 'pageWithDifferentContainers']);
         $I->wait(0.2);
         $I->switchToContentFrame();
         // b13-2cols-with-header-container container
+        $I->waitForText('header');
         $I->see('header');
         $I->see('left side');
         $I->see('right side');
         // b13-2cols container
         $I->see('2-cols-left');
         $I->see('2-cols-right');
+    }
+
+    public function canSeeCustomBackendTemplate(BackendTester $I, PageTree $pageTree, Scenario $scenario): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithDifferentContainers']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->waitForElement('#tx-container-example-custom-backend-template');
+        $I->see('custom backend template');
+    }
+
+    public function canSeeDescriptionOfContainerInNewContentElementWizard(BackendTester $I, PageTree $pageTree)
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'emptyPage']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->waitForText($newContentElementLabel);
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
+        $I->switchToIFrame();
+        $I->waitForModal();
+
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
+        $I->wait(0.5);
+
+        $I->see('Some Description of the Container');
+    }
+
+    public function canDisableContainerContentElementInNewContentElementWizard(BackendTester $I, PageTree $pageTree)
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'emptyPage']);
+        $newContentElementLabel = $I->getNewContentElementLabel();
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $I->waitForText($newContentElementLabel);
+        $I->executeJS("document.querySelector('typo3-backend-new-content-element-wizard-button').click()");
+        $I->switchToIFrame();
+        $I->waitForModal();
+        $I->executeJS("document.querySelector('" . $I->getNewRecordWizardSelector() . "').filter('container')");
+        $I->wait(0.5);
+        $I->see('2 Column Container With Header');
+        $I->dontSee('1 Column');
+    }
+
+    public function childRecordHasSysLanguageDataAttribute(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        $I->wait(0.5);
+        $I->switchToContentFrame();
+        $I->waitForElement('#element-tt_content-810');
+        $I->seeElement('#element-tt_content-810[data-language-uid="0"]');
     }
 }

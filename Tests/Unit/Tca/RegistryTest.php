@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Unit\Tca;
 
 /*
@@ -12,30 +13,30 @@ namespace B13\Container\Tests\Unit\Tca;
  */
 
 use B13\Container\Tca\Registry;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class RegistryTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAllAvailableColumnsReturnsEmptyArrayIfNoContainerConfigured(): void
     {
-        $registry = GeneralUtility::makeInstance(Registry::class);
+        $eventDispatcher = new NoopEventDispatcher();
+        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher);
         $columns = $registry->getAllAvailableColumns();
         self::assertSame([], $columns);
     }
 
-    /**
-     * @test
-     */
-    public function addPageTSReturnsOriginalTSIfNoContainerConfigured(): void
+    #[Test]
+    public function getPageTsStringReturnsEmptyStringIfNoContainerConfigured(): void
     {
-        $registry = GeneralUtility::makeInstance(Registry::class);
-        $res = $registry->addPageTS(['foo'], 1, [], []);
-        self::assertSame([['foo'], 1, [], []], $res);
+        $eventDispatcher = new NoopEventDispatcher();
+        $registry = GeneralUtility::makeInstance(Registry::class, $eventDispatcher);
+        $res = $registry->getPageTsString();
+        self::assertSame('', $res, 'empty string should be returned');
     }
 }

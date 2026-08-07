@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Integrity;
 
 /*
@@ -14,32 +15,35 @@ namespace B13\Container\Tests\Functional\Integrity;
 use B13\Container\Integrity\Error\WrongPidError;
 use B13\Container\Integrity\Integrity;
 use B13\Container\Integrity\IntegrityFix;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Backend\Context\PageContext;
+use TYPO3\CMS\Backend\Domain\Model\Language\PageLanguageInformation;
 use TYPO3\CMS\Backend\View\BackendLayout\BackendLayout;
 use TYPO3\CMS\Backend\View\BackendLayout\ContentFetcher;
+use TYPO3\CMS\Backend\View\Drawing\DrawingConfiguration;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
-use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class IntegrityTest extends FunctionalTestCase
 {
-
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function integrityCreateWrongPidError(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.xml');
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/children_with_wrong_pids.csv');
+        $integrity = $this->get(Integrity::class);
         $res = $integrity->run();
         self::assertTrue(isset($res['errors']));
         self::assertSame(1, count($res['errors']));
@@ -52,15 +56,14 @@ class IntegrityTest extends FunctionalTestCase
         self::assertSame(1, $container['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function wrongPidErrorElementsAreShownAsUnusedElements(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/children_with_wrong_pids.csv');
 
-        $GLOBALS['BE_USER'] = $this->setUpBackendUserFromFixture(1);
-        Bootstrap::initializeLanguageObject();
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
+        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
 
         $backendLayout = new BackendLayout(
             'foo',
@@ -73,14 +76,44 @@ class IntegrityTest extends FunctionalTestCase
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(2, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch();
-        $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout);
-        $contentFetcher = new ContentFetcher($pageLayoutContext);
-        $unusedRecords = $contentFetcher->getUnusedRecords();
+            ->executeQuery()
+            ->fetchAssociative();
+
+        $site = $this->getMockBuilder(Site::class)->disableOriginalConstructor()->getMock();
+        $drawingConfiguration = $this->getMockBuilder(DrawingConfiguration::class)->disableOriginalConstructor()->getMock();
+        $serverRequest = $this->getMockBuilder(ServerRequest::class)->disableOriginalConstructor()->getMock();
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 14) {
+            $pageLayoutContext = new PageLayoutContext($pageRecord, $backendLayout, $site, $drawingConfiguration, $serverRequest);
+            $contentFetcher = new ContentFetcher($pageLayoutContext);
+            $unusedRecords = $contentFetcher->getUnusedRecords();
+        } else {
+            $pageLanguageInformation = new PageLanguageInformation(
+                $pageRecord['uid'],
+                [],
+                [],
+                [],
+                [0],
+                false,
+                []
+            );
+            $pageContext = new PageContext(
+                $pageRecord['uid'],
+                $pageRecord,
+                $site,
+                [],
+                [],
+                [],
+                $pageLanguageInformation,
+                new Permission()
+            );
+            $pageLayoutContext = new PageLayoutContext($pageContext, $backendLayout, $drawingConfiguration, $serverRequest);
+            $contentFetcher = $this->get(ContentFetcher::class);
+            $unusedRecords = $contentFetcher->getUnusedRecords($pageLayoutContext);
+        }
+
         $unusedRecordsArr = [];
         foreach ($unusedRecords as $unusedRecord) {
             $unusedRecordsArr[] = $unusedRecord;
@@ -89,16 +122,15 @@ class IntegrityTest extends FunctionalTestCase
         self::assertSame(2, $unusedRecordsArr[0]['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function integrityFixDeleteChildrenWithWrongPid(): void
     {
-        $GLOBALS['BE_USER'] = $this->setUpBackendUserFromFixture(1);
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Integrity/Fixtures/children_with_wrong_pids.xml');
-        $integrity = GeneralUtility::makeInstance(Integrity::class);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
+        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/children_with_wrong_pids.csv');
+        $integrity = $this->get(Integrity::class);
         $res = $integrity->run();
-        $integrityFix = GeneralUtility::makeInstance(IntegrityFix::class);
+        $integrityFix = $this->get(IntegrityFix::class);
         foreach ($res['errors'] as $error) {
             $integrityFix->deleteChildrenWithWrongPid($error);
         }
@@ -109,11 +141,11 @@ class IntegrityTest extends FunctionalTestCase
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(2, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
         self::assertSame(1, $record['deleted']);
     }
 }

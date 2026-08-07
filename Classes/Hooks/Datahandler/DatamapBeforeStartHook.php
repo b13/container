@@ -14,73 +14,28 @@ namespace B13\Container\Hooks\Datahandler;
 
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
+use B13\Container\Domain\Service\ContainerService;
+use B13\Container\Tca\Registry;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
+#[Autoconfigure(public: true)]
 class DatamapBeforeStartHook
 {
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    /**
-     * @param ContainerFactory|null $containerFactory
-     * @param Database|null $database
-     */
-    public function __construct(ContainerFactory $containerFactory = null, Database $database = null)
-    {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
+    public function __construct(
+        protected ContainerFactory $containerFactory,
+        protected Database $database,
+        protected Registry $tcaRegistry,
+        protected ContainerService $containerService
+    ) {
     }
 
-    /**
-     * @param DataHandler $dataHandler
-     */
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
     {
-        // ajax move (drag & drop) (mixed cmdmap and datamap, no longer used on TYPO3 > 10)
-        // s. https://forge.typo3.org/issues/92849
-        // s. https://forge.typo3.org/projects/typo3cms-core/repository/1749/revisions/c1be5540b20421fdfa295a1323b663f3189a41d7
-        $dataHandler->datamap = $this->extractContainerIdFromColPosInDatamap($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildLocalizations($dataHandler->datamap);
         $dataHandler->datamap = $this->datamapForChildrenChangeContainerLanguage($dataHandler->datamap);
     }
 
-    /**
-     * @param array $datamap
-     * @return array
-     */
-    protected function extractContainerIdFromColPosInDatamap(array $datamap): array
-    {
-        if (!empty($datamap['tt_content'])) {
-            foreach ($datamap['tt_content'] as $id => &$data) {
-                if (isset($data['colPos'])) {
-                    $colPos = $data['colPos'];
-                    if (MathUtility::canBeInterpretedAsInteger($colPos) === false) {
-                        [$containerId, $newColPos] = GeneralUtility::intExplode('-', $colPos);
-                        $data['colPos'] = $newColPos;
-                        $data['tx_container_parent'] = $containerId;
-                    } elseif (!isset($data['tx_container_parent'])) {
-                        $data['tx_container_parent'] = 0;
-                        $data['colPos'] = (int)$colPos;
-                    }
-                }
-            }
-        }
-        return $datamap;
-    }
-
-    /**
-     * @param array $datamap
-     * @return array
-     */
     protected function datamapForChildLocalizations(array $datamap): array
     {
         $datamapForLocalizations = ['tt_content' => []];
@@ -88,13 +43,7 @@ class DatamapBeforeStartHook
             foreach ($datamap['tt_content'] as $id => $data) {
                 if (isset($data['colPos'])) {
                     $record = $this->database->fetchOneRecord((int)$id);
-                    if ($record !== null &&
-                        $record['sys_language_uid'] === 0 &&
-                        (
-                            $record['tx_container_parent'] > 0
-                            || (isset($data['tx_container_parent']) && $data['tx_container_parent'] > 0)
-                        )
-                    ) {
+                    if ($record !== null && $record['sys_language_uid'] === 0) {
                         $translations = $this->database->fetchOverlayRecords($record);
                         foreach ($translations as $translation) {
                             $datamapForLocalizations['tt_content'][$translation['uid']] = [
@@ -114,10 +63,6 @@ class DatamapBeforeStartHook
         return $datamap;
     }
 
-    /**
-     * @param array $datamap
-     * @return array
-     */
     protected function datamapForChildrenChangeContainerLanguage(array $datamap): array
     {
         $datamapForLocalizations = ['tt_content' => []];

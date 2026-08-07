@@ -14,70 +14,24 @@ namespace B13\Container\Tca;
 
 class ContainerConfiguration
 {
-    /**
-     * @var string
-     */
-    protected $cType = '';
-
-    /**
-     * @var string
-     */
-    protected $label = '';
-
-    /**
-     * @var string
-     */
-    protected $description = '';
-
-    /**
-     * @var mixed[]
-     */
-    protected $grid = [];
-
-    /**
-     * @var string
-     */
-    protected $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
-
-    /**
-     * @var string
-     */
-    protected $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html';
-
-    /**
-     * @var string
-     */
-    protected $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html';
-
-    /**
-     * @var array
-     */
-    protected $gridPartialPaths = [
+    protected string $cType = '';
+    protected string $label = '';
+    protected string $description = '';
+    protected array $grid = [];
+    protected string $icon = 'EXT:container/Resources/Public/Icons/Extension.svg';
+    protected ?string $backendTemplate = 'EXT:container/Resources/Private/Templates/Container.html';
+    protected string $gridTemplate = 'EXT:container/Resources/Private/Templates/Grid.html';
+    protected array $gridPartialPaths = [
         'EXT:backend/Resources/Private/Partials/',
         'EXT:container/Resources/Private/Partials/',
     ];
-
-    protected $gridLayoutPaths = [];
-
-    /**
-     * @var bool
-     */
-    protected $saveAndCloseInNewContentElementWizard = true;
-
-    /**
-     * @var bool
-     */
-    protected $registerInNewContentElementWizard = true;
-
-    /**
-     * @var string
-     */
-    protected $group = 'container';
-
-    /**
-     * @var array
-     */
-    protected $defaultValues = [];
+    protected array $gridLayoutPaths = [];
+    protected bool $saveAndCloseInNewContentElementWizard = true;
+    protected bool $registerInNewContentElementWizard = true;
+    protected string $group = 'container';
+    protected string $relativeToField = '';
+    protected string $relativePosition = '';
+    protected array $defaultValues = [];
 
     public function __construct(
         string $cType,
@@ -91,50 +45,30 @@ class ContainerConfiguration
         $this->grid = $grid;
     }
 
-    /**
-     * @param string $icon
-     * @return ContainerConfiguration
-     */
     public function setIcon(string $icon): ContainerConfiguration
     {
         $this->icon = $icon;
         return $this;
     }
 
-    /**
-     * @param string $backendTemplate
-     * @return ContainerConfiguration
-     */
-    public function setBackendTemplate(string $backendTemplate): ContainerConfiguration
+    public function setBackendTemplate(?string $backendTemplate): ContainerConfiguration
     {
         $this->backendTemplate = $backendTemplate;
         return $this;
     }
 
-    /**
-     * @param string $gridTemplate
-     * @return ContainerConfiguration
-     */
     public function setGridTemplate(string $gridTemplate): ContainerConfiguration
     {
         $this->gridTemplate = $gridTemplate;
         return $this;
     }
 
-    /**
-     * @param array $gridPartialPaths
-     * @return ContainerConfiguration
-     */
     public function setGridPartialPaths(array $gridPartialPaths): ContainerConfiguration
     {
         $this->gridPartialPaths = $gridPartialPaths;
         return $this;
     }
 
-    /**
-     * @param string $gridPartialPath
-     * @return ContainerConfiguration
-     */
     public function addGridPartialPath(string $gridPartialPath): ContainerConfiguration
     {
         $this->gridPartialPaths[] = $gridPartialPath;
@@ -158,58 +92,80 @@ class ContainerConfiguration
         return $this;
     }
 
-    /**
-     * @param bool $saveAndCloseInNewContentElementWizard
-     * @return ContainerConfiguration
-     */
     public function setSaveAndCloseInNewContentElementWizard(bool $saveAndCloseInNewContentElementWizard): ContainerConfiguration
     {
         $this->saveAndCloseInNewContentElementWizard = $saveAndCloseInNewContentElementWizard;
         return $this;
     }
 
-    /**
-     * @param bool $registerInNewContentElementWizard
-     * @return ContainerConfiguration
-     */
     public function setRegisterInNewContentElementWizard(bool $registerInNewContentElementWizard): ContainerConfiguration
     {
         $this->registerInNewContentElementWizard = $registerInNewContentElementWizard;
         return $this;
     }
 
-    /**
-     * @param string $group
-     * @return ContainerConfiguration
-     */
     public function setGroup(string $group): ContainerConfiguration
     {
         $this->group = $group;
         return $this;
     }
 
-    /**
-     * @return string
-     */
+    public function setRelativeToField(string $relativeToField): ContainerConfiguration
+    {
+        $this->relativeToField = $relativeToField;
+        return $this;
+    }
+
+    public function setRelativePosition(string $relativePosition): ContainerConfiguration
+    {
+        $this->relativePosition = $relativePosition;
+        return $this;
+    }
+
     public function getCType(): string
     {
         return $this->cType;
     }
 
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->label;
     }
 
-    /**
-     * @return mixed[]
-     */
     public function getGrid(): array
     {
         return $this->grid;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getIcon(): string
+    {
+        return $this->icon;
+    }
+
+    public function getBackendTemplate(): ?string
+    {
+        return $this->backendTemplate;
+    }
+
+    public function disableBackendTemplate(): ContainerConfiguration
+    {
+        $this->backendTemplate = null;
+        return $this;
+    }
+
+    public function isRegisterInNewContentElementWizard(): bool
+    {
+        return $this->registerInNewContentElementWizard;
+    }
+
+    public function getDefaultValues(): array
+    {
+        return $this->defaultValues;
     }
 
     /**
@@ -220,27 +176,69 @@ class ContainerConfiguration
         return $this->gridPartialPaths;
     }
 
-    /**
-     * @return string
-     */
+    public function getSaveAndCloseInNewContentElementWizard(): bool
+    {
+        return $this->saveAndCloseInNewContentElementWizard;
+    }
+
     public function getGroup(): string
     {
         return $this->group;
     }
 
-    /**
-     * @param array $defaultValues
-     * @return ContainerConfiguration
-     */
+    public function getRelativeToField(): string
+    {
+        return $this->relativeToField;
+    }
+
+    public function getRelativePosition(): string
+    {
+        return $this->relativePosition;
+    }
+
     public function setDefaultValues(array $defaultValues): ContainerConfiguration
     {
         $this->defaultValues = $defaultValues;
         return $this;
     }
 
-    /**
-     * @return mixed[]
-     */
+    protected function setLabel(string $label): ContainerConfiguration
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    public function setDescription(string $description): ContainerConfiguration
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getGridTemplate(): string
+    {
+        return $this->gridTemplate;
+    }
+
+    public function changeGridColumnConfiguration(int $colPos, array $override): void
+    {
+        $rows = $this->getGrid();
+        $modRows = [];
+        $columnConfigurationFields = ['name', 'allowed', 'disallowed', 'maxitems', 'colspan'];
+        foreach ($rows as &$columns) {
+            foreach ($columns as &$column) {
+                if ((int)$column['colPos'] === $colPos) {
+                    foreach ($columnConfigurationFields as $field) {
+                        if (isset($override[$field])) {
+                            $column[$field] = $override[$field];
+                        }
+                    }
+                }
+            }
+            $modRows[] = $columns;
+        }
+        $this->grid = $modRows;
+    }
+
     public function toArray(): array
     {
         return [

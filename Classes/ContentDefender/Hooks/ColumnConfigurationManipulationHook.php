@@ -16,33 +16,21 @@ use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Tca\Registry;
 use IchHabRecht\ContentDefender\BackendLayout\ColumnConfigurationManipulationInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\ServerRequest;
 
+#[Autoconfigure(public: true)]
 class ColumnConfigurationManipulationHook implements ColumnConfigurationManipulationInterface
 {
-    /**
-     * @var Registry
-     */
-    protected $tcaRegistry;
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    public function __construct(
-        ContainerFactory $containerFactory = null,
-        Registry $tcaRegistry = null
-    ) {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->tcaRegistry = $tcaRegistry ?? GeneralUtility::makeInstance(Registry::class);
+    public function __construct(protected ContainerFactory $containerFactory, protected Registry $tcaRegistry)
+    {
     }
 
     public function manipulateConfiguration(array $configuration, int $colPos, $recordUid): array
     {
         $parent = $this->getParentUid($recordUid);
-        if ($parent === 0) {
+        if ($parent === null) {
             return $configuration;
         }
         try {
@@ -53,29 +41,45 @@ class ColumnConfigurationManipulationHook implements ColumnConfigurationManipula
         }
         $cType = $container->getCType();
         $configuration = $this->tcaRegistry->getContentDefenderConfiguration($cType, $colPos);
+        // maxitems needs not to be considered in this case
+        // (new content elemment wizard, TcaCTypeItems: new record, TcaCTypeItems: edit record)
+        // consider maxitems here leeds to errors, because relation to container gets lost in EXT:content_defender
+        // EXT:container has already a own solution to prevent new records inside a container if maxitems is reached
+        // "New Content" Button is not rendered inside die colPos, this is possible because EXT:container has its own templates
+        $configuration['maxitems'] = 0;
         return $configuration;
     }
 
-    private function getParentUid($recordUid): int
+    private function getParentUid($recordUid): ?int
     {
-        $parent = 0;
-        if (empty($parent)) {
+        $request = $this->getServerRequest();
+        if ($request === null) {
+            return null;
+        }
+        $queryParams = $request->getQueryParams();
+        if (isset($queryParams['tx_container_parent']) && $queryParams['tx_container_parent'] > 0) {
             // new content elemment wizard
-            $parent = GeneralUtility::_GP('tx_container_parent');
+            return (int)$queryParams['tx_container_parent'];
         }
-        if (empty($parent)) {
+        if (
+            isset($queryParams['defVals']['tt_content']['tx_container_parent']) &&
+            $queryParams['defVals']['tt_content']['tx_container_parent'] > 0
+        ) {
             // TcaCTypeItems: new record
-            $defVals = GeneralUtility::_GP('defVals');
-            $parent = $defVals['tt_content']['tx_container_parent'] ?? 0;
+            return (int)$queryParams['defVals']['tt_content']['tx_container_parent'];
         }
-        if (empty($parent)) {
-            $edit = GeneralUtility::_GP('edit');
-            if (isset($edit['tt_content'][$recordUid])) {
-                // TcaCTypeItems: edit record
-                $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
-                $parent = $record['tx_container_parent'] ?? 0;
+        if (isset($queryParams['edit']['tt_content'][$recordUid])) {
+            // TcaCTypeItems: edit record
+            $record = BackendUtility::getRecord('tt_content', $recordUid, 'tx_container_parent');
+            if (isset($record['tx_container_parent'])) {
+                return (int)$record['tx_container_parent'];
             }
         }
-        return (int)$parent;
+        return null;
+    }
+
+    protected function getServerRequest(): ?ServerRequest
+    {
+        return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 }

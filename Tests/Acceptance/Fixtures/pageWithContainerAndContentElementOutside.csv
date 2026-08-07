@@ -1,0 +1,7 @@
+"pages"
+,"uid","pid","is_siteroot","title"
+,50,1,,"pageWithContainerAndElementOutsice"
+"tt_content"
+,"uid","pid","CType","header",
+,900,50,"b13-2cols-with-header-container",container
+,901,50,"header",outside

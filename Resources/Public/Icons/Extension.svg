@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#fff">
-  <path fill="#8c2828" d="M0 0h256v256H0z"/>
-  <g opacity=".3">
-    <path d="M35 35h53v186h-53z"/>
-    <path d="M101 35h53v186h-53z"/>
-    <path d="M168 35h53v186h-53z"/>
-  </g>
-  <path d="M215 82H41V41h174Zm6-47H35v53h186z"/>
-  <path d="M148 215H41V108h107zm6-113H35v119h119z"/>
-  <path d="M215 215h-41V108h41Zm6-113h-53v119h53Z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><style>.cls-3{fill:#131313}</style></defs><rect id="BG-Color" width="64" height="64" rx="4" ry="4" style="fill:#ff8700"/><g id="ExtentionIcons"><rect width="40" height="12" x="12" y="12" class="cls-3" rx="2" ry="2"/><rect width="24" height="24" x="12" y="28" rx="2" ry="2" style="opacity:.4;fill:#131313"/><rect width="12" height="24" x="40" y="28" class="cls-3" rx="2" ry="2"/></g></svg>

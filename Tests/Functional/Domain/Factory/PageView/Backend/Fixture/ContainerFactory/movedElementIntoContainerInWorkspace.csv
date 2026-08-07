@@ -1,0 +1,5 @@
+"tt_content"
+,"uid","pid","CType","colPos","header","t3ver_wsid","tx_container_parent","t3ver_oid","t3ver_state"
+,101,1,"b13-2cols-with-header-container",,,,,,
+,102,1,"header",0,"live header",0,,,
+,104,1,"header",200,"ws header",1,101,102,0

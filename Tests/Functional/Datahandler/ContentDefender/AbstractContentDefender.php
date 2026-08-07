@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
+
+/*
+ * This file is part of TYPO3 CMS-based extension "container" by b13.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ */
+
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
+
+abstract class AbstractContentDefender extends AbstractDatahandler
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            // content_defender always returns true for restrictions if global variable TYPO3_REQUEST is null
+            $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        }
+    }
+}

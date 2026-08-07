@@ -1,0 +1,9 @@
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent"
+,55,1,"b13-2cols-with-header-container",container-1,256,1,0,0
+,56,1,"b13-2cols-with-header-container","container-1-child-left-container-2",512,1,201,55
+,57,1,"header","container-2-child-header",768,1,200,56
+,54,1,"header","outside",1792,1,0,0
+,58,3,"b13-2cols-with-header-container","container-1",256,0,0,0
+,59,3,"b13-2cols-with-header-container","container-1-child-left-container-2",512,0,201,58
+,60,3,"header","container-2-child-header",768,0,200,59

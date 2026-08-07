@@ -12,27 +12,17 @@ namespace B13\Container\Hooks\Datahandler;
  * of the License, or any later version.
  */
 
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[Autoconfigure(public: true)]
 class CommandMapAfterFinishHook
 {
-    /**
-     * @var Database
-     */
-    protected $database;
-
-    /**
-     * @param Database|null $database
-     */
-    public function __construct(Database $database = null)
+    public function __construct(protected Database $database)
     {
-        $this->database = $database ?? GeneralUtility::makeInstance(Database::class);
     }
 
-    /**
-     * @param DataHandler $dataHandler
-     */
     public function processCmdmap_afterFinish(DataHandler $dataHandler): void
     {
         $cmdmap = $dataHandler->cmdmap;
@@ -59,23 +49,26 @@ class CommandMapAfterFinishHook
                 ];
                 // child in free mode is copied
                 $child = $this->database->fetchOneRecord($newId);
+                if ($child === null) {
+                    continue;
+                }
                 if ($child['tx_container_parent'] > 0) {
                     $copiedFromChild = $this->database->fetchOneRecord($id);
                     // copied from non default language (connectecd mode) children
-                    if ($copiedFromChild['sys_language_uid'] > 0 && $copiedFromChild['l18n_parent'] > 0) {
+                    if ($copiedFromChild !== null && $copiedFromChild['sys_language_uid'] > 0 && $copiedFromChild['l18n_parent'] > 0) {
                         // fetch orig container
-                        $origContainer = $this->database->fetchOneTranslatedRecord($copiedFromChild['tx_container_parent'], $copiedFromChild['sys_language_uid']);
+                        $origContainer = $this->database->fetchOneTranslatedRecordByLocalizationParent((int)$copiedFromChild['tx_container_parent'], $copiedFromChild['sys_language_uid']);
                         // should never be null
                         if ($origContainer !== null) {
                             $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$origContainer['uid'], $copyToLanguage);
                             if ($freeModeContainer !== null) {
-                                $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                                $data['tt_content'][$newId] = ['tx_container_parent' => (int)$freeModeContainer['uid']];
                             }
                         }
                     } else {
                         $freeModeContainer = $this->database->fetchContainerRecordLocalizedFreeMode((int)$child['tx_container_parent'], $copyToLanguage);
                         if ($freeModeContainer !== null) {
-                            $data['tt_content'][$newId] = ['tx_container_parent' => $freeModeContainer['uid']];
+                            $data['tt_content'][$newId] = ['tx_container_parent' => (int)$freeModeContainer['uid']];
                         }
                     }
                 }
@@ -83,6 +76,7 @@ class CommandMapAfterFinishHook
                     continue;
                 }
                 $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
+                $localDataHandler->enableLogging = $dataHandler->enableLogging;
                 $localDataHandler->start($data, [], $dataHandler->BE_USER);
                 $localDataHandler->process_datamap();
             }

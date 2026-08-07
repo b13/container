@@ -1,0 +1,7 @@
+"tt_content"
+,"uid","pid","colPos","CType","tx_container_parent"
+,1,1,0,"b13-2cols-with-header-container",0
+,2,1,200,"header",1
+,11,2,9,"b13-2cols-with-header-container",0
+,12,2,10,"header",0
+,13,2,200,"header",11

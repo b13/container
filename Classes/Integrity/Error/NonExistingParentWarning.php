@@ -12,25 +12,13 @@ namespace B13\Container\Integrity\Error;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-
 class NonExistingParentWarning implements ErrorInterface
 {
     private const IDENTIFIER = 'NonExistingParentWarning';
 
-    /**
-     * @var array
-     */
-    protected $childRecord;
+    protected array $childRecord;
+    protected string $errorMessage;
 
-    /**
-     * @var string
-     */
-    protected $errorMessage;
-
-    /**
-     * @param array $childRecord
-     */
     public function __construct(array $childRecord)
     {
         $this->childRecord = $childRecord;
@@ -39,19 +27,18 @@ class NonExistingParentWarning implements ErrorInterface
             ' has non existing tx_container_parent ' . $childRecord['tx_container_parent'];
     }
 
-    /**
-     * @return string
-     */
+    public function getChildRecord(): array
+    {
+        return $this->childRecord;
+    }
+
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getSeverity(): int
     {
-        return AbstractMessage::ERROR;
+        return ErrorInterface::ERROR;
     }
 }

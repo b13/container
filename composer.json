@@ -1,21 +1,22 @@
 {
     "name": "b13/container",
-    "description": "Create Custom Container Content Elements for TYPO3",
+    "description": "Container Content Elements - Create Custom Container Content Elements for TYPO3",
     "type": "typo3-cms-extension",
     "homepage": "https://b13.com",
     "license": ["GPL-2.0-or-later"],
     "require": {
-        "typo3/cms-backend": "^9.5 || ^10.4 || ^11.5"
+        "typo3/cms-backend": "^13.4 || ^14.3"
     },
     "autoload": {
         "psr-4": {
             "B13\\Container\\": "Classes/"
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload-dev": {
         "psr-4": {
-            "B13\\Container\\Tests\\": "Tests",
-            "TYPO3\\JsonResponse\\": ".Build/Web/typo3conf/ext/json_response/Classes"
+            "B13\\Container\\Tests\\": "Tests"
         }
     },
     "config": {
@@ -27,40 +28,34 @@
         }
     },
     "require-dev": {
-        "b13/container-example": "dev-feature/content_defender",
-        "ichhabrecht/content-defender": "^3.2",
-        "typo3/cms-install": "^10.4",
-        "typo3/cms-fluid-styled-content": "^10.4",
-        "typo3/cms-info": "^10.4",
-        "typo3/testing-framework": "^6",
-        "codeception/codeception": "^4.1",
-        "codeception/module-webdriver": "^1.0",
-        "codeception/module-asserts": "^1.0",
-        "codeception/module-db": "^1.0",
-        "typo3/cms-workspaces": "^10.4",
-        "phpstan/phpstan": "^0.12.11",
-        "typo3/coding-standards": "^0.5",
-        "phpunit/phpunit": "^8.4",
-        "friendsofphp/php-cs-fixer": "^3.4"
+        "b13/container-example": "dev-master",
+        "typo3/cms-install": "^13.4 || ^14.3",
+        "typo3/cms-fluid-styled-content": "^13.4 || ^14.3",
+        "typo3/cms-info": "^13.4 || ^14.3",
+        "typo3/cms-workspaces": "^13.4 || ^14.3",
+        "typo3/testing-framework": "^9.1",
+        "phpstan/phpstan": "^1.10",
+        "typo3/coding-standards": "^0.5.5",
+        "friendsofphp/php-cs-fixer": "^3.51",
+        "codeception/codeception": "^5.1",
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-webdriver": "^4.0",
+        "codeception/module-db": "^3.1",
+        "phpunit/phpunit": "^11.3"
     },
     "replace": {
         "typo3-ter/container": "self.version"
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare",
-            "if [ ! -e .Build/Web/vendor ]; then cd .Build/Web  && ln -s ../vendor && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/ext/json_response ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/typo3/testing-framework/Resources/Core/Functional/Extensions/json_response && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/ext/container_example ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/b13/container-example container_example && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/ext/content_defender -a -e .Build/vendor/ichhabrecht/content-defender ]; then cd .Build/Web/typo3conf/ext && ln -s ../../../vendor/ichhabrecht/content-defender content_defender && cd -; fi",
-            "if [ ! -e .Build/Web/typo3conf/sites ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
-        ]
     },
     "extra": {
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/Web",
-            "extension-key": "container"
+            "app-dir": ".Build",
+            "extension-key": "container",
+            "version": "4.0.2",
+            "Package": {
+                "providesPackages": {}
+            }
         }
     }
 }

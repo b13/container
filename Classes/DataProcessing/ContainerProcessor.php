@@ -13,65 +13,47 @@ namespace B13\Container\DataProcessing;
  */
 
 use B13\Container\Domain\Factory\Exception;
-use B13\Container\Domain\Factory\PageView\Frontend\ContainerFactory;
+use B13\Container\Domain\Factory\FrontendContainerFactory;
 use B13\Container\Domain\Model\Container;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
-use TYPO3\CMS\Frontend\ContentObject\RecordsContentObject;
 
+#[Autoconfigure(public: true)]
 class ContainerProcessor implements DataProcessorInterface
 {
-
-    /**
-     * @var ContainerFactory
-     */
-    protected $containerFactory;
-
-    /**
-     * @var ContentDataProcessor
-     */
-    protected $contentDataProcessor;
-
-    public function __construct(ContainerFactory $containerFactory = null, ContentDataProcessor $contentDataProcessor = null)
+    public function __construct(protected ContentDataProcessor $contentDataProcessor, protected Context $context, protected FrontendContainerFactory $frontendContainerFactory)
     {
-        $this->containerFactory = $containerFactory ?? GeneralUtility::makeInstance(ContainerFactory::class);
-        $this->contentDataProcessor = $contentDataProcessor ?? GeneralUtility::makeInstance(ContentDataProcessor::class);
     }
 
-    /**
-     * @param ContentObjectRenderer $cObj
-     * @param array $contentObjectConfiguration
-     * @param array $processorConfiguration
-     * @param array $processedData
-     * @return array
-     */
     public function process(
         ContentObjectRenderer $cObj,
         array $contentObjectConfiguration,
         array $processorConfiguration,
         array $processedData
-    ) {
+    ): array {
         if (isset($processorConfiguration['if.']) && !$cObj->checkIf($processorConfiguration['if.'])) {
             return $processedData;
         }
+        $contentId = null;
         if ($processorConfiguration['contentId.'] ?? false) {
-            $contentId = (int)$cObj->stdWrap($processorConfiguration['contentId'], $processorConfiguration['contentId.']);
+            $contentId = (int)$cObj->stdWrap($processorConfiguration['contentId'] ?? '', $processorConfiguration['contentId.']);
         } elseif ($processorConfiguration['contentId'] ?? false) {
             $contentId = (int)$processorConfiguration['contentId'];
-        } else {
-            $contentId = (int)$cObj->data['uid'];
         }
 
         try {
-            $container = $this->containerFactory->buildContainer($contentId);
+            $container = $this->frontendContainerFactory->buildContainer($cObj, $this->context, $contentId);
         } catch (Exception $e) {
             // do nothing
             return $processedData;
         }
 
-        if (empty($processorConfiguration['colPos']) && empty($processorConfiguration['colPos.'])) {
+        $colPos = (int)$cObj->stdWrapValue('colPos', $processorConfiguration);
+        if (empty($colPos)) {
             $allColPos = $container->getChildrenColPos();
             foreach ($allColPos as $colPos) {
                 $processedData = $this->processColPos(
@@ -84,15 +66,7 @@ class ContainerProcessor implements DataProcessorInterface
                 );
             }
         } else {
-            if ($processorConfiguration['colPos.'] ?? null) {
-                $colPos = (int)$cObj->stdWrap($processorConfiguration['colPos'], $processorConfiguration['colPos.']);
-            } else {
-                $colPos = (int)$processorConfiguration['colPos'];
-            }
-            $as = 'children';
-            if ($processorConfiguration['as']) {
-                $as = $processorConfiguration['as'];
-            }
+            $as = $cObj->stdWrapValue('as', $processorConfiguration, 'children');
             $processedData = $this->processColPos(
                 $cObj,
                 $container,
@@ -115,22 +89,21 @@ class ContainerProcessor implements DataProcessorInterface
     ): array {
         $children = $container->getChildrenByColPos($colPos);
 
-        $contentRecordRenderer = new RecordsContentObject($cObj);
+        $contentRecordRenderer = $cObj->getContentObject('RECORDS');
+        if ($contentRecordRenderer === null) {
+            throw new ContainerDataProcessingFailedException('RECORDS content object not available.', 1691483526);
+        }
         $conf = [
             'tables' => 'tt_content',
         ];
         foreach ($children as &$child) {
-            if ($child['l18n_parent'] > 0) {
-                $conf['source'] = $child['l18n_parent'];
-            } else {
+            if (!isset($processorConfiguration['skipRenderingChildContent']) || (int)$processorConfiguration['skipRenderingChildContent'] === 0) {
                 $conf['source'] = $child['uid'];
+                $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
             }
-            if ($child['t3ver_oid'] > 0) {
-                $conf['source'] = $child['t3ver_oid'];
-            }
-            $child['renderedContent'] = $cObj->render($contentRecordRenderer, $conf);
             /** @var ContentObjectRenderer $recordContentObjectRenderer */
             $recordContentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+            $recordContentObjectRenderer->setRequest($cObj->getRequest());
             $recordContentObjectRenderer->start($child, 'tt_content');
             $child = $this->contentDataProcessor->process($recordContentObjectRenderer, $processorConfiguration, $child);
         }

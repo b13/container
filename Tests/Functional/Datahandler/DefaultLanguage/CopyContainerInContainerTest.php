@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -11,26 +12,15 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
-class CopyContainerInContainerTest extends DatahandlerTest
+class CopyContainerInContainerTest extends AbstractDatahandler
 {
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/copy_container_in_container.xml');
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function copyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerInContainer/CopyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainer.csv');
         $cmdmap = [
             'tt_content' => [
                 1 => [
@@ -46,11 +36,6 @@ class CopyContainerInContainerTest extends DatahandlerTest
         ];
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $copiedChildContainer1 = $this->fetchOneRecord('t3_origuid', 2);
-        $copiedContentInChildContainer1 = $this->fetchOneRecord('t3_origuid', 3);
-        $copiedChildContainer2 = $this->fetchOneRecord('t3_origuid', 4);
-        $copiedContentInChildContainer2 = $this->fetchOneRecord('t3_origuid', 5);
-        self::assertSame($copiedChildContainer1['uid'], $copiedContentInChildContainer1['tx_container_parent']);
-        self::assertSame($copiedChildContainer2['uid'], $copiedContentInChildContainer2['tx_container_parent']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerInContainer/CopyContainerWithChildContainersCopiesContentInChildContainersIntoCorrectContainerResult.csv');
     }
 }

@@ -10,7 +10,9 @@ namespace B13\Container\Tests\Functional\Domain\Factory\PageView\Backend;
  * of the License, or any later version.
  */
 
+use B13\Container\Domain\Factory\Database;
 use B13\Container\Domain\Factory\PageView\Backend\ContentStorage;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -18,74 +20,67 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ContentStorageTest extends FunctionalTestCase
 {
-
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
     ];
 
-    /**
-     * @var array
-     */
-    protected $coreExtensionsToLoad = ['workspaces'];
+    protected array $coreExtensionsToLoad = ['workspaces'];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerChildrenReturnsAllLiveChildrenInDraftWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = $this->get(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(2, count($children));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getContainerChildrenReturnsAllLiveChildrenInLiveWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/localizedContainerChildElementsHasSortingOfDefaultChildElements.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/localizedContainerChildElementsHasSortingOfDefaultChildElements.csv');
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = $this->get(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(2, count($children));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deletedChildInWorkspaceReturnsChildInLiveWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/deletedChildInWorkspace.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/deletedChildInWorkspace.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 0);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = $this->get(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(1, count($children));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deletedChildInWorkspaceReturnsNoChildInDraftWorkspace(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Domain/Factory/Fixture/deletedChildInWorkspace.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixture/ContentStorage/deletedChildInWorkspace.csv');
 
         $workspaceAspect = GeneralUtility::makeInstance(WorkspaceAspect::class, 1);
-        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', $workspaceAspect);
-        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class);
+        $database = $this->get(Database::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('workspace', $workspaceAspect);
+        $contentStorage = GeneralUtility::makeInstance(ContentStorage::class, $database, $context);
         $containerRecord = ['uid' => 1, 'pid' => 1];
         $children = $contentStorage->getContainerChildren($containerRecord, 0);
         self::assertSame(0, count($children));

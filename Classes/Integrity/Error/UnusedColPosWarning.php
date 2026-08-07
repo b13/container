@@ -12,31 +12,14 @@ namespace B13\Container\Integrity\Error;
  * of the License, or any later version.
  */
 
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-
 class UnusedColPosWarning implements ErrorInterface
 {
     private const IDENTIFIER = 'UnusedColPosWarning';
 
-    /**
-     * @var array
-     */
-    protected $childRecord;
+    protected array $childRecord;
+    protected array $containerRecord;
+    protected string $errorMessage;
 
-    /**
-     * @var array
-     */
-    protected $containerRecord;
-
-    /**
-     * @var string
-     */
-    protected $errorMessage;
-
-    /**
-     * @param array $childRecord
-     * @param array $containerRecord
-     */
     public function __construct(array $childRecord, array $containerRecord)
     {
         $this->childRecord = $childRecord;
@@ -48,19 +31,18 @@ class UnusedColPosWarning implements ErrorInterface
             . ' with CType ' . $containerRecord['CType'];
     }
 
-    /**
-     * @return string
-     */
+    public function getChildRecord(): array
+    {
+        return $this->childRecord;
+    }
+
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @return int
-     */
     public function getSeverity(): int
     {
-        return AbstractMessage::WARNING;
+        return ErrorInterface::WARNING;
     }
 }

@@ -1,0 +1,6 @@
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent","l10n_source","t3ver_oid","t3ver_wsid","t3ver_state","t3ver_stage"
+,10,1,"b13-2cols-with-header-container","container-default",128,0,0,0,0,0,0,0,0,0
+,11,1,"header","header",256,0,200,10,0,0,0,0,0,0
+,12,1,"header","header-deleted-in-ws",256,0,200,10,0,0,11,1,2,0
+,13,1,"b13-2cols-with-header-container","container-default",128,0,0,0,0,0,10,1,2,0

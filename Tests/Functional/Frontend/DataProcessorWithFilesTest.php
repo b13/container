@@ -12,34 +12,33 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class DataProcessorWithFilesTest extends AbstractFrontendTest
+class DataProcessorWithFilesTest extends AbstractFrontend
 {
     protected function setUp(): void
     {
-        FunctionalTestCase::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/data_processor_with_files.xml');
+        parent::setUp();
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/data_processor_with_files.csv');
         $this->setUpFrontendRootPage(
             1,
             [
-                'constants' => ['EXT:container/Tests/Functional/Fixtures/TypoScript/constants.typoscript'],
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
                 'setup' => [
-                    'EXT:container/Tests/Functional/Fixtures/TypoScript/setup.typoscript',
-                    'EXT:container_example/Configuration/TypoScript/2cols.typoscript',
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
                 ],
             ]
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Test]
+    #[Group('frontend')]
     public function relationIsRendered(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('README.md', $body);

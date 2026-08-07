@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
 
 /*
@@ -11,26 +12,15 @@ namespace B13\Container\Tests\Functional\Datahandler\DefaultLanguage;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use B13\Container\Tests\Functional\Datahandler\AbstractDatahandler;
+use PHPUnit\Framework\Attributes\Test;
 
-class CopyPageTest extends DatahandlerTest
+class CopyPageTest extends AbstractDatahandler
 {
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/copy_page.xml');
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function copyPageCopiesChildrenOfContainer(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyPage/CopyPageCopiesChildrenOfContainer.csv');
         $cmdmap = [
             'pages' => [
                 1 => [
@@ -41,18 +31,6 @@ class CopyPageTest extends DatahandlerTest
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_datamap();
         $this->dataHandler->process_cmdmap();
-
-        $copiedRecord = $this->fetchOneRecord('t3_origuid', 1);
-        $child = $this->fetchOneRecord('t3_origuid', 2);
-
-        self::assertSame(2, $child['pid']);
-        self::assertSame(2, $copiedRecord['pid']);
-
-        self::assertSame(3, $copiedRecord['uid']);
-        self::assertSame(4, $child['uid']);
-
-        self::assertSame(3, $child['tx_container_parent']);
-        self::assertSame(200, $child['colPos']);
-        self::assertSame(0, $child['sys_language_uid']);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyPage/CopyPageCopiesChildrenOfContainerResult.csv');
     }
 }

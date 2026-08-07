@@ -10,16 +10,33 @@ namespace B13\Container\Tests\Functional\Frontend;
  * of the License, or any later version.
  */
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class LanguageStrictTest extends AbstractFrontendTest
+class LanguageStrictTest extends AbstractFrontend
 {
-    /**
-     * @test
-     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/setup.csv');
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'constants' => ['EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/constants.typoscript'],
+                'setup' => [
+                    'EXT:container/Tests/Functional/Frontend/Fixtures/TypoScript/setup.typoscript',
+                    'EXT:container_example/Configuration/Sets/ContainerExample/setup.typoscript',
+                ],
+            ]
+        );
+    }
+
+    #[Test]
+    #[Group('frontend')]
     public function nothingTranslated(): void
     {
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
@@ -31,13 +48,12 @@ class LanguageStrictTest extends AbstractFrontendTest
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function bothTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageStrict/tt_content_both_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_both_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-de</h1>', $body);
@@ -49,13 +65,12 @@ class LanguageStrictTest extends AbstractFrontendTest
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function bothTranslatedTranslatedChildHidden(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageStrict/tt_content_both_translated_tranlated_child_hidden.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_both_translated_tranlated_child_hidden.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-de</h1>', $body);
@@ -67,13 +82,12 @@ class LanguageStrictTest extends AbstractFrontendTest
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function childTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageStrict/tt_content_child_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_child_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringNotContainsString('<h1 class="container">container-default</h1>', $body);
@@ -85,13 +99,12 @@ class LanguageStrictTest extends AbstractFrontendTest
         self::assertStringNotContainsString('<h2 class="">header-default</h2>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
+    #[Group('frontend')]
     public function containerTranslated(): void
     {
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Fixtures/LanguageStrict/tt_content_container_translated.xml');
-        $response = $this->executeFrontendRequest(new InternalRequest('/de'));
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/LanguageStrict/tt_content_container_translated.csv');
+        $response = $this->executeFrontendRequestWrapper(new InternalRequest('http://localhost/de'));
         $body = (string)$response->getBody();
         $body = $this->prepareContent($body);
         self::assertStringContainsString('<h1 class="container">container-de</h1>', $body);

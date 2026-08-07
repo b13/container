@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
 
 /*
@@ -11,33 +12,28 @@ namespace B13\Container\Tests\Functional\Datahandler\ContentDefender;
  * of the License, or any later version.
  */
 
-use B13\Container\Tests\Functional\Datahandler\DatahandlerTest;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
-class CopyContainerTest extends DatahandlerTest
+class CopyContainerTest extends AbstractContentDefender
 {
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/container',
         'typo3conf/ext/container_example',
-        'typo3conf/ext/content_defender',
     ];
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \TYPO3\TestingFramework\Core\Exception
-     */
     protected function setUp(): void
     {
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            $this->testExtensionsToLoad[] = 'typo3conf/ext/content_defender';
+        }
         parent::setUp();
-        $this->importDataSet(ORIGINAL_ROOT . 'typo3conf/ext/container/Tests/Functional/Datahandler/ContentDefender/Fixtures/copy_container.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/copy_container.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyContainerAfterElementCopiesChildEvenChildIsNotAllowedByContentDefenderInBackendLayout(): void
     {
         $cmdmap = [
@@ -56,13 +52,11 @@ class CopyContainerTest extends DatahandlerTest
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $this->fetchOneRecord('t3_origuid', 2);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerAfterElementCopiesChildEvenChildIsNotAllowedByContentDefenderInBackendLayoutResult.csv');
     }
 
-    /**
-     * @test
-     * @group content_defender
-     */
+    #[Test]
+    #[Group('content_defender')]
     public function copyContainerIntoOtherContainerWithSameColPosCopiesAlsoChildEvenChildIsDisallowedInTargetContainer(): void
     {
         $cmdmap = [
@@ -72,7 +66,8 @@ class CopyContainerTest extends DatahandlerTest
                         'action' => 'paste',
                         'target' => -2,
                         'update' => [
-                            'colPos' => '1-200',
+                            'colPos' => 200,
+                            'tx_container_parent' => 1,
                         ],
                     ],
                 ],
@@ -81,11 +76,30 @@ class CopyContainerTest extends DatahandlerTest
 
         $this->dataHandler->start([], $cmdmap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
-        $row = $this->fetchOneRecord('t3_origuid', 4);
-        self::assertSame(1, (int)$row['tx_container_parent'], 'element is not copied into container');
-        self::assertSame(200, (int)$row['colPos'], 'element is not copied into container colPos');
-        $child = $this->fetchOneRecord('t3_origuid', 5);
-        self::assertSame($row['uid'], (int)$child['tx_container_parent'], 'child is not copied into copied container');
-        self::assertSame(200, (int)$row['colPos'], 'child is not copied into container colPos');
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerIntoOtherContainerWithSameColPosCopiesAlsoChildEvenChildIsDisallowedInTargetContainerResult.csv');
+    }
+
+    #[Test]
+    #[Group('content_defender')]
+    public function copyContainerWithRestrictionsIgnoresContentDefender(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/copy_container_with_restrictions.csv');
+        $cmdmap = [
+            'tt_content' => [
+                11 => [
+                    'copy' => [
+                        'action' => 'paste',
+                        'target' => 2,
+                        'update' => [
+                            'colPos' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerWithRestrictionsIgnoresContentDefenderResult.csv');
     }
 }

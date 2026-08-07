@@ -1,0 +1,5 @@
+
+tt_content.b13-2cols-with-header-container {
+  templateName = ContainerWithTwoChildren
+  templateRootPaths.10 = EXT:container/Tests/Functional/Frontend/Fixtures/Templates/
+}

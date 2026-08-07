@@ -1,0 +1,16 @@
+"pages"
+,"uid","pid","title"
+,1,0,"page-1"
+,2,0,"page-1-language-1"
+"tt_content"
+,"uid","pid","CType","header","sorting","sys_language_uid","colPos","tx_container_parent","l18n_parent"
+,1,1,"b13-2cols-with-header-container","container-1",128,0,0,0,0
+,2,1,"header","child-1-1",256,0,200,1,0
+,3,1,"header","child-1-2",512,0,200,1,0
+,4,1,"b13-2cols-with-header-container","container-2",1024,0,0,0,0
+,5,1,"header","child-2-1",2048,0,200,4,0
+,6,1,"b13-2cols-with-header-container","[Translate to german:] container-2",2304,1,0,0,0
+,7,1,"header","[Translate to german:] child-2-1",2560,1,200,6,0
+,8,1,"b13-2cols-with-header-container","[Translate to german:] container-1",768,1,0,0,0
+,9,1,"header","[Translate to german:] child-1-2",896,1,200,8,0
+,10,1,"header","[Translate to german:] child-1-1",832,1,200,8,0

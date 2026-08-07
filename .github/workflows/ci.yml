@@ -10,53 +10,61 @@ jobs:
 
   testsuite:
     name: all tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        php: [ '7.4', '7.3', '7.2' ]
-        TYPO3: [ '10' ]
-        include:
-          - TYPO3: '11'
-            php: '8.1'
-          - TYPO3: '11'
-            php: '8.0'
-          - TYPO3: '11'
-            php: '7.4'
+        php: [ '8.2', '8.3', '8.4', '8.5']
+        TYPO3: [ '13', '14' ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Install testing system
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerInstall
 
       - name: Composer validate
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerValidate
 
       - name: Lint PHP
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s lint
 
       - name: CGL
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s cgl -n
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s cgl -n
 
       - name: phpstan
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s phpstan
 
       - name: Unit Tests
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s unit
 
-      - name: Functional Tests with mariadb
+      - name: Functional Tests
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional -- --do-not-fail-on-deprecation --exclude-group v14-only
+        if: matrix.TYPO3 == '13'
+
+      - name: Functional Tests 14
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
+        if: matrix.TYPO3 == '14'
 
-      - name: Acceptance Tests With Fluid Base Page Module on TYPO 10
-        if: startsWith(matrix.TYPO3, '10')
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -f -s acceptance -e --fail-fast
-
-      - name: Acceptance Tests
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -e --fail-fast
-
+      - name: Acceptance Tests Classic
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptance -- --fail-fast
       - name: Archive acceptance tests results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: acceptance-test-reports-${{ matrix.php }}-${{ matrix.TYPO3 }}
           path: .Build/Web/typo3temp/var/tests/_output
+
+      - name: Acceptance Tests Composer
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s acceptanceComposer -- --fail-fast
+      - name: Archive acceptance tests results
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: acceptance-test-composer-reports-${{ matrix.php }}-${{ matrix.TYPO3 }}
+          path: .Build/Web/typo3temp/var/tests_composer/_output
+      - name: Archive composer.lock
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: composer.lock-${{ matrix.php }}-${{ matrix.TYPO3 }}
+          path: composer.lock
