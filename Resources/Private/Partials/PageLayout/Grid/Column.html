@@ -27,13 +27,12 @@
     data-tx-container-parent="{column.containerUid}"
     class="{columnClasses -> f:spaceless()}"
     role="group" aria-labelledby="{columnIdentifier}">
-    <f:alias map="{columnHeaderLevel: 2}">
-        <f:render partial="PageLayout/Grid/ColumnHeader" arguments="{_all}" />
-    </f:alias>
+    {columnHeaderLevel -> f:or(alternative: 3) -> f:variable(name: 'columnHeaderLevel')}
+    <f:render partial="PageLayout/Grid/ColumnHeader" arguments="{_all}" />
     <f:if condition="{column.active} || {column.unused}">
         <div data-colpos="{column.columnNumber}" data-language-uid="{column.context.siteLanguage.languageId}"
              data-tx-container-parent="{column.containerUid}"
-             class=" t3-page-ce-wrapper">
+             class="t3-page-ce-wrapper">
             <f:for each="{column.items}" as="item">
                 <f:render partial="PageLayout/Record" arguments="{_all}" />
             </f:for>

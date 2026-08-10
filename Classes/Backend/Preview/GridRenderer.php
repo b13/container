@@ -32,6 +32,12 @@ use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
 class GridRenderer
 {
+    /**
+     * Nesting level of the container currently being rendered. Nested containers are rendered
+     * while the outer grid is rendered, so incrementing around the render call is sufficient.
+     */
+    protected int $depth = 0;
+
     public function __construct(
         protected Registry $tcaRegistry,
         protected ContainerFactory $containerFactory,
@@ -100,9 +106,18 @@ class GridRenderer
         }
         $view->assign('containerRecord', $record);
         $view->assign('context', $context);
+        // the column headers of the page layout are h2, in language comparison mode h3, so the
+        // columns of a container start one level below and each nesting level adds another one
+        $baseLevel = $context->getDrawingConfiguration()->isLanguageComparisonMode() ? 3 : 2;
+        $view->assign('columnHeaderLevel', $baseLevel + 1 + $this->depth);
         $beforeContainerPreviewIsRendered = new BeforeContainerPreviewIsRenderedEvent($container, $view, $grid);
         $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
-        $rendered = $view->render();
+        $this->depth++;
+        try {
+            $rendered = $view->render();
+        } finally {
+            $this->depth--;
+        }
         return $rendered;
     }
 
