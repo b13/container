@@ -1,5 +1,3 @@
-{columnHeaderLevel -> f:or(alternative: 2) -> f:variable(name: 'columnHeaderLevel')}
-
 <div class="t3-page-column-header">
     <f:if condition="{column.active}">
         <f:then>
@@ -15,7 +13,7 @@
                     </a>
                 </f:if>
             </div>
-            <h{columnHeaderLevel} id="{columnIdentifier}" class="t3-page-column-title">{column.title}</h{columnHeaderLevel}>
+            <strong id="{columnIdentifier}" class="t3-page-column-title">{column.title}</strong>
         </f:then>
         <f:else if="{column.unused}">
             <span id="{columnIdentifier}"><f:translate key="LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:unusedColPos"/></span>
