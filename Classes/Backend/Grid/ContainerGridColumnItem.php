@@ -85,4 +85,34 @@ class ContainerGridColumnItem extends GridColumnItem
         }
         return $this->newContentUrl;
     }
+
+    public function getDeleteUrl(): string
+    {
+        return parent::getDeleteUrl() . '#element-' . $this->table . '-' . $this->getDeleteReturnTargetUid();
+    }
+
+    protected function getDeleteReturnTargetUid(): int
+    {
+        /** @var array<string, mixed>|RecordInterface $record */
+        $record = $this->record;
+        $recordUid = $record instanceof RecordInterface
+            ? $record->getUid()
+            : (int)$record['uid'];
+        $siblings = array_values($this->container->getChildrenByColPos((int)$this->column->getColumnNumber()));
+
+        foreach ($siblings as $index => $sibling) {
+            if ((int)$sibling['uid'] !== $recordUid) {
+                continue;
+            }
+            if (isset($siblings[$index - 1])) {
+                return (int)$siblings[$index - 1]['uid'];
+            }
+            if (isset($siblings[$index + 1])) {
+                return (int)$siblings[$index + 1]['uid'];
+            }
+            break;
+        }
+
+        return $this->container->getUid();
+    }
 }
