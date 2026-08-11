@@ -35,6 +35,9 @@ class FrontendContainerFactory
             }
             $record = $records[0];
         }
+        if ($record['sys_language_uid'] != 0 && $record['l18n_parent'] > 0) {
+            $record['uid'] = $record['l18n_parent'];
+        }
         if (!$this->tcaRegistry->isContainerElement($record['CType'] ?? '')) {
             throw new Exception('not a container element with uid ' . $uid, 1734946028);
         }
