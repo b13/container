@@ -28,7 +28,7 @@ class RecordSummaryForLocalization extends FunctionalTestCase
     public function childrenIsMovedIntoBackendLayoutColPosIfContainerIsAlreadyTranslated(): void
     {
         if ((new Typo3Version())->getMajorVersion() < 14) {
-            self::markTestSkipped('tested by RecordLocalizeSummaryModifierTest Unit Test');
+            self::markTestSkipped('only >= v14 related');
         }
         $records = [
             0 => [
@@ -50,6 +50,56 @@ class RecordSummaryForLocalization extends FunctionalTestCase
                 0 => ['uid' => 41, 'title' => 'first element'],
                 1 => ['uid' => 4, 'title' => 'ce 2'],
                 2 => ['uid' => 40, 'title' => 'last element'],
+            ],
+        ];
+        self::assertSame($expected, $records);
+    }
+
+    #[Test]
+    public function childOfHiddenContainerIsKeptInSummaryWhenContainerIsHiddenAndAlreadyTranslated(): void
+    {
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::markTestSkipped('only >= v14 related');
+        }
+        $records = [
+            200 => [
+                0 => ['uid' => 4, 'title' => 'Child Of Hidden Container'],
+            ],
+        ];
+        $columns = [0 => 'Normal'];
+        $event = new AfterRecordSummaryForLocalizationEvent($records, $columns);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/localize_container_child_in_hidden_container.csv');
+        $listener = $this->getContainer()->get(\B13\Container\Listener\RecordSummaryForLocalization::class);
+        $listener($event);
+        $records = $event->getRecords();
+        $expected = [
+            0 => [
+                0 => ['uid' => 4, 'title' => 'Child Of Hidden Container'],
+            ],
+        ];
+        self::assertSame($expected, $records);
+    }
+
+    #[Test]
+    public function hiddenElementThatShouldBeLocalizedIsKeptInSummary(): void
+    {
+        if ((new Typo3Version())->getMajorVersion() < 14) {
+            self::markTestSkipped('tested by RecordLocalizeSummaryModifierTest Unit Test');
+        }
+        $records = [
+            0 => [
+                0 => ['uid' => 41, 'title' => 'hidden element'],
+            ],
+        ];
+        $columns = [0 => 'Normal'];
+        $event = new AfterRecordSummaryForLocalizationEvent($records, $columns);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_element.csv');
+        $listener = $this->getContainer()->get(\B13\Container\Listener\RecordSummaryForLocalization::class);
+        $listener($event);
+        $records = $event->getRecords();
+        $expected = [
+            0 => [
+                0 => ['uid' => 41, 'title' => 'hidden element'],
             ],
         ];
         self::assertSame($expected, $records);
