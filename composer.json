@@ -52,7 +52,7 @@
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
             "extension-key": "container",
-            "version": "4.0.2",
+            "version": "4.1.0",
             "Package": {
                 "providesPackages": {}
             }
