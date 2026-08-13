@@ -51,6 +51,31 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
         $newContentUrl = $newContentUriBuilder->getNewContentUrlAfterChild($pageLayoutContext, $container, 111, 112, null);
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
+        self::assertStringEndsWith('#element-tt_content-112', $this->getReturnUrlParameter($newContentUrl));
+    }
+
+    #[Test]
+    public function getNewContentEditUrlAfterChildContainsReturnAnchor(): void
+    {
+        $container = new Container(['uid' => 2], []);
+        $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerColumnConfigurationService = $this->getMockBuilder(ContainerColumnConfigurationService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
+
+        $newContentUrl = $newContentUriBuilder->getNewContentUrlAfterChild($pageLayoutContext, $container, 111, 112, ['CType' => 'header']);
+
+        self::assertStringEndsWith('#element-tt_content-112', $this->getReturnUrlParameter($newContentUrl));
     }
 
     #[Test]
@@ -72,11 +97,14 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         $containerColumnConfigurationService->expects(self::once())->method('isMaxitemsReached')->willReturn(false);
         $containerService  = $this->getMockBuilder(ContainerService::class)
             ->disableOriginalConstructor()
+            ->onlyMethods(['getNewContentElementAtTopTargetInColumn'])
             ->getMock();
+        $containerService->expects(self::once())->method('getNewContentElementAtTopTargetInColumn')->willReturn(-2);
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
         $newContentUrl = $newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111, null);
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
+        self::assertStringEndsWith('#element-tt_content-2', $this->getReturnUrlParameter($newContentUrl));
     }
 
     #[Test]
@@ -103,5 +131,13 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
         $newContentUrl = $newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111, null);
         self::assertNull($newContentUrl);
+    }
+
+    private function getReturnUrlParameter(string $url): string
+    {
+        parse_str((string)parse_url($url, PHP_URL_QUERY), $queryParameters);
+        self::assertArrayHasKey('returnUrl', $queryParameters);
+        self::assertIsString($queryParameters['returnUrl']);
+        return $queryParameters['returnUrl'];
     }
 }
