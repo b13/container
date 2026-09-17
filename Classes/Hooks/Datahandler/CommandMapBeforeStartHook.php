@@ -134,6 +134,22 @@ class CommandMapBeforeStartHook
                         if (!$this->tcaRegistry->isContainerElement($record['CType'])) {
                             continue;
                         }
+                        // Page module "drop after this container" sends target=-uid of the moved
+                        // container itself. Rewriting that to "after last child" keeps the record
+                        // in the same column slot (children sort between parent and next sibling),
+                        // so move-down is a no-op. Retarget to the next sibling instead.
+                        if ($operation === 'move' && (int)$id === $target) {
+                            $nextTarget = $this->getMoveAfterSelfTarget($record);
+                            if ($nextTarget === null) {
+                                continue;
+                            }
+                            if (is_array($value)) {
+                                $cmd[$operation]['target'] = $nextTarget;
+                            } else {
+                                $cmd[$operation] = $nextTarget;
+                            }
+                            continue;
+                        }
                         try {
                             $container = $this->containerFactory->buildContainer((int)$record['uid']);
                             $target = $this->containerService->getAfterContainerElementTarget($container);
@@ -151,6 +167,27 @@ class CommandMapBeforeStartHook
             }
         }
         return $cmdmap;
+    }
+
+    /**
+     * "Move after this container" for the container itself means one slot down
+     * in the same page column, not after its last child.
+     */
+    protected function getMoveAfterSelfTarget(array $record): ?int
+    {
+        $next = $this->database->fetchNextSiblingRecord($record, (int)$record['sorting']);
+        if ($next === null) {
+            return null;
+        }
+        if (!$this->tcaRegistry->isContainerElement((string)$next['CType'])) {
+            return -((int)$next['uid']);
+        }
+        try {
+            $nextContainer = $this->containerFactory->buildContainer((int)$next['uid']);
+            return $this->containerService->getAfterContainerElementTarget($nextContainer);
+        } catch (Exception $e) {
+            return -((int)$next['uid']);
+        }
     }
 
     protected function rewriteCommandMapTargetForTopAtContainer(array $cmdmap): array
