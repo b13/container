@@ -32,7 +32,7 @@ class NewContentUriBuilderTest extends FunctionalTestCase
     #[Test]
     public function getNewContentUrlAfterChildContainsUidOfLiveWorkspaceAsContainerParent(): void
     {
-        $container = new Container(['uid' => 2, 't3ver_oid' => 1], []);
+        $container = new Container(['uid' => 2, 't3ver_oid' => 1, 'CType' => 'b13-container'], []);
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getPageId'])
@@ -49,14 +49,14 @@ class NewContentUriBuilderTest extends FunctionalTestCase
             ->getMock();
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
-        $newContentUrl = $newContentUriBuilder->getNewContentUrlAfterChild($pageLayoutContext, $container, 111, 112, null);
+        $newContentUrl = $newContentUriBuilder->getNewContentUrlAfterChild($pageLayoutContext, $container, 111, 112);
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
     }
 
     #[Test]
     public function getNewContentUrlAtTopOfColumnContainsUidOfLiveWorkspaceAsContainerParent(): void
     {
-        $container = new Container(['uid' => 2, 't3ver_oid' => 1], []);
+        $container = new Container(['uid' => 2, 't3ver_oid' => 1, 'CType' => 'b13-container'], []);
         $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getPageId'])
@@ -75,7 +75,7 @@ class NewContentUriBuilderTest extends FunctionalTestCase
             ->getMock();
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
-        $newContentUrl = $newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111, null);
+        $newContentUrl = $newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111);
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
     }
 
@@ -101,7 +101,72 @@ class NewContentUriBuilderTest extends FunctionalTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
-        $newContentUrl = $newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111, null);
+        $newContentUrl = $newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111);
         self::assertNull($newContentUrl);
+    }
+
+    #[Test]
+    public function getNewContentUrlAtTopOfColumnWithSingleAllowedCTypeContainsCreationOptionsDefaultValues(): void
+    {
+        $GLOBALS['TCA']['tt_content']['types']['tx_container_test']['creationOptions'] = [
+            'defaultValues' => [
+                'header' => 'Example header',
+                'header_layout' => 5,
+                'CType' => 'text',
+                'colPos' => 999,
+            ],
+        ];
+        $newContentUrl = urldecode($this->getNewContentUrlAtTopOfColumnWithSingleAllowedCType('tx_container_test'));
+        self::assertStringContainsString('/record/edit?', $newContentUrl);
+        self::assertStringContainsString('edit[tt_content][-5]=new', $newContentUrl);
+        self::assertStringContainsString('defVals[tt_content][header]=Example header', $newContentUrl);
+        self::assertStringContainsString('defVals[tt_content][header_layout]=5', $newContentUrl);
+        self::assertStringContainsString('defVals[tt_content][CType]=tx_container_test', $newContentUrl, 'creationOptions must not override CType');
+        self::assertStringContainsString('defVals[tt_content][colPos]=111', $newContentUrl, 'creationOptions must not override colPos');
+        self::assertStringContainsString('defVals[tt_content][tx_container_parent]=1', $newContentUrl);
+    }
+
+    #[Test]
+    public function getNewContentUrlAtTopOfColumnWithSingleAllowedCTypeAndSaveAndCloseCreatesRecordDirectly(): void
+    {
+        $GLOBALS['TCA']['tt_content']['types']['tx_container_test']['creationOptions'] = [
+            'defaultValues' => [
+                'header' => 'Example header',
+            ],
+            'saveAndClose' => true,
+        ];
+        $newContentUrl = urldecode($this->getNewContentUrlAtTopOfColumnWithSingleAllowedCType('tx_container_test'));
+        self::assertStringContainsString('/record/commit?', $newContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[header\]=Example header/', $newContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[CType\]=tx_container_test/', $newContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[colPos\]=111/', $newContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[tx_container_parent\]=1/', $newContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[pid\]=-5/', $newContentUrl);
+    }
+
+    protected function getNewContentUrlAtTopOfColumnWithSingleAllowedCType(string $allowedCType): string
+    {
+        $container = new Container(['uid' => 2, 't3ver_oid' => 1, 'CType' => 'b13-container'], []);
+        $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAllowedCTypesInColumn'])
+            ->getMock();
+        $tcaRegistry->expects(self::any())->method('getAllowedCTypesInColumn')->with('b13-container', 111)->willReturn([$allowedCType]);
+        $containerColumnConfigurationService = $this->getMockBuilder(ContainerColumnConfigurationService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['isMaxitemsReached'])
+            ->getMock();
+        $containerColumnConfigurationService->expects(self::once())->method('isMaxitemsReached')->willReturn(false);
+        $containerService  = $this->getMockBuilder(ContainerService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getNewContentElementAtTopTargetInColumn'])
+            ->getMock();
+        $containerService->expects(self::once())->method('getNewContentElementAtTopTargetInColumn')->willReturn(-5);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
+        return (string)$newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111);
     }
 }
