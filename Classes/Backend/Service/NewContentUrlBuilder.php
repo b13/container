@@ -19,6 +19,8 @@ use B13\Container\Tca\Registry;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\StringUtility;
 
 class NewContentUrlBuilder
 {
@@ -30,33 +32,69 @@ class NewContentUrlBuilder
     ) {
     }
 
-    public function getNewContentUrlAfterChild(PageLayoutContext $context, Container $container, int $columnNumber, int $recordUid, ?array $defVals): string
+    /**
+     * @param array|null $defVals not evaluated anymore, kept for backwards compatibility
+     */
+    public function getNewContentUrlAfterChild(PageLayoutContext $context, Container $container, int $columnNumber, int $recordUid, ?array $defVals = null): string
     {
-        if ($defVals !== null) {
-            return $this->getNewContentEditUrl($container, $columnNumber, -$recordUid, $defVals);
+        $cType = $this->getSingleAllowedCType($container, $columnNumber);
+        if ($cType !== null) {
+            return $this->getNewContentEditUrl($container, $columnNumber, -$recordUid, $cType);
         }
         return $this->getNewContentWizardUrl($context, $container, $columnNumber, -$recordUid);
     }
 
-    public function getNewContentUrlAtTopOfColumn(PageLayoutContext $context, Container $container, int $columnNumber, ?array $defVals): ?string
+    /**
+     * @param array|null $defVals not evaluated anymore, kept for backwards compatibility
+     */
+    public function getNewContentUrlAtTopOfColumn(PageLayoutContext $context, Container $container, int $columnNumber, ?array $defVals = null): ?string
     {
         if ($this->containerColumnConfigurationService->isMaxitemsReached($container, $columnNumber)) {
             return null;
         }
         $newContentElementAtTopTarget = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $columnNumber);
-        if ($defVals !== null) {
-            return $this->getNewContentEditUrl($container, $columnNumber, $newContentElementAtTopTarget, $defVals);
+        $cType = $this->getSingleAllowedCType($container, $columnNumber);
+        if ($cType !== null) {
+            return $this->getNewContentEditUrl($container, $columnNumber, $newContentElementAtTopTarget, $cType);
         }
         return $this->getNewContentWizardUrl($context, $container, $columnNumber, $newContentElementAtTopTarget);
     }
 
-    protected function getNewContentEditUrl(Container $container, int $columnNumber, int $target, array $defVals): string
+    public function isNewContentElementWizardSkipped(Container $container, int $columnNumber): bool
     {
-        $ttContentDefVals = array_merge($defVals, [
+        return $this->getSingleAllowedCType($container, $columnNumber) !== null;
+    }
+
+    protected function getSingleAllowedCType(Container $container, int $columnNumber): ?string
+    {
+        $allowedCTypes = (array)$this->tcaRegistry->getAllowedCTypesInColumn($container->getCType(), $columnNumber);
+        if (count($allowedCTypes) === 1) {
+            return (string)$allowedCTypes[0];
+        }
+        return null;
+    }
+
+    protected function getNewContentEditUrl(Container $container, int $columnNumber, int $target, string $cType): string
+    {
+        $creationOptions = $this->tcaRegistry->getCreationOptions($cType);
+        $ttContentDefVals = array_replace($this->getCreationOptionsDefaultValues($creationOptions), [
+            'CType' => $cType,
             'colPos' => $columnNumber,
             'sys_language_uid' => $container->getLanguage(),
             'tx_container_parent' => $container->getUidOfLiveWorkspace(),
         ]);
+        if ((bool)($creationOptions['saveAndClose'] ?? false)) {
+            // same as core NewContentElementController: skip FormEngine and create the record directly
+            $urlParameters = [
+                'data' => [
+                    'tt_content' => [
+                        StringUtility::getUniqueId('NEW') => array_replace($ttContentDefVals, ['pid' => $target]),
+                    ],
+                ],
+                'redirect' => $this->getReturnUrl(),
+            ];
+            return (string)$this->uriBuilder->buildUriFromRoute('tce_db', $urlParameters);
+        }
         $urlParameters = [
             'edit' => [
                 'tt_content' => [
@@ -83,6 +121,22 @@ class NewContentUrlBuilder
             'returnUrl' => $this->getReturnUrl(),
         ];
         return (string)$this->uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
+    }
+
+    protected function getCreationOptionsDefaultValues(array $creationOptions): array
+    {
+        $defaultValues = (array)($creationOptions['defaultValues'] ?? []);
+        foreach ($defaultValues as $fieldName => $value) {
+            if (is_string($value) && str_starts_with($value, 'LLL:')) {
+                $defaultValues[$fieldName] = $this->getLanguageService()->sL($value);
+            }
+        }
+        return $defaultValues;
+    }
+
+    protected function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 
     protected function getServerRequest(): ?ServerRequestInterface
