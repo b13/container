@@ -147,7 +147,8 @@ class ContentDefenderCest
         $I->switchToContentFrame();
         $dataColPos = $I->getDataColPos(402, 202);
         $colPosSelector = '#element-tt_content-402 [data-colpos="' . $dataColPos . '"]';
-        $I->scrollTo($colPosSelector);
+        $I->waitForElement($colPosSelector);
+        $I->scrollTo($colPosSelector, 0, 1000);
         $I->clickNewContentElement($colPosSelector);
         $I->switchToIFrame();
         $I->waitForModal();
