@@ -15,6 +15,7 @@ namespace B13\Container\Hooks\Datahandler;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
+use B13\Container\Integrity\Sorting;
 use B13\Container\Tca\Registry;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -26,7 +27,8 @@ class CommandMapBeforeStartHook
         protected ContainerFactory $containerFactory,
         protected Registry $tcaRegistry,
         protected Database $database,
-        protected ContainerService $containerService
+        protected ContainerService $containerService,
+        protected Sorting $sorting
     ) {
     }
 
@@ -162,6 +164,7 @@ class CommandMapBeforeStartHook
                         continue;
                     }
 
+                    // Path 1: drop-at-top rewritten from a positive page-uid target.
                     if (
                         isset($value['update']) &&
                         isset($value['update']['tx_container_parent']) &&
@@ -173,7 +176,36 @@ class CommandMapBeforeStartHook
                         try {
                             $container = $this->containerFactory->buildContainer((int)$value['update']['tx_container_parent']);
                             $target = $this->containerService->getNewContentElementAtTopTargetInColumn($container, (int)$value['update']['colPos']);
+                            if ($target === -$container->getUid()) {
+                                // Fallback anchor active. Ensure the invariant
+                                // container.sorting < min(child.sorting) so DataHandler
+                                // computes the new sorting within the children's sort space
+                                // instead of around the container record itself (see #738).
+                                $this->sorting->normalizeChildrenSortingForContainer($container);
+                            }
                             $cmd[$operation]['target'] = $target;
+                        } catch (Exception $e) {
+                            // not a container
+                        }
+                    }
+
+                    // Path 2: command that already arrives with target = -container_uid.
+                    // The Path 1 branch skips this case (target > 0 gate), so the
+                    // -container_uid anchor reaches DataHandler unchanged. Ensure the
+                    // invariant here as well (see #738).
+                    if (
+                        isset($value['update']) &&
+                        isset($value['update']['tx_container_parent']) &&
+                        $value['update']['tx_container_parent'] > 0 &&
+                        isset($value['update']['colPos']) &&
+                        $value['update']['colPos'] > 0 &&
+                        isset($value['target']) &&
+                        (int)$value['target'] < 0 &&
+                        abs((int)$value['target']) === (int)$value['update']['tx_container_parent']
+                    ) {
+                        try {
+                            $container = $this->containerFactory->buildContainer((int)$value['update']['tx_container_parent']);
+                            $this->sorting->normalizeChildrenSortingForContainer($container);
                         } catch (Exception $e) {
                             // not a container
                         }
