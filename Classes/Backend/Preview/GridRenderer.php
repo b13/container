@@ -20,6 +20,7 @@ use B13\Container\Domain\Factory\PageView\Backend\ContainerFactory;
 use B13\Container\Events\BeforeContainerPreviewIsRenderedEvent;
 use B13\Container\Tca\Registry;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\Grid;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridRow;
@@ -30,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
-class GridRenderer
+class GridRenderer extends StandardContentPreviewRenderer
 {
     public function __construct(
         protected Registry $tcaRegistry,
