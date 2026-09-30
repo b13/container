@@ -22,10 +22,15 @@ use TYPO3\CMS\Core\Domain\RecordInterface;
 
 class RecordWithRenderedGrid implements RecordInterface
 {
+    protected Record $coreRecord;
+    protected ?string $renderedGrid;
+
     public function __construct(
-        protected readonly Record $coreRecord,
-        protected readonly ?string $renderedGrid
+        Record $coreRecord,
+        ?string $renderedGrid
     ) {
+        $this->coreRecord = $coreRecord;
+        $this->renderedGrid = $renderedGrid;
     }
 
     public function getUid(): int
