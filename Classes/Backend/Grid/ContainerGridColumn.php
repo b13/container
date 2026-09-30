@@ -22,8 +22,7 @@ class ContainerGridColumn extends GridColumn
         PageLayoutContext $context,
         array $columnDefinition,
         protected Container $container,
-        protected ?string $newContentUrl,
-        protected bool $skipNewContentElementWizard
+        protected ?string $newContentUrl
     ) {
         parent::__construct($context, $columnDefinition);
     }
@@ -31,11 +30,6 @@ class ContainerGridColumn extends GridColumn
     public function getContainerUid(): int
     {
         return $this->container->getUidOfLiveWorkspace();
-    }
-
-    public function getNewContentElementWizardShouldBeSkipped(): bool
-    {
-        return $this->skipNewContentElementWizard;
     }
 
     public function getTitle(): string

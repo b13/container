@@ -30,23 +30,18 @@ class NewContentUrlBuilder
     ) {
     }
 
-    public function getNewContentUrlAfterChild(PageLayoutContext $context, Container $container, int $columnNumber, int $recordUid, ?array $defVals): string
+    public function getNewContentUrlAfterChild(PageLayoutContext $context, Container $container, int $columnNumber, int $recordUid): string
     {
-        if ($defVals !== null) {
-            return $this->getNewContentEditUrl($container, $columnNumber, -$recordUid, $defVals);
-        }
         return $this->getNewContentWizardUrl($context, $container, $columnNumber, -$recordUid);
     }
 
-    public function getNewContentUrlAtTopOfColumn(PageLayoutContext $context, Container $container, int $columnNumber, ?array $defVals): ?string
+    public function getNewContentUrlAtTopOfColumn(PageLayoutContext $context, Container $container, int $columnNumber): ?string
     {
         if ($this->containerColumnConfigurationService->isMaxitemsReached($container, $columnNumber)) {
             return null;
         }
         $newContentElementAtTopTarget = $this->containerService->getNewContentElementAtTopTargetInColumn($container, $columnNumber);
-        if ($defVals !== null) {
-            return $this->getNewContentEditUrl($container, $columnNumber, $newContentElementAtTopTarget, $defVals);
-        }
+
         return $this->getNewContentWizardUrl($context, $container, $columnNumber, $newContentElementAtTopTarget);
     }
 

@@ -57,14 +57,13 @@ class GridRenderer
                 if ($context->getDrawingConfiguration()->isLanguageComparisonMode()) {
                     $rowObject = GeneralUtility::makeInstance(GridRow::class, $context);
                 }
-                $defVals = $this->getDefValsForContentDefenderAllowsOnlyOneSpecificContentType($record['CType'], (int)$col['colPos']);
-                $url = $this->newContentUrlBuilder->getNewContentUrlAtTopOfColumn($context, $container, (int)$col['colPos'], $defVals);
-                $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $url, $defVals !== null);
+                $url = $this->newContentUrlBuilder->getNewContentUrlAtTopOfColumn($context, $container, (int)$col['colPos']);
+                $columnObject = GeneralUtility::makeInstance(ContainerGridColumn::class, $context, $col, $container, $url);
                 $rowObject->addColumn($columnObject);
                 if (isset($col['colPos'])) {
                     $records = $container->getChildrenByColPos($col['colPos']);
                     foreach ($records as $contentRecord) {
-                        $url = $this->newContentUrlBuilder->getNewContentUrlAfterChild($context, $container, (int)$col['colPos'], (int)$contentRecord['uid'], $defVals);
+                        $url = $this->newContentUrlBuilder->getNewContentUrlAfterChild($context, $container, (int)$col['colPos'], (int)$contentRecord['uid']);
                         $columnItem = GeneralUtility::makeInstance(ContainerGridColumnItem::class, $context, $columnObject, $contentRecord, $this->tcaRegistry, $container, $url);
                         $columnObject->addItem($columnItem);
                     }
@@ -104,15 +103,6 @@ class GridRenderer
         $this->eventDispatcher->dispatch($beforeContainerPreviewIsRendered);
         $rendered = $view->render();
         return $rendered;
-    }
-
-    protected function getDefValsForContentDefenderAllowsOnlyOneSpecificContentType(string $cType, int $colPos): ?array
-    {
-        $allowedCTypes = (array)$this->tcaRegistry->getAllowedCTypesInColumn($cType, $colPos);
-        if (count($allowedCTypes) === 1) {
-            return ['CType' => $allowedCTypes[0]];
-        }
-        return null;
     }
 
     protected function getBackendUser(): BackendUserAuthentication
