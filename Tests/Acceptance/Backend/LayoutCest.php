@@ -198,6 +198,25 @@ class LayoutCest
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->canSeeElement($contentInContainerColumn);
+        $I->assertSame('#element-tt_content-1', $I->executeJS('return window.location.hash'));
+    }
+
+    public function deleteChildReturnsToContainer(BackendTester $I, PageTree $pageTree): void
+    {
+        $I->clickLayoutModuleButton();
+        $pageTree->openPath(['home', 'pageWithContainer-3']);
+        $I->wait(0.2);
+        $I->switchToContentFrame();
+        $deleteUrl = $I->grabAttributeFrom('#element-tt_content-810 .t3js-modal-trigger', 'href');
+
+        $I->assertSame('element-tt_content-800', parse_url($deleteUrl, PHP_URL_FRAGMENT));
+        $I->click('#element-tt_content-810 .t3js-modal-trigger');
+        $I->switchToIFrame();
+        $I->waitForModal();
+        $I->click('Delete', '.modal-footer');
+        $I->switchToContentFrame();
+        $I->waitForElementNotVisible('#element-tt_content-810');
+        $I->assertSame('#element-tt_content-800', $I->executeJS('return window.location.hash'));
     }
 
     public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree)
