@@ -223,7 +223,7 @@ class ContainerConfiguration
     {
         $rows = $this->getGrid();
         $modRows = [];
-        $columnConfigurationFields = ['name', 'allowed', 'disallowed', 'maxitems', 'colspan'];
+        $columnConfigurationFields = ['name', 'allowed', 'disallowed', 'maxitems', 'colspan', 'allowedContentTypes', 'disallowedContentTypes'];
         foreach ($rows as &$columns) {
             foreach ($columns as &$column) {
                 if ((int)$column['colPos'] === $colPos) {

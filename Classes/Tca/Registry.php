@@ -123,6 +123,11 @@ class Registry
         return GeneralUtility::trimExplode(',', $contentDefenderConfiguration['allowedContentTypes'], true);
     }
 
+    public function getCreationOptions(string $cType): array
+    {
+        return (array)($GLOBALS['TCA']['tt_content']['types'][$cType]['creationOptions'] ?? []);
+    }
+
     public function recordIsAllowedInContainerColumn(RecordInterface $record): bool
     {
         $recordType = $record->getRecordType();

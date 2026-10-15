@@ -28,6 +28,13 @@ class ContentUsedOnPageTest extends FunctionalTestCase
         'typo3conf/ext/container_example',
     ];
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
+        $GLOBALS['BE_USER'] = $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
+    }
+
     #[Test]
     public function addContainerChildrenReturnsTrueIfChildrenInContainer(): void
     {
@@ -86,6 +93,18 @@ class ContentUsedOnPageTest extends FunctionalTestCase
         $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class);
         $listener($event);
         self::assertTrue($event->isRecordUsed());
+    }
+
+    #[Test]
+    public function childrenOfDetachedContainerTranslationsReturnsTrue(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Hooks/Fixtures/UsedRecords/children_of_detachted_contaienr_translations.csv');
+        $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)->disableOriginalConstructor()->getMock();
+        $record = $this->fetchOneRecordByUid(6);
+        $event = new IsContentUsedOnPageLayoutEvent($record, false, $pageLayoutContext);
+        $listener = GeneralUtility::makeInstance(ContentUsedOnPage::class);
+        $listener($event);
+        self::assertFalse($event->isRecordUsed());
     }
 
     protected function fetchOneRecordByUid(int $uid): array

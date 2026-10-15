@@ -17,7 +17,9 @@ use TYPO3\CMS\Backend\Controller\Event\AfterRecordSummaryForLocalizationEvent;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 #[AsEventListener(identifier: 'tx-container-record-summary-for-localization')]
 class RecordSummaryForLocalization
@@ -96,6 +98,7 @@ class RecordSummaryForLocalization
     protected function fetchOneRecord(int $uid): ?array
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
         $row = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(
@@ -112,6 +115,7 @@ class RecordSummaryForLocalization
     protected function fetchAllRecords(array $uids): array
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
         $rows = $queryBuilder->select('*')
             ->from('tt_content')
             ->where(

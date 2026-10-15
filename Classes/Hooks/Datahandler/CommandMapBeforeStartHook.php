@@ -17,6 +17,7 @@ use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
 use B13\Container\Tca\Registry;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 #[Autoconfigure(public: true)]
@@ -36,6 +37,9 @@ class CommandMapBeforeStartHook
         $dataHandler->cmdmap = $this->rewriteSimpleCommandMap($dataHandler->cmdmap);
         $dataHandler->cmdmap = $this->setContainerIdToZeroIfNotSetOnUpdate($dataHandler->cmdmap);
         $this->unsetInconsistentCopyOrMoveCommands($dataHandler);
+        // children are copied/moved together with their container (CommandMapPostProcessingHook),
+        // an additional command for a child would duplicate it (e.g. "select all" in Record module)
+        $this->unsetCopyOrMoveCommandsForChildrenOfContainersInCmdmap($dataHandler);
         // previously page id is used for copy/moving element at top of a container colum
         // but this leeds to wrong sorting in page context (e.g. List-Module)
         $dataHandler->cmdmap = $this->rewriteCommandMapTargetForTopAtContainer($dataHandler->cmdmap);
@@ -87,6 +91,62 @@ class CommandMapBeforeStartHook
                 }
             }
         }
+    }
+
+    protected function unsetCopyOrMoveCommandsForChildrenOfContainersInCmdmap(DataHandler $dataHandler): void
+    {
+        $commands = $dataHandler->cmdmap['tt_content'] ?? [];
+        if (count($commands) < 2) {
+            return;
+        }
+        $workspaceId = (int)($dataHandler->BE_USER->workspace ?? 0);
+        foreach ($commands as $id => $cmds) {
+            if (!is_array($cmds)) {
+                continue;
+            }
+            foreach (['copy', 'move'] as $operation) {
+                if (!isset($cmds[$operation])) {
+                    continue;
+                }
+                if ($this->hasAncestorContainerWithSameCommand((int)$id, $operation, $cmds[$operation], $commands, $workspaceId)) {
+                    unset($dataHandler->cmdmap['tt_content'][$id][$operation]);
+                }
+            }
+            if (empty($dataHandler->cmdmap['tt_content'][$id])) {
+                unset($dataHandler->cmdmap['tt_content'][$id]);
+            }
+        }
+    }
+
+    /**
+     * a child command is only redundant if it is identical to the command of one of its containers,
+     * a child with an own target (e.g. pasted into another container) is kept
+     */
+    protected function hasAncestorContainerWithSameCommand(int $id, string $operation, mixed $command, array $commands, int $workspaceId): bool
+    {
+        $visited = [$id => true];
+        $parentId = $this->fetchContainerParent($id, $workspaceId);
+        while ($parentId > 0 && !isset($visited[$parentId])) {
+            if (isset($commands[$parentId][$operation]) && $commands[$parentId][$operation] == $command) {
+                return true;
+            }
+            $visited[$parentId] = true;
+            $parentId = $this->fetchContainerParent($parentId, $workspaceId);
+        }
+        return false;
+    }
+
+    protected function fetchContainerParent(int $uid, int $workspaceId): int
+    {
+        $record = $this->database->fetchOneRecord($uid);
+        if ($record !== null && $workspaceId > 0) {
+            // the child may have been moved in/out of a container in the workspace
+            BackendUtility::workspaceOL('tt_content', $record, $workspaceId, true);
+        }
+        if (!is_array($record)) {
+            return 0;
+        }
+        return (int)($record['tx_container_parent'] ?? 0);
     }
 
     protected function setContainerIdToZeroIfNotSetOnUpdate(array $cmdmap): array

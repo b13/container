@@ -70,6 +70,38 @@ class LocalizeTest extends AbstractDatahandler
     }
 
     #[Test]
+    public function localizeContainerKeepsHiddenStateOfChildren(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerKeepsHiddenStateOfChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'localize' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeContainerKeepsHiddenStateOfChildrenResult.csv');
+    }
+
+    #[Test]
+    public function copyContainerToLanguageKeepsHiddenStateOfChildren(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyContainerToLanguageKeepsHiddenStateOfChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'copyToLanguage' => 1,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Localize/CopyContainerToLanguageKeepsHiddenStateOfChildrenResult.csv');
+    }
+
+    #[Test]
     public function localizeNestedContainerKeepsDefaultLanguageParent(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Localize/LocalizeNestedContainerKeepsDefaultLanguageParent.csv');

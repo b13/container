@@ -314,4 +314,20 @@ class ContainerTest extends AbstractDatahandler
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/DeleteContainerWithChildHasDeletedPlaceholderInWorkspaceDoNotDiscardThisChildResult.csv');
     }
+
+    #[Test]
+    public function copyContainerWithChildrenInCmdmapCopiesChildMovedOutOfContainerInWorkspace(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/CopyContainerWithChildrenInCmdmapChildMovedOutOfContainer.csv');
+        $cmdmap = [
+            'tt_content' => [
+                3 => ['copy' => 3],
+                2 => ['copy' => 3],
+                1 => ['copy' => 3],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/CopyContainerWithChildrenInCmdmapChildMovedOutOfContainerResult.csv');
+    }
 }

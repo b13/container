@@ -1,0 +1,11 @@
+"tt_content"
+,"uid","pid","CType","header","sys_language_uid","l18n_parent","l10n_source","tx_container_parent"
+,"1","1","b13-2cols-with-header-container","My Container","0","0","0","0"
+,"2","1","textmedia","Child Element","0","0","0","1"
+,"5","1","b13-2cols-with-header-container","[Translate to de:] My Container","1","0","1","0"
+,"6","1","textmedia","[Translate to de:] Child Element","1","2","2","1"
+"pages"
+,"uid","pid","sys_language_uid","l10n_parent"
+,"1","0","0","0"
+,"2","0","1","1"
+
