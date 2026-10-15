@@ -165,13 +165,14 @@ class NewContentUriBuilderTest extends FunctionalTestCase
             ],
             'saveAndClose' => true,
         ];
-        $newContentUrl = urldecode($this->getNewContentUrlAtTopOfColumnWithSingleAllowedCType('tx_container_test'));
-        self::assertStringContainsString('/record/commit?', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[header\]=Example header/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[CType\]=tx_container_test/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[colPos\]=111/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[tx_container_parent\]=1/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[pid\]=-5/', $newContentUrl);
+        $newContentUrl = $this->getNewContentUrlAtTopOfColumnWithSingleAllowedCType('tx_container_test');
+        $decodedNewContentUrl = urldecode($newContentUrl);
+        self::assertStringContainsString('/record/commit?', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[header\]=Example header/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[CType\]=tx_container_test/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[colPos\]=111/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[tx_container_parent\]=1/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[pid\]=-5/', $decodedNewContentUrl);
         self::assertStringEndsWith('#element-tt_content-5', $this->getRedirectParameter($newContentUrl));
     }
 
