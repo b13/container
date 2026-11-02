@@ -88,8 +88,16 @@ class BackendTester extends \Codeception\Actor
 
     public function clickNewContentElement(string $colPosSelector): void
     {
-        $this->waitForElement($colPosSelector);
-        $this->click($colPosSelector . ' typo3-backend-new-content-element-wizard-button');
+        $buttonSelector = $colPosSelector . ' typo3-backend-new-content-element-wizard-button';
+        $this->waitForElementVisible($buttonSelector);
+        // backend.css sets ":root { scroll-behavior: smooth }", so window.scrollTo() (used by
+        // Codeception's scrollTo()) animates and the click may hit a still moving element
+        // (ElementClickInterceptedException). Scroll instantly and center the button instead.
+        $this->executeJS(
+            'document.querySelector(arguments[0]).scrollIntoView({behavior: "instant", block: "center", inline: "center"});',
+            [$buttonSelector]
+        );
+        $this->click($buttonSelector);
     }
 
     public function getNewContentElementLabel(): string
