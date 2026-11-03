@@ -53,11 +53,15 @@ class CommandMapPostProcessingHook
             $containerId = $last;
             $pos = $this->containerService->getAfterContainerElementTarget($container);
             // move next record after last child
+            // colPos is required in the update array, otherwise content restriction hooks
+            // (EXT:content_defender, EXT:container) cast the command value to int and use 1 as page uid
             $cmd = ['tt_content' => [$last => [
                 'move' => [
                     'target' => $pos,
                     'action' => 'paste',
-                    'update' => [],
+                    'update' => [
+                        'colPos' => (int)$container->getContainerRecord()['colPos'],
+                    ],
                 ],
             ]]];
             $localDataHandler = GeneralUtility::makeInstance(DataHandler::class);
@@ -82,6 +86,7 @@ class CommandMapPostProcessingHook
                         'action' => 'paste',
                         'update' => [
                             'tx_container_parent' => $containerId,
+                            'colPos' => (int)$record['colPos'],
                         ],
                     ],
                 ]]];
