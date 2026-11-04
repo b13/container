@@ -15,6 +15,7 @@ namespace B13\Container\Hooks\Datahandler;
 use B13\Container\Domain\Factory\ContainerFactory;
 use B13\Container\Domain\Factory\Exception;
 use B13\Container\Domain\Service\ContainerService;
+use B13\Container\Tca\Registry;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -24,8 +25,11 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 #[Autoconfigure(public: true)]
 class CommandMapPostProcessingHook
 {
-    public function __construct(protected ContainerFactory $containerFactory, protected ContainerService $containerService)
-    {
+    public function __construct(
+        protected ContainerFactory $containerFactory,
+        protected ContainerService $containerService,
+        protected Registry $tcaRegistry
+    ) {
     }
 
     public function processCmdmap_postProcess(string $command, string $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap): void
@@ -150,7 +154,17 @@ class CommandMapPostProcessingHook
                 && isset($allChildren[0])
                 && (int)$targetLanguage !== (int)$allChildren[0]['sys_language_uid'];
             $children = [];
+            // the target of a column is the last child of the previous column (see
+            // ContainerService::getNewContentElementAtTopTargetInColumn()), so the columns have to be
+            // processed in the configured order: the children are ordered by sorting, and a column
+            // whose child has a low sorting must not be processed before the column it targets.
+            // children with a colPos that is not configured for the container are moved last
             $colPosVals = $container->getChildrenColPos();
+            $availableColPosVals = $this->tcaRegistry->getAllAvailableColumnsColPos($container->getCType());
+            $colPosVals = array_values(array_merge(
+                array_intersect($availableColPosVals, $colPosVals),
+                array_diff($colPosVals, $availableColPosVals)
+            ));
             foreach ($colPosVals as $colPos) {
                 $childrenByColPos = $container->getChildrenByColPos($colPos);
                 if (!$chainAfterPrevious) {
