@@ -113,6 +113,51 @@ class Database
         return $record;
     }
 
+    public function fetchNextSiblingRecord(array $record, int $afterSorting): ?array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder->select('*')
+            ->from('tt_content')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'pid',
+                    $queryBuilder->createNamedParameter((int)$record['pid'], Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'colPos',
+                    $queryBuilder->createNamedParameter((int)$record['colPos'], Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter((int)$record['sys_language_uid'], Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'tx_container_parent',
+                    $queryBuilder->createNamedParameter((int)$record['tx_container_parent'], Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_oid',
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->gt(
+                    'sorting',
+                    $queryBuilder->createNamedParameter($afterSorting, Connection::PARAM_INT)
+                ),
+                $queryBuilder->expr()->neq(
+                    'uid',
+                    $queryBuilder->createNamedParameter((int)$record['uid'], Connection::PARAM_INT)
+                )
+            )
+            ->orderBy('sorting', 'ASC')
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchAssociative();
+        if ($row === false) {
+            return null;
+        }
+        return $row;
+    }
+
     public function fetchRecordsByParentAndLanguage(int $parent, int $language): array
     {
         $queryBuilder = $this->getQueryBuilder();

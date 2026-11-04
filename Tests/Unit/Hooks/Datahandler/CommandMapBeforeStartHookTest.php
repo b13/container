@@ -174,6 +174,73 @@ class CommandMapBeforeStartHookTest extends UnitTestCase
     }
 
     #[Test]
+    public function rewriteCommandMapTargetForAfterContainerMovesContainerAfterNextSibling(): void
+    {
+        $movedContainer = [
+            'uid' => 1,
+            'pid' => 1,
+            'sorting' => 64,
+            'tx_container_parent' => 0,
+            'sys_language_uid' => 0,
+            'colPos' => 0,
+            'CType' => 'container-ctype',
+        ];
+        $nextSibling = [
+            'uid' => 4,
+            'pid' => 1,
+            'sorting' => 512,
+            'tx_container_parent' => 0,
+            'sys_language_uid' => 0,
+            'colPos' => 0,
+            'CType' => 'header',
+        ];
+
+        $containerFactory = $this->getMockBuilder(ContainerFactory::class)->disableOriginalConstructor()->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)->disableOriginalConstructor()->getMock();
+        $database = $this->getMockBuilder(Database::class)->onlyMethods(['fetchOneRecord', 'fetchNextSiblingRecord'])->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)->disableOriginalConstructor()->onlyMethods(['isContainerElement'])->getMock();
+        $database->expects(self::once())->method('fetchOneRecord')->with(1)->willReturn($movedContainer);
+        $database->expects(self::once())->method('fetchNextSiblingRecord')->with($movedContainer, 64)->willReturn($nextSibling);
+        $tcaRegistry->method('isContainerElement')->willReturnCallback(static function (string $cType): bool {
+            return $cType === 'container-ctype';
+        });
+        $dataHandlerHook = $this->getMockBuilder($this->buildAccessibleProxy(CommandMapBeforeStartHook::class))
+            ->setConstructorArgs(['containerFactory' => $containerFactory, 'tcaRegistry' => $tcaRegistry, 'database' => $database, 'containerService' => $containerService])
+            ->onlyMethods([])
+            ->getMock();
+        $commandMap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $expected = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -4,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $rewrittenCommandMap = $dataHandlerHook->_call('rewriteCommandMapTargetForAfterContainer', $commandMap);
+        self::assertSame($expected, $rewrittenCommandMap);
+    }
+
+    #[Test]
     public function setContainerIdToZeroIfNotSetOnUpdateSetsContainerIdToZeroValue(): void
     {
         $database = $this->getMockBuilder(Database::class)->getMock();
