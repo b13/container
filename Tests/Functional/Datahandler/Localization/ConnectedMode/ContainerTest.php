@@ -40,7 +40,8 @@ class ContainerTest extends AbstractDatahandler
     public function hardDeleteDeletedContainerTranslationKeepsChildrenOfOtherTranslation(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/HardDeleteDeletedContainerTranslationKeepsChildrenOfOtherTranslation.csv');
-        // same call as in cleanup:deletedrecords
+        // same calls as in cleanup:deletedrecords
+        $this->dataHandler->start([], [], $this->backendUser);
         $this->dataHandler->deleteAction('tt_content', 21, true, true);
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/HardDeleteDeletedContainerTranslationKeepsChildrenOfOtherTranslationResult.csv');
     }
