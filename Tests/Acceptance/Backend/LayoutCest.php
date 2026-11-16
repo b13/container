@@ -198,6 +198,7 @@ class LayoutCest
         $I->click('Close');
         $I->waitForElementNotVisible('#t3js-ui-block');
         $I->canSeeElement($contentInContainerColumn);
+        $I->assertSame('#element-tt_content-1', $I->executeJS('return window.location.hash'));
     }
 
     public function canCreateContentElementInTranslatedContainerInFreeMode(BackendTester $I, PageTree $pageTree)

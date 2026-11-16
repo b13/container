@@ -91,7 +91,7 @@ class NewContentUrlBuilder
                         StringUtility::getUniqueId('NEW') => array_replace($ttContentDefVals, ['pid' => $target]),
                     ],
                 ],
-                'redirect' => $this->getReturnUrl(),
+                'redirect' => $this->getReturnUrlWithAnchor(abs($target)),
             ];
             return (string)$this->uriBuilder->buildUriFromRoute('tce_db', $urlParameters);
         }
@@ -104,7 +104,7 @@ class NewContentUrlBuilder
             'defVals' => [
                 'tt_content' => $ttContentDefVals,
             ],
-            'returnUrl' => $this->getReturnUrl(),
+            'returnUrl' => $this->getReturnUrlWithAnchor(abs($target)),
         ];
         return (string)$this->uriBuilder->buildUriFromRoute('record_edit', $urlParameters);
     }
@@ -118,7 +118,7 @@ class NewContentUrlBuilder
             'colPos' => $columnNumber,
             'tx_container_parent' => $container->getUidOfLiveWorkspace(),
             'uid_pid' => $uidPid,
-            'returnUrl' => $this->getReturnUrl(),
+            'returnUrl' => $this->getReturnUrlWithAnchor(abs($uidPid)),
         ];
         return (string)$this->uriBuilder->buildUriFromRoute('new_content_element_wizard', $urlParameters);
     }
@@ -151,5 +151,10 @@ class NewContentUrlBuilder
             return '';
         }
         return (string)$request->getAttribute('normalizedParams')->getRequestUri();
+    }
+
+    protected function getReturnUrlWithAnchor(int $recordUid): string
+    {
+        return $this->getReturnUrl() . '#element-tt_content-' . $recordUid;
     }
 }

@@ -51,6 +51,33 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
         $newContentUrl = $newContentUriBuilder->getNewContentUrlAfterChild($pageLayoutContext, $container, 111, 112);
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
+        self::assertStringEndsWith('#element-tt_content-112', $this->getReturnUrlParameter($newContentUrl));
+    }
+
+    #[Test]
+    public function getNewContentEditUrlAfterChildContainsReturnAnchor(): void
+    {
+        $container = new Container(['uid' => 2, 'CType' => 'b13-container'], []);
+        $pageLayoutContext = $this->getMockBuilder(PageLayoutContext::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $tcaRegistry = $this->getMockBuilder(Registry::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAllowedCTypesInColumn'])
+            ->getMock();
+        $tcaRegistry->expects(self::once())->method('getAllowedCTypesInColumn')->with('b13-container', 111)->willReturn(['header']);
+        $containerColumnConfigurationService = $this->getMockBuilder(ContainerColumnConfigurationService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $containerService = $this->getMockBuilder(ContainerService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
+
+        $newContentUrl = $newContentUriBuilder->getNewContentUrlAfterChild($pageLayoutContext, $container, 111, 112);
+
+        self::assertStringEndsWith('#element-tt_content-112', $this->getReturnUrlParameter($newContentUrl));
     }
 
     #[Test]
@@ -72,11 +99,14 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         $containerColumnConfigurationService->expects(self::once())->method('isMaxitemsReached')->willReturn(false);
         $containerService  = $this->getMockBuilder(ContainerService::class)
             ->disableOriginalConstructor()
+            ->onlyMethods(['getNewContentElementAtTopTargetInColumn'])
             ->getMock();
+        $containerService->expects(self::once())->method('getNewContentElementAtTopTargetInColumn')->willReturn(-2);
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
         $newContentUrl = $newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111);
         self::assertStringContainsString('tx_container_parent=1', $newContentUrl, 'should container uid of live workspace record');
+        self::assertStringEndsWith('#element-tt_content-2', $this->getReturnUrlParameter($newContentUrl));
     }
 
     #[Test]
@@ -135,13 +165,15 @@ class NewContentUriBuilderTest extends FunctionalTestCase
             ],
             'saveAndClose' => true,
         ];
-        $newContentUrl = urldecode($this->getNewContentUrlAtTopOfColumnWithSingleAllowedCType('tx_container_test'));
-        self::assertStringContainsString('/record/commit?', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[header\]=Example header/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[CType\]=tx_container_test/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[colPos\]=111/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[tx_container_parent\]=1/', $newContentUrl);
-        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[pid\]=-5/', $newContentUrl);
+        $newContentUrl = $this->getNewContentUrlAtTopOfColumnWithSingleAllowedCType('tx_container_test');
+        $decodedNewContentUrl = urldecode($newContentUrl);
+        self::assertStringContainsString('/record/commit?', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[header\]=Example header/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[CType\]=tx_container_test/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[colPos\]=111/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[tx_container_parent\]=1/', $decodedNewContentUrl);
+        self::assertMatchesRegularExpression('/data\[tt_content\]\[NEW[^\]]+\]\[pid\]=-5/', $decodedNewContentUrl);
+        self::assertStringEndsWith('#element-tt_content-5', $this->getRedirectParameter($newContentUrl));
     }
 
     protected function getNewContentUrlAtTopOfColumnWithSingleAllowedCType(string $allowedCType): string
@@ -168,5 +200,23 @@ class NewContentUriBuilderTest extends FunctionalTestCase
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $newContentUriBuilder = new NewContentUrlBuilder($tcaRegistry, $containerColumnConfigurationService, $containerService, $uriBuilder);
         return (string)$newContentUriBuilder->getNewContentUrlAtTopOfColumn($pageLayoutContext, $container, 111);
+    }
+
+    private function getReturnUrlParameter(string $url): string
+    {
+        return $this->getStringQueryParameter($url, 'returnUrl');
+    }
+
+    private function getRedirectParameter(string $url): string
+    {
+        return $this->getStringQueryParameter($url, 'redirect');
+    }
+
+    private function getStringQueryParameter(string $url, string $name): string
+    {
+        parse_str((string)parse_url($url, PHP_URL_QUERY), $queryParameters);
+        self::assertArrayHasKey($name, $queryParameters);
+        self::assertIsString($queryParameters[$name]);
+        return $queryParameters[$name];
     }
 }
