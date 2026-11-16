@@ -33,6 +33,18 @@ class ContainerTest extends AbstractDatahandler
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/DeleteContainerDeleteTranslatedChildrenResult.csv');
     }
 
+    /**
+     * @see https://github.com/b13/container/issues/695
+     */
+    #[Test]
+    public function hardDeleteDeletedContainerTranslationKeepsChildrenOfOtherTranslation(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/HardDeleteDeletedContainerTranslationKeepsChildrenOfOtherTranslation.csv');
+        // same call as in cleanup:deletedrecords
+        $this->dataHandler->deleteAction('tt_content', 21, true, true);
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/HardDeleteDeletedContainerTranslationKeepsChildrenOfOtherTranslationResult.csv');
+    }
+
     #[Test]
     public function moveContainerToOtherPageMovesChildren(): void
     {

@@ -28,9 +28,23 @@ class DeleteHook
 
     public function processCmdmap_deleteAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted, DataHandler $dataHandler): void
     {
-        if ($table === 'tt_content') {
+        if ($table === 'tt_content' && !$this->isAlreadyDeleted($table, $recordToDelete)) {
             $this->deleteChildren($id, $dataHandler->BE_USER, $dataHandler->enableLogging);
         }
+    }
+
+    /**
+     * A record which is already soft-deleted had its children deleted when it was soft-deleted.
+     * When such a record is purged (e.g. by cleanup:deletedrecords), the children must not be
+     * resolved again: for a translated container in connected mode, they would be resolved via
+     * the default language container and hit the children of another, active translation.
+     *
+     * @see https://github.com/b13/container/issues/695
+     */
+    protected function isAlreadyDeleted(string $table, array $recordToDelete): bool
+    {
+        $deleteField = $GLOBALS['TCA'][$table]['ctrl']['delete'] ?? '';
+        return $deleteField !== '' && (int)($recordToDelete[$deleteField] ?? 0) === 1;
     }
 
     public function processCmdmap_discardAction(string $table, int $id, array $recordToDelete, bool $recordWasDeleted): void
