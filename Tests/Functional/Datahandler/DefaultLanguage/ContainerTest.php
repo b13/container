@@ -414,4 +414,35 @@ class ContainerTest extends AbstractDatahandler
         $this->dataHandler->process_cmdmap();
         self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/CopyContainerKeepsSortingOfChildrenResult.csv');
     }
+
+    /**
+     * children are moved column by column, the target of a column is the last child of the previous
+     * column. the children are fetched ordered by sorting, so if the child with the lowest sorting is
+     * not in the first column, the target of the following columns is a child that has not been moved
+     * yet and the child ends up on the source page.
+     *
+     * such a sorting is inconsistent and is reported by the container:sorting command, but it can be
+     * the result of copy and move operations or of an import, so a container has to be moved completely
+     * in that case, too.
+     *
+     * @see https://github.com/b13/container/issues/291
+     * @see https://github.com/b13/container/issues/738
+     */
+    #[Test]
+    public function moveContainerOtherPageOnTopWithChildSortingBeforePreviousColumn(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageOnTop.csv');
+        // child in the second column gets a sorting lower than the children of the first column
+        $this->getConnectionPool()->getConnectionForTable('tt_content')->update('tt_content', ['sorting' => 96], ['uid' => 4]);
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => 3,
+                ],
+            ],
+        ];
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerOtherPageOnTopWithChildSortingBeforePreviousColumnResult.csv');
+    }
 }
