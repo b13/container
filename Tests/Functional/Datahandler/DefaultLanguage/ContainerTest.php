@@ -131,6 +131,74 @@ class ContainerTest extends AbstractDatahandler
     }
 
     #[Test]
+    public function moveContainerAfterItselfMovesAfterNextElement(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildrenResult.csv');
+    }
+
+    #[Test]
+    public function moveContainerAfterItselfWithSimpleCommandMapMovesAfterNextElement(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildren.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => -1,
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterElementMovesChildrenResult.csv');
+    }
+
+    #[Test]
+    public function moveContainerAfterItselfWhenNextIsContainerMovesAfterThatContainer(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterItselfNextIsContainer.csv');
+        $cmdmap = [
+            'tt_content' => [
+                1 => [
+                    'move' => [
+                        'action' => 'paste',
+                        'target' => -1,
+                        'update' => [
+                            'colPos' => 0,
+                            'sys_language_uid' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->dataHandler->start([], $cmdmap, $this->backendUser);
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+        self::assertCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerAfterItselfNextIsContainerResult.csv');
+    }
+
+    #[Test]
     public function moveContainerToOtherPageAtTopMovesChildren(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Container/MoveContainerToOtherPageAtTopMovesChildren.csv');
